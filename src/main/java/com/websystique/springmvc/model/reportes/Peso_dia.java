@@ -22,4 +22,9 @@ public class Peso_dia implements Serializable{
 	private Integer id;
 	private Date fecha_ini;
 	private Double peso;
+	private Integer embarques;
+	private Double torton;
+	private Double trailer;
+	private Double otros;
+	private Double diferencia;
 }

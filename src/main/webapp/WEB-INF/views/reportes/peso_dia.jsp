@@ -71,26 +71,37 @@ function FBuscar()
 		</div>
 	</div>
 	<br>
-	<div id="tabla1" style = "width:300px" class = "table-responsive-xl container">
+	<div id="tabla1" class = "table-responsive-xl container">
 		<table class="table table-hover table-bordered text-center small">
 			<thead>
 				<tr>
 					<th>Fecha</th>
 					<th>Peso</th>
+					<th>Embarques</th>
+					<th>Torton</th>
+					<th>Trailer</th>
+					<th>Otros</th>
+					<th>Diferencia</th>
 				</tr>
 			</thead>
 			<tbody>
 				<c:forEach var="item" items="${reporte}">
 				<tr>
 					<td>${fn:substring(item.fecha_ini,0,10)}</td>
-					<td><fmt:formatNumber type = "number" maxFractionDigits = "2" value = "${item.peso}" /></td>
+					<td><fmt:formatNumber type = "number" maxFractionDigits = "1" value = "${item.peso}" /></td>
+					<td>${item.embarques}</td>
+					<td><fmt:formatNumber type = "number" maxFractionDigits = "1" value = "${item.torton}" /></td>
+					<td><fmt:formatNumber type = "number" maxFractionDigits = "1" value = "${item.trailer}" /></td>
+					<td><fmt:formatNumber type = "number" maxFractionDigits = "1" value = "${item.otros}" /></td>
+					<td><fmt:formatNumber type = "number" maxFractionDigits = "1" value = "${item.diferencia}" /></td>
 				</tr>
-				<c:set var="pesoT" value="${pesoT = pesoT + item.peso}"/>
 				</c:forEach>
+				<!-- <c:set var="pesoT" value="${pesoT = pesoT + item.peso}"/>
+				
 				<tr>
 					<th>Total</th>
 					<td><fmt:formatNumber type = "number" maxFractionDigits = "2" value = "${pesoT}" /></td>
-				</tr>
+				</tr> -->
 			</tbody>
 		</table>
 	</div>
