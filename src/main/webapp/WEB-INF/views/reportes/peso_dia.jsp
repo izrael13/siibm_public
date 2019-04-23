@@ -76,24 +76,28 @@ function FBuscar()
 			<thead>
 				<tr>
 					<th>Fecha</th>
-					<th>Peso</th>
-					<th>Embarques</th>
-					<th>Torton</th>
-					<th>Trailer</th>
-					<th>Otros</th>
-					<th>Diferencia</th>
+					<th>Total KG</th>
+					<th>Torton KG</th>
+					<th>Trailer KG</th>
+					<th>Sin Datos KG</th>
+					<th>Total Remisiones</th>
+					<th>Torton Rem</th>
+					<th>Trailer Rem</th>
+					<th>Sin Datos Rem</th>
 				</tr>
 			</thead>
 			<tbody>
 				<c:forEach var="item" items="${reporte}">
 				<tr>
 					<td>${fn:substring(item.fecha_ini,0,10)}</td>
-					<td><fmt:formatNumber type = "number" maxFractionDigits = "1" value = "${item.peso}" /></td>
-					<td>${item.embarques}</td>
-					<td><fmt:formatNumber type = "number" maxFractionDigits = "1" value = "${item.torton}" /></td>
-					<td><fmt:formatNumber type = "number" maxFractionDigits = "1" value = "${item.trailer}" /></td>
-					<td><fmt:formatNumber type = "number" maxFractionDigits = "1" value = "${item.otros}" /></td>
-					<td><fmt:formatNumber type = "number" maxFractionDigits = "1" value = "${item.diferencia}" /></td>
+					<td><fmt:formatNumber type = "number" maxFractionDigits = "1" value = "${item.totalkg}" /></td>
+					<td><fmt:formatNumber type = "number" maxFractionDigits = "1" value = "${item.tortonkg}" /></td>
+					<td><fmt:formatNumber type = "number" maxFractionDigits = "1" value = "${item.trailerkg}" /></td>
+					<td><fmt:formatNumber type = "number" maxFractionDigits = "1" value = "${item.otroskg}" /></td>
+					<td>${item.totalrem}</td>
+					<td>${item.tortonrem}</td>
+					<td>${item.trialerrem}</td>
+					<td>${item.otrosrem}</td>
 				</tr>
 				</c:forEach>
 				<!-- <c:set var="pesoT" value="${pesoT = pesoT + item.peso}"/>

@@ -21,10 +21,15 @@ public class Peso_dia implements Serializable{
 	@Id
 	private Integer id;
 	private Date fecha_ini;
-	private Double peso;
-	private Integer embarques;
-	private Double torton;
-	private Double trailer;
-	private Double otros;
-	private Double diferencia;
+	private Double totalkg;
+	private Double tortonkg;
+	private Double trailerkg;
+	private Double otroskg;
+	private Integer totalrem;
+	private Integer tortonrem;
+	private Integer trialerrem;
+	private Integer otrosrem;
+	/*private Integer trailer_emb;
+	private Integer otros_emb;
+	private Integer diferencia_emb;*/
 }
