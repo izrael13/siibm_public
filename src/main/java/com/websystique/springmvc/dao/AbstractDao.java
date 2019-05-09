@@ -56,6 +56,9 @@ public abstract class AbstractDao<PK extends Serializable, T> {
 	public void update(T entity) {
 		getSession().update(entity);
 	}
+	public Integer save_entity(T entity) {
+		return (Integer) getSession().save(entity);
+	}
 
 	public void delete(T entity) {
 		getSession().delete(entity);
@@ -84,6 +87,32 @@ public abstract class AbstractDao<PK extends Serializable, T> {
 		List<Predicate> listPred = new ArrayList<Predicate>();
 		if(res.size() > 0)
 			res.forEach((k,v) -> listPred.add(builder.ge(root.get(k), Integer.parseInt(v))));
+			
+		cq.select(root).where(listPred.toArray(new Predicate[]{}));
+		
+		List<Order> orderList = new ArrayList();
+		
+		if(ord.size() > 0)
+			ord.forEach((k,v) -> orderList.add(builder.asc(root.get(v))));
+
+		cq.orderBy(orderList.toArray(new Order[]{}));
+		
+		List<T> result = getSession().createQuery(cq).getResultList();
+		
+		return result;
+		
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	protected List<T> criteriaQuery2(Map< String, Integer > res, Map< String, String > ord)
+	{
+		CriteriaBuilder builder = getSession().getCriteriaBuilder();
+		CriteriaQuery cq = builder.createQuery();
+		Root<T> root = cq.from(persistentClass);
+		
+		List<Predicate> listPred = new ArrayList<Predicate>();
+		if(res.size() > 0)
+			res.forEach((k,v) -> listPred.add(builder.equal(root.get(k), v)));
 			
 		cq.select(root).where(listPred.toArray(new Predicate[]{}));
 		

@@ -14,8 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationTrustResolver;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -61,6 +59,7 @@ import com.websystique.springmvc.service.reportes.Reportes_consumo_papel_acum_me
 import com.websystique.springmvc.service.reportes.Reportes_consumo_papel_utl_semService;
 import com.websystique.springmvc.service.reportes.Semanas_anioService;
 import com.websystique.springmvc.service.reportes.Todos_pedidosService;
+import com.websystique.springmvc.service.reportes.Viajes_mes_ciudadService;
 
 //import net.sf.jasperreports.engine.JRDataSource;
 //import net.sf.jasperreports.engine.JREmptyDataSource;
@@ -94,10 +93,6 @@ public class ReportesController {
 	@Autowired
 	Golpes_maquina_mesService reptroqprod;
 	@Autowired
-	PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices;	
-	@Autowired
-	AuthenticationTrustResolver authenticationTrustResolver;
-	@Autowired
 	Meses_anioService mesesanio;
 	@Autowired
 	GolpeskilosmaquinasService gkms;
@@ -125,6 +120,8 @@ public class ReportesController {
 	ConsumoKilosService cks;
 	@Autowired
 	Media_pedidos_cteService mpc;
+	@Autowired
+	Viajes_mes_ciudadService vmc;
 	
 	Calendar calendar = Calendar.getInstance();
 	
@@ -581,7 +578,6 @@ public class ReportesController {
 	public String amortizacion_herram___(ModelMap model) {
 		try {
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
-		model.addAttribute("reporte",ahs.findAmortHerram(0));
 		logger.info(AppController.getPrincipal() + " - amortizacion_herram___.");
 		}
 		catch(Exception e) {
@@ -591,11 +587,12 @@ public class ReportesController {
 	}
 	
 	@RequestMapping(value = {"/ingenieria/buscarTpoHerr" }, method = RequestMethod.GET)
-	public String buscarTpoHerr(ModelMap model,@RequestParam("select") String select) {
+	public String buscarTpoHerr(ModelMap model,@RequestParam("select") String select,@RequestParam("herramental") String herramental) {
 		try {
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
 		model.addAttribute("select", select);
-		model.addAttribute("reporte",ahs.findAmortHerram(Integer.parseInt(select)));
+		model.addAttribute("herramental", herramental);
+		model.addAttribute("reporte",ahs.findAmortHerram(Integer.parseInt(select),herramental));
 		logger.info(AppController.getPrincipal() + " - buscarTpoHerr.");
 		}
 		catch(Exception e) {
@@ -607,10 +604,14 @@ public class ReportesController {
 	@RequestMapping(value = { "/ingenieria/excelamortherr" },method=RequestMethod.GET)
 	public ModelAndView excelamortherr(HttpServletRequest req, HttpServletResponse res) {
 		String select = "";
+		String herramental = "";
 		List<Amortiza_herramentales> listaexcel = null;
 		try {
+			
 		select = req.getParameter("select");
-		listaexcel = ahs.findAmortHerram(Integer.parseInt(select));
+		herramental = req.getParameter("herramental");
+		
+		listaexcel = ahs.findAmortHerram(Integer.parseInt(select),herramental);
 		logger.info(AppController.getPrincipal() + " - excelamortherr.");
 		}
 		catch(Exception e) {
@@ -807,6 +808,35 @@ public class ReportesController {
 		}
 		return new ModelAndView(new MediaPedidosCte(), "listaexcel", listaexcel);
 	} 
+	
+	@RequestMapping(value = {"/ventas/viajes_mes_ciudad" }, method = RequestMethod.GET)
+	public String viajes_mes_ciudad(ModelMap model) {
+		try {
+		model.addAttribute("loggedinuser", AppController.getPrincipal());
+		logger.info(AppController.getPrincipal() + " - ventas/viajes_mes_ciudad.");
+		model.addAttribute("mesesanio", mesesanio.findallRegistros());
+		model.addAttribute("selectedValue", String.valueOf(calendar.get(Calendar.YEAR)) + String.valueOf(calendar.get(Calendar.MONTH)+1));
+		model.addAttribute("reporte", vmc.findByAnioMes(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH)+1));
+		}
+		catch(Exception e) {
+			logger.error(AppController.getPrincipal() + " - ventas/viajes_mes_ciudad. - " + e.getMessage());
+		}
+		return "/reportes/viajes_mes_ciudad";
+	}
+	@RequestMapping(value = {"/ventas/buscarporMes" }, method = RequestMethod.GET)
+	public String buscarporMes(ModelMap model,@RequestParam("aniomes") String aniomes) {
+		try {
+		model.addAttribute("loggedinuser", AppController.getPrincipal());
+		logger.info(AppController.getPrincipal() + " - ventas/buscarporMes.");		
+		model.addAttribute("mesesanio", mesesanio.findallRegistros());
+		model.addAttribute("selectedValue", aniomes);
+		model.addAttribute("reporte", vmc.findByAnioMes(Integer.parseInt(aniomes.substring(0,4)), Integer.parseInt(aniomes.substring(4,aniomes.length()))));
+		}
+		catch(Exception e) {
+			logger.error(AppController.getPrincipal() + " - ventas/buscarporMes. - " + e.getMessage());
+		}
+		return "/reportes/viajes_mes_ciudad";
+	}
 	
 	
 	/*@RequestMapping(value = "helloReport1", method = RequestMethod.GET)

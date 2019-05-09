@@ -17,9 +17,9 @@ public class Amortiza_herramentalesServiceImpl implements Amortiza_herramentales
 	Amortiza_herramentalesDAO dao;
 	
 	@Override
-	public List<Amortiza_herramentales> findAmortHerram(Integer select) {
+	public List<Amortiza_herramentales> findAmortHerram(Integer select,String herramental) {
 		// FIXME Auto-generated method stub
-		return dao.findAmortHerram(select);
+		return dao.findAmortHerram(select, herramental);
 	}
 
 }

@@ -1,7 +1,6 @@
 package com.websystique.springmvc.model.reportes;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -21,15 +20,16 @@ public class Amortiza_herramentales implements Serializable{
 	
 	@Id
 	private Integer id;
-	private String u_tf;
+	private String Herramental;
+	private Double TotalHerramental;
+	private Double TotalFacturado;
+	private Double TotalNotaCredito;
+	private Double TOTAL;
+	private String AMORTIZADO;
+	private Double PORCENTAJE;
+	private String clientes;
 	private String vendedor;
-	private String cliente;
-	private String descripcion;
-	private String herramental;
-	private Date fecha_recep;
-	private Double total_pedidos;
-	private Double facturado;
-	private Double linetotal;
-	private Double price;
-	private Double porcherra;
+	private String grabados_suajes;
+	private String fecha_recepcion;
+	private String grab_suaj_nom;
 }

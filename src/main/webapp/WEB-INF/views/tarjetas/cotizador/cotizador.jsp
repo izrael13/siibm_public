@@ -6,7 +6,7 @@
 <html>
 <head>
 <title>Cotizador</title>
-<%@include file="../appconfig/authheader2.jsp"%>
+<%@include file="../../appconfig/authheader2.jsp"%>
 </head>
 	<body>		
 	<div align="center" class = "container">
@@ -48,6 +48,6 @@
 		</div>  -->
 		</form:form>
 		</div>
-		<%@include file="../appconfig/authfootter.jsp"%>
+		<%@include file="../../appconfig/authfootter.jsp"%>
 	</body>
 </html>

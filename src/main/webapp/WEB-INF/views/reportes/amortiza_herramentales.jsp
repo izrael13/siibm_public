@@ -9,6 +9,22 @@
 <head>
 <title>Amortización</title>
 <%@include file="../appconfig/authheader2.jsp"%>
+
+<script>
+/*$(document).ready(function() {
+	$('#tablePag').DataTable();	
+} ); */
+
+function FBuscar()
+{
+	//alert( document.getElementById("SSelect").value );
+	window.location.replace('<c:url value="/reportes/ingenieria/buscarTpoHerr" />?select='+document.getElementById("SSelect").value+'&herramental='+document.getElementById('THerramental').value);
+}
+function FExcel()
+{
+	window.location.replace('<c:url value="/reportes/ingenieria/excelamortherr" />?select='+document.getElementById("SSelect").value+'&herramental='+document.getElementById('THerramental').value);
+}
+</script>
 <style type="text/css">
 #tabla1{
 	font-size: 11px;
@@ -16,21 +32,6 @@
 	cellspacing: 2;
 }
 </style>
-<script>
-$(document).ready(function() {
-	$('#tablePag').DataTable();
-} );
-
-function FBuscar()
-{
-	//alert( document.getElementById("SSelect").value );
-	window.location.replace('<c:url value="/reportes/ingenieria/buscarTpoHerr" />?select='+document.getElementById("SSelect").value);
-}
-function FExcel()
-{
-	window.location.replace('<c:url value="/reportes/ingenieria/excelamortherr" />?select='+document.getElementById("SSelect").value);
-}
-</script>
 </head>
 <body>
 	<br>
@@ -40,14 +41,21 @@ function FExcel()
 	<br>
 	<div align="center" class="container">
 		<div class="row">
-			<div class="col-md-2"></div>
-			<div class="col-md-2"></div>
+			<div class="col-md-1"></div>
 			<div class="col-md-2">
-				<select id="SSelect" onChange="FBuscar()">
+				<select id="SSelect">
 					<option value="0" ${select eq 0 ? 'selected' : ''}>Todos</option>
-					<option value="1" ${select eq 1 ? 'selected' : ''}>Amortizados</option>
-					<option value="2" ${select eq 2 ? 'selected' : ''}>No Amortizados</option>
+					<option value="1" ${select eq 1 ? 'selected' : ''}>No Amortizados</option>
+					<option value="2" ${select eq 2 ? 'selected' : ''}>Amortizados</option>
 				</select>
+			</div>
+			<div class="col-md-2">Herramental</div>
+			<div class="col-md-2"><input id="THerramental" value="${herramental}"/></div>
+			<div class="col-md-2">
+				<button type="button" class="btn btn-outline-primary" onClick="FBuscar()">
+					<i class="fa fa-search"></i>
+					Buscar
+				</button>
 			</div>
 			<div class="col-md-2">
 				<button type="button" class="btn btn-outline-primary" onClick="FExcel()">
@@ -63,31 +71,35 @@ function FExcel()
 	<table id="tablePag" class="table-hover table-bordered text-center mx-auto"><!-- mx-auto  para centrar en pantalla -->
 		<thead>
 			<tr>
-				<th>Tarjeta</th>
+				<th>Herramental</th>
 				<th>Vendedor</th>
 				<th>Cliente</th>
-				<th>Descripción</th>
-				<th>Herramental</th>
-				<th>Fecha Recepción</th>
-				<th>Total Pedidos</th>
-				<th>Facturado</th>
-				<th>Costo Herramental</th>
-				<th>%Herramental</th>
+				<th>Grabados y Suajes Nombres</th>
+				<th>Grabados y Suajes</th>
+				<th>Fechas recepción</th>
+				<th>Total Facturado</th>
+				<th>Total Nota de Crédito</th>
+				<th>Total(Facturado - NC)</th>
+				<th>Total Herramental</th>				
+				<th>Amortizado</th>
+				<th>Porcentaje</th>
 			</tr>
 		</thead>
 		<tbody>
 		<c:forEach var="item" items="${reporte}">
 			<tr>
-				<td>${item.u_tf}</td>
-				<td>${item.vendedor}</td>
-				<td>${item.cliente}</td>
-				<td>${item.descripcion}</td>
 				<td>${item.herramental}</td>
-				<td>${fn:substring(item.fecha_recep, 0, 10)}</td>
-				<td><fmt:formatNumber type = "number" maxFractionDigits = "0" value = "${item.total_pedidos}" /></td>
-				<td><fmt:formatNumber type = "number" maxFractionDigits = "2" value = "${item.facturado}" /></td>
-				<td><fmt:formatNumber type = "number" maxFractionDigits = "2" value = "${item.linetotal}" /></td>
-				<td><fmt:formatNumber type = "number" maxFractionDigits = "2" value = "${item.porcherra}" /></td>
+				<td>${item.vendedor}</td>
+				<td>${item.clientes}</td>
+				<td>${item.grab_suaj_nom}</td>
+				<td>${item.grabados_suajes}</td>
+				<td>${item.fecha_recepcion}</td>
+				<td>${item.totalFacturado}</td>
+				<td>${item.totalNotaCredito}</td>
+				<td>${item.TOTAL}</td>
+				<td>${item.totalHerramental}</td>
+				<td>${item.AMORTIZADO}</td>
+				<td>${item.PORCENTAJE}</td>
 			</tr>
 		</c:forEach>
 		</tbody>

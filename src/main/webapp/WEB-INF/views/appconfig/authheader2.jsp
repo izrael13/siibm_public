@@ -74,6 +74,7 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 		  		<ul class="dropdown-menu">
 		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/golpes_kilos_maquina__' />"><i class="fa fa-file-o" aria-hidden="true"></i> Golpes/Kilos por máquina captados</a></li>
 		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/peso_dia_d__' />"><i class="fa fa-file-o" aria-hidden="true"></i> Embarque diario</a></li>
+		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/viajes_mes_ciudad' />"><i class="fa fa-file-o" aria-hidden="true"></i> Viajes por ciudad</a></li>
 		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/inven_alm____' />"><i class="fa fa-file-o" aria-hidden="true"></i> Inventario almacen</a></li>
 		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/golpes_pend_fab_' />"><i class="fa fa-file-o" aria-hidden="true"></i> Captación</a></li>
 		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/golpes_pend_fab_2' />"><i class="fa fa-file-o" aria-hidden="true"></i> Golpes pendientes de fabricar</a></li>
@@ -143,12 +144,15 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 	 </sec:authorize>
 	 
 	 <li class="nav-item dropdown">				
-		<a class="dropdown-item" href="" data-toggle="dropdown"><i class="fa fa-id-card" aria-hidden="true"> Sistema de tarjetas</i></a>
-	 	<ul class="dropdown-menu dropdown-menu-right">
-	 		<li class="dropdown-submenu dropdown-menu-right"><a class="dropdown-item" href = ""><i class="fa fa-user-plus" aria-hidden="true"></i> Prospectos</a></li>
-	   		<li class="dropdown-submenu dropdown-menu-right"><a class="dropdown-item" href = "<c:url value='/cotizador/cotizador' />"><i class="fa fa-codepen" aria-hidden="true"></i> Cotizador</a></li>
-	   </ul>
-	 </li>	 
+		<a class="dropdown-item" href="" data-toggle="dropdown"><i class="fa fa-id-card" aria-hidden="true">	Sistema de tarjetas</i></a>
+		<ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu">
+			<li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-user-circle" aria-hidden="true"></i> Prospectos</a>
+			    <ul class="dropdown-menu">
+			    	<li><a class="dropdown-item" href = "<c:url value='/ventas/tarjetas/prospectos/prospectosabc' />?id=0"><i class="fa fa-user-plus" aria-hidden="true"></i> Registro prospectos y actividades</a></li>
+			    	<li><a class="dropdown-item" href = "<c:url value='/ventas/tarjetas/prospectos/prospectosgerenteventas'/>"><i class="fa fa-male" aria-hidden="true"></i> Prospectos gerente de ventas</a></li>
+			    </ul>
+			 </li>
+		</ul>
 </ul>
 
 <ul class="navbar-nav">

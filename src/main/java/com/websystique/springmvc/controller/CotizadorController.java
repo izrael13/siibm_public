@@ -7,21 +7,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
-@RequestMapping("/cotizador")
+@RequestMapping("/ventas/tarjetas/cotizador")
 public class CotizadorController {
 	
 	private Logger logger = Logger.getLogger(CotizadorController.class);
 	
-	@RequestMapping(value = {"/cotizador" }, method = RequestMethod.GET)
+	@RequestMapping(value = {"/cotizadorabc" }, method = RequestMethod.GET)
 	public String cotizadotget(ModelMap model) {
 		try {
 			model.addAttribute("loggedinuser", AppController.getPrincipal());
-			logger.info(AppController.getPrincipal() + " - cotizador.");
+			logger.info(AppController.getPrincipal() + " - cotizadorabc.");
 		}
 		catch(Exception e)
 		{
-			logger.error(AppController.getPrincipal() + " - cotizadorget. - " + e.getMessage());
+			logger.error(AppController.getPrincipal() + " - cotizadorabc. - " + e.getMessage());
 		}
-		return "/cotizador/cotizador";
+		return "/tarjetas/cotizador/cotizador";
 	}
 }

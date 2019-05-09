@@ -17,13 +17,17 @@ import com.websystique.springmvc.model.reportes.Amortiza_herramentales;
 public class Amortiza_herramentalesDAOImpl extends AbstractDao<Integer,Amortiza_herramentales>implements Amortiza_herramentalesDAO{
 
 	@Override
-	public List<Amortiza_herramentales> findAmortHerram(Integer select) {
+	public List<Amortiza_herramentales> findAmortHerram(Integer select, String herramental) {
 		// FIXME Auto-generated method stub
 		List<Amortiza_herramentales> result = null;
 		
 		ProcedureCall criteria = createStoredProcedureCriteria("amortizacion_herramentales");
 		criteria.registerParameter("pSelect", Integer.class, ParameterMode.IN);
 		criteria.getParameterRegistration("pSelect").bindValue(select);
+		
+		criteria.registerParameter("pHerra", String.class, ParameterMode.IN);
+		criteria.getParameterRegistration("pHerra").bindValue(herramental);
+		
 		Output output = criteria.getOutputs().getCurrent();
 		if (output.isResultSet()) {
 			result = ((ResultSetOutput)output).getResultList();
