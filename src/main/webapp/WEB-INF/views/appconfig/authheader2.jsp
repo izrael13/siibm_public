@@ -32,7 +32,6 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 .dropdown-submenu:hover>.dropdown-menu{display:block;}/*Desplieque de submenus (reportes)*/
 .dropdown-menu .dropdown-menu-right{width: 200px;font-size: smaller;}/*Propiedades menu (Módulos)*/
 .fa-user-circle-o:hover{color: green;}/**/
-
 </style>
 
 <link rel="shortcut icon" href="<c:url value='/static/img/BarcaLogoV.png' />"/>
@@ -43,18 +42,12 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 <a class="text-dark" href="<c:url value='/principal'/>">SIIBM <i class="fa fa-user-o" aria-hidden="true"></i> ${loggedinuser}</a>
 <div id = "navbarSupportedContent" class="collapse navbar-collapse">
 <ul class="navbar-nav mr-auto">
-	<li>
-		<!-- <a class="dropdown-item" href="<c:url value='/principal'/>">
-			<i class="fa fa-home" aria-hidden="true">	Main</i>
-		</a>-->
-	</li>	
 	<li class="nav-item dropdown">				
 		<a class="dropdown-item" href="" data-toggle="dropdown"><i class="fa fa-file-text" aria-hidden="true">	Reportes</i></a>
 		<ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu">
 			<li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-newspaper-o" aria-hidden="true"></i> Papel</a>
 			    <ul class="dropdown-menu">
 			    	<li><a class="dropdown-item" href = "<c:url value='/reportes/papel/consumo_kilos' />"><i class="fa fa-file-o" aria-hidden="true"></i> Consumo en kilos</a></li>
-			    	<li><a class="dropdown-item" href = "<c:url value='/reportes/papel/inv_papl____' />"><i class="fa fa-file-o" aria-hidden="true"></i> Inventario</a></li>
 			    	<li><a class="dropdown-item" href = "<c:url value='/reportes/papel/consumo_papel' />"><i class="fa fa-file-o" aria-hidden="true"></i> Consumo papel acumulado por semana</a></li>
 					<li><a class="dropdown-item" href = "<c:url value='/reportes/papel/consumo_papel_ult_sem' />"><i class="fa fa-file-o" aria-hidden="true"></i> Consumo papel última semana</a></li>
 					<li><a class="dropdown-item" href = "<c:url value='/reportes/papel/consumo_papel_mes' />"><i class="fa fa-file-o" aria-hidden="true"></i> Consumo papel mes</a></li>
@@ -80,7 +73,6 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/golpes_pend_fab_2' />"><i class="fa fa-file-o" aria-hidden="true"></i> Golpes pendientes de fabricar</a></li>
 		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/todos_pedidos___' />"><i class="fa fa-file-o" aria-hidden="true"></i> Todos pedidos</a></li>
 		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/media_pedidos_cte1' />"><i class="fa fa-file-o" aria-hidden="true"></i> Media pedidos por cliente</a></li>
-		    		<!-- <li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/media_pedidos_cte2' />"><i class="fa fa-file-o" aria-hidden="true"></i> Media pedidos por cliente detalle</a></li>  -->
 			    </ul>
 		  	</li>	
 		  	<li class="dropdown-submenu dropdown-menu-right">
@@ -98,41 +90,6 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 			</li>	  	
 		</ul>
   	</li>
-  	
-  	<!-- <sec:authorize access="hasRole('ADMIN') or hasRole('LOGISTICA') or hasRole('EMBARQUES')">
-	<li class="nav-item dropdown">				
-		<a class="dropdown-item" href="" data-toggle="dropdown">
-			<i class="fa fa-truck" aria-hidden="true">	Viajes</i>
-		</a>
-	 	<ul class="dropdown-menu dropdown-menu-right">
-	 		<sec:authorize access="hasRole('ADMIN') or hasRole('EMBARQUES')">
-	   		<li class="dropdown-submenu dropdown-menu-right">
-	   			<a class="dropdown-item" href = "<c:url value='/viajes/aut_embarques' />">
-	  				<i class="fa fa-check-circle-o" aria-hidden="true"></i>	
-	  				Autorización embarques
-	  			</a>
-	  		</li>
-	  		</sec:authorize>
-	  		<sec:authorize access="hasRole('ADMIN') or hasRole('LOGISTICA')">
-	  		<li class="dropdown-submenu dropdown-menu-right">
-	   			<a class="dropdown-item" href = "<c:url value='/viajes/aut_logistica' />">
-	  				<i class="fa fa-check-circle-o" aria-hidden="true"></i>	
-	  				Autorización logística
-	  			</a>
-	  		</li>
-	  		</sec:authorize>
-	  		
-	  		<li class="dropdown-submenu dropdown-menu-right">
-	   			<a class="dropdown-item" href = "<c:url value='/viajes/hisotia___' />">
-	  				<i class="fa fa-check-circle-o" aria-hidden="true"></i>	
-	  				Historial de viajes
-	  			</a>
-	  		</li>
-	  		
-	   </ul>
-	 </li>
-	 </sec:authorize> -->
-	 
 	 <sec:authorize access="hasRole('ADMIN') or hasRole('VENTAS')">
 	 <li class="nav-item dropdown"><a class="dropdown-item" href="" data-toggle="dropdown"><i class="fa fa-industry" aria-hidden="true"> Ventas</i></a>
 	 	<ul class="dropdown-menu dropdown-menu-right">
@@ -152,9 +109,14 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 			    	<li><a class="dropdown-item" href = "<c:url value='/ventas/tarjetas/prospectos/prospectosgerenteventas'/>"><i class="fa fa-male" aria-hidden="true"></i> Prospectos gerente de ventas</a></li>
 			    </ul>
 			 </li>
+			 <li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-dot-circle-o" aria-hidden="true"></i> Cotizador</a>
+			    <ul class="dropdown-menu">
+			    	<li><a class="dropdown-item" href = "<c:url value='/ventas/tarjetas/cotizador/cotizadorabc'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro cotizaciones</a></li>
+			    </ul>
+			 </li>
 		</ul>
+	</li>
 </ul>
-
 <ul class="navbar-nav">
 	<li class="nav-item dropdown"><a class="dropdown-item" href="" data-toggle="dropdown"><i class="fa fa-cog" aria-hidden="true"> Opciones</i></a>
 		<ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu">

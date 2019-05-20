@@ -11,8 +11,8 @@
 	</welcome-file-list> -->
 	
 	<session-config>
-    <!--  in minutes --> 
-      <session-timeout>20</session-timeout>
+      <!-- in minutes -->  
+      <session-timeout>30</session-timeout>
    </session-config> 
 	
 </web-app>

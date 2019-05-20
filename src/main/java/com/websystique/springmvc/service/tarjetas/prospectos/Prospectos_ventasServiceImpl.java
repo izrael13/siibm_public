@@ -23,13 +23,6 @@ public class Prospectos_ventasServiceImpl implements Prospectos_ventasService{
 		// FIXME Auto-generated method stub
 		return dao.buscarPorId(id);
 	}
-
-	@Override
-	public List<Prospectos_ventas> buscarPorCardCode(String CardCode) {
-		// FIXME Auto-generated method stub
-		return dao.buscarPorCardCode(CardCode);
-	}
-
 	@Override
 	public Integer Guardar(Prospectos_ventas pv) {
 		// FIXME Auto-generated method stub

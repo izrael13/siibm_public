@@ -56,7 +56,7 @@ function FSubirQV()
 		<span class="badge badge-secondary">Pronósticos</span>
 	</div>
 	<br>
-	<form method="POST" action = "${pageContext.request.contextPath}/ventas/upload" enctype = "multipart/form-data">
+	<form method="POST" action = "${pageContext.request.contextPath}/ventas/upload" enctype = "multipart/form-data" autocomplete="off">
 	
 	<c:if test="${mensaje != null}">
 		<div class="alert alert-success" role="alert">

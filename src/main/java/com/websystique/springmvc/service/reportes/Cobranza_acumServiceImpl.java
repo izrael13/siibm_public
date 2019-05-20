@@ -17,9 +17,9 @@ public class Cobranza_acumServiceImpl implements Cobranza_acumService{
 	Cobranza_acumDAO dao;
 	
 	@Override
-	public List<Cobranza_acum> findByIntervalo() {
+	public List<Cobranza_acum> findByIntervalo(Integer SlpCode) {
 		// FIXME Auto-generated method stub
-		return dao.findByIntervalo();
+		return dao.findByIntervalo(SlpCode);
 	}
 	
 }

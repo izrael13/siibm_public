@@ -20,7 +20,7 @@ public class Catalogo_municipiosDAOImpl extends AbstractDao<Integer,Catalogo_mun
 		mOrd.put("1", "nombre");
 		mRes.put("id_estado",cve_estado);
 		
-		return (List<Catalogo_municipios>)criteriaQuery2(mRes,mOrd);
+		return (List<Catalogo_municipios>)criteriaQueryEqInt(mRes,mOrd);
 	}
 
 	@Override

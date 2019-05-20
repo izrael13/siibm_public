@@ -17,8 +17,8 @@ public class Todos_pedidosServiceImpl implements Todos_pedidosService{
 	Todos_pedidosDAO dao;
 
 	@Override
-	public List<Todos_pedidos> findPedidosByAnio(Integer anio) {
+	public List<Todos_pedidos> findPedidosByAnio(Integer anio, Integer SlpCode) {
 		// FIXME Auto-generated method stub
-		return dao.findPedidosByAnio(anio);
+		return dao.findPedidosByAnio(anio,SlpCode);
 	}
 }

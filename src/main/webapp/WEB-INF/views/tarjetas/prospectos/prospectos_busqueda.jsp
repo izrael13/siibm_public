@@ -19,7 +19,7 @@ function FBuscarId(id)
 		<table class="table-hover table-bordered text-center small">
 		<thead>
 			<tr>
-				<td>Num</td>
+				<td>Folio</td>
 				<td>Cliente</td>
 				<td>Giro</td>
 				<td>Contacto</td>

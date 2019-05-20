@@ -111,6 +111,21 @@
 					</div>
 				</div>
 			</div>
+			
+			<div>
+				<div class="form-group col-md-12">
+					<label class="col-md-3 control-lable" for="userProfiles">Relación Vendedor SAP</label>
+					<div class="col-md-7">
+						<form:select path="cvevendedor_sap" class="form-control input-sm">
+							<form:option value="0"> - - -</form:option>
+							<form:options items="${vendedores}" itemValue="clavevendedor" itemLabel="nombre"></form:options>
+						</form:select>
+						<div class="has-error">
+							<form:errors path="cvevendedor_sap" class="help-inline"/>
+						</div>
+					</div>
+				</div>
+			</div>
 	
 			<div>
 				<div class="form-actions floatRight">

@@ -15,7 +15,7 @@
 	</div>
 	<br>
 	<div align="center">
-	<form:form method="POST" modelAttribute="solicitud" class="mx-auto">
+	<form:form method="POST" modelAttribute="solicitud" class="mx-auto" autocomplete="off">
 	
 	<form:input type="hidden" path="id" id="id"/>
 	<form:input type="hidden" path="link" id="link"/>

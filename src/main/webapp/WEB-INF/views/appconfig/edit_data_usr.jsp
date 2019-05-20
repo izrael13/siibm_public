@@ -15,7 +15,7 @@
 	</div>
 	<br>
 
-	<form:form method="POST" modelAttribute="user" class="mx-auto">
+	<form:form method="POST" modelAttribute="user" class="mx-auto" autocomplete="off">
 	<form:input type="hidden" path="id" id="id"/>
 	<div class="container">
 		<div class="row">

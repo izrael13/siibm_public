@@ -2,6 +2,8 @@ package com.websystique.springmvc.dao.reportes;
 
 import java.util.List;
 
+import javax.persistence.ParameterMode;
+
 import org.hibernate.procedure.ProcedureCall;
 import org.hibernate.result.Output;
 import org.hibernate.result.ResultSetOutput;
@@ -15,10 +17,13 @@ public class Cobranza_acumDAOImpl extends AbstractDao<Integer, Cobranza_acum> im
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Cobranza_acum> findByIntervalo() {
+	public List<Cobranza_acum> findByIntervalo(Integer SlpCode) {
 		// FIXME Auto-generated method stub
 		List<Cobranza_acum> result = null;
 		ProcedureCall criteria = createStoredProcedureCriteria("spCobranzadetalle_intervalo");
+		criteria.registerParameter("pSlpCode", Integer.class, ParameterMode.IN);
+		criteria.getParameterRegistration("pSlpCode").bindValue(SlpCode);
+		
 		Output output = criteria.getOutputs().getCurrent();
 		if (output.isResultSet()) {
 			result = ((ResultSetOutput)output).getResultList();

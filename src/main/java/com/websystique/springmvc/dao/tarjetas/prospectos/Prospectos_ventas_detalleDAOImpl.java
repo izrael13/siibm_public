@@ -20,7 +20,7 @@ public class Prospectos_ventas_detalleDAOImpl extends AbstractDao<Integer,Prospe
 		
 		mRes.put("id_prospecto_ventas", id);
 		mOrd.put("1", "id");
-		List<Prospectos_ventas_detalle> Lista = criteriaQuery2(mRes, mOrd);
+		List<Prospectos_ventas_detalle> Lista = criteriaQueryEqInt(mRes, mOrd);
 		
 		return Lista;
 	}

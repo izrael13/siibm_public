@@ -66,7 +66,20 @@ function filter(__val__){
     	return false;
     
 }
-function SinCaracteresEspeciales(e) {
+function SinCaracteresEspeciales(e) {//Con espacios
+    tecla = (document.all) ? e.keyCode : e.which;
+
+    //Tecla de retroceso para borrar, siempre la permite
+    if (tecla == 8) {
+        return true;
+    }
+
+    // Patron de entrada, en este caso solo acepta numeros y letras
+    patron = /[A-Za-z0-9-\.\-_@ ]/;
+    tecla_final = String.fromCharCode(tecla);
+    return patron.test(tecla_final);
+}
+function SinCaracteresEspeciales2(e) { //Sin espacios
     tecla = (document.all) ? e.keyCode : e.which;
 
     //Tecla de retroceso para borrar, siempre la permite

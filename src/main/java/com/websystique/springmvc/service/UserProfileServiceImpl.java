@@ -21,10 +21,6 @@ public class UserProfileServiceImpl implements UserProfileService{
 		return dao.findById(id);
 	}
 
-	public UserProfile findByType(String type){
-		return dao.findByType(type);
-	}
-
 	public List<UserProfile> findAll() {
 		return dao.findAll();
 	}

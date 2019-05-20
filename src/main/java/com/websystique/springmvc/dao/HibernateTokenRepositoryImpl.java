@@ -42,7 +42,7 @@ public class HibernateTokenRepositoryImpl extends AbstractDao<String, Persistent
 			Map<String,String> mRes =  new HashMap<String, String>();
 			mRes.put("series",seriesId);
 			
-			PersistentLogin persistentLogin = (PersistentLogin) criteriaQuery(mRes);
+			PersistentLogin persistentLogin = (PersistentLogin) criteriaQueryEqList(mRes);
 			/*Criteria crit = createEntityCriteria();
 			crit.add(Restrictions.eq("series", seriesId));
 			PersistentLogin persistentLogin = (PersistentLogin) crit.uniqueResult();*/
@@ -60,7 +60,7 @@ public class HibernateTokenRepositoryImpl extends AbstractDao<String, Persistent
 		//logger.info("Removing Token if any for user : {}", username);
 		Map<String,String> mRes =  new HashMap<String, String>();
 		mRes.put("username",username);
-		PersistentLogin persistentLogin = (PersistentLogin) criteriaQuery(mRes);
+		PersistentLogin persistentLogin = (PersistentLogin) criteriaQueryEqObj(mRes);
 		
 		/*Criteria crit = createEntityCriteria();
 		crit.add(Restrictions.eq("username", username));

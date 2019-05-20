@@ -77,11 +77,11 @@ public class Prospectos_ventasController {
 				model.addAttribute("ciudades",cms.ListMunicipiosXEstado(0));
 				
 			}
+			//System.out.println(user.getCvevendedor_sap());
 			pdb.setProspectos_ventas_detalle(new Prospectos_ventas_detalle());
 			model.addAttribute("prospectos_bean",pdb);
-			model.addAttribute("loggedinuser", AppController.getPrincipal());			
+			model.addAttribute("loggedinuser", AppController.getPrincipal());
 			model.addAttribute("clientes", ccavs.ListaCtes(user.getCvevendedor_sap()));
-			//model.addAttribute("giros", cgssv.ListaGiros());
 			model.addAttribute("estados",ces.ListEstados());
 			logger.info(AppController.getPrincipal() + " - prospectosabc.");
 		
@@ -95,7 +95,6 @@ public class Prospectos_ventasController {
 		//System.out.println(cve_estado);
 		List<Catalogo_municipios> Ciudades = cms.ListMunicipiosXEstado(Integer.parseInt(cve_estado));
 		Gson g=new Gson();
-		g.toJson(Ciudades);
 		return g.toJson(Ciudades);
 	
 	}
@@ -107,6 +106,7 @@ public class Prospectos_ventasController {
 	       String fieldErrors [] = error.getCodes();
 	       System.out.println(fieldErrors[0]);
 	   }*/
+		String mensajes = "";
 		User user = us.findBySSO(AppController.getPrincipal());
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
 		model.addAttribute("clientes", ccavs.ListaCtes(user.getCvevendedor_sap()));
@@ -142,6 +142,7 @@ public class Prospectos_ventasController {
 			id = prospectosDataBean.getProspectos_ventas().getId();
 			prospectosDataBean.getProspectos_ventas_detalle().setId_prospecto_ventas(id);
 			pdb.setProspectos_ventas(pvs.buscarPorId(prospectosDataBean.getProspectos_ventas().getId()));
+			mensajes = "Prospecto actualizado ";
 		}
 		else
 		{
@@ -150,15 +151,18 @@ public class Prospectos_ventasController {
 			id = pvs.Guardar(prospectosDataBean.getProspectos_ventas());
 			prospectosDataBean.getProspectos_ventas_detalle().setId_prospecto_ventas(id);
 			pdb.setProspectos_ventas(pvs.buscarPorId(id));
-			
+			mensajes = "Prospecto registrado ";
 		}
+		
 		if( prospectosDataBean.getProspectos_ventas_detalle().getFecha_cierre().trim().length() > 0 &&
 			prospectosDataBean.getProspectos_ventas_detalle().getCve_actividad() > 0 &&
 			prospectosDataBean.getProspectos_ventas_detalle().getObservaciones().trim().length() > 0) 
 		{
 			pvds.Guardar(prospectosDataBean.getProspectos_ventas_detalle());
+			mensajes = mensajes +  "y actividad registrada";
 		}
 		
+		model.addAttribute("mensajes",mensajes);
 		model.addAttribute("prospectos_detallelist",pvds.BuscarPorIdPV(id));
 		pdb.setProspectos_ventas_detalle(new Prospectos_ventas_detalle());
 		model.addAttribute("prospectos_bean",pdb);

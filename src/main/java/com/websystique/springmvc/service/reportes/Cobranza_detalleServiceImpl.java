@@ -17,9 +17,9 @@ public class Cobranza_detalleServiceImpl implements Cobranza_detalleService{
 	Cobranza_detalleDAO dao;
 	
 	@Override
-	public List<Cobranza_detalle> findByCteVen() {
+	public List<Cobranza_detalle> findByCteVen(Integer SlpCode) {
 		// FIXME Auto-generated method stub
-		return dao.findByCteVen();
+		return dao.findByCteVen(SlpCode);
 	}
 		
 }

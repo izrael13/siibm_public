@@ -41,7 +41,7 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 		//logger.info("SSO : {}", sso);
 		Map<String,String> mRes =  new HashMap<String, String>();
 		mRes.put("ssoId",sso);
-		User user =  (User) criteriaQuery(mRes);
+		User user =  (User) criteriaQueryEqObj(mRes);
 		if(user!=null){
 			Hibernate.initialize(user.getUserProfiles());
 		}
@@ -62,7 +62,7 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 	public void deleteBySSO(String sso) {
 		Map<String,String> mRes =  new HashMap<String, String>();
 		mRes.put("ssoId",sso);
-		User user =  (User) criteriaQuery(mRes);
+		User user =  (User) criteriaQueryEqObj(mRes);
 		delete(user);
 	}
 
@@ -85,7 +85,7 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 		Map<String,String> mRes =  new HashMap<String, String>();
 		mRes.put("ssoId",sso);
 		mRes.put("email",email);
-		User user =  (User) criteriaQuery(mRes);
+		User user =  (User) criteriaQueryEqObj(mRes);
 		return user;
 	}
 

@@ -3,6 +3,7 @@ package com.websystique.springmvc.controller;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+//import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
@@ -38,20 +39,24 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.websystique.springmvc.model.Solicitudes_reset_pass;
 import com.websystique.springmvc.model.User;
+//import com.websystique.springmvc.model.Menus;
 import com.websystique.springmvc.model.UserProfile;
+import com.websystique.springmvc.service.MenusService;
 import com.websystique.springmvc.service.Solicitudes_reset_passService;
 import com.websystique.springmvc.service.UserProfileService;
 import com.websystique.springmvc.service.UserService;
+import com.websystique.springmvc.service.tarjetas.Catalogo_vendedores_sap_vwService;
 import com.websystique.springmvc.utilities.JsonFunctions;
 import com.websystique.springmvc.utilities.SendMailGmail;
 
 @Controller
 @RequestMapping("/")
-@SessionAttributes({"roles"})
-//@SessionAttributes({"roles","userData"})
+//@SessionAttributes({"roles"})
+@SessionAttributes({"roles","menus"})
 public class AppController {
 	
 	private Logger logger = Logger.getLogger(AppController.class);
+	//private List<Menus> ListaMenu = new ArrayList<Menus>();
 	
 	@Autowired
 	UserService userService;
@@ -70,6 +75,12 @@ public class AppController {
 	
 	@Autowired
 	Solicitudes_reset_passService srps;
+	
+	@Autowired
+	Catalogo_vendedores_sap_vwService cvss;
+	
+	@Autowired
+	MenusService mss;
 	
 	/**
 	 * This method will list all existing users.
@@ -102,6 +113,7 @@ public class AppController {
 		User user = new User();
 		model.addAttribute("user", user);
 		model.addAttribute("edit", false);
+		model.addAttribute("vendedores",cvss.ListaVendedores());
 		model.addAttribute("loggedinuser", getPrincipal());
 		logger.info(getPrincipal() + " - newuser GET.");
 		}
@@ -156,6 +168,7 @@ public class AppController {
 	@RequestMapping(value = { "/edit-user-{ssoId}" }, method = RequestMethod.GET)
 	public String editUser(@PathVariable String ssoId, ModelMap model) {
 		try {
+		model.addAttribute("vendedores",cvss.ListaVendedores());
 		User user = userService.findBySSO(ssoId);
 		model.addAttribute("user", user);
 		model.addAttribute("edit", true);
@@ -186,7 +199,6 @@ public class AppController {
 		    result.addError(ssoError);
 			return "registration";
 		}*/
-
 
 		userService.updateUser(user);
 
@@ -556,4 +568,42 @@ public class AppController {
 	   	}
 	     return "/appconfig/paginadereset";
 	}
+   
+	/*@RequestMapping(value = { "/menus" }, method = RequestMethod.GET)
+	public String menus(ModelMap model) {
+		 Menus(0);
+		System.out.println(cadena);
+		model.addAttribute("menus", mss.ListaMenusxpadre(0));
+		logger.info(" - menus.");
+		
+		
+		return "/appconfig/menus";
+	} */
+	
+/*    @ModelAttribute("menus")
+    public List<Menus> atrMenus()
+    {
+    	return Menus(0);
+    }
+    String cadena = "";
+    int b = 0;
+	public List<Menus> Menus(Integer Padre)
+	{
+		List<Menus> Lista = mss.ListaMenusxpadre(Padre);
+		Menus menu = new Menus();
+		if(Lista.size() > 0)
+		{
+			for(int i = 0; i < Lista.size(); i++)
+			{
+				
+				menu = Lista.get(i); 
+				ListaMenu.add(menu);				
+				Menus(Lista.get(i).getId());
+			}
+			
+		}
+		
+		return ListaMenu;
+	}*/
+
 }

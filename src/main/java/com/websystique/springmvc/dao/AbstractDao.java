@@ -104,7 +104,7 @@ public abstract class AbstractDao<PK extends Serializable, T> {
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	protected List<T> criteriaQuery2(Map< String, Integer > res, Map< String, String > ord)
+	protected List<T> criteriaQueryEqInt(Map< String, Integer > res, Map< String, String > ord)
 	{
 		CriteriaBuilder builder = getSession().getCriteriaBuilder();
 		CriteriaQuery cq = builder.createQuery();
@@ -130,7 +130,36 @@ public abstract class AbstractDao<PK extends Serializable, T> {
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	protected Object criteriaQuery(Map< String, String > res)
+	protected List<T> criteriaQueryEqStrInt(Map< String, String > res,Map< String, Integer > resint, Map< String, String > ord)
+	{
+		CriteriaBuilder builder = getSession().getCriteriaBuilder();
+		CriteriaQuery cq = builder.createQuery();
+		Root<T> root = cq.from(persistentClass);
+		
+		List<Predicate> listPred = new ArrayList<Predicate>();
+		if(res.size() > 0)
+			res.forEach((k,v) -> listPred.add(builder.equal(root.get(k), v)));
+		
+		if(resint.size() > 0)
+			resint.forEach((k,v) -> listPred.add(builder.equal(root.get(k), v)));
+			
+		cq.select(root).where(listPred.toArray(new Predicate[]{}));
+		
+		List<Order> orderList = new ArrayList();
+		
+		if(ord.size() > 0)
+			ord.forEach((k,v) -> orderList.add(builder.asc(root.get(v))));
+
+		cq.orderBy(orderList.toArray(new Order[]{}));
+		
+		List<T> result = getSession().createQuery(cq).getResultList();
+		
+		return result;
+		
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	protected Object criteriaQueryEqObj(Map< String, String > res)
 	{
 		CriteriaBuilder builder = getSession().getCriteriaBuilder();
 		CriteriaQuery cq = builder.createQuery();
@@ -143,6 +172,25 @@ public abstract class AbstractDao<PK extends Serializable, T> {
 		cq.select(root).where(listPred.toArray(new Predicate[]{}));
 		
 		Object result = getSession().createQuery(cq).uniqueResult();
+		
+		return result;
+		
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	protected List<T> criteriaQueryEqList(Map< String, String > res)
+	{
+		CriteriaBuilder builder = getSession().getCriteriaBuilder();
+		CriteriaQuery cq = builder.createQuery();
+		Root<T> root = cq.from(persistentClass);
+		
+		List<Predicate> listPred = new ArrayList<Predicate>();
+		if(res.size() > 0)
+			res.forEach((k,v) -> listPred.add(builder.equal(root.get(k), v)));
+			
+		cq.select(root).where(listPred.toArray(new Predicate[]{}));
+		
+		List<T> result = getSession().createQuery(cq).getResultList();
 		
 		return result;
 		

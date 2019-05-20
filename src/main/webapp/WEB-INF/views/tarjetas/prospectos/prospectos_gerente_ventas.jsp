@@ -8,6 +8,8 @@
 <head>
 <title>Prospectos gerente de ventas</title>
 <%@include file="../../appconfig/authheader2.jsp"%>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
 <script type="text/javascript">
 function FBuscar()
 {
@@ -90,7 +92,7 @@ function FBuscar()
 		<div class="col-12">
 		<div class="row border border-right">
 			<div class="col-sm-1">Cliente</div>
-			<div class="col-sm-10">
+			<div class="col-sm-9">
 				<select id = "SClientes" class="border border-primary">
 					<option value="0"> - - -</option>
 					<c:forEach var="cte" items="${clientes}">
@@ -98,17 +100,45 @@ function FBuscar()
 					</c:forEach>
 				</select>
 			</div>
-			<div class="col-sm-1"><a href="javascript:FBuscar()" class="btn btn-primary btn-sm"><i class="fa fa-search" aria-hidden="true"> Buscar</i></a></div>
+			<div class="col-sm-2"><a href="javascript:FBuscar()" class="btn btn-outline-primary"><i class="fa fa-search" aria-hidden="true"> Buscar</i></a></div>
 		</div>
 		</div>
 		<div class="col-12">
 		<div class="row border border-right">
 			<div class="col-sm-2">Fechas de cierre</div>
 			<div class="col-sm-5">
-				<input type="date" id="TFecha1"  max="3000-12-31" min="1000-01-01" class="border border-primary"/>
+				<div class="">
+				<div class="input-group date" id="datetimepicker4" data-target-input="nearest">
+				    <input id="TFecha1" data-target="#datetimepicker4" class="border border-primary"/>
+				        <div class="input-group-append" data-target="#datetimepicker4" data-toggle="datetimepicker" placeholder="yyyy-mm-dd">
+				            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+				        </div>
+				    </div>
+				</div>
+				<script type="text/javascript">
+				$(function () {
+				    $('#datetimepicker4').datetimepicker({
+				        format: 'YYYY-MM-DD'
+				    });
+				});
+				</script>
 			</div>
 			<div class="col-sm-5">
-				<input type="date" id="TFecha2"  max="3000-12-31" min="1000-01-01" class="border border-primary"/>
+				<div class="">
+				<div class="input-group date" id="datetimepicker5" data-target-input="nearest">
+				    <input id="TFecha2" data-target="#datetimepicker5" class="border border-primary"/>
+				        <div class="input-group-append" data-target="#datetimepicker5" data-toggle="datetimepicker" placeholder="yyyy-mm-dd">
+				            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+				        </div>
+				    </div>
+				</div>
+				<script type="text/javascript">
+				$(function () {
+				    $('#datetimepicker5').datetimepicker({
+				        format: 'YYYY-MM-DD'
+				    });
+				});
+				</script>
 			</div>
 		</div>
 		</div>
@@ -141,9 +171,30 @@ function FBuscar()
 				<td>${item.cardname}</td>
 				<td>${item.opor_ton}</td>
 				<td>${item.prioridad}</td>
-				<td>${item.porc_avance}</td>
+				<td>
+					<c:choose>
+						<c:when test ="${item.porc_avance == 10}">10 - Identificación</c:when>
+						<c:when test ="${item.porc_avance == 20}">20 - Contacto cliente</c:when>
+						<c:when test ="${item.porc_avance == 30}">30 - Recabar información cotización</c:when>
+						<c:when test ="${item.porc_avance == 40}">40 - Presentar cotización</c:when>
+						<c:when test ="${item.porc_avance == 50}">50 - Respuesta cotización</c:when>
+						<c:when test ="${item.porc_avance == 60}">60 - Cliente aceptó cotización</c:when>
+						<c:when test ="${item.porc_avance == 70}">70 - Desarrollo TF</c:when>
+						<c:when test ="${item.porc_avance == 80}">80 - Cliente envía OC</c:when>
+						<c:when test ="${item.porc_avance == 100}">100 - Embarque primer pedido realizado</c:when>
+												
+					</c:choose>
+				</td>
 				<td>${item.fecha_cierre}</td>
-				<td>${item.estatus}</td>
+				<td>
+					<c:choose>
+						<c:when test ="${item.estatus == 1}">Pendiente</c:when>
+						<c:when test ="${item.estatus == 2}">Cerrada</c:when>
+						<c:when test ="${item.estatus == 3}">Ganada</c:when>
+						<c:when test ="${item.estatus == 4}">Perdida</c:when>
+					</c:choose>
+					
+				</td>
 				<td>${item.observaciones}</td>
 				<td>${item.fecha_insert}</td>
 			</tr>

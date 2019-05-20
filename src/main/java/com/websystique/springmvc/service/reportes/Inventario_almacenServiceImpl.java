@@ -17,8 +17,8 @@ public class Inventario_almacenServiceImpl implements Inventario_almacenService{
 	private Inventario_almacenDAO dao;
 	
 	@Override
-	public List<Inventario_almacen> findByAlmacen(String almacen) {
-		return dao.findByAlmacen(almacen);
+	public List<Inventario_almacen> findByAlmacen(String almacen, Integer SlpCode) {
+		return dao.findByAlmacen(almacen, SlpCode);
 	}
 	
 }

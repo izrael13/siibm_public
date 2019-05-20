@@ -31,6 +31,7 @@ import com.websystique.springmvc.excel.ExcelViewGolpesKilosMes;
 import com.websystique.springmvc.excel.ExcelViewGolpesMaqMes;
 import com.websystique.springmvc.excel.ExcelViewUltSem;
 import com.websystique.springmvc.excel.MediaPedidosCte;
+import com.websystique.springmvc.model.User;
 import com.websystique.springmvc.model.reportes.Amortiza_herramentales;
 import com.websystique.springmvc.model.reportes.ConsumoKilos;
 import com.websystique.springmvc.model.reportes.Golpes_maquina_mes;
@@ -40,6 +41,7 @@ import com.websystique.springmvc.model.reportes.Media_pedidos_cte;
 import com.websystique.springmvc.model.reportes.Reporte_consumo_papel;
 import com.websystique.springmvc.model.reportes.Reportes_consumo_papel_utl_sem;
 import com.websystique.springmvc.model.reportes.Todos_pedidos;
+import com.websystique.springmvc.service.UserService;
 import com.websystique.springmvc.service.reportes.Amortiza_herramentalesService;
 import com.websystique.springmvc.service.reportes.Cobranza_acumService;
 import com.websystique.springmvc.service.reportes.Cobranza_detalleService;
@@ -122,6 +124,8 @@ public class ReportesController {
 	Media_pedidos_cteService mpc;
 	@Autowired
 	Viajes_mes_ciudadService vmc;
+	@Autowired
+	UserService us;
 	
 	Calendar calendar = Calendar.getInstance();
 	
@@ -473,8 +477,9 @@ public class ReportesController {
 	public String busca_inventario_almacen(ModelMap model,@RequestParam("cve_almacen") String cve_almacen)
 	{
 		try {
+		User user = us.findBySSO(AppController.getPrincipal());
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
-		model.addAttribute("reporte", ias.findByAlmacen(cve_almacen));
+		model.addAttribute("reporte", ias.findByAlmacen(cve_almacen, user.getCvevendedor_sap()));
 		model.addAttribute("selectedValue", cve_almacen);
 		logger.info(AppController.getPrincipal() + " - buscaInvenalm_.");
 		}
@@ -623,10 +628,11 @@ public class ReportesController {
 	@RequestMapping(value = {"/ventas/todos_pedidos___" }, method = RequestMethod.GET)
 	public String todos_pedidos___(ModelMap model) {
 		try {
+		User user = us.findBySSO(AppController.getPrincipal()); 
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
 		int anio = calendar.get(Calendar.YEAR);
 		model.addAttribute("select", anio);
-		model.addAttribute("reporte", tps.findPedidosByAnio(anio));
+		model.addAttribute("reporte", tps.findPedidosByAnio(anio,user.getCvevendedor_sap()));
 		logger.info(AppController.getPrincipal() + " - todos_pedidos___.");
 		}
 		catch(Exception e) {
@@ -638,9 +644,10 @@ public class ReportesController {
 	@RequestMapping(value = {"/ventas/buscarpedido" }, method = RequestMethod.GET)
 	public String buscarpedido(ModelMap model,@RequestParam("anio") String anio) {
 		try {
+		User user = us.findBySSO(AppController.getPrincipal());
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
 		model.addAttribute("select", anio);
-		model.addAttribute("reporte",tps.findPedidosByAnio(Integer.parseInt(anio)));
+		model.addAttribute("reporte",tps.findPedidosByAnio(Integer.parseInt(anio),user.getCvevendedor_sap()));
 		logger.info(AppController.getPrincipal() + " - buscarpedido.");
 		}
 		catch(Exception e) {
@@ -652,10 +659,11 @@ public class ReportesController {
 	@RequestMapping(value = { "/ventas/excelpedido" },method=RequestMethod.GET)
 	public ModelAndView excelpedido(HttpServletRequest req, HttpServletResponse res) {
 		String anio = "";
+		User user = us.findBySSO(AppController.getPrincipal());
 		List<Todos_pedidos> listaexcel = null;
 		try {
 		anio = req.getParameter("anio");
-		listaexcel = tps.findPedidosByAnio(Integer.parseInt(anio));
+		listaexcel = tps.findPedidosByAnio(Integer.parseInt(anio),user.getCvevendedor_sap());
 		logger.info(AppController.getPrincipal() + " - excelpedido.");
 		}
 		catch(Exception e) {
@@ -667,10 +675,11 @@ public class ReportesController {
 	@RequestMapping(value = {"/ingenieria/todos_pedidos_ing_" }, method = RequestMethod.GET)
 	public String todos_pedidos_ing_(ModelMap model) {
 		try {
+		User user = us.findBySSO(AppController.getPrincipal());
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
 		int anio = calendar.get(Calendar.YEAR);
 		model.addAttribute("select", anio);
-		model.addAttribute("reporte", tps.findPedidosByAnio(anio));
+		model.addAttribute("reporte", tps.findPedidosByAnio(anio,user.getCvevendedor_sap()));
 		logger.info(AppController.getPrincipal() + " - todos_pedidos_ing_.");
 		}
 		catch(Exception e) {
@@ -682,9 +691,10 @@ public class ReportesController {
 	@RequestMapping(value = {"/ingenieria/buscarpedidoing" }, method = RequestMethod.GET)
 	public String buscarpedidoing(ModelMap model,@RequestParam("anio") String anio) {
 		try {
+		User user = us.findBySSO(AppController.getPrincipal());
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
 		model.addAttribute("select", anio);
-		model.addAttribute("reporte",tps.findPedidosByAnio(Integer.parseInt(anio)));
+		model.addAttribute("reporte",tps.findPedidosByAnio(Integer.parseInt(anio),user.getCvevendedor_sap()));
 		logger.info(AppController.getPrincipal() + " - buscarpedidoing.");
 		}
 		catch(Exception e) {
@@ -696,9 +706,10 @@ public class ReportesController {
 	@RequestMapping(value = {"/cobranza/detalle_cobranza" }, method = RequestMethod.GET)
 	public String detalle_cob(ModelMap model) {
 		try {
+		User user = us.findBySSO(AppController.getPrincipal());
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
-		model.addAttribute("reporte",cds.findByCteVen());
-		model.addAttribute("acumulado",cai.findByIntervalo());
+		model.addAttribute("reporte",cds.findByCteVen(user.getCvevendedor_sap()));
+		model.addAttribute("acumulado",cai.findByIntervalo(user.getCvevendedor_sap()));
 		logger.info(AppController.getPrincipal() + " - /cobranza/detalle_cobranza.");
 		}
 		catch(Exception e) {
@@ -752,18 +763,6 @@ public class ReportesController {
 			logger.error(AppController.getPrincipal() + " - consumo_kilos_excel. - " + e.getMessage());
 		}
 		return new ModelAndView(new ConsKilosExcel(), "listaexcel", listaexcel);
-	}
-	
-	@RequestMapping(value = {"/papel/inv_papl____" }, method = RequestMethod.GET)
-	public String invetario_papel(ModelMap model) {
-		try {
-		model.addAttribute("loggedinuser", AppController.getPrincipal());
-		logger.info(AppController.getPrincipal() + " - inv_papl____.");
-		}
-		catch(Exception e) {
-			logger.error(AppController.getPrincipal() + " - inv_papl____. - " + e.getMessage());
-		}
-		return "/reportes/invetario_papel";
 	}
 	
 	@RequestMapping(value = {"/ventas/media_pedidos_cte1" }, method = RequestMethod.GET)

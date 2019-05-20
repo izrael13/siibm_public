@@ -17,11 +17,15 @@ public class Todos_pedidosDAOImpl extends AbstractDao<Integer,Todos_pedidos> imp
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Todos_pedidos> findPedidosByAnio(Integer anio) {
+	public List<Todos_pedidos> findPedidosByAnio(Integer anio, Integer SlpCode) {
 		List<Todos_pedidos> result = null;
 		ProcedureCall criteria = createStoredProcedureCriteria("spTodosPedidos");
 		criteria.registerParameter("pAnio", Integer.class, ParameterMode.IN);
 		criteria.getParameterRegistration("pAnio").bindValue(anio);
+		
+		criteria.registerParameter("pSlpCode", Integer.class, ParameterMode.IN);
+		criteria.getParameterRegistration("pSlpCode").bindValue(SlpCode);
+		
 		Output output = criteria.getOutputs().getCurrent();
 		if (output.isResultSet()) {
 			result = ((ResultSetOutput)output).getResultList();

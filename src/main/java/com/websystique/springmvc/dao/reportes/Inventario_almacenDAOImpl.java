@@ -18,11 +18,15 @@ public class Inventario_almacenDAOImpl extends AbstractDao<Integer, Inventario_a
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Inventario_almacen> findByAlmacen(String almacen) {
+	public List<Inventario_almacen> findByAlmacen(String almacen, Integer SlpCode) {
 		List<Inventario_almacen> results = null;
 		ProcedureCall criteria = createStoredProcedureCriteria("spInventarioAlmacenes");
 		criteria.registerParameter("pCveAlmacen", String.class, ParameterMode.IN);
 		criteria.getParameterRegistration("pCveAlmacen").bindValue(almacen);
+		
+		criteria.registerParameter("pSlpCode", Integer.class, ParameterMode.IN);
+		criteria.getParameterRegistration("pSlpCode").bindValue(SlpCode);
+		
 		Output output = criteria.getOutputs().getCurrent();
 		if (output.isResultSet()) {
 			results = ((ResultSetOutput)output).getResultList();

@@ -2,10 +2,8 @@ package com.websystique.springmvc.dao.tarjetas.prospectos;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -32,19 +30,7 @@ public class Prospectos_ventasDAOImpl extends AbstractDao<Integer,Prospectos_ven
 		return getByKey(id);
 	}
 
-	@Override
-	public List<Prospectos_ventas> buscarPorCardCode(String CardCode) {
-		Map<String,String> mRes =  new HashMap<String, String>();
-		Map<String,String> mOrd =  new HashMap<String, String>();
-		
-		mRes.put("cardcode", CardCode);
-		
-		mOrd.put("1", "id");
-		
-		List<Prospectos_ventas> ListaCtes = criteriaQuery(mRes, mOrd);
-		
-		return ListaCtes;
-	}
+
 
 	@Override
 	public Integer Guardar(Prospectos_ventas pv) {

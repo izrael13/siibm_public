@@ -5,5 +5,5 @@ import java.util.List;
 import com.websystique.springmvc.model.reportes.Cobranza_acum;
 
 public interface Cobranza_acumDAO {
-	List<Cobranza_acum> findByIntervalo();
+	List<Cobranza_acum> findByIntervalo(Integer SlpCode);
 }

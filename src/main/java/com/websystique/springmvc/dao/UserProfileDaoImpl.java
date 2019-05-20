@@ -15,12 +15,6 @@ public class UserProfileDaoImpl extends AbstractDao<Integer, UserProfile>impleme
 	public UserProfile findById(int id) {
 		return getByKey(id);
 	}
-
-	public UserProfile findByType(String type) {
-		Map<String,String> mRes =  new HashMap<String, String>();
-		mRes.put("type",type);
-		return (UserProfile) criteriaQuery(mRes);
-	}
 	
 	public List<UserProfile> findAll(){
 		Map<String,String> mRes =  new HashMap<String, String>();

@@ -51,7 +51,7 @@
 	<br>
 	</div>
 	<div class="col-6">
-	<form:form method="POST" modelAttribute="profilematchers" class="form-horizontal">
+	<form:form method="POST" modelAttribute="profilematchers" class="form-horizontal" autocomplete="off">
 		<table>
 		<thead>
 			<tr>
