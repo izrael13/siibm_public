@@ -111,7 +111,7 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 			 </li>
 			 <li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-dot-circle-o" aria-hidden="true"></i> Cotizador</a>
 			    <ul class="dropdown-menu">
-			    	<li><a class="dropdown-item" href = "<c:url value='/ventas/tarjetas/cotizador/cotizadorabc'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro cotizaciones</a></li>
+			    	<li><a class="dropdown-item" href = "<c:url value='/ventas/tarjetas/cotizador/cotizadorabc'/>?id=0"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro cotizaciones</a></li>
 			    </ul>
 			 </li>
 		</ul>

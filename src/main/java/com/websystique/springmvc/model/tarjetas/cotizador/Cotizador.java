@@ -37,13 +37,27 @@ public class Cotizador implements Serializable{/**
 	
 	@Column(updatable=false)
 	private Date fecha_insert;
-	@Column(updatable=false) @Range(min = 1)
+	@Column(updatable=false)
 	private Integer usuario_insert;
 	
-	@NotNull
 	private Date fecha_update;
-	@NotNull @Range(min = 1)
+
 	private Integer usuario_update;
 	
+	@Column(updatable=false)
 	private Integer idtiporequerimiento;
+	
+	private Integer usuario_aut_ventas;   
+	private Date fecha_aut_ventas;
+	private Integer usuario__rech_ventas;
+	private Date fecha_rech_ventas;
+	private Integer usuario_aut_prog;
+	private Date fecha_aut_prog;
+	private Integer usuario_rech_prog;
+	private Date fecha_rech_prog;
+	private Integer usuario_env_a_ing;
+	private Date fecha_env_a_ing;
+	private String observaciones_ventas;
+	private String observaciones_prog;
+	
 }

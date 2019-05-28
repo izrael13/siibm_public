@@ -66,6 +66,89 @@ function filter(__val__){
     	return false;
     
 }
+
+function filterFloat1(evt,input){
+    // Backspace = 8, Enter = 13, ‘0′ = 48, ‘9′ = 57, ‘.’ = 46, ‘-’ = 43
+    var key = window.Event ? evt.which : evt.keyCode;    
+    var chark = String.fromCharCode(key);
+    var tempValue = input.value+chark;
+    if(key >= 48 && key <= 57){
+        if(filter1(tempValue)=== false){
+            return false;
+        }else{       
+            return true;
+        }
+    }else{
+          if(key == 8 || key == 13 || key == 0) {     
+              return true;              
+          }else if(key == 46){
+                if(filter1(tempValue)=== false){
+                    return false;
+                }else{       
+                    return true;
+                }
+          }else{
+              return false;
+          }
+    }
+}
+function filter1(__val__){
+    var preg = /^([0-9]){1,5}(\.?[0-9]{0,1})$/;  ///^\d{1,2}(\.\d{1,2})?$/
+    var np = __val__.split(".");
+    if(np[0].length <= 5)
+    {
+	    if(preg.test(__val__) === true){
+	        return true;
+	    }else{
+	       return false;
+	    }
+    }
+    else
+    	return false;
+    
+}
+
+function filterFloat2(evt,input){
+    // Backspace = 8, Enter = 13, ‘0′ = 48, ‘9′ = 57, ‘.’ = 46, ‘-’ = 43
+    var key = window.Event ? evt.which : evt.keyCode;    
+    var chark = String.fromCharCode(key);
+    var tempValue = input.value+chark;
+    if(key >= 48 && key <= 57){
+        if(filter2(tempValue)=== false){
+            return false;
+        }else{       
+            return true;
+        }
+    }else{
+          if(key == 8 || key == 13 || key == 0) {     
+              return true;              
+          }else if(key == 46){
+                if(filter2(tempValue)=== false){
+                    return false;
+                }else{       
+                    return true;
+                }
+          }else{
+              return false;
+          }
+    }
+}
+function filter2(__val__){
+    var preg = /^([0-9]){1,5}(\.?[02468]{0,1})$/;  ///^\d{1,2}(\.\d{1,2})?$/
+    var np = __val__.split(".");
+    if(np[0].length <= 5)
+    {
+	    if(preg.test(__val__) === true){
+	        return true;
+	    }else{
+	       return false;
+	    }
+    }
+    else
+    	return false;
+    
+}
+
 function SinCaracteresEspeciales(e) {//Con espacios
     tecla = (document.all) ? e.keyCode : e.which;
 

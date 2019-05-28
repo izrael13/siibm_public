@@ -25,7 +25,7 @@ function FBuscarCiudades()
 					        },	
         success : function(data) {
         	if (data.search(/Login page/i) != -1) {
-    			window.location.replace('<c:url value="/login"/>');
+    			window.location.replace('<c:url value="/login?expired"/>');
 			    return true;
 			  }
 

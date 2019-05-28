@@ -87,7 +87,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		/*.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)*/
 		.maximumSessions(1)
 		.sessionRegistry(sessionRegistry())
-		;//.expiredUrl("/login?expired").and().invalidSessionUrl("/login?expired")
+		.expiredUrl("/login?expired").and().invalidSessionUrl("/login?expired");
 		//.and().sessionManagement().sessionFixation().migrateSession();
 		//.and().addFilterAfter(new CustomFilter(),BasicAuthenticationFilter.class);
 	}

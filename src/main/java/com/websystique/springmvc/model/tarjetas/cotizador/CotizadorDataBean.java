@@ -20,5 +20,7 @@ public class CotizadorDataBean implements Serializable{/**
 	
 	@Valid
 	Cotizador cotizador;
-
+	
+	@Valid
+	Cotizador_detalles cotizador_detalles;
 }
