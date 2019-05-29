@@ -94,6 +94,7 @@ function FBuscarInfoDir()
         		$("#DContacto").text(value.contacto);
         		$("#DTelefono").text(value.telefono);
         		$("#DEmail").text(value.email);
+        		 CalcularDatos();
         	});
         	
         	$("#imgload").hide();
@@ -192,23 +193,63 @@ function FBuscarResisId()
 	 });
 }
 
-function Checks(id)
+function SumarEsp(id)
 {
-	//alert(id);	
-	if($( "#TCantidad"+id).attr("type") === "hidden"){
-		$( "#TCantidad"+id).attr("type","text");
-		$( "#TCosto"+id).attr("type","text");
-	}
-	else{
-		$( "#TCantidad"+id).attr("type","hidden");
-		$( "#TCosto"+id).attr("type","hidden");
-		$( "#TCosto"+id).val("");
-		$( "#TCantidad"+id).val("");
-	}
+	$.ajax({
+		//dataType: 'text',
+		url: '<c:url value="/ventas/tarjetas/cotizador/calcular_especialidades"/>?id='+id+'&ajuste='+$("#TAjuste"+id).val()+'&esquema='+$("#TEsquema"+id).val(),
+		//contentType : 'application/json',
+		//cache: false,    
+		//data: cve_estado,
+		beforeSend: function(xhr) {
+							  $("#imgload").show();
+							  $("#mensajes" ).text("");
+							  $("#mensajes").removeClass();
+					        },	
+        success : function(data) {
+        	if (data.search(/Login page/i) != -1) {
+    			window.location.replace('<c:url value="/login?expired"/>');
+			    return true;
+			  }
+        	alert(data);
+/*   			var obj = JSON.parse(data);
+        	if(obj != null)
+        	{
+	        	
+        	}
+        	else
+        	{
+				 
+        	} */
+        	
+        	var TotCosto = 0.0;
+        	$("input[id='ChEsp']").each(function (){
+        		if($(this).prop('checked'))
+        		{
+        			$("#TCantidad"+$(this).val()).attr("type","text");
+        			$("#TCosto"+$(this).val()).attr("type","text");
+        			TotCosto = parseFloat(TotCosto) + parseFloat($("#TCosto"+$(this).val()).val() === "" ? 0 : $("#TCosto"+$(this).val()).val());
+        		}
+        		else
+        		{
+        			$("#TCantidad"+$(this).val()).attr("type","hidden");
+        			$("#TCosto"+$(this).val()).attr("type","hidden");
+        			$("#TCantidad"+$(this).val()).val("");
+        			$("#TCosto"+$(this).val()).val("");
+        		}
+        		
+        	}); 
+        	alert(TotCosto);
+        	
+        	$("#imgload").hide();
+        },
+        error: function(xhr, status, error) {
+			  $( "#mensajes" ).text("Error: " + xhr.responseText + " Codigo" +  error);
+			  $( "#mensajes").removeClass().addClass("alert alert-danger");
+			  $( "#imgload").hide();
+		  }
+	 });
 	
-	/*$("input[id='ChEsp']:checked").each(function (){
-		alert($( "#TCosto"+$(this).val()).val());
-	}); */
 }
 
 function CalcularDatos()
@@ -250,7 +291,7 @@ function CalcularDatos()
 								$("#TKg").val(0);
 								$("#TMedLamina").val("");
 								$("#TComisionDir").val(0);
-								$("#TCostoPapel").val();
+								$("#TCostoPapel").val(0);
 								$("#TCostoFlete").val(0);
 								$("#TRefCom").val(0);
 								$("#TPorcCom").val(0);
@@ -420,7 +461,7 @@ function CalcularDatos()
 									</div>
 									<div class="col-sm-1">Caja</div>
 									<div class="col-sm-6">
-										<form:select id="SCajas" path="cotizador_detalles.idcaja_sap" multiple="false" class="border border-primary">
+										<form:select onChange="CalcularDatos()" id="SCajas" path="cotizador_detalles.idcaja_sap" multiple="false" class="border border-primary">
 											<form:option value="0">Seleccione caja</form:option>
 											<c:forEach var="caj" items="${listacajas}">
 												<form:option value="${caj.idtipocaja}"><c:out value="${caj.nombrelargo}"/></form:option>
@@ -434,21 +475,21 @@ function CalcularDatos()
 								<div class="row border border-right">
 									<div class="col-sm-1">Largo</div>
 									<div class="col-sm-1">
-										<form:input id="TLargo" size="10" type="text" path="cotizador_detalles.largo" onkeypress="return filterFloat1(event,this);" class="border border-primary"/>
+										<form:input onKeyUp="CalcularDatos()" id="TLargo" size="10" type="text" path="cotizador_detalles.largo" onkeypress="return filterFloat1(event,this);" class="border border-primary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.largo" class="badge badge-danger small"/>
 										</div>
 									</div>
 									<div class="col-sm-1">Ancho</div>
 									<div class="col-sm-1">
-										<form:input id="TAncho" size="10" type="text" path="cotizador_detalles.ancho" onkeypress="return filterFloat1(event,this);" class="border border-primary"/>
+										<form:input onKeyUp="CalcularDatos()" id="TAncho" size="10" type="text" path="cotizador_detalles.ancho" onkeypress="return filterFloat1(event,this);" class="border border-primary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.ancho" class="badge badge-danger small"/>
 										</div>
 									</div>
 									<div class="col-sm-1">Fondo</div>
 									<div class="col-sm-1">
-										<form:input id="TFondo" size="10" type="text" path="cotizador_detalles.fondo" onkeypress="return filterFloat1(event,this);" class="border border-primary"/>
+										<form:input onKeyUp="CalcularDatos()" id="TFondo" size="10" type="text" path="cotizador_detalles.fondo" onkeypress="return filterFloat1(event,this);" class="border border-primary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.fondo" class="badge badge-danger small"/>
 										</div>
@@ -511,7 +552,7 @@ function CalcularDatos()
 									</div>
 									<div class="col-sm-1">Pzas x juego</div>
 									<div class="col-sm-1">
-										<form:input id="TPzasxjgo" size="10" value="${empty cotizadordatabean.cotizador_detalles.iddetalle ? 1 : cotizadordatabean.cotizador_detalles.iddetalle == 1 ? 1: ''}"
+										<form:input onKeyUp="CalcularDatos()" id="TPzasxjgo" size="10" value="${empty cotizadordatabean.cotizador_detalles.iddetalle ? 1 : cotizadordatabean.cotizador_detalles.iddetalle == 1 ? 1: ''}"
 											readonly="${empty cotizadordatabean.cotizador_detalles.iddetalle ? 'true' : cotizadordatabean.cotizador_detalles.iddetalle == 1 ? 'true': 'false'}" 
 											maxlength="10" type="text" path="cotizador_detalles.piezasxjuego" onkeypress="return Enteros(event);" class="border border-primary"/>
 										<div class="has-error">
@@ -526,7 +567,7 @@ function CalcularDatos()
 											<form:errors path="cotizador_detalles.peso_resis" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<form:input id="TCostoPapelResis" size="10" readonly = "true" type="hidden" path="cotizador_detalles.costo_papel_resis" class="border border-secondary"/>
+									<form:input id="TCostoPapelResis" size="10" readonly = "true" type="text" path="cotizador_detalles.costo_papel_resis" class="border border-secondary"/>
 								</div>
 								<div class="row border border-right">
 									<div class="col-sm-1">ComisiónMillar</div>
@@ -545,21 +586,21 @@ function CalcularDatos()
 									</div>
 									<div class="col-sm-1">Esp Inf</div>
 									<div class="col-sm-1">
-										<form:input id="TEspInf" size="10" type="text" path="cotizador_detalles.esp_inf" onkeypress="return filterFloat2(event,this);" class="border border-primary"/>
+										<form:input onKeyUp="CalcularDatos()" id="TEspInf" size="10" type="text" path="cotizador_detalles.esp_inf" onkeypress="return filterFloat2(event,this);" class="border border-primary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.esp_inf" class="badge badge-danger small"/>
 										</div>
 									</div>
 									<div class="col-sm-1">Esp Sup</div>
 									<div class="col-sm-1">
-										<form:input id="TEspSup" size="10" type="text" path="cotizador_detalles.esp_sup" onkeypress="return filterFloat2(event,this);" class="border border-primary"/>
+										<form:input onKeyUp="CalcularDatos()" id="TEspSup" size="10" type="text" path="cotizador_detalles.esp_sup" onkeypress="return filterFloat2(event,this);" class="border border-primary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.esp_sup" class="badge badge-danger small"/>
 										</div>
 									</div>
 									<div class="col-sm-1">Pedido Mes</div>
 									<div class="col-sm-1">
-										<form:input id="TCantPedMes" size="10" maxlength="10" type="text" path="cotizador_detalles.cantidad_pedido_mes" onkeypress="return Enteros(event);" class="border border-primary"/>
+										<form:input onKeyUp="CalcularDatos()" id="TCantPedMes" size="10" maxlength="10" type="text" path="cotizador_detalles.cantidad_pedido_mes" onkeypress="return Enteros(event);" class="border border-primary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.cantidad_pedido_mes" class="badge badge-danger small"/>
 										</div>
@@ -568,7 +609,7 @@ function CalcularDatos()
 								<div class="row border border-right">
 									<div class="col-sm-1">$ Objetivo</div>
 									<div class="col-sm-1">
-										<form:input id="TPreciObj" size="10" type="text" path="cotizador_detalles.precio_objetivo" onkeypress="return filterFloat(event,this);" class="border border-primary"/>
+										<form:input onKeyUp="CalcularDatos()" id="TPreciObj" size="10" type="text" path="cotizador_detalles.precio_objetivo" onkeypress="return filterFloat(event,this);" class="border border-primary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.precio_objetivo" class="badge badge-danger small"/>
 										</div>
@@ -578,7 +619,7 @@ function CalcularDatos()
 									<div class="col-sm-1">???</div>  -->
 									<div class="col-sm-1">Score</div>
 									<div class="col-sm-1">
-										<form:select  id="SScore" path="cotizador_detalles.score" multiple="false" class="border border-primary">
+										<form:select onChange="CalcularDatos()" id="SScore" path="cotizador_detalles.score" multiple="false" class="border border-primary">
 											<form:option value="0">0</form:option>
 											<form:option value="1">1</form:option>
 										</form:select>
@@ -700,7 +741,7 @@ function CalcularDatos()
 									</div>
 									<div class="col-sm-1">Pzas tarima</div>
 									<div class="col-sm-1">
-										<form:input size="10" maxlength="10" type="text" path="cotizador_detalles.piezasxtarima" onkeypress="return Enteros(event);" class="border border-primary"/>
+										<form:input onKeyUp="CalcularDatos()" size="10" maxlength="10" type="text" path="cotizador_detalles.piezasxtarima" onkeypress="return Enteros(event);" class="border border-primary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.piezasxtarima" class="badge badge-danger small"/>
 										</div>
@@ -727,13 +768,17 @@ function CalcularDatos()
 									<c:set var="i" value="0"/>
 									<c:forEach var="item" items="${especialidades}">
 		                              <div class="col-sm-4">
-		                                 <form:checkbox onChange="Checks(${item.code})"  id="ChEsp" path="cotizador_detalles.especialidades_cotizacion[${i}].idespecialidad" value="${item.code}"/> ${item.name}
+		                                 <form:checkbox onChange="SumarEsp(${item.code})"  id="ChEsp" path="cotizador_detalles.especialidades_cotizacion[${i}].idespecialidad" value="${item.code}"/> ${item.name}
 		                                 <form:input size="10" id="TCantidad${item.code}" maxlength="10" 
 		                                 	type="${!empty cotizadordatabean.cotizador_detalles.especialidades_cotizacion[i].cantidad ? 'text' : !empty cotizadordatabean.cotizador_detalles.especialidades_cotizacion[i].costo ? 'text' : 'hidden'}" 
 		                                 	path="cotizador_detalles.especialidades_cotizacion[${i}].cantidad" onkeypress="return Enteros(event);" class="border border-primary"/>
 		                                 <form:input size="10" id="TCosto${item.code}" maxlength="10" 
 		                                 	type="${!empty cotizadordatabean.cotizador_detalles.especialidades_cotizacion[i].cantidad ? 'text' : !empty cotizadordatabean.cotizador_detalles.especialidades_cotizacion[i].costo ? 'text' : 'hidden'}" 
 		                                 	path="cotizador_detalles.especialidades_cotizacion[${i}].costo" onkeypress="return Enteros(event);" class="border border-primary"/>
+		                                 <form:input size="10" id="TAjuste${item.code}" maxlength="10" 
+		                                 	path="cotizador_detalles.especialidades_cotizacion[${i}].ajuste" readonly="false" value="${item.u_ajuste}"  class="border border-primary"/>
+										 <form:input size="10" id="TEsquema${item.code}" maxlength="10" 
+		                                 	path="cotizador_detalles.especialidades_cotizacion[${i}].esquema" readonly="false" value="${item.u_esquema}"  class="border border-primary"/>
 		                              </div>
 		                              <c:set var="i" value="${i = i + 1}"/>
 		                           	</c:forEach>

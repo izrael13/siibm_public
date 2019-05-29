@@ -283,7 +283,7 @@ public class CotizadorController {
 		Double ComisionDirecto = PrecioNeto > 0 ? (1 - (jsonObjectParams.get("precioobj").getAsDouble() / PrecioNeto)) * 100 : 0.0;
 		object.addProperty("ComisionDirecto", ComisionDirecto);
 		
-		Double CostoPapel = jsonObjectParams.get("costopapelresis").getAsDouble() * AreaUni * jsonObjectParams.get("pzasxjgo").getAsDouble();
+		Double CostoPapel = jsonObjectParams.get("costopapelresis").getAsDouble() * AreaUni * jsonObjectParams.get("pzasxjgo").getAsInt();
 		object.addProperty("CostoPapel", CostoPapel);
 		
 		Double CostoFlete = 0.0;
@@ -345,4 +345,13 @@ public class CotizadorController {
 		return object.toString();
 	}
 	
+	@RequestMapping(value = {"/calcular_especialidades"}, method = RequestMethod.GET)
+	public @ResponseBody String calcular_especialidades(HttpServletRequest req, HttpServletResponse res)
+	   throws Exception {
+		String id = req.getParameter("id");
+		String ajuste = req.getParameter("ajuste");
+		String esquema = req.getParameter("esquema");
+		
+		return id+ajuste+esquema;
+	}
 }

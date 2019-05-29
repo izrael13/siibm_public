@@ -32,4 +32,6 @@ public class Amortiza_herramentales implements Serializable{
 	private String grabados_suajes;
 	private String fecha_recepcion;
 	private String grab_suaj_nom;
+	private String fecha_ult_ped;
+	private Double fac10porc;
 }

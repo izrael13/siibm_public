@@ -78,11 +78,13 @@ function FExcel()
 				<th>Grabados y Suajes</th>
 				<th>Fechas recepción</th>
 				<th>Total Facturado</th>
+				<th>10%Facturado</th>
 				<th>Total Nota de Crédito</th>
 				<th>Total(Facturado - NC)</th>
 				<th>Total Herramental</th>				
 				<th>Amortizado</th>
 				<th>Porcentaje</th>
+				<th>Fecha ult ped</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -95,11 +97,13 @@ function FExcel()
 				<td>${item.grabados_suajes}</td>
 				<td>${item.fecha_recepcion}</td>
 				<td>${item.totalFacturado}</td>
+				<td>${item.fac10porc}</td>
 				<td>${item.totalNotaCredito}</td>
 				<td>${item.TOTAL}</td>
 				<td>${item.totalHerramental}</td>
 				<td>${item.AMORTIZADO}</td>
 				<td>${item.PORCENTAJE}</td>
+				<td>${item.fecha_ult_ped}</td>
 			</tr>
 		</c:forEach>
 		</tbody>

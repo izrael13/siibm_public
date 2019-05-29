@@ -35,11 +35,13 @@ public class ExcelAmortHerra extends AbstractXlsView{
         header.createCell(4).setCellValue("Grabados y/o Suajes");
         header.createCell(5).setCellValue("Fecha recepción");
         header.createCell(6).setCellValue("Total Facturado");
-        header.createCell(7).setCellValue("Total Nota de Crédito");
-        header.createCell(8).setCellValue("Total (Facturado - NC");
-        header.createCell(9).setCellValue("Total Herramental");
-        header.createCell(10).setCellValue("Amortizado");
-        header.createCell(11).setCellValue("Porcentaje");
+        header.createCell(7).setCellValue("10%Facturado");
+        header.createCell(8).setCellValue("Total Nota de Crédito");
+        header.createCell(9).setCellValue("Total (Facturado - NC");
+        header.createCell(10).setCellValue("Total Herramental");
+        header.createCell(11).setCellValue("Amortizado");
+        header.createCell(12).setCellValue("Porcentaje");
+        header.createCell(13).setCellValue("Fecha ult ped");
                 
         for(int i = 0; i < listaexcel.size(); i++)
         {
@@ -51,11 +53,13 @@ public class ExcelAmortHerra extends AbstractXlsView{
         	dataRow.createCell(4).setCellValue(listaexcel.get(i).getGrabados_suajes());
         	dataRow.createCell(5).setCellValue(listaexcel.get(i).getFecha_recepcion());
         	dataRow.createCell(6).setCellValue(listaexcel.get(i).getTotalFacturado());
-        	dataRow.createCell(7).setCellValue(listaexcel.get(i).getTotalNotaCredito());
-        	dataRow.createCell(8).setCellValue(listaexcel.get(i).getTOTAL());
-        	dataRow.createCell(9).setCellValue(listaexcel.get(i).getTotalHerramental());
-        	dataRow.createCell(10).setCellValue(listaexcel.get(i).getAMORTIZADO());
-        	dataRow.createCell(11).setCellValue(listaexcel.get(i).getPORCENTAJE());
+        	dataRow.createCell(7).setCellValue(listaexcel.get(i).getFac10porc());
+        	dataRow.createCell(8).setCellValue(listaexcel.get(i).getTotalNotaCredito());
+        	dataRow.createCell(9).setCellValue(listaexcel.get(i).getTOTAL());
+        	dataRow.createCell(10).setCellValue(listaexcel.get(i).getTotalHerramental());
+        	dataRow.createCell(11).setCellValue(listaexcel.get(i).getAMORTIZADO());
+        	dataRow.createCell(12).setCellValue(listaexcel.get(i).getPORCENTAJE());
+        	dataRow.createCell(13).setCellValue(listaexcel.get(i).getFecha_ult_ped());
         }
 		
 	}
