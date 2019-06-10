@@ -52,13 +52,13 @@ public class ExcelAmortHerra extends AbstractXlsView{
         	dataRow.createCell(3).setCellValue(listaexcel.get(i).getGrab_suaj_nom());
         	dataRow.createCell(4).setCellValue(listaexcel.get(i).getGrabados_suajes());
         	dataRow.createCell(5).setCellValue(listaexcel.get(i).getFecha_recepcion());
-        	dataRow.createCell(6).setCellValue(listaexcel.get(i).getTotalFacturado());
+        	dataRow.createCell(6).setCellValue(listaexcel.get(i).getTotalfacturado());
         	dataRow.createCell(7).setCellValue(listaexcel.get(i).getFac10porc());
-        	dataRow.createCell(8).setCellValue(listaexcel.get(i).getTotalNotaCredito());
-        	dataRow.createCell(9).setCellValue(listaexcel.get(i).getTOTAL());
-        	dataRow.createCell(10).setCellValue(listaexcel.get(i).getTotalHerramental());
-        	dataRow.createCell(11).setCellValue(listaexcel.get(i).getAMORTIZADO());
-        	dataRow.createCell(12).setCellValue(listaexcel.get(i).getPORCENTAJE());
+        	dataRow.createCell(8).setCellValue(listaexcel.get(i).getTotalnotacredito());
+        	dataRow.createCell(9).setCellValue(listaexcel.get(i).getTotal());
+        	dataRow.createCell(10).setCellValue(listaexcel.get(i).getTotalherramental());
+        	dataRow.createCell(11).setCellValue(listaexcel.get(i).getAmortizado());
+        	dataRow.createCell(12).setCellValue(listaexcel.get(i).getPorcentaje());
         	dataRow.createCell(13).setCellValue(listaexcel.get(i).getFecha_ult_ped());
         }
 		

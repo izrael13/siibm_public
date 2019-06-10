@@ -96,13 +96,13 @@ function FExcel()
 				<td>${item.grab_suaj_nom}</td>
 				<td>${item.grabados_suajes}</td>
 				<td>${item.fecha_recepcion}</td>
-				<td>${item.totalFacturado}</td>
+				<td>${item.totalfacturado}</td>
 				<td>${item.fac10porc}</td>
-				<td>${item.totalNotaCredito}</td>
-				<td>${item.TOTAL}</td>
-				<td>${item.totalHerramental}</td>
-				<td>${item.AMORTIZADO}</td>
-				<td>${item.PORCENTAJE}</td>
+				<td>${item.totalnotacredito}</td>
+				<td>${item.total}</td>
+				<td>${item.totalherramental}</td>
+				<td>${item.amortizado}</td>
+				<td>${item.porcentaje}</td>
 				<td>${item.fecha_ult_ped}</td>
 			</tr>
 		</c:forEach>

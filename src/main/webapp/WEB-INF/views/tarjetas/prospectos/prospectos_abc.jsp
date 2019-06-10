@@ -299,7 +299,7 @@ function FLimpar()
 		<div align="left" class = "container">
 		<div class="row" align="center">
 			<div class="col-sm-3"></div>
-			<div class="col-sm-2"><form:button id="BGrabar" class="btn btn-outline-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i> Grabar</form:button></div>
+			<div class="col-sm-2"><form:button id="BGrabar" class="btn btn-outline-primary"><i class="fa fa-floppy-o" aria-hidden="true"> Grabar</i></form:button></div>
 			<div class="col-sm-2"><a href="javascript:FBuscar()" class="btn btn-outline-primary"><i class="fa fa-search" aria-hidden="true"> Buscar</i></a></div>
 			<div class="col-sm-2"><a href="javascript:FLimpar()" class="btn btn-outline-primary"><i class="fa fa-refresh" aria-hidden="true"> Limpiar</i></a></div>
 		</div>

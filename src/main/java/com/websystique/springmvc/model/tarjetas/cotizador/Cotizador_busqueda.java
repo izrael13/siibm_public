@@ -17,8 +17,13 @@ public class Cotizador_busqueda implements Serializable{/**
 	private static final long serialVersionUID = 1L;
 	
 	@Id
+	private Integer count;
+	
 	private Integer id;
+	private Integer iddet;
 	private String cardname;
 	private String direccion;
 	private String fecha_insert;
+	private String simbolo;
+	private String caja;
 }

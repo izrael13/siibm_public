@@ -1,6 +1,7 @@
 package com.websystique.springmvc.model.tarjetas.cotizador;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,13 +23,14 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name= "COTIZADOR_DETALLES")
+//@IdClass(value = Cotizador_detallesPK.class)
 public class Cotizador_detalles implements Serializable{
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+	@Id
 	private Integer idcotizacion;
 	@Id
 	private Integer iddetalle;
@@ -55,18 +57,18 @@ public class Cotizador_detalles implements Serializable{
 	private String cierre;
 	@NotBlank @Size(min=1)
 	private String cierre_detalle;
-	//@NotNull @Range(min = 1)
+	@NotNull @Range(min = 1)
 	private Integer piezasxjuego;
 	private String observaciones_vendedor;
-	@NotNull @Range(min = 0)
+	//@NotNull @Range(min = 0)
 	private Double esp_inf;
-	@NotNull @Range(min = 0)
+	//@NotNull @Range(min = 0)
 	private Double esp_sup;
 	@NotNull @Range(min = 1)
 	private Integer cantidad_pedido_mes;
 	@NotNull @Range(min = 1)
 	private Double precio_objetivo;
-	@NotNull @Range(min = 0)
+	//@NotNull @Range(min = 0)
 	private Integer piezasxtarima;
 	@NotNull @Range(min = 0)
 	private Integer score;
@@ -113,7 +115,23 @@ public class Cotizador_detalles implements Serializable{
 	private Double peso_resis;
 	private Double costo_papel_resis;
 	
+	private Double largo_pliego;
+	private Double ancho_pliego;
+	private Double total_especialidades;
+	
+	private Integer usuario_envia_req;
+	private Date fecha_envia_req;
+	
+	private Double area_total;
+	private Double peso_juego;
+	private Double pk_teorico;
+	
 	//@NotEmpty
 	@Transient
-	private List<Especialidades_cotizacion>  especialidades_cotizacion;  
+	/*@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "ESPECIALIDADES_COTIZACION", 
+             joinColumns = { @JoinColumn(name = "iddetalle") }, 
+             inverseJoinColumns = { @JoinColumn(name = "iddetalle") }) */
+	private List<Especialidades_cotizacion>  especialidades_cotizacion = new ArrayList<Especialidades_cotizacion>();
+	//private String especialidades_cotizacionJson;
 }

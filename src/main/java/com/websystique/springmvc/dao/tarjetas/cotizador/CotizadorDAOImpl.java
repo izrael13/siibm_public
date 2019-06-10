@@ -16,9 +16,12 @@ import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador_busqueda;
 public class CotizadorDAOImpl extends AbstractDao<Integer,Cotizador> implements CotizadorDAO{
 
 	@Override
-	public Cotizador BuscarxId(Integer id) {
+	public Cotizador BuscarxId(Integer id, Integer userInsert) {
 		// FIXME Auto-generated method stub
-		return getByKey(id);
+		Map<String,Integer> mRes =  new HashMap<String, Integer>();
+		mRes.put("id", id);
+		mRes.put("usuario_insert", userInsert);
+		return (Cotizador) criteriaQueryIntEqObj(mRes);
 	}
 
 	@Override
@@ -51,7 +54,7 @@ public class CotizadorDAOImpl extends AbstractDao<Integer,Cotizador> implements 
 	@Override
 	public List<Cotizador_busqueda> ListaBusquedaxIdCardCode(Integer id, String cardCode,Integer idUser) {
 		// FIXME Auto-generated method stub
-		String query = "select a.ID,b.cardname,c.address +' '+c.direccion direccion,a.FECHA_INSERT fecha_insert\r\n" + 
+		String query = "select ROW_NUMBER() OVER(ORDER BY a.ID ASC) AS count, a.ID,b.cardname,c.address +' '+c.direccion direccion,a.FECHA_INSERT fecha_insert\r\n" + 
 				"from COTIZADOR a\r\n" + 
 				"inner join CATALOGO_CLIENTES_SAP b on a.CARDCODE = b.cardcode\r\n" + 
 				"inner join CATALOGO_DIRECCIONES_SAP c on a.CARDCODE = c.cardcode and a.LINENUM_DIR_ENTREGA = c.linenum\r\n" + 
@@ -75,11 +78,55 @@ public class CotizadorDAOImpl extends AbstractDao<Integer,Cotizador> implements 
 		while(itr.hasNext()){
 			   Object[] obj = (Object[]) itr.next();
 			   Cotizador_busqueda cb = new Cotizador_busqueda();
-			   cb.setId(Integer.valueOf(String.valueOf(obj[0])));
-			   cb.setCardname(String.valueOf(obj[1]));
-			   cb.setDireccion(String.valueOf(obj[2]));
-			   cb.setFecha_insert(String.valueOf(obj[3]));
+			   cb.setCount(Integer.valueOf(String.valueOf(obj[0])));
+			   cb.setId(Integer.valueOf(String.valueOf(obj[1])));
+			   cb.setCardname(String.valueOf(obj[2]));
+			   cb.setDireccion(String.valueOf(obj[3]));
+			   cb.setFecha_insert(String.valueOf(obj[4]));
 			   
+			   Lista.add(cb); 
+			}
+		
+		return Lista;
+	}
+
+	@Override
+	public List<Cotizador_busqueda> ListaBusquedaxIdCardCodeDet(Integer id, String cardCode, Integer idUser) {
+		// FIXME Auto-generated method stub
+		String query = "select ROW_NUMBER() OVER(ORDER BY a.ID ASC) AS count,a.ID id,b.cardname,c.address +' '+c.direccion direccion,a.FECHA_INSERT fecha_insert,d.SIMBOLO simbolo,e.nombrelargo,d.iddetalle iddet \r\n" + 
+				"from COTIZADOR a\r\n" + 
+				"inner join CATALOGO_CLIENTES_SAP b on a.CARDCODE = b.cardcode\r\n" + 
+				"inner join CATALOGO_DIRECCIONES_SAP c on a.CARDCODE = c.cardcode and a.LINENUM_DIR_ENTREGA = c.linenum\r\n" + 
+				"left join COTIZADOR_DETALLES d on a.ID = d.IDCOTIZACION\r\n" + 
+				"inner join CATALOGO_CAJAS_SAP e on d.IDCAJA_SAP = e.idtipocaja \r\n" + 
+				"where a.ID > 0";
+		if(id > 0)
+			query = query + " and a.ID = "+id+" ";
+		if (!cardCode.equals("0"))
+			query = query + " and a.CARDCODE = '"+cardCode+"' ";
+		if(idUser > 0)
+			query = query + " and a.USUARIO_INSERT = "+idUser+" ";
+		
+		query = query + " order by a.FECHA_INSERT ";
+		//System.out.println(query);
+		List<Cotizador_busqueda> Lista = new ArrayList<Cotizador_busqueda>();
+		@SuppressWarnings({ "unchecked" })
+		List<Object> result = (List<Object>) getSession().createNativeQuery(query).getResultList();
+		
+		@SuppressWarnings("rawtypes")
+		Iterator itr = result.iterator();
+		
+		while(itr.hasNext()){
+			   Object[] obj = (Object[]) itr.next();
+			   Cotizador_busqueda cb = new Cotizador_busqueda();
+			   cb.setCount(Integer.valueOf(String.valueOf(obj[0])));
+			   cb.setId(Integer.valueOf(String.valueOf(obj[1])));
+			   cb.setCardname(String.valueOf(obj[2]));
+			   cb.setDireccion(String.valueOf(obj[3]));
+			   cb.setFecha_insert(String.valueOf(obj[4]));
+			   cb.setSimbolo(String.valueOf(obj[5]));
+			   cb.setCaja(String.valueOf(obj[6]));
+			   cb.setIddet(Integer.valueOf(String.valueOf(obj[7])));
 			   Lista.add(cb); 
 			}
 		

@@ -13,9 +13,14 @@ import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador_detalles;
 public class Cotizador_detallesDAOImpl  extends AbstractDao<Integer,Cotizador_detalles> implements Cotizador_detallesDAO{
 
 	@Override
-	public Cotizador_detalles BuscarxId(Integer id) {
+	public Cotizador_detalles BuscarxId(Integer id, Integer iddet, Integer userInsert) {
 		// FIXME Auto-generated method stub
-		return getByKey(id);
+		Map<String,Integer> mRes =  new HashMap<String, Integer>();
+		mRes.put("idcotizacion", id);
+		mRes.put("iddetalle", iddet);
+		mRes.put("usuario_insert", userInsert);
+		
+		return (Cotizador_detalles) criteriaQueryIntEqObj(mRes);
 	}
 
 	@Override
@@ -35,8 +40,9 @@ public class Cotizador_detallesDAOImpl  extends AbstractDao<Integer,Cotizador_de
 	@Override
 	public Integer Guardar(Cotizador_detalles cot) {
 		// FIXME Auto-generated method stub
-		Integer id = save_entity(cot);
-		return id;
+		Cotizador_detalles id = save_entityObj(cot);
+		Integer i = id.getIddetalle();
+		return i;
 	}
 
 	@Override

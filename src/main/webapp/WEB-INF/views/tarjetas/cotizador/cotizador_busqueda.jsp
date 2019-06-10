@@ -7,9 +7,9 @@
 <title>Cotizador búsqueda</title>
 <%@include file="../../appconfig/imports.jsp"%>
 <script type="text/javascript">
-function FBuscarId(id)
+function FBuscarId(id,iddet)
 {
-	window.opener.FBuscarxId(id);
+	window.opener.FBuscarxId(id,iddet);
 	window.close();
 }
 </script>
@@ -17,6 +17,7 @@ function FBuscarId(id)
 	<div id="tabla1" class = "table-responsive-xl container">
 		<table class="table-hover table-bordered text-center small">
 		<thead>
+			<tr><th colspan="4">Seleccionar encabezado para agregar detalle</th></tr>
 			<tr>
 				<td>Folio</td>
 				<td>Cliente</td>
@@ -27,10 +28,36 @@ function FBuscarId(id)
 		<tbody>
 		<c:forEach var="item" items="${lista}">
 			<tr>
-				<td><a href="javascript:FBuscarId(${item.id})">${item.id}</a></td>
+				<td><a href="javascript:FBuscarId(${item.id},0)">${item.id}</a></td>
 				<td>${item.cardname}</td>
 				<td>${item.direccion}</td>
 				<td>${item.fecha_insert}</td>
+			</tr>
+		</c:forEach>
+		</tbody>
+	</table>
+	<br>
+			<table class="table-hover table-bordered text-center small">
+		<thead>
+			<tr><th colspan="4">Seleccionar Detalle</th></tr>
+			<tr>
+				<td>Folio</td>
+				<td>Cliente</td>
+				<td>Dirección</td>
+				<td>Fecha alta</td>
+				<td>Símbolo</td>
+				<td>Caja</td>
+			</tr>
+		</thead>
+		<tbody>
+		<c:forEach var="item" items="${listaDet}">
+			<tr>
+				<td><a href="javascript:FBuscarId(${item.id},${item.iddet})">${item.id}</a></td>
+				<td>${item.cardname}</td>
+				<td>${item.direccion}</td>
+				<td>${item.fecha_insert}</td>
+				<td>${item.simbolo}</td>
+				<td>${item.caja}</td>
 			</tr>
 		</c:forEach>
 		</tbody>

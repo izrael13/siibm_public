@@ -57,7 +57,14 @@ public abstract class AbstractDao<PK extends Serializable, T> {
 		getSession().update(entity);
 	}
 	public Integer save_entity(T entity) {
-		return (Integer) getSession().save(entity);
+		Integer id =  (Integer) getSession().save(entity);
+		return id;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public T save_entityObj(T entity) {
+				
+		return (T) getSession().save(entity);
 	}
 
 	public void delete(T entity) {
@@ -160,6 +167,25 @@ public abstract class AbstractDao<PK extends Serializable, T> {
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected Object criteriaQueryEqObj(Map< String, String > res)
+	{
+		CriteriaBuilder builder = getSession().getCriteriaBuilder();
+		CriteriaQuery cq = builder.createQuery();
+		Root<T> root = cq.from(persistentClass);
+		
+		List<Predicate> listPred = new ArrayList<Predicate>();
+		if(res.size() > 0)
+			res.forEach((k,v) -> listPred.add(builder.equal(root.get(k), v)));
+			
+		cq.select(root).where(listPred.toArray(new Predicate[]{}));
+		
+		Object result = getSession().createQuery(cq).uniqueResult();
+		
+		return result;
+		
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })//Para buscar detalle especifico (COTIZADOR)
+	protected Object criteriaQueryIntEqObj(Map< String, Integer > res)
 	{
 		CriteriaBuilder builder = getSession().getCriteriaBuilder();
 		CriteriaQuery cq = builder.createQuery();

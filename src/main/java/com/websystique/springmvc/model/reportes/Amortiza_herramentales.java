@@ -10,7 +10,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "amortiza_herramentales")
+@Table(name = "AMORTIZA_HERRAMENTALES")
 public class Amortiza_herramentales implements Serializable{
 
 	/**
@@ -20,13 +20,13 @@ public class Amortiza_herramentales implements Serializable{
 	
 	@Id
 	private Integer id;
-	private String Herramental;
-	private Double TotalHerramental;
-	private Double TotalFacturado;
-	private Double TotalNotaCredito;
-	private Double TOTAL;
-	private String AMORTIZADO;
-	private Double PORCENTAJE;
+	private String herramental;
+	private Double totalherramental;
+	private Double totalfacturado;
+	private Double totalnotacredito;
+	private Double total;
+	private String amortizado;
+	private Double porcentaje;
 	private String clientes;
 	private String vendedor;
 	private String grabados_suajes;

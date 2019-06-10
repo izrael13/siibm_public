@@ -17,9 +17,9 @@ public class Cotizador_detallesServiceImpl implements Cotizador_detallesService{
 	Cotizador_detallesDAO dao;
 	
 	@Override
-	public Cotizador_detalles BuscarxId(Integer id) {
+	public Cotizador_detalles BuscarxId(Integer id, Integer iddet, Integer userInsert) {
 		// FIXME Auto-generated method stub
-		return dao.BuscarxId(id);
+		return dao.BuscarxId(id, iddet, userInsert);
 	}
 
 	@Override

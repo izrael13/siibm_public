@@ -30,7 +30,7 @@ public class Cotizador implements Serializable{/**
 	
 	@NotBlank @Size(min=2)
 	private String cardcode;
-	@NotNull @Range(min = 1)
+	@NotNull @Range(min = 0)
 	private Integer linenum_dir_entrega;
 	@NotNull @Range(min = 1)
 	private Double costo_flete;

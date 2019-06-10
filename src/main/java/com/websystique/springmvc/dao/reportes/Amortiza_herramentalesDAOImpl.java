@@ -1,18 +1,14 @@
 package com.websystique.springmvc.dao.reportes;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import javax.persistence.ParameterMode;
-
-import org.hibernate.procedure.ProcedureCall;
-import org.hibernate.result.Output;
-import org.hibernate.result.ResultSetOutput;
 import org.springframework.stereotype.Repository;
 
 import com.websystique.springmvc.dao.AbstractDao;
 import com.websystique.springmvc.model.reportes.Amortiza_herramentales;
 
-@SuppressWarnings("all")
 @Repository("amortiza_herramentalesDAO")
 public class Amortiza_herramentalesDAOImpl extends AbstractDao<Integer,Amortiza_herramentales>implements Amortiza_herramentalesDAO{
 
@@ -20,18 +16,22 @@ public class Amortiza_herramentalesDAOImpl extends AbstractDao<Integer,Amortiza_
 	public List<Amortiza_herramentales> findAmortHerram(Integer select, String herramental) {
 		// FIXME Auto-generated method stub
 		List<Amortiza_herramentales> result = null;
+		Map<String,Integer> mResInt =  new HashMap<String, Integer>();
+		Map<String,String> mRes =  new HashMap<String, String>();
+		if(select == 2)
+			mRes.put("amortizado", "AMORTIZADO");
+		else
+		{
+			if(select == 1)
+				mRes.put("amortizado", "NO AMORTIZADO");
+		}
 		
-		ProcedureCall criteria = createStoredProcedureCriteria("amortizacion_herramentales");
-		criteria.registerParameter("pSelect", Integer.class, ParameterMode.IN);
-		criteria.getParameterRegistration("pSelect").bindValue(select);
+		if(!herramental.trim().equals(""))
+			mRes.put("herramental", herramental);		
 		
-		criteria.registerParameter("pHerra", String.class, ParameterMode.IN);
-		criteria.getParameterRegistration("pHerra").bindValue(herramental);
-		
-		Output output = criteria.getOutputs().getCurrent();
-		if (output.isResultSet()) {
-			result = ((ResultSetOutput)output).getResultList();
-        }
+		Map<String,String> mOrd =  new HashMap<String, String>();
+		mOrd.put("1", "clientes");
+		result = criteriaQueryEqStrInt(mRes,mResInt,mOrd);
 		
 		return result;
 	}

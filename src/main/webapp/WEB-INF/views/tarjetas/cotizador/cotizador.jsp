@@ -6,7 +6,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<%@include file="../../appconfig/authheader2.jsp"%>
 <script>
+
+$( document ).ready(function() {
+	
+	if('${cotizadordatabean.cotizador.id}' > 0)
+	{
+		
+	}
+});
+
 function FBuscarDirecciones()
 {
 	var cardcode = document.getElementById("SClientes").value;
@@ -28,25 +38,17 @@ function FBuscarDirecciones()
 							  $("#mensajes").removeClass();
 					        },	
         success : function(data) {
-        	//try
-        	//{
         		if (data.search(/Login page/i) != -1) {
         			window.location.replace('<c:url value="/login?expired"/>');
 				    return true;
 				  }
 	        	opciones = opciones + "<option value='"+0+ "'> - - - </option>";
 	        	$.each(jQuery.parseJSON(data),function(index, value){
-	        	    //console.log('My array has at position ' + index + ', this value: ' + value.nombre);
 	        		opciones = opciones + "<option value='"+value.linenum + "'>"+value.address +" - "+value.direccion + "</option>";
 	        	});
 	        	
 	        	$( "#direcciones" ).append(opciones);
 	        	$( "#imgload").hide();
-        	//}
-        	//catch(e)
-        	//{
-        		//window.location.replace('<c:url value="/principal"/>');
-        	//}
         },
         error: function(xhr, status, error) {
         	  $( "#direcciones" ).empty();
@@ -58,7 +60,6 @@ function FBuscarDirecciones()
 }
 function FBuscarInfoDir()
 {
-	//alert(":)");
 	var cardcode = document.getElementById("SClientes").value;
 	var linenum = document.getElementById("direcciones").value;
 	
@@ -83,18 +84,19 @@ function FBuscarInfoDir()
 			    return true;
 			  }
         	$.each(jQuery.parseJSON(data),function(index, value){
-        	    //console.log('My array has at position ' + index + ', this value: ' + value.nombre);
-        		//opciones = opciones + "<option value='"+value.linenum + "'>"+value.address +" - "+value.direccion + "</option>";
         		$("#TFlete").val(value.flete);
         		if(value.flete == 0)
         		{
         			$("#mensajes" ).text("Este destino no tiene valor de flete.");
         			$("#mensajes").removeClass().addClass("alert alert-danger");
         		}
+        		else
+        			CalcularDatos();
+        		
         		$("#DContacto").text(value.contacto);
         		$("#DTelefono").text(value.telefono);
         		$("#DEmail").text(value.email);
-        		 CalcularDatos();
+        		 
         	});
         	
         	$("#imgload").hide();
@@ -113,7 +115,7 @@ function FBuscarInfoDir()
 }
 function FLimpar()
 {
-	window.location.replace('<c:url value="/ventas/tarjetas/cotizador/cotizadorabc"/>?id=0');
+	window.location.replace('<c:url value="/ventas/tarjetas/cotizador/cotizadorabc"/>?id=0'+'&iddet='+0);
 }
 function FBuscar()
 {
@@ -132,11 +134,12 @@ function FBuscar()
 
 		$( "#TId").removeClass().addClass("border border-danger");
 		$( "#SClientes").removeClass().addClass("border border-danger");
+		$( "#TId" ).focus();
 	
 }
-function FBuscarxId(id)
+function FBuscarxId(id,iddet)
 {
-	window.location.replace('<c:url value="/ventas/tarjetas/cotizador/cotizadorabc" />?id='+id);
+	window.location.replace('<c:url value="/ventas/tarjetas/cotizador/cotizadorabc" />?id='+id+'&iddet='+iddet);
 }
 function FBuscarResisId()
 {
@@ -193,67 +196,52 @@ function FBuscarResisId()
 	 });
 }
 
-function SumarEsp(id)
+var ids = ""
+var costoscapturados = "";
+
+function SumarEsp()
 {
-	$.ajax({
-		//dataType: 'text',
-		url: '<c:url value="/ventas/tarjetas/cotizador/calcular_especialidades"/>?id='+id+'&ajuste='+$("#TAjuste"+id).val()+'&esquema='+$("#TEsquema"+id).val(),
-		//contentType : 'application/json',
-		//cache: false,    
-		//data: cve_estado,
-		beforeSend: function(xhr) {
-							  $("#imgload").show();
-							  $("#mensajes" ).text("");
-							  $("#mensajes").removeClass();
-					        },	
-        success : function(data) {
-        	if (data.search(/Login page/i) != -1) {
-    			window.location.replace('<c:url value="/login?expired"/>');
-			    return true;
-			  }
-        	alert(data);
-/*   			var obj = JSON.parse(data);
-        	if(obj != null)
-        	{
-	        	
-        	}
-        	else
-        	{
-				 
-        	} */
-        	
-        	var TotCosto = 0.0;
-        	$("input[id='ChEsp']").each(function (){
-        		if($(this).prop('checked'))
-        		{
-        			$("#TCantidad"+$(this).val()).attr("type","text");
-        			$("#TCosto"+$(this).val()).attr("type","text");
-        			TotCosto = parseFloat(TotCosto) + parseFloat($("#TCosto"+$(this).val()).val() === "" ? 0 : $("#TCosto"+$(this).val()).val());
-        		}
-        		else
-        		{
-        			$("#TCantidad"+$(this).val()).attr("type","hidden");
-        			$("#TCosto"+$(this).val()).attr("type","hidden");
-        			$("#TCantidad"+$(this).val()).val("");
-        			$("#TCosto"+$(this).val()).val("");
-        		}
-        		
-        	}); 
-        	alert(TotCosto);
-        	
-        	$("#imgload").hide();
-        },
-        error: function(xhr, status, error) {
-			  $( "#mensajes" ).text("Error: " + xhr.responseText + " Codigo" +  error);
-			  $( "#mensajes").removeClass().addClass("alert alert-danger");
-			  $( "#imgload").hide();
-		  }
-	 });
+ids = ""
+costoscapturados = "";
+$("input[id='ChEsp']").each(function (){
+	idEsp = $(this).val();
+	if($(this).prop('checked'))
+	{
+		
+		if($("#TCosto"+idEsp).prop('type') == 'select-one')
+		{
+			$("#TCosto"+idEsp).css('visibility', 'visible')
+		}
+		else
+		{
+			$("#TCosto"+idEsp).attr("type","text"); 
+		}
+		ids = idEsp+"|"+ids;
+		costoscapturados = ($("#TCosto"+idEsp).val() == "" ? 0 : $("#TCosto"+idEsp).val()) +"|"+costoscapturados;
+		//alert(costoscapturados);
+	}
+	else
+	{
+		if($("#TCosto"+idEsp).prop('type') == 'select-one')
+		{
+			$("#TCosto"+idEsp).css('visibility', 'hidden')
+			$("#TCosto"+idEsp).val("0");
+		}
+		else
+		{
+			$("#TCosto"+idEsp).attr("type","hidden");
+			$("#TCosto"+idEsp).val("");
+		}
+		
+	}
 	
+});
 }
 
 function CalcularDatos()
 {
+	SumarEsp();
+
 	var Parameters = new Object();
 	Parameters.ancho = ($("#TAncho").val() === "" ? 0 : $("#TAncho").val());
 	Parameters.fondo = ($("#TFondo").val() === "" ? 0 : $("#TFondo").val());
@@ -264,14 +252,17 @@ function CalcularDatos()
 	Parameters.cantpedmes = ($("#TCantPedMes").val() === "" ? 0 : $("#TCantPedMes").val());
 	Parameters.precioobj = ($("#TPreciObj").val() === "" ? 0 : $("#TPreciObj").val());
 	Parameters.pzasxjgo = ($("#TPzasxjgo").val() === "" ? 0 : $("#TPzasxjgo").val());
-	Parameters.costoespcialidades = 0;
 	Parameters.totalflete = ($("#TFlete").val() === "" ? 0 : $("#TFlete").val());
 	Parameters.cardcode = $("#SClientes").val();
 	Parameters.pesoresis = ($("#TPesoResis").val() === "" ? 0 : $("#TPesoResis").val());
 	Parameters.preciom2resis = ($("#TPreciom2resis").val() === "" ? 0 : $("#TPreciom2resis").val());
 	Parameters.descven = ($("#TDescVen").val() === "" ? 0 : $("#TDescVen").val());
 	Parameters.idcaja = $("#SCajas").val();
+	Parameters.pzasxtar = ($("#TPzasxTar").val() === "" ? 0 : $("#TPzasxTar").val());
+	Parameters.idsesp = ids;
+	Parameters.costoscapturados = costoscapturados;
 	Parameters.costopapelresis = ($("#TCostoPapelResis").val() === "" ? 0 : $("#TCostoPapelResis").val());
+	
 	
 	var mystring = JSON.stringify(Parameters);
 	
@@ -300,36 +291,59 @@ function CalcularDatos()
 								$("#TPrecioS").val(0);
 								$("#TPorcFlete").val(0);
 								$("#TPespPza").val(0);
+								$("#TLargoPliego").val(0);
+				        		$("#TAnchoPliego").val(0);
+				        		$("#TTotEsp").val(0);
 					        },	
         success : function(data) {
         	if (data.search(/Login page/i) != -1) {
     			window.location.replace('<c:url value="/login?expired"/>');
 			    return true;
 			  }
-  			var obj = JSON.parse(data);
-        	if(obj != null)
+        	try
         	{
-        		$("#TAreaUni").val(obj.AreaUni);
-        		$("#TPesoT").val(obj.PesoTeorico);
-        		$("#TPrecioN").val(obj.PrecioNeto);
-        		$("#TM2").val(obj.M2);
-        		$("#TKg").val(obj.KG);
-        		$("#TMedLamina").val(obj.MedLamina);
-        		$("#TComisionDir").val(obj.ComisionDirecto);
-        		$("#TCostoPapel").val(obj.CostoPapel);
-        		$("#TCostoFlete").val(obj.CostoFlete);
-        		$("#TRefCom").val(obj.CPSC);
-        		$("#TPorcCom").val(obj.PorcComision);
-        		$("#TComxMillar").val(obj.ComXmillar);
-        		$("#TCpcc").val(obj.CPCC);
-        		$("#TPrecioS").val(obj.PrecioSugerido);
-        		$("#TPorcFlete").val(obj.PorcFlete);
-        		$("#TPespPza").val(obj.PesoPza);
+	  			var obj = JSON.parse(data);
+	        	if(obj != null)
+	        	{
+	        		$("#TAreaUni").val(obj.AreaUni);
+	        		$("#TPesoT").val(obj.PesoTeorico);
+	        		$("#TPrecioN").val(obj.PrecioNeto);
+	        		$("#TM2").val(obj.M2);
+	        		$("#TKg").val(obj.KG);
+	        		$("#TMedLamina").val(obj.MedLamina);
+	        		$("#TComisionDir").val(obj.ComisionDirecto);
+	        		$("#TCostoPapel").val(obj.CostoPapel);
+	        		$("#TCostoFlete").val(obj.CostoFlete);
+	        		$("#TRefCom").val(obj.CPSC);
+	        		$("#TPorcCom").val(obj.PorcComision);
+	        		$("#TComxMillar").val(obj.ComXmillar);
+	        		$("#TCpcc").val(obj.CPCC);
+	        		$("#TPrecioS").val(obj.PrecioSugerido);
+	        		$("#TPorcFlete").val(obj.PorcFlete);
+	        		$("#TPespPza").val(obj.PesoPza);
+	        		$("#TLargoPliego").val(obj.LargoVar);
+	        		$("#TAnchoPliego").val(obj.AnchoVar);
+	        		$("#TTotEsp").val(obj.TotCostoEsp);
+	        		$("#TAreaTotal").val(obj.AreaTotal);
+	        		$("#TPesoTotal").val(obj.PesoTotal);
+	        		$("#TPkTeorico").val(obj.PK_Teorico);
+	        		
+	        	/*if(obj.ComisionDirecto > ($("#TDescVen").val() === '' ? 0 : $("#TDescVen").val()))
+	        		$("#BAutVentas").css('visibility', 'visible');
+	        	else
+	        		$("#BAutVentas").css('visibility', 'hidden'); */
+	        		
+	        		var jsonEsp = JSON.parse(obj.Esp);
+	
+	        		for( var i=0; i<jsonEsp.length; i++ ){
+	        				$("#TCosto"+jsonEsp[i].id).val(jsonEsp[i].costo);
+	        		  }
+	
+	        	}
         	}
-        	else
-        	{
-				
-        	}
+        	catch(err) {
+        		  document.getElementById("mensajes").innerHTML = "";
+        		}
         	$("#imgload").hide();
         },
         error: function(xhr, status, error) {
@@ -340,26 +354,72 @@ function CalcularDatos()
 	 });
 	
 }
+
+function FEnviarReq()
+{
+	var idcot = +$("#TId").val();
+	var iddet = $("#TIdDet").val();
+	if(idcot > 0 && iddet > 0)
+	{
+		var http = new XMLHttpRequest();
+		var url = '<c:url value="/ventas/tarjetas/cotizador/enviararequerimiento"/>';
+		var params = 'idcot='+idcot+'&iddet='+iddet;
+		
+		http.open('POST', url, true);
+	
+		//Send the proper header information along with the request
+		http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	
+		http.onreadystatechange = function() {//Call a function when the state changes.
+			$("#DivMensaje").text("Procesando petición. Por favor espere...");
+	    	$("#DivMensaje").removeClass().addClass("alert alert-danger");
+		    if(http.readyState == 4 && http.status == 200) 
+		    {
+		    	if (http.responseText.search(/Login page/i) != -1) {
+		    		alert("La sessión ha expirado, Por favor vuelva a intentarlo.");
+	    			window.location.replace('<c:url value="/login?expired"/>');
+		    	}
+	    		else{
+	    			if(http.responseText === 'OK')
+	    			{
+	    				alert("Exitoso envío a requerimiento.");
+			    		window.location.replace('<c:url value="/ventas/tarjetas/cotizador/cotizadorabc"/>?id=0'+'&iddet='+0);
+	    			}
+	    			else
+	    			{
+	    				alert("Algo salió mal, por favor vuelva a intentarlo.");
+			    		window.location.replace('<c:url value="/ventas/tarjetas/cotizador/cotizadorabc"/>?id='+idcot+'&iddet='+iddet);
+	    			}
+	    		}
+		    }
+		    else
+		    {
+		    	if(http.readyState == 4 && http.status != 200){
+		    		alert("Algo salió mal, por favor vuelva a intentarlo...");
+		    		window.location.replace('<c:url value="/ventas/tarjetas/cotizador/cotizadorabc"/>?id='+idcot+'&iddet='+iddet);
+		    	}
+		    }
+		    
+		}
+		http.send(params);
+	}
+}
 </script>
 <title>Registro cotizaciones</title>
-<%@include file="../../appconfig/authheader2.jsp"%>
 </head>
 	<body>
-	<!-- <div align="center">
-		<span class="badge badge-secondary">Registro cotizaciones</span>
-	</div> -->
-	<div align="center" class = "container-fluid">
+	<div class = "container-fluid">
 	 <form:form id="form" method="POST" modelAttribute="cotizadordatabean" class="form-horizontal" autocomplete="off">
 		<div class="row">
 			<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
-				 <div class="row justify-content-md-center">
+				 <div class="row ">
 					 <div class="badge badge-primary col-12">
 					 	Datos del cliente
 					 </div>
 				 </div>
 			 </div>
 			 <div class="col-12"><!-- mx-auto  para centrar en pantalla -->
-				 <div class="row justify-content-md-center">
+				 <div class="row ">
 					 <div class="col-12">
 						<div class="row small">
 							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
@@ -394,7 +454,7 @@ function CalcularDatos()
 									<div class="col-sm-11">
 										<div class ="input-group">
 											<form:select Onchange="FBuscarInfoDir()" path="cotizador.linenum_dir_entrega" id = "direcciones" multiple="false" class="border border-primary">
-												<form:option value="0"> - - - </form:option>
+												<form:option value="-1"> - - - </form:option>
 												<c:forEach var="dir" items="${direcciones}">
 													<form:option value="${dir.linenum}"><c:out value="${dir.address} - ${dir.direccion}"/></form:option>
 												</c:forEach>
@@ -419,9 +479,12 @@ function CalcularDatos()
 							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
 								<div class="row border border-right">
 									<div class="col-1">Fecha Alta</div>
-									<div class="col-3"><fmt:formatDate value="${cotizadordatabean.cotizador.fecha_insert}" pattern="yyyy-MM-dd hh:mm:ss"/></div>
+									<div class="col-3"><fmt:formatDate value="${cotizadordatabean.cotizador.fecha_insert}" pattern="yyyy-MM-dd hh:mm"/></div>
 									<div class="col-2">Fecha Actualización</div>
-									<div class="col-3"><fmt:formatDate value="${cotizadordatabean.cotizador.fecha_update}" pattern="yyyy-MM-dd hh:mm:ss"/></div>
+									<div class="col-3"><fmt:formatDate value="${cotizadordatabean.cotizador.fecha_update}" pattern="yyyy-MM-dd hh:mm"/></div>
+									<div class="col-sm-2">
+										<button type="button" data-toggle="modal" data-target="#AutModal" class="btn btn-outline-primary"><i class="fa fa-thumbs-o-up" aria-hidden="true"> Autorizaciones</i></button>
+									</div>
 								</div>
 							</div>
 							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
@@ -437,20 +500,20 @@ function CalcularDatos()
 				 </div>
 			 </div>
 			 <div class="col-12"><!-- mx-auto  para centrar en pantalla -->
-				 <div class="row justify-content-md-center">
+				 <div class="row ">
 					 <div class="badge badge-info col-12">
 					 	Detalles de caja
 					 </div>
 				 </div>
 			 </div>
 			 <div class="col-12"><!-- mx-auto  para centrar en pantalla -->
-				 <div class="row justify-content-md-center">
+				 <div class="row ">
 					 <div class="col-12">
 						<div class="row small">
 							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
 								<div class="row border border-right">
 									<div class="col-sm-1">
-										<form:input value="${empty cotizadordatabean.cotizador_detalles.iddetalle ? 0 : cotizadordatabean.cotizador_detalles.iddetalle}" class="border border-secondary" size="9" maxlength="9" onkeypress="return Enteros(event)" readonly="true" type="text"  path="cotizador_detalles.iddetalle"/>
+										<form:input id="TIdDet" value="${empty cotizadordatabean.cotizador_detalles.iddetalle ? 0 : cotizadordatabean.cotizador_detalles.iddetalle}" class="border border-secondary" size="9" maxlength="9" onkeypress="return Enteros(event)" readonly="true" type="text"  path="cotizador_detalles.iddetalle"/>
 									</div>
 									<div class="col-sm-1">Símbolo</div>
 									<div class="col-sm-3">
@@ -553,7 +616,7 @@ function CalcularDatos()
 									<div class="col-sm-1">Pzas x juego</div>
 									<div class="col-sm-1">
 										<form:input onKeyUp="CalcularDatos()" id="TPzasxjgo" size="10" value="${empty cotizadordatabean.cotizador_detalles.iddetalle ? 1 : cotizadordatabean.cotizador_detalles.iddetalle == 1 ? 1: ''}"
-											readonly="${empty cotizadordatabean.cotizador_detalles.iddetalle ? 'true' : cotizadordatabean.cotizador_detalles.iddetalle == 1 ? 'true': 'false'}" 
+											readonly="${empty cotizadordatabean.cotizador.id ? 'true' : cotizadordatabean.cotizador_detalles.iddetalle == 1 ? 'true': 'false'}" 
 											maxlength="10" type="text" path="cotizador_detalles.piezasxjuego" onkeypress="return Enteros(event);" class="border border-primary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.piezasxjuego" class="badge badge-danger small"/>
@@ -741,7 +804,7 @@ function CalcularDatos()
 									</div>
 									<div class="col-sm-1">Pzas tarima</div>
 									<div class="col-sm-1">
-										<form:input onKeyUp="CalcularDatos()" size="10" maxlength="10" type="text" path="cotizador_detalles.piezasxtarima" onkeypress="return Enteros(event);" class="border border-primary"/>
+										<form:input id="TPzasxTar" onKeyUp="CalcularDatos()" size="10" maxlength="10" type="text" path="cotizador_detalles.piezasxtarima" onkeypress="return Enteros(event);" class="border border-primary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.piezasxtarima" class="badge badge-danger small"/>
 										</div>
@@ -753,34 +816,53 @@ function CalcularDatos()
 				</div>
 			</div>
 			<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
-				 <div class="row justify-content-md-center">
+				 <div class="row ">
 					 <div class="badge badge-success col-12">
 					 	Especialidades
 					 </div>
 				 </div>
 			 </div>
 			 <div class="col-12"><!-- mx-auto  para centrar en pantalla -->
-				 <div class="row justify-content-md-center">
+				 <div class="row ">
 					 <div class="col-12">
 						<div class="row small">
 							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
 								<div class="row border border-right">
-									<c:set var="i" value="0"/>
-									<c:forEach var="item" items="${especialidades}">
-		                              <div class="col-sm-4">
-		                                 <form:checkbox onChange="SumarEsp(${item.code})"  id="ChEsp" path="cotizador_detalles.especialidades_cotizacion[${i}].idespecialidad" value="${item.code}"/> ${item.name}
-		                                 <form:input size="10" id="TCantidad${item.code}" maxlength="10" 
-		                                 	type="${!empty cotizadordatabean.cotizador_detalles.especialidades_cotizacion[i].cantidad ? 'text' : !empty cotizadordatabean.cotizador_detalles.especialidades_cotizacion[i].costo ? 'text' : 'hidden'}" 
-		                                 	path="cotizador_detalles.especialidades_cotizacion[${i}].cantidad" onkeypress="return Enteros(event);" class="border border-primary"/>
-		                                 <form:input size="10" id="TCosto${item.code}" maxlength="10" 
-		                                 	type="${!empty cotizadordatabean.cotizador_detalles.especialidades_cotizacion[i].cantidad ? 'text' : !empty cotizadordatabean.cotizador_detalles.especialidades_cotizacion[i].costo ? 'text' : 'hidden'}" 
-		                                 	path="cotizador_detalles.especialidades_cotizacion[${i}].costo" onkeypress="return Enteros(event);" class="border border-primary"/>
-		                                 <form:input size="10" id="TAjuste${item.code}" maxlength="10" 
-		                                 	path="cotizador_detalles.especialidades_cotizacion[${i}].ajuste" readonly="false" value="${item.u_ajuste}"  class="border border-primary"/>
-										 <form:input size="10" id="TEsquema${item.code}" maxlength="10" 
-		                                 	path="cotizador_detalles.especialidades_cotizacion[${i}].esquema" readonly="false" value="${item.u_esquema}"  class="border border-primary"/>
-		                              </div>
-		                              <c:set var="i" value="${i = i + 1}"/>
+									<c:forEach var="item" items="${especialidades}" varStatus="status">
+									<div class="col-sm-3">
+										<form:checkbox id="ChEsp" onChange="CalcularDatos()"
+		                              		path="cotizador_detalles.especialidades_cotizacion[${status.index}].idespecialidad" value="${item.code}"/>${item.name}
+		<form:input type="hidden" id="TEsquema${item.code}" 
+     	path="cotizador_detalles.especialidades_cotizacion[${status.index}].esquema" value="${item.u_esquema}"  class="border border-primary"/>
+     	<form:input type="hidden" id="TAjuste${item.code}" 
+     	path="cotizador_detalles.especialidades_cotizacion[${status.index}].ajuste" value="${item.u_ajuste}"  class="border border-primary"/>
+     	
+     	<form:input type="hidden" id="TIdcot${item.code}" 
+     	path="cotizador_detalles.especialidades_cotizacion[${status.index}].idcotizacion" value="${cotizadordatabean.cotizador.id}"  class="border border-primary"/>
+     	<form:input type="hidden" id="TIdDet${item.code}" 
+     	path="cotizador_detalles.especialidades_cotizacion[${status.index}].iddetalle" value="${cotizadordatabean.cotizador_detalles.iddetalle}"  class="border border-primary"/>
+     	
+								     	<c:choose>
+								     		<c:when test="${item.name == 'Bolsa'}">
+									     		<form:select id="TCosto${item.code}" 
+									     		style="${!empty cotizadordatabean.cotizador_detalles.especialidades_cotizacion[status.index].costo ? (cotizadordatabean.cotizador_detalles.especialidades_cotizacion[status.index].costo > 0 ? 'visibility:visible' : 'visibility:hidden') : 'visibility:hidden'}"
+									     		path="cotizador_detalles.especialidades_cotizacion[${status.index}].costo"
+									     		 multiple="false" class="border border-primary" onChange="CalcularDatos()">
+													<form:option value="0">---</form:option>
+													<c:forEach var="it" items="${bolsas}">
+														<form:option value="${it.u_ajuste}"><c:out value="${it.name}-${it.u_ajuste} "/></form:option>
+													</c:forEach>
+												</form:select>
+								  			</c:when>
+								  			<c:otherwise>
+									  			<form:input size="10" id="TCosto${item.code}" maxlength="10" readonly="${item.u_esquema == '8' ? 'false' : 'true'}" 
+									     		type="${!empty cotizadordatabean.cotizador_detalles.especialidades_cotizacion[status.index].costo ? 'text' : 'hidden'}"  
+									     		path="cotizador_detalles.especialidades_cotizacion[${status.index}].costo" onKeyUp="${item.u_esquema == '8' ? 'CalcularDatos()' : ''}" 
+									     		onkeypress="return filterFloat(event,this);" class="border border-primary"/>
+								  			</c:otherwise>
+								     	</c:choose>
+     	
+		                              	</div>
 		                           	</c:forEach>
 								</div>
 							</div>
@@ -792,18 +874,72 @@ function CalcularDatos()
 		 <form:input id="TComisionDir" type="hidden" path="cotizador_detalles.comision_directo"/>
 		 <form:input id="TCpcc" type="hidden" path="cotizador_detalles.cpcc"/>
 		 <form:input id="TPorcFlete" type="hidden" path="cotizador_detalles.porc_flete"/>
+		 <form:input id="TLargoPliego" type="hidden" path="cotizador_detalles.largo_pliego"/>
+		 <form:input id="TAnchoPliego" type="hidden" path="cotizador_detalles.ancho_pliego"/>
+		 <form:input id="TTotEsp" type="hidden" path="cotizador_detalles.total_especialidades"/>
+		 <form:input id="TAreaTotal" type="hidden" path="cotizador_detalles.area_total"/>
+		 <form:input id="TPesoTotal" type="hidden" path="cotizador_detalles.peso_juego"/>
+		 <form:input id="TPkTeorico" type="hidden" path="cotizador_detalles.pk_teorico"/>
 		 
-		 <span id="imgload" style='display: none;'><img width="20px" height="20px" src='<c:url value="/static/img/sun_watch.gif"/>' /></span>
+		 <div align="center">
+		 	<span id="imgload" style='display: none;'><img width="20px" height="20px" src='<c:url value="/static/img/sun_watch.gif"/>' /></span>
+		 </div>
 		 <div id = "mensajes" class = "${!empty mensajes ? 'alert alert-success' : ''}">${mensajes}</div>
 		<div align="left" class = "container">
 		<div class="row" align="center">
-			<div class="col-sm-3"></div>
-			<div class="col-sm-2"><form:button id="BGrabar" class="btn btn-outline-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i> Grabar</form:button></div>
+			
+			<div class="col-sm-2"><form:button id="BGrabar" class="btn btn-outline-primary"><i class="fa fa-floppy-o" aria-hidden="true"> Grabar</i></form:button></div>
 			<div class="col-sm-2"><a href="javascript:FBuscar()" class="btn btn-outline-primary"><i class="fa fa-search" aria-hidden="true"> Buscar</i></a></div>
-			<div class="col-sm-2"><a href="javascript:FLimpar()" class="btn btn-outline-primary"><i class="fa fa-refresh" aria-hidden="true"> Limpiar</i></a></div>
+			<div class="col-sm-2"><button type="button" data-toggle="modal" data-target="#LimpiarModal" class="btn btn-outline-primary"><i class="fa fa-refresh" aria-hidden="true"> Limpiar</i></button></div>
+			<!-- <div class="col-sm-3"><button type="button" data-toggle="modal" data-target="#ReqModal" class="btn btn-outline-primary"><i class="fa fa-angle-double-right" aria-hidden="true">Enviar a Requerimiento</i></button></div>
+			<div class="col-sm-3"><button id="BAutVentas" class="btn btn-outline-primary"><i class="fa fa-caret-right" aria-hidden="true">Enviar a Autorización Ventas</i></button></div>
+			 -->
+			
 		</div>
 		</div>
 	</form:form>
+	<!-- REGION DE MODALS -->
+	<div class="modal fade" id="LimpiarModal" tabindex="-1" role="dialog" aria-labelledby="LimpiarModallLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header alert alert-info">
+	        <h5 class="modal-title" id="exampleModalLabel">Limpiar</h5>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" onclick="FLimpar()" class="btn btn-outline-primary" data-dismiss="modal">Limpiar TODO</button>
+	        <button type="button" onclick="FBuscarxId(${empty cotizadordatabean.cotizador.id ? 0 : cotizadordatabean.cotizador.id},0)" class="btn btn-outline-primary" data-dismiss="modal">Limpiar DETALLE</button>
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	
+	<div class="modal fade bd-example-modal-lg" id="AutModal" tabindex="-1" role="dialog" aria-labelledby="AutModalLabel" aria-hidden="true">
+	  <div class="modal-dialog modal-lg">
+	    <div class="modal-content">
+	      Autorizaciones
+	    </div>
+	  </div>
+	</div>
+	
+	<div class="modal fade" id="ReqModal" tabindex="-1" role="dialog" aria-labelledby="ReqModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header alert alert-info">
+	        <h5 class="modal-title" id="ReqModal">Enviar a Requerimiento</h5>
+	      </div>
+	      <div class="modal-body alert alert-warning">
+	        ¡¡¡ATENCIÓN!!! ¿Desea enviar este detalle a requerimiento?
+	      </div>
+	      <div id="DivMensaje" class="modal-footer">
+	        <button type="button" class="btn btn-primary" onClick="FEnviarReq()">Enviar</button>
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	
+	<!-- FIN REGION DE MODALS  -->
 	</div>
 	<%@include file="../../appconfig/authfootter.jsp"%>
 	</body>

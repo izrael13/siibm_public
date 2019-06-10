@@ -18,9 +18,9 @@ public class CotizadorServiceImpl implements CotizadorService{
 	CotizadorDAO dao;
 	
 	@Override
-	public Cotizador BuscarxId(Integer id) {
+	public Cotizador BuscarxId(Integer id, Integer userInsert) {
 		// FIXME Auto-generated method stub
-		return dao.BuscarxId(id);
+		return dao.BuscarxId(id,userInsert);
 	}
 
 	@Override
@@ -46,6 +46,12 @@ public class CotizadorServiceImpl implements CotizadorService{
 	public List<Cotizador_busqueda> ListaBusquedaxIdCardCode(Integer id, String cardCode, Integer idUser) {
 		// FIXME Auto-generated method stub
 		return dao.ListaBusquedaxIdCardCode(id, cardCode, idUser);
+	}
+
+	@Override
+	public List<Cotizador_busqueda> ListaBusquedaxIdCardCodeDet(Integer id, String cardCode, Integer idUser) {
+		// FIXME Auto-generated method stub
+		return dao.ListaBusquedaxIdCardCodeDet(id, cardCode, idUser);
 	}
 
 }

@@ -111,7 +111,13 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 			 </li>
 			 <li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-dot-circle-o" aria-hidden="true"></i> Cotizador</a>
 			    <ul class="dropdown-menu">
-			    	<li><a class="dropdown-item" href = "<c:url value='/ventas/tarjetas/cotizador/cotizadorabc'/>?id=0"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro cotizaciones</a></li>
+			    	<li><a class="dropdown-item" href = "<c:url value='/ventas/tarjetas/cotizador/cotizadorabc'/>?id=0&iddet=0"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro cotizaciones</a></li>
+			    	<li><a class="dropdown-item" href = "<c:url value='/ventas/tarjetas/cotizador/cotizadorabc'/>?id=0&iddet=0"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de cotizaciones Vtas</a></li>
+			    </ul>
+			 </li>
+			 <li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-check-square-o" aria-hidden="true"></i> Requerimientos</a>
+			    <ul class="dropdown-menu">
+			    	<li><a class="dropdown-item" href = "<c:url value='/ventas/tarjetas/requerimientos/requerimientoabc'/>"><i class="fa fa-check-circle-o" aria-hidden="true"></i> Registro requerimientos</a></li>
 			    </ul>
 			 </li>
 		</ul>
