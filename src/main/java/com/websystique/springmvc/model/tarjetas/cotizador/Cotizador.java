@@ -14,6 +14,7 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Data;
 
@@ -47,17 +48,29 @@ public class Cotizador implements Serializable{/**
 	@Column(updatable=false)
 	private Integer idtiporequerimiento;
 	
+	private Integer usuario_envia_ventas;
+	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+	private Date fecha_envia_ventas;
 	private Integer usuario_aut_ventas;   
+	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date fecha_aut_ventas;
-	private Integer usuario__rech_ventas;
+	private Integer usuario_rech_ventas;
+	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date fecha_rech_ventas;
+	private Integer usuario_envia_a_prog;
+	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+	private Date fecha_envia_a_prog;
 	private Integer usuario_aut_prog;
+	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date fecha_aut_prog;
 	private Integer usuario_rech_prog;
+	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date fecha_rech_prog;
-	private Integer usuario_env_a_ing;
-	private Date fecha_env_a_ing;
 	private String observaciones_ventas;
 	private String observaciones_prog;
+	private Integer usuario_cancel;
+	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+	private Date fecha_cancel;
+
 	
 }

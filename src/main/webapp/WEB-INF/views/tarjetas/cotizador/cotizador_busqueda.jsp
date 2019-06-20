@@ -37,7 +37,7 @@ function FBuscarId(id,iddet)
 		</tbody>
 	</table>
 	<br>
-			<table class="table-hover table-bordered text-center small">
+	<table class="table-hover table-bordered text-center small">
 		<thead>
 			<tr><th colspan="4">Seleccionar Detalle</th></tr>
 			<tr>

@@ -24,7 +24,8 @@ public class Cotizador_detallesValidator implements Validator{
 	public void validate(Object target, Errors errors) {
 		// FIXME Auto-generated method stub
 		Cotizador_detalles cotizador_detalles = (Cotizador_detalles) target;
-		List<Integer> idCajas = Arrays.asList(102,4,5,56,8); //CAJAS QEU DEBEN LLEVAR FONDO
+											  
+		List<Integer> idCajas = Arrays.asList(102,3,4,5,56,7,8); //CAJAS QEU DEBEN LLEVAR FONDO
 		List<Integer> idCajas2 = Arrays.asList(43,44,46,51,52,53,54,85);//CAJAS QUE DEBEN LLEVAR ESP SUP Y ESO INF.
 		
 		if(!idCajas.contains(cotizador_detalles.getIdcaja_sap()) && (cotizador_detalles.getFondo() == null || cotizador_detalles.getFondo() == 0.0) )

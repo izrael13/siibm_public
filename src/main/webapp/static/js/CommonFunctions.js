@@ -158,7 +158,7 @@ function SinCaracteresEspeciales(e) {//Con espacios
     }
 
     // Patron de entrada, en este caso solo acepta numeros y letras
-    patron = /[A-Za-z0-9-\.\-_@ ]/;
+    patron = /[A-Za-z0-9-\.\-_@ /]/;
     tecla_final = String.fromCharCode(tecla);
     return patron.test(tecla_final);
 }
@@ -219,7 +219,7 @@ function popupwindow(url, title, win, w, h) {
     var trident = navigator.userAgent.indexOf('Trident/'); //IE 11
     if(msie > 0 || trident > 0)
     {
-    	var newwindow = window.open(url,title,'toolbar=0,scrollbars=2,location=0,statusbar=0,menubar=0,resizable=2,width=1000,height=800');
+    	var newwindow = window.open(url,title);
     	if (window.focus) {
     		newwindow.focus();
   		}

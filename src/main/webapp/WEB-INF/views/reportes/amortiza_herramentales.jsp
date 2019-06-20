@@ -24,6 +24,11 @@ function FExcel()
 {
 	window.location.replace('<c:url value="/reportes/ingenieria/excelamortherr" />?select='+document.getElementById("SSelect").value+'&herramental='+document.getElementById('THerramental').value);
 }
+function FImprimir()
+{
+	var redirectWindow = window.open('<c:url value="/reportes/ingenieria/imprmiramortherr" />?select='+document.getElementById("SSelect").value+'&herramental='+document.getElementById('THerramental').value);
+	redirectWindow.replace;
+}
 </script>
 <style type="text/css">
 #tabla1{
@@ -41,7 +46,6 @@ function FExcel()
 	<br>
 	<div align="center" class="container">
 		<div class="row">
-			<div class="col-md-1"></div>
 			<div class="col-md-2">
 				<select id="SSelect">
 					<option value="0" ${select eq 0 ? 'selected' : ''}>Todos</option>
@@ -63,7 +67,12 @@ function FExcel()
 					Descargar Excel
 				</button>
 			</div>
-			<div class="col-md-2"></div>
+			<div class="col-md-2">
+				<button type="button" class="btn btn-outline-primary" onClick="FImprimir()">
+					<i class="fa fa-print"></i>
+					Imprimir
+				</button>
+			</div>
 		</div>
 	</div>
 	<br>

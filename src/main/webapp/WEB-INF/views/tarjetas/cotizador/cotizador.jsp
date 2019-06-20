@@ -9,14 +9,117 @@
 <%@include file="../../appconfig/authheader2.jsp"%>
 <script>
 
-$( document ).ready(function() {
-	
+$(document).ready(function() {
+		
 	if('${cotizadordatabean.cotizador.id}' > 0)
 	{
+		if(('${cotizadordatabean.cotizador.usuario_envia_ventas}' > 0 && '${cotizadordatabean.cotizador.fecha_envia_ventas}' != '') || 
+		   ('${cotizadordatabean.cotizador.usuario_envia_a_prog}' > 0 && '${cotizadordatabean.cotizador.fecha_envia_a_prog}' != '')||
+		   ('${cotizadordatabean.cotizador.usuario_cancel}' > 0  && '${cotizadordatabean.cotizador.fecha_cancel}' != ''))
+		{
+			$("#SClientes option:not(:selected)").prop("disabled", true);
+			$("#direcciones option:not(:selected)").prop("disabled", true);
+			$("#SCajas option:not(:selected)").prop("disabled", true);
+			$("#SResisBarca option:not(:selected)").prop("disabled", true);
+			
+			if(('${cotizadordatabean.cotizador.usuario_rech_prog}' == '' && '${cotizadordatabean.cotizador.fecha_rech_prog}' == '') ||
+			   ('${cotizadordatabean.cotizador.usuario_cancel}' > 0  && '${cotizadordatabean.cotizador.fecha_cancel}' != ''))
+			{
+				$("#BCancel").prop('disabled',true);
+				$("#BGrabar").prop('disabled',true);
+				$("#BEnvVtas").prop('disabled',true);
+				
+				$("#TSimbolo").attr("readonly","readonly");				
+				$("#TLargo").attr("readonly","readonly");
+				$("#TAncho").attr("readonly","readonly");
+				$("#TFondo").attr("readonly","readonly");
+				$("#SResisCte option:not(:selected)").prop("disabled", true);
+				$("#SCierre option:not(:selected)").prop("disabled", true);
+				$("#SCierreDet option:not(:selected)").prop("disabled", true);
+				$("#TPzasxjgo").attr("readonly","readonly");
+				$("#TObs").attr("readonly","readonly");
+				$("#TEspSup").attr("readonly","readonly");
+				$("#TEspInf").attr("readonly","readonly");
+				$("#TCantPedMes").attr("readonly","readonly");
+				$("#SScore option:not(:selected)").prop("disabled", true);
+				$("#SNumTintas option:not(:selected)").prop("disabled", true);			
+			
+				$("#TPreciObj").attr("readonly","readonly");
+				$("#TPzasxTar").attr("readonly","readonly");
+				
+				var nodes = document.getElementById("DEsp").getElementsByTagName('*');
+				for(var i = 0; i < nodes.length; i++)
+				{				
+					if(nodes[i].type == 'select-one')
+						$("#"+nodes[i].id+" option:not(:selected)").prop("disabled", true);
+					else
+					{
+						if(nodes[i].type == 'checkbox')
+						{
+							if(nodes[i].id != "")
+								{
+									nodes[i].addEventListener("click", preventDef, false);
+									nodes[i].onchange = "";
+								}
+						}
+						else
+						{
+							if(nodes[i].id != "")
+								$("#"+nodes[i].id).prop("readonly", true);
+						}						
+				    		
+					}
+				}
+				
+				$("#SEntrego option:not(:selected)").prop("disabled", true);
+				$("#SColor1 option:not(:selected)").prop("disabled", true);
+				$("#SColor2 option:not(:selected)").prop("disabled", true);
+				$("#SColor3 option:not(:selected)").prop("disabled", true);
+				$("#SColor4 option:not(:selected)").prop("disabled", true);
+				$("#SColor5 option:not(:selected)").prop("disabled", true);
+				$("#SColor6 option:not(:selected)").prop("disabled", true);
+				$("#SColor7 option:not(:selected)").prop("disabled", true);
+				$("#TNumRanuras").attr("readonly","readonly");
+				$("#TFechaOC").attr("readonly","readonly");
+				$("#CCejaDesp").bind("click", preventDef, false);
+				$("#STolerancia option:not(:selected)").prop("disabled", true);
+				$("#SDisenio option:not(:selected)").prop("disabled", true);
+				$("#CCancSust").bind("click", preventDef, false);
+				$("#TTF").attr("readonly","readonly");
+	
+				$("#CEmplayado").bind("click", preventDef, false);
+				$("#TVueltasEmp").attr("readonly","readonly");
+				$("#CFactura").bind("click", preventDef, false);
+				$("#CCertCal").bind("click", preventDef, false);
+				$("#CImpOC").bind("click", preventDef, false);
+				$("#CProtecciones").bind("click", preventDef, false);
+				$("#CCajaSeca").bind("click", preventDef, false);
+				$("#CCertFum").bind("click", preventDef, false);
+				$("#CEPP").bind("click", preventDef, false);
+				$("#TAltPallet").attr("readonly","readonly");
+				$("#TCamasPallet").attr("readonly","readonly");
+				$("#TFlejesPallet").attr("readonly","readonly");
+				$("#TFlejesAtado").attr("readonly","readonly");
+				$("#TPzasAtado").attr("readonly","readonly");
+				$("#TAtaCama").attr("readonly","readonly");
+			}
+			
+		}
 		
-	}
+		if(('${cotizadordatabean.cotizador.usuario_cancel}' == ''  && '${cotizadordatabean.cotizador.fecha_cancel}' == '') && 
+		   ('${cotizadordatabean.cotizador.usuario_rech_ventas}' > 0  && '${cotizadordatabean.cotizador.fecha_rech_ventas}' != ''))
+		{
+			$("#TPreciObj").attr("readonly",false);
+			$("#TPzasxTar").attr("readonly",false);
+			$("#BEnvVtas").prop('disabled',false);
+			$("#BGrabar").prop('disabled',false);
+			$("#BCancel").prop('disabled',false);
+		}
+	} 
 });
-
+function preventDef(event) {
+	  event.preventDefault();
+	}
 function FBuscarDirecciones()
 {
 	var cardcode = document.getElementById("SClientes").value;
@@ -198,16 +301,27 @@ function FBuscarResisId()
 
 var ids = ""
 var costoscapturados = "";
+var ajustes = "";
+var esquemas = "";
 
 function SumarEsp()
 {
-ids = ""
-costoscapturados = "";
+	ids = ""
+	costoscapturados = "";
+	ajustes = "";
+	esquemas = "";
+
 $("input[id='ChEsp']").each(function (){
 	idEsp = $(this).val();
 	if($(this).prop('checked'))
 	{
+		if(idEsp == 19)
+		{		
+			$("#TAjuste"+idEsp).attr("required","required");
+			$("#TAjuste"+idEsp).attr("type","text");
+		}
 		
+		$("#TCosto"+idEsp).attr("required","required");
 		if($("#TCosto"+idEsp).prop('type') == 'select-one')
 		{
 			$("#TCosto"+idEsp).css('visibility', 'visible')
@@ -216,12 +330,23 @@ $("input[id='ChEsp']").each(function (){
 		{
 			$("#TCosto"+idEsp).attr("type","text"); 
 		}
+		
 		ids = idEsp+"|"+ids;
-		costoscapturados = ($("#TCosto"+idEsp).val() == "" ? 0 : $("#TCosto"+idEsp).val()) +"|"+costoscapturados;
-		//alert(costoscapturados);
+		costoscapturados = ($("#TCosto"+idEsp).val() == "" ? 0 : ($("#TCosto"+idEsp).val() == null ? 0 : $("#TCosto"+idEsp).val())) +"|"+costoscapturados;
+		ajustes = ($("#TAjuste"+idEsp).val() == "" ? 0 : ($("#TAjuste"+idEsp).val() == null ? 0 : $("#TAjuste"+idEsp).val())) +"|"+ajustes;
+		esquemas = ($("#TEsquema"+idEsp).val() == "" ? 0 : ($("#TEsquema"+idEsp).val() == null ? 0 : $("#TEsquema"+idEsp).val())) +"|"+esquemas;
 	}
 	else
 	{
+		$("#TCosto"+idEsp).attr("required",false);
+		
+		if(idEsp == 19)
+		{
+			$("#TAjuste"+idEsp).attr("type","hidden");
+			$("#TAjuste"+idEsp).attr("required",false);
+			$("#TAjuste"+idEsp).val("");
+		}
+		
 		if($("#TCosto"+idEsp).prop('type') == 'select-one')
 		{
 			$("#TCosto"+idEsp).css('visibility', 'hidden')
@@ -262,7 +387,8 @@ function CalcularDatos()
 	Parameters.idsesp = ids;
 	Parameters.costoscapturados = costoscapturados;
 	Parameters.costopapelresis = ($("#TCostoPapelResis").val() === "" ? 0 : $("#TCostoPapelResis").val());
-	
+	Parameters.ajustes = ajustes;
+	Parameters.esquemas = esquemas;
 	
 	var mystring = JSON.stringify(Parameters);
 	
@@ -328,11 +454,6 @@ function CalcularDatos()
 	        		$("#TPesoTotal").val(obj.PesoTotal);
 	        		$("#TPkTeorico").val(obj.PK_Teorico);
 	        		
-	        	/*if(obj.ComisionDirecto > ($("#TDescVen").val() === '' ? 0 : $("#TDescVen").val()))
-	        		$("#BAutVentas").css('visibility', 'visible');
-	        	else
-	        		$("#BAutVentas").css('visibility', 'hidden'); */
-	        		
 	        		var jsonEsp = JSON.parse(obj.Esp);
 	
 	        		for( var i=0; i<jsonEsp.length; i++ ){
@@ -355,15 +476,15 @@ function CalcularDatos()
 	
 }
 
-function FEnviarReq()
+function FEnviarVtaProg()
 {
 	var idcot = +$("#TId").val();
 	var iddet = $("#TIdDet").val();
-	if(idcot > 0 && iddet > 0)
+	if(idcot > 0)
 	{
 		var http = new XMLHttpRequest();
-		var url = '<c:url value="/ventas/tarjetas/cotizador/enviararequerimiento"/>';
-		var params = 'idcot='+idcot+'&iddet='+iddet;
+		var url = '<c:url value="/ventas/tarjetas/cotizador/enviaragerenteventasprog"/>';
+		var params = 'idcot='+idcot;
 		
 		http.open('POST', url, true);
 	
@@ -382,7 +503,56 @@ function FEnviarReq()
 	    		else{
 	    			if(http.responseText === 'OK')
 	    			{
-	    				alert("Exitoso envío a requerimiento.");
+	    				alert("Exitoso envío a autorización de ventas.");
+			    		window.location.replace('<c:url value="/ventas/tarjetas/cotizador/cotizadorabc"/>?id=0'+'&iddet='+0);
+	    			}
+	    			else
+	    			{
+	    				alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
+			    		window.location.replace('<c:url value="/ventas/tarjetas/cotizador/cotizadorabc"/>?id='+idcot+'&iddet='+iddet);
+	    			}
+	    		}
+		    }
+		    else
+		    {
+		    	if(http.readyState == 4 && http.status != 200){
+		    		alert("Algo salió mal, por favor vuelva a intentarlo...");
+		    		window.location.replace('<c:url value="/ventas/tarjetas/cotizador/cotizadorabc"/>?id='+idcot+'&iddet='+iddet);
+		    	}
+		    }
+		    
+		}
+		http.send(encodeURI(params));
+	}
+}
+function FCancelar()
+{
+	var idcot = +$("#TId").val();
+	var iddet = $("#TIdDet").val();
+	if(idcot > 0)
+	{
+		var http = new XMLHttpRequest();
+		var url = '<c:url value="/ventas/tarjetas/cotizador/cancelarcotizacion"/>';
+		var params = 'idcot='+idcot;
+		
+		http.open('POST', url, true);
+	
+		//Send the proper header information along with the request
+		http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	
+		http.onreadystatechange = function() {//Call a function when the state changes.
+			$("#DivMensaje").text("Procesando petición. Por favor espere...");
+	    	$("#DivMensaje").removeClass().addClass("alert alert-danger");
+		    if(http.readyState == 4 && http.status == 200) 
+		    {
+		    	if (http.responseText.search(/Login page/i) != -1) {
+		    		alert("La sessión ha expirado, Por favor vuelva a intentarlo.");
+	    			window.location.replace('<c:url value="/login?expired"/>');
+		    	}
+	    		else{
+	    			if(http.responseText === 'OK')
+	    			{
+	    				alert("COTIZACIÓN CANCELADA!!!!!!");
 			    		window.location.replace('<c:url value="/ventas/tarjetas/cotizador/cotizadorabc"/>?id=0'+'&iddet='+0);
 	    			}
 	    			else
@@ -401,9 +571,37 @@ function FEnviarReq()
 		    }
 		    
 		}
-		http.send(params);
+		http.send(encodeURI(params));
 	}
 }
+function FColores()
+{
+	var ntintas = $("#SNumTintas").val();
+
+	for(var i = 1; i <= 7; i++)
+	{
+		if(i <= ntintas)
+		{
+			$("#SColor"+i).css('visibility', 'visible');
+			$("#SColor"+i).attr("required","required");
+		}
+		else
+		{
+			$("#SColor"+i).css('visibility', 'hidden');
+			$("#SColor"+i).attr("required",false);
+			$("#SColor"+i).val("");
+		}
+	}
+	
+}
+
+$(document).on("keypress", "input", function (e) {//deshabilitar enter submit
+    var code = e.keyCode || e.which;
+    if (code == 13) {
+        e.preventDefault();
+        return false;
+    }
+});
 </script>
 <title>Registro cotizaciones</title>
 </head>
@@ -425,7 +623,7 @@ function FEnviarReq()
 							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
 								<div class="row border border-right">
 									<div class="col-sm-1">Folio</div>
-									<div class="col-sm-1"><form:input class="border border-secondary" size="9" maxlength="9" onkeypress="return Enteros(event)" id="TId" readonly="true" type="text" value="${empty cotizadordatabean.cotizador.id ? 0 : cotizadordatabean.cotizador.id}"  path="cotizador.id"/></div>
+									<div class="col-sm-1"><form:input class="border border-secondary" size="9" maxlength="8" onkeypress="return Enteros(event)" id="TId" readonly="true" type="text" value="${empty cotizadordatabean.cotizador.id ? 0 : cotizadordatabean.cotizador.id}"  path="cotizador.id"/></div>
 									<div class="col-sm-1">Cliente</div>
 									<div class="col-sm-7">
 										<form:select Onchange="FBuscarDirecciones()" id="SClientes" path="cotizador.cardcode" multiple="false" class="border border-primary">
@@ -451,7 +649,7 @@ function FEnviarReq()
 							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
 								<div class="row border border-right">
 									<div class="col-sm-1">Dirección</div>
-									<div class="col-sm-11">
+									<div class="col-sm-10">
 										<div class ="input-group">
 											<form:select Onchange="FBuscarInfoDir()" path="cotizador.linenum_dir_entrega" id = "direcciones" multiple="false" class="border border-primary">
 												<form:option value="-1"> - - - </form:option>
@@ -464,6 +662,7 @@ function FEnviarReq()
 											</div>
 										</div>
 									</div>
+									<div class="col-sm-1"><button type="button" data-toggle="modal" data-target="#AutModal" class="btn btn-outline-primary"><i class="fa fa-thumbs-o-up" aria-hidden="true"> Info</i></button></div>
 								</div>
 							</div>
 							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
@@ -474,25 +673,6 @@ function FEnviarReq()
 									<div class="col-3"><div id="DTelefono">${direccionSelect[0].telefono}</div></div>
 									<div class="col-1">Email</div>
 									<div class="col-3"><div id="DEmail">${direccionSelect[0].email}</div></div>
-								</div>
-							</div>
-							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
-								<div class="row border border-right">
-									<div class="col-1">Fecha Alta</div>
-									<div class="col-3"><fmt:formatDate value="${cotizadordatabean.cotizador.fecha_insert}" pattern="yyyy-MM-dd hh:mm"/></div>
-									<div class="col-2">Fecha Actualización</div>
-									<div class="col-3"><fmt:formatDate value="${cotizadordatabean.cotizador.fecha_update}" pattern="yyyy-MM-dd hh:mm"/></div>
-									<div class="col-sm-2">
-										<button type="button" data-toggle="modal" data-target="#AutModal" class="btn btn-outline-primary"><i class="fa fa-thumbs-o-up" aria-hidden="true"> Autorizaciones</i></button>
-									</div>
-								</div>
-							</div>
-							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
-								<div class="row border border-right">
-									<div class="col-2">Observaciones Ventas:</div>
-									<div class="col-4"><fmt:formatDate value="${cotizadordatabean.cotizador.observaciones_ventas}" pattern="yyyy-MM-dd hh:mm:ss"/></div>
-									<div class="col-2">Observaciones Ingeniería:</div>
-									<div class="col-4"><fmt:formatDate value="${cotizadordatabean.cotizador.observaciones_prog}" pattern="yyyy-MM-dd hh:mm:ss"/></div>
 								</div>
 							</div>
 						</div>
@@ -513,11 +693,11 @@ function FEnviarReq()
 							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
 								<div class="row border border-right">
 									<div class="col-sm-1">
-										<form:input id="TIdDet" value="${empty cotizadordatabean.cotizador_detalles.iddetalle ? 0 : cotizadordatabean.cotizador_detalles.iddetalle}" class="border border-secondary" size="9" maxlength="9" onkeypress="return Enteros(event)" readonly="true" type="text"  path="cotizador_detalles.iddetalle"/>
+										<form:input id="TIdDet" value="${empty cotizadordatabean.cotizador_detalles.iddetalle ? 0 : cotizadordatabean.cotizador_detalles.iddetalle}" class="border border-secondary" size="9" maxlength="8" onkeypress="return Enteros(event)" readonly="true" type="text"  path="cotizador_detalles.iddetalle"/>
 									</div>
 									<div class="col-sm-1">Símbolo</div>
 									<div class="col-sm-3">
-										<form:input type="text" size="50" onkeypress="return SinCaracteresEspeciales(event)" maxlength="100" path="cotizador_detalles.simbolo" class="border border-primary"/>
+										<form:input id="TSimbolo" type="text" size="50" onkeypress="return SinCaracteresEspeciales(event)" maxlength="100" path="cotizador_detalles.simbolo" class="border border-primary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.simbolo" class="badge badge-danger small"/>
 										</div>
@@ -581,7 +761,7 @@ function FEnviarReq()
 								<div class="row border border-right">
 									<div class="col-sm-1">ResistenciaCTE</div>
 									<div class="col-sm-2">
-										<form:select path="cotizador_detalles.resistencia_cte" multiple="false" class="border border-primary">
+										<form:select id="SResisCte" path="cotizador_detalles.resistencia_cte" multiple="false" class="border border-primary">
 											<form:option value="0">Seleccione resistencia CTE</form:option>
 											<c:forEach var="rescte" items="${listaresiscte}">
 												<form:option value="${rescte.id}"><c:out value="${rescte.sellos}"/></form:option>
@@ -593,7 +773,7 @@ function FEnviarReq()
 									</div>
 									<div class="col-sm-1">Cierre</div>
 									<div class="col-sm-1">
-										<form:select path="cotizador_detalles.cierre" multiple="false" class="border border-primary">
+										<form:select id="SCierre" path="cotizador_detalles.cierre" multiple="false" class="border border-primary">
 											<form:option value="pegada">PEGADA</form:option>
 											<form:option value="grapada">GRAPADA</form:option>
 											<form:option value="desplegada">DESPLEGADA</form:option>
@@ -604,7 +784,7 @@ function FEnviarReq()
 									</div>
 									<div class="col-sm-1">Cierre detalle</div>
 									<div class="col-sm-1">
-										<form:select path="cotizador_detalles.cierre_detalle" multiple="false" class="border border-primary">
+										<form:select id="SCierreDet" path="cotizador_detalles.cierre_detalle" multiple="false" class="border border-primary">
 											<form:option value="nc">N/C</form:option>
 											<form:option value="interior">INTERIOR</form:option>
 											<form:option value="exterior">EXTERIOR</form:option>
@@ -613,24 +793,26 @@ function FEnviarReq()
 											<form:errors path="cotizador_detalles.cierre_detalle" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-1">Pzas x juego</div>
-									<div class="col-sm-1">
-										<form:input onKeyUp="CalcularDatos()" id="TPzasxjgo" size="10" value="${empty cotizadordatabean.cotizador_detalles.iddetalle ? 1 : cotizadordatabean.cotizador_detalles.iddetalle == 1 ? 1: ''}"
-											readonly="${empty cotizadordatabean.cotizador.id ? 'true' : cotizadordatabean.cotizador_detalles.iddetalle == 1 ? 'true': 'false'}" 
-											maxlength="10" type="text" path="cotizador_detalles.piezasxjuego" onkeypress="return Enteros(event);" class="border border-primary"/>
-										<div class="has-error">
-											<form:errors path="cotizador_detalles.piezasxjuego" class="badge badge-danger small"/>
-										</div>
+									<div class="col-sm-1">Ceja despl: <form:checkbox id="CCejaDesp" path="cotizador_detalles.ceja_desplegada"/></div>
+									<div class="col-sm-1">Entrega OC</div>
+									<div class="col-sm-2">
+										<div class="">
+										<div class="input-group date" id="datetimepicker4" data-target-input="nearest">
+						                    <form:input id="TFechaOC" onkeypress="return false" path="cotizador_detalles.fecha_entrega_oc" size="10" data-target="#datetimepicker4" placeholder="yyyy-mm-dd" class="border border-primary"/>
+						                    <div class="input-group-append" data-target="#datetimepicker4" data-toggle="datetimepicker">
+						                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+						                    </div>
+								            <script type="text/javascript">
+									            $(function () {
+									                $('#datetimepicker4').datetimepicker({
+									                    format: 'YYYY-MM-DD'
+									                });
+									            });
+									        </script>
+							            </div>
+							            </div>
 									</div>
-									<div class="col-sm-1">Peso Resis</div>
-									<div class="col-sm-1">
-										<form:input id="TPesoResis" size="10" ondblclick="FBuscarResisId()" readonly = "true" type="text" path="cotizador_detalles.peso_resis" class="border border-secondary"
-													data-toggle="tooltip" data-placement="top" title="Doble click para actualizar."/>
-										<div class="has-error">
-											<form:errors path="cotizador_detalles.peso_resis" class="badge badge-danger small"/>
-										</div>
-									</div>
-									<form:input id="TCostoPapelResis" size="10" readonly = "true" type="text" path="cotizador_detalles.costo_papel_resis" class="border border-secondary"/>
+									<form:input id="TCostoPapelResis" size="10" readonly = "true" type="hidden" path="cotizador_detalles.costo_papel_resis" class="border border-secondary"/>
 								</div>
 								<div class="row border border-right">
 									<div class="col-sm-1">ComisiónMillar</div>
@@ -642,7 +824,7 @@ function FEnviarReq()
 									</div>
 									<div class="col-sm-1">Observaciones</div>
 									<div class="col-sm-3">
-										<form:input type="text" size="50" onkeypress="return SinCaracteresEspeciales(event)" maxlength="100" path="cotizador_detalles.observaciones_vendedor" class="border border-primary"/>
+										<form:input id="TObs" type="text" size="50" onkeypress="return SinCaracteresEspeciales(event)" maxlength="100" path="cotizador_detalles.observaciones_vendedor" class="border border-primary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.observaciones_vendedor" class="badge badge-danger small"/>
 										</div>
@@ -661,11 +843,12 @@ function FEnviarReq()
 											<form:errors path="cotizador_detalles.esp_sup" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-1">Pedido Mes</div>
+									<div class="col-sm-1">Peso Resis</div>
 									<div class="col-sm-1">
-										<form:input onKeyUp="CalcularDatos()" id="TCantPedMes" size="10" maxlength="10" type="text" path="cotizador_detalles.cantidad_pedido_mes" onkeypress="return Enteros(event);" class="border border-primary"/>
+										<form:input id="TPesoResis" size="10" ondblclick="FBuscarResisId()" readonly = "true" type="text" path="cotizador_detalles.peso_resis" class="border border-secondary"
+													data-toggle="tooltip" data-placement="top" title="Doble click para actualizar."/>
 										<div class="has-error">
-											<form:errors path="cotizador_detalles.cantidad_pedido_mes" class="badge badge-danger small"/>
+											<form:errors path="cotizador_detalles.peso_resis" class="badge badge-danger small"/>
 										</div>
 									</div>
 								</div>
@@ -690,22 +873,6 @@ function FEnviarReq()
 											<form:errors path="cotizador_detalles.score" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-1">N Tintas</div>
-									<div class="col-sm-1">
-										<form:select path="cotizador_detalles.num_tintas" multiple="false" class="border border-primary">
-											<form:option value="0">0</form:option>
-											<form:option value="1">1</form:option>
-											<form:option value="2">2</form:option>
-											<form:option value="3">3</form:option>
-											<form:option value="4">4</form:option>
-											<form:option value="5">5</form:option>
-											<form:option value="6">6</form:option>
-											<form:option value="7">7</form:option>
-										</form:select>
-										<div class="has-error">
-											<form:errors path="cotizador_detalles.num_tintas" class="badge badge-danger small"/>
-										</div>
-									</div>
 									<div class="col-sm-1">Med Lámina</div>
 									<div class="col-sm-1">
 										<form:input readonly="true" id="TMedLamina" type="text" size="10" path="cotizador_detalles.medida_lamina"  class="border border-secondary"/>
@@ -725,6 +892,13 @@ function FEnviarReq()
 										<form:input id="TCostoFlete" size="10" readonly = "true" type="text" path="cotizador_detalles.costo_flete" class="border border-secondary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.costo_flete" class="badge badge-danger small"/>
+										</div>
+									</div>
+									<div class="col-sm-1">% Comisión</div>
+									<div class="col-sm-1">
+										<form:input readonly="true" id="TPorcCom" type="text" size="10" path="cotizador_detalles.porcentaje_comision"  class="border border-secondary"/>
+										<div class="has-error">
+											<form:errors path="cotizador_detalles.porcentaje_comision" class="badge badge-danger small"/>
 										</div>
 									</div>
 								</div>
@@ -773,14 +947,7 @@ function FEnviarReq()
 									</div>
 								</div>
 								<div class="row border border-right">
-									<div class="col-sm-1">% Comisión</div>
-									<div class="col-sm-1">
-										<form:input readonly="true" id="TPorcCom" type="text" size="10" path="cotizador_detalles.porcentaje_comision"  class="border border-secondary"/>
-										<div class="has-error">
-											<form:errors path="cotizador_detalles.porcentaje_comision" class="badge badge-danger small"/>
-										</div>
-									</div>
-									<div class="col-sm-2">Descuento vendedor</div>
+									<div class="col-sm-1">Desc Vend</div>
 									<div class="col-sm-1">
 										<form:input ondblclick="FBuscarResisId()" readonly="true" id="TDescVen" type="text" size="10" path="cotizador_detalles.descuento_vendedor"  class="border border-secondary"
 													data-toggle="tooltip" data-placement="top" title="Doble click para actualizar." />
@@ -804,14 +971,183 @@ function FEnviarReq()
 									</div>
 									<div class="col-sm-1">Pzas tarima</div>
 									<div class="col-sm-1">
-										<form:input id="TPzasxTar" onKeyUp="CalcularDatos()" size="10" maxlength="10" type="text" path="cotizador_detalles.piezasxtarima" onkeypress="return Enteros(event);" class="border border-primary"/>
+										<form:input id="TPzasxTar" onKeyUp="CalcularDatos()" size="10" maxlength="8" type="text" path="cotizador_detalles.piezasxtarima" onkeypress="return Enteros(event);" class="border border-primary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.piezasxtarima" class="badge badge-danger small"/>
 										</div>
 									</div>
+									<div class="col-sm-1">Pzas x juego</div>
+									<div class="col-sm-1">
+										<form:input onKeyUp="CalcularDatos()" id="TPzasxjgo" size="10" value="${empty cotizadordatabean.cotizador_detalles.iddetalle ? 1 : cotizadordatabean.cotizador_detalles.iddetalle == 1 ? 1: ''}"
+											readonly="${empty cotizadordatabean.cotizador.id ? 'true' : cotizadordatabean.cotizador_detalles.iddetalle == 1 ? 'true': 'false'}" 
+											maxlength="8" type="text" path="cotizador_detalles.piezasxjuego" onkeypress="return Enteros(event);" class="border border-primary"/>
+										<div class="has-error">
+											<form:errors path="cotizador_detalles.piezasxjuego" class="badge badge-danger small"/>
+										</div>
+									</div>
+									<div class="col-sm-1">Pedido Mes</div>
+									<div class="col-sm-1">
+										<form:input onKeyUp="CalcularDatos()" id="TCantPedMes" size="10" maxlength="8" type="text" path="cotizador_detalles.cantidad_pedido_mes" onkeypress="return Enteros(event);" class="border border-primary"/>
+										<div class="has-error">
+											<form:errors path="cotizador_detalles.cantidad_pedido_mes" class="badge badge-danger small"/>
+										</div>
+									</div>
+								</div>
+								<div class="row border border-right">
+									<div class="col-sm-1">N Tintas</div>
+									<div class="col-sm-1">
+										<form:select id="SNumTintas" onChange="FColores()" path="cotizador_detalles.num_tintas" multiple="false" class="border border-primary">
+											<form:option value="0">0</form:option>
+											<form:option value="1">1</form:option>
+											<form:option value="2">2</form:option>
+											<form:option value="3">3</form:option>
+											<form:option value="4">4</form:option>
+											<form:option value="5">5</form:option>
+											<form:option value="6">6</form:option>
+											<form:option value="7">7</form:option>
+										</form:select>
+										<div class="has-error">
+											<form:errors path="cotizador_detalles.num_tintas" class="badge badge-danger small"/>
+										</div>
+									</div>
+									<div class="col-sm-10">
+										<form:select id="SColor1" path="cotizador_detalles.color1" multiple="false" class="border border-primary"
+										style="${!empty cotizadordatabean.cotizador_detalles.color1 ? (cotizadordatabean.cotizador_detalles.color1 > 0 ? 'visibility:visible' : 'visibility:hidden') : 'visibility:hidden'}">
+											<form:option value="">COLOR1</form:option>
+											<c:forEach var="col" items="${colores}">
+												<form:option style="background:#${col.color_est}" value="${col.id}"><c:out value="${col.color}"/> </form:option>
+											</c:forEach>
+										</form:select>
+									
+										<form:select id="SColor2" path="cotizador_detalles.color2" multiple="false" class="border border-primary"
+										style="${!empty cotizadordatabean.cotizador_detalles.color2 ? (cotizadordatabean.cotizador_detalles.color2 > 0 ? 'visibility:visible' : 'visibility:hidden') : 'visibility:hidden'}">
+											<form:option value="">COLOR2</form:option>
+											<c:forEach var="col" items="${colores}">
+												<form:option style="background:#${col.color_est}" value="${col.id}"><c:out value="${col.color}"/> </form:option>
+											</c:forEach>
+										</form:select>
+
+										<form:select id="SColor3" path="cotizador_detalles.color3" multiple="false" class="border border-primary"
+										style="${!empty cotizadordatabean.cotizador_detalles.color3 ? (cotizadordatabean.cotizador_detalles.color3 > 0 ? 'visibility:visible' : 'visibility:hidden') : 'visibility:hidden'}">
+											<form:option value="">COLOR3</form:option>
+											<c:forEach var="col" items="${colores}">
+												<form:option style="background:#${col.color_est}" value="${col.id}"><c:out value="${col.color}"/> </form:option>
+											</c:forEach>
+										</form:select>
+
+										<form:select id="SColor4" path="cotizador_detalles.color4" multiple="false" class="border border-primary"
+										style="${!empty cotizadordatabean.cotizador_detalles.color4 ? (cotizadordatabean.cotizador_detalles.color4 > 0 ? 'visibility:visible' : 'visibility:hidden') : 'visibility:hidden'}">
+											<form:option value="">COLOR4</form:option>
+											<c:forEach var="col" items="${colores}">
+												<form:option style="background:#${col.color_est}" value="${col.id}"><c:out value="${col.color}"/> </form:option>
+											</c:forEach>
+										</form:select>
+
+										<form:select id="SColor5" path="cotizador_detalles.color5" multiple="false" class="border border-primary"
+										style="${!empty cotizadordatabean.cotizador_detalles.color5 ? (cotizadordatabean.cotizador_detalles.color5 > 0 ? 'visibility:visible' : 'visibility:hidden') : 'visibility:hidden'}">
+											<form:option value="">COLOR5</form:option>
+											<c:forEach var="col" items="${colores}">
+												<form:option style="background:#${col.color_est}" value="${col.id}"><c:out value="${col.color}"/> </form:option>
+											</c:forEach>
+										</form:select>
+
+										<form:select id="SColor6" path="cotizador_detalles.color6" multiple="false" class="border border-primary"
+										style="${!empty cotizadordatabean.cotizador_detalles.color6 ? (cotizadordatabean.cotizador_detalles.color6 > 0 ? 'visibility:visible' : 'visibility:hidden') : 'visibility:hidden'}">
+											<form:option value="">COLOR6</form:option>
+											<c:forEach var="col" items="${colores}">
+												<form:option style="background:#${col.color_est}" value="${col.id}"><c:out value="${col.color}"/> </form:option>
+											</c:forEach>
+										</form:select>
+
+										<form:select id="SColor7" path="cotizador_detalles.color7" multiple="false" class="border border-primary"
+										style="${!empty cotizadordatabean.cotizador_detalles.color7 ? (cotizadordatabean.cotizador_detalles.color7 > 0 ? 'visibility:visible' : 'visibility:hidden') : 'visibility:hidden'}">
+											<form:option value="">COLOR7</form:option>
+											<c:forEach var="col" items="${colores}">
+												<form:option style="background:#${col.color_est}" value="${col.id}"><c:out value="${col.color}"/> </form:option>
+											</c:forEach>
+										</form:select>
+									</div>
+								</div>
+								<div class="row border border-right">
+									<div class="col-sm-1">Se entregó</div>
+									<div class="col-sm-1">
+										<form:select id="SEntrego" path="cotizador_detalles.se_entrego" multiple="false" class="border border-primary">
+											<form:option value="nc">N/C</form:option>
+											<form:option value="Muestra">Muestra</form:option>
+											<form:option value="Software">Software</form:option>
+											<form:option value="Email">Email</form:option>
+											<form:option value="Sin entrega">Sin entrega</form:option>
+										</form:select>
+										<div class="has-error">
+											<form:errors path="cotizador_detalles.se_entrego" class="badge badge-danger small"/>
+										</div>
+									</div>
+									<div class="col-sm-1">Tolerancia</div>
+									<div class="col-sm-1">
+										<form:select id="STolerancia" path="cotizador_detalles.tolerancia_pedido" multiple="false" class="border border-primary">
+											<form:option value="0">0</form:option>
+											<form:option value="5">5</form:option>
+											<form:option value="10">10</form:option>
+										</form:select> 
+									</div>
+									<div class="col-sm-5">Diseño
+										<form:select id="SDisenio" path="cotizador_detalles.disenio" multiple="false" class="border border-primary">
+											<form:option value="Nuevo">Nuevo</form:option>
+											<form:option value="Con cambios">Con cambios</form:option>
+											<form:option value="Referencia de TF">Referencia de TF</form:option>
+										</form:select>
+										Cancelar/Sustituir: <form:checkbox id="CCancSust" path="cotizador_detalles.cancelar_sustituir"/>
+										TF: <form:input id="TTF" size="10" maxlength="8" type="text" path="cotizador_detalles.tf_cs" onkeypress="return SinCaracteresEspeciales(event);" class="border border-primary"/>
+									</div>
+									<div class="col-sm-1">Num ranuras</div>
+									<div class="col-sm-1"><form:input id="TNumRanuras" size="10" maxlength="8" type="text" path="cotizador_detalles.num_raturas" onkeypress="return Enteros(event);" class="border border-primary"/></div>
 								</div>
 							</div>
 						</div>	
+					</div>
+				</div>
+			</div>
+			<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
+				 <div class="row ">
+					 <div class="badge badge-secondary col-12">
+					 	Embarques/Inocuidad
+					 </div>
+				 </div>
+			 </div>
+			 <div class="col-12"><!-- mx-auto  para centrar en pantalla -->
+				 <div class="row ">
+					 <div class="col-12">
+						<div class="row small">
+							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
+								<div class="row border border-right">
+									<div class="col-sm-12">
+										Emplayado: <form:checkbox id="CEmplayado" path="cotizador_detalles.emplayado"/> 
+										Vueltas: <form:input id="TVueltasEmp" size="10" maxlength="8" type="text" path="cotizador_detalles.vueltas_emplaye" onkeypress="return filterFloat(event,this);" class="border border-primary"/>
+										Factura: <form:checkbox id="CFactura" path="cotizador_detalles.factura"/>
+										Certif calidad: <form:checkbox id="CCertCal" path="cotizador_detalles.certif_calidad"/>
+										Imprimir OC: <form:checkbox id="CImpOC" path="cotizador_detalles.imprimir_oc"/>
+										Protecciones: <form:checkbox id="CProtecciones" path="cotizador_detalles.protecciones"/>
+										Caja seca: <form:checkbox id="CCajaSeca" path="cotizador_detalles.caja_seca"/>
+										Certif fumigación: <form:checkbox id="CCertFum" path="cotizador_detalles.certif_fumig"/>
+										EPP transportista: <form:checkbox id="CEPP" path="cotizador_detalles.epp_transportista"/>
+									</div>
+									<div class="col-sm-1">Altura pallet</div>
+									<div class="col-sm-1"><form:input id="TAltPallet" size="10" maxlength="8" type="text" path="cotizador_detalles.altura_pallet" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
+									<div class="col-sm-1">Camas pallet</div>
+									<div class="col-sm-1"><form:input id="TCamasPallet" size="10" maxlength="8" type="text" path="cotizador_detalles.camas_pallet" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
+									<div class="col-sm-1">Flejes pallet</div>
+									<div class="col-sm-1"><form:input id="TFlejesPallet" size="10" maxlength="8" type="text" path="cotizador_detalles.flejes_pallet" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
+									
+									<div class="col-sm-1">Flejes atado</div>
+									<div class="col-sm-1"><form:input id="TFlejesAtado" size="10" maxlength="8" type="text" path="cotizador_detalles.flejes_atado" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
+									<div class="col-sm-1">Pzas atado</div>
+									<div class="col-sm-1"><form:input id="TPzasAtado" size="10" maxlength="8" type="text" path="cotizador_detalles.pzas_atado" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
+									<div class="col-sm-1">Atados cama</div>
+									<div class="col-sm-1"><form:input id="TAtaCama" size="10" maxlength="8" type="text" path="cotizador_detalles.atados_cama" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
+									
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -827,15 +1163,16 @@ function FEnviarReq()
 					 <div class="col-12">
 						<div class="row small">
 							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
-								<div class="row border border-right">
+								<div id="DEsp" class="row border border-right">
 									<c:forEach var="item" items="${especialidades}" varStatus="status">
 									<div class="col-sm-3">
 										<form:checkbox id="ChEsp" onChange="CalcularDatos()"
 		                              		path="cotizador_detalles.especialidades_cotizacion[${status.index}].idespecialidad" value="${item.code}"/>${item.name}
 		<form:input type="hidden" id="TEsquema${item.code}" 
      	path="cotizador_detalles.especialidades_cotizacion[${status.index}].esquema" value="${item.u_esquema}"  class="border border-primary"/>
-     	<form:input type="hidden" id="TAjuste${item.code}" 
-     	path="cotizador_detalles.especialidades_cotizacion[${status.index}].ajuste" value="${item.u_ajuste}"  class="border border-primary"/>
+     	<form:input type="${item.code != 19 ? 'hidden' : !empty cotizadordatabean.cotizador_detalles.especialidades_cotizacion[status.index].ajuste ? (cotizadordatabean.cotizador_detalles.especialidades_cotizacion[status.index].ajuste > 0 ? 'text' : 'hidden') : 'hidden'}" 
+     	id="TAjuste${item.code}" onkeypress="return filterFloat(event,this);" onKeyUp="CalcularDatos();" size="10" maxlength="8" placeholder="ajuste"
+     	path="cotizador_detalles.especialidades_cotizacion[${status.index}].ajuste" value="${item.code == 19 ? cotizadordatabean.cotizador_detalles.especialidades_cotizacion[status.index].ajuste : item.u_ajuste}"  class="border border-primary"/>
      	
      	<form:input type="hidden" id="TIdcot${item.code}" 
      	path="cotizador_detalles.especialidades_cotizacion[${status.index}].idcotizacion" value="${cotizadordatabean.cotizador.id}"  class="border border-primary"/>
@@ -848,20 +1185,20 @@ function FEnviarReq()
 									     		style="${!empty cotizadordatabean.cotizador_detalles.especialidades_cotizacion[status.index].costo ? (cotizadordatabean.cotizador_detalles.especialidades_cotizacion[status.index].costo > 0 ? 'visibility:visible' : 'visibility:hidden') : 'visibility:hidden'}"
 									     		path="cotizador_detalles.especialidades_cotizacion[${status.index}].costo"
 									     		 multiple="false" class="border border-primary" onChange="CalcularDatos()">
-													<form:option value="0">---</form:option>
+													<form:option value="">---</form:option>
 													<c:forEach var="it" items="${bolsas}">
 														<form:option value="${it.u_ajuste}"><c:out value="${it.name}-${it.u_ajuste} "/></form:option>
 													</c:forEach>
 												</form:select>
 								  			</c:when>
 								  			<c:otherwise>
-									  			<form:input size="10" id="TCosto${item.code}" maxlength="10" readonly="${item.u_esquema == '8' ? 'false' : 'true'}" 
+									  			<form:input size="10" id="TCosto${item.code}" maxlength="8" readonly="${item.u_esquema == '8' ? 'false' : 'true'}" 
 									     		type="${!empty cotizadordatabean.cotizador_detalles.especialidades_cotizacion[status.index].costo ? 'text' : 'hidden'}"  
 									     		path="cotizador_detalles.especialidades_cotizacion[${status.index}].costo" onKeyUp="${item.u_esquema == '8' ? 'CalcularDatos()' : ''}" 
 									     		onkeypress="return filterFloat(event,this);" class="border border-primary"/>
 								  			</c:otherwise>
 								     	</c:choose>
-     	
+								     	
 		                              	</div>
 		                           	</c:forEach>
 								</div>
@@ -871,6 +1208,7 @@ function FEnviarReq()
 				</div>
 			</div>
 		 </div>
+		 
 		 <form:input id="TComisionDir" type="hidden" path="cotizador_detalles.comision_directo"/>
 		 <form:input id="TCpcc" type="hidden" path="cotizador_detalles.cpcc"/>
 		 <form:input id="TPorcFlete" type="hidden" path="cotizador_detalles.porc_flete"/>
@@ -881,23 +1219,40 @@ function FEnviarReq()
 		 <form:input id="TPesoTotal" type="hidden" path="cotizador_detalles.peso_juego"/>
 		 <form:input id="TPkTeorico" type="hidden" path="cotizador_detalles.pk_teorico"/>
 		 
+		 <form:input type="hidden" path="cotizador.usuario_envia_ventas"/>
+		 <form:input type="hidden" path="cotizador.usuario_aut_ventas"/>
+		 <form:input type="hidden" path="cotizador.usuario_rech_ventas"/>
+		 <form:input type="hidden" path="cotizador.usuario_envia_a_prog"/>
+		 <form:input type="hidden" path="cotizador.usuario_aut_prog"/>
+		 <form:input type="hidden" path="cotizador.usuario_rech_prog"/>		 
+		 <form:input type="hidden" path="cotizador.usuario_cancel"/>
+		 		 
+		 <form:input type="hidden" path="cotizador.fecha_aut_ventas"/>		 
+		 <form:input type="hidden" path="cotizador.fecha_rech_ventas"/>		 
+		 <form:input type="hidden" path="cotizador.fecha_aut_prog"/>		 
+		 <form:input type="hidden" path="cotizador.fecha_rech_prog"/>		 
+		 <form:input type="hidden" path="cotizador.fecha_envia_ventas"/>		 
+		 <form:input type="hidden" path="cotizador.fecha_envia_a_prog"/> 
+		 <form:input type="hidden" path="cotizador.fecha_cancel"/>
+		  
+		 <form:input type="hidden" path="cotizador.observaciones_ventas"/>
+		 <form:input type="hidden" path="cotizador.observaciones_prog"/>
+		 
 		 <div align="center">
 		 	<span id="imgload" style='display: none;'><img width="20px" height="20px" src='<c:url value="/static/img/sun_watch.gif"/>' /></span>
 		 </div>
 		 <div id = "mensajes" class = "${!empty mensajes ? 'alert alert-success' : ''}">${mensajes}</div>
 		<div align="left" class = "container">
-		<div class="row" align="center">
-			
+		<div class = "row" align="center">			
 			<div class="col-sm-2"><form:button id="BGrabar" class="btn btn-outline-primary"><i class="fa fa-floppy-o" aria-hidden="true"> Grabar</i></form:button></div>
 			<div class="col-sm-2"><a href="javascript:FBuscar()" class="btn btn-outline-primary"><i class="fa fa-search" aria-hidden="true"> Buscar</i></a></div>
 			<div class="col-sm-2"><button type="button" data-toggle="modal" data-target="#LimpiarModal" class="btn btn-outline-primary"><i class="fa fa-refresh" aria-hidden="true"> Limpiar</i></button></div>
-			<!-- <div class="col-sm-3"><button type="button" data-toggle="modal" data-target="#ReqModal" class="btn btn-outline-primary"><i class="fa fa-angle-double-right" aria-hidden="true">Enviar a Requerimiento</i></button></div>
-			<div class="col-sm-3"><button id="BAutVentas" class="btn btn-outline-primary"><i class="fa fa-caret-right" aria-hidden="true">Enviar a Autorización Ventas</i></button></div>
-			 -->
-			
+			<div class="col-sm-4"><button id="BEnvVtas" type="button" data-toggle="modal" data-target="#VtaModal" class="btn btn-outline-primary"><i class="fa fa-caret-right" aria-hidden="true">Enviar AUT Ventas y Programación</i></button></div>
+			<div class="col-sm-2"><button id="BCancel" type="button" data-toggle="modal" data-target="#CancelModal" class="btn btn-outline-primary"><i class="fa fa-times-circle-o" aria-hidden="true"> Cancelar</i></button></div>
 		</div>
 		</div>
 	</form:form>
+	
 	<!-- REGION DE MODALS -->
 	<div class="modal fade" id="LimpiarModal" tabindex="-1" role="dialog" aria-labelledby="LimpiarModallLabel" aria-hidden="true">
 	  <div class="modal-dialog" role="document">
@@ -917,30 +1272,133 @@ function FEnviarReq()
 	<div class="modal fade bd-example-modal-lg" id="AutModal" tabindex="-1" role="dialog" aria-labelledby="AutModalLabel" aria-hidden="true">
 	  <div class="modal-dialog modal-lg">
 	    <div class="modal-content">
-	      Autorizaciones
+	   	  <div class="modal-header alert alert-info">
+	        <h5 class="modal-title" id="ReqModal">Información adicional</h5>
+	      </div>
+	      <div class="container">
+		  <div class="row">
+		    <div class="col-sm">
+		      Fecha creación:
+		    </div>
+		    <div class="col-sm">
+		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_insert}" pattern="yyyy-MM-dd hh:mm"/>
+		    </div>
+		    <div class="col-sm">
+		      Fecha actualización:
+		    </div>
+		    <div class="col-sm">
+		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_update}" pattern="yyyy-MM-dd hh:mm"/>
+		    </div>
+		  </div>
+		  <div class="row">
+		    <div class="col-sm">
+		      Fecha envío ventas:
+		    </div>
+		    <div class="col-sm">
+		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_envia_ventas}" pattern="yyyy-MM-dd hh:mm"/>
+		    </div>
+		    <div class="col-sm">
+		      Fecha aut ventas:
+		    </div>
+		    <div class="col-sm">
+		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_aut_ventas}" pattern="yyyy-MM-dd hh:mm"/>
+		    </div>
+		  </div>
+		   <div class="row">
+		    <div class="col-sm">
+		      Fecha envío prog:
+		    </div>
+		    <div class="col-sm">
+		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_envia_a_prog}" pattern="yyyy-MM-dd hh:mm"/>
+		    </div>
+		    <div class="col-sm">
+		      Fecha aut prog:
+		    </div>
+		    <div class="col-sm">
+		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_aut_prog}" pattern="yyyy-MM-dd hh:mm"/>
+		    </div>
+		  </div>
+		  <div class="row">
+		    <div class="col-sm">
+		      Fecha rechaza vtas:
+		    </div>
+		    <div class="col-sm">
+		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_rech_ventas}" pattern="yyyy-MM-dd hh:mm"/>
+		    </div>
+		    <div class="col-sm">
+		      Fecha rechaza prog:
+		    </div>
+		    <div class="col-sm">
+		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_rech_prog}" pattern="yyyy-MM-dd hh:mm"/>
+		    </div>
+		  </div>
+		  <div class="row">
+		    <div class="col-sm">
+		      Fecha cancelación:
+		    </div>
+		    <div class="col-sm">
+		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_cancel}" pattern="yyyy-MM-dd hh:mm"/>
+		    </div>
+		    <div class="col-sm">
+		      Comentario ventas:
+		    </div>
+		    <div class="col-sm">
+		      ${cotizadordatabean.cotizador.observaciones_ventas}
+		    </div>
+		  </div>
+		  <div class="row">
+		    <div class="col-sm">
+		      Comentario prog:
+		    </div>
+		    <div class="col-sm">
+		     	${cotizadordatabean.cotizador.observaciones_prog}
+		    </div>
+		    <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+	      </div>
+		  </div>
+		</div>
 	    </div>
 	  </div>
 	</div>
 	
-	<div class="modal fade" id="ReqModal" tabindex="-1" role="dialog" aria-labelledby="ReqModalLabel" aria-hidden="true">
+	<div class="modal fade" id="VtaModal" tabindex="-1" role="dialog" aria-labelledby="VtaModalLabel" aria-hidden="true">
 	  <div class="modal-dialog" role="document">
 	    <div class="modal-content">
 	      <div class="modal-header alert alert-info">
-	        <h5 class="modal-title" id="ReqModal">Enviar a Requerimiento</h5>
+	        <h5 class="modal-title">Enviar a autorización VENTAS y PROGRAMACIÓN</h5>
 	      </div>
 	      <div class="modal-body alert alert-warning">
-	        ¡¡¡ATENCIÓN!!! ¿Desea enviar este detalle a requerimiento?
+	        ¡¡¡ATENCIÓN!!! ¿Desea enviar esta cotización a autorización?
 	      </div>
 	      <div id="DivMensaje" class="modal-footer">
-	        <button type="button" class="btn btn-primary" onClick="FEnviarReq()">Enviar</button>
+	        <button type="button" class="btn btn-primary" onClick="FEnviarVtaProg()">Enviar</button>
 	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
 	      </div>
 	    </div>
 	  </div>
 	</div>
 	
+	<div class="modal fade" id="CancelModal" tabindex="-1" role="dialog" aria-labelledby="CancelModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header alert alert-info">
+	        <h5 class="modal-title">CANCELAR COTIZACIÓN</h5>
+	      </div>
+	      <div class="modal-body alert alert-danger">
+	        ¡¡¡ATENCIÓN!!! ¿Desea CANCELAR esta cotización?
+	      </div>
+	      <div id="DivMensaje" class="modal-footer">
+	        <button type="button" class="btn btn-primary" onClick="FCancelar()">Cancelar</button>
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>	
 	<!-- FIN REGION DE MODALS  -->
+	
 	</div>
+
 	<%@include file="../../appconfig/authfootter.jsp"%>
 	</body>
 </html>

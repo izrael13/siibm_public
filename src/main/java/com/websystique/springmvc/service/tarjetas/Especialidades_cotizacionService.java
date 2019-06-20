@@ -9,4 +9,6 @@ public interface Especialidades_cotizacionService {
 	Especialidades_cotizacion EspDet(Integer idCot, Integer idDet,Integer idEsp);
 	void Guardar(Especialidades_cotizacion esp);
 	void Borrar(Especialidades_cotizacion obj);
+	void Borrar(List<Especialidades_cotizacion> lista);
+	void Guardar(List<Especialidades_cotizacion> lista);
 }

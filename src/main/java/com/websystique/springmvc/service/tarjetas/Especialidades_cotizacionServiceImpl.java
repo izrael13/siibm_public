@@ -40,4 +40,16 @@ public class Especialidades_cotizacionServiceImpl implements Especialidades_coti
 		dao.Borrar(obj);
 	}
 
+	@Override
+	public void Borrar(List<Especialidades_cotizacion> lista) {
+		// FIXME Auto-generated method stub
+		dao.Borrar(lista);
+	}
+
+	@Override
+	public void Guardar(List<Especialidades_cotizacion> lista) {
+		// FIXME Auto-generated method stub
+		dao.Guardar(lista);
+	}
+
 }

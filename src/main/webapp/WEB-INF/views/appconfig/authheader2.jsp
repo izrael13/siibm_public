@@ -14,8 +14,12 @@
 <script src="<c:url value="/static/js/bootstrap4/bootstrap.js" />"></script>
 <script src="<c:url value="/static/js/printThis.js" />"></script>
 <script src="<c:url value="/static/js/CommonFunctions.js" />"></script>
-<script src="<c:url value="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js" />"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="<c:url value="/static/DataTables/datatables.min.js" />"></script>
+<link href="<c:url value='/static/font-awesome-4.7.0/css/font-awesome.css' />" rel="stylesheet"></link>
+
+<script src="<c:url value="/static/js/moment.js" />"></script>
+<script src="<c:url value="/static/js/tempusdominus-bootstrap-4.js" />"></script>
+
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <style>
 /*Propiedades de submenus*/
@@ -111,13 +115,14 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 			 </li>
 			 <li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-dot-circle-o" aria-hidden="true"></i> Cotizador</a>
 			    <ul class="dropdown-menu">
-			    	<li><a class="dropdown-item" href = "<c:url value='/ventas/tarjetas/cotizador/cotizadorabc'/>?id=0&iddet=0"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro cotizaciones</a></li>
-			    	<li><a class="dropdown-item" href = "<c:url value='/ventas/tarjetas/cotizador/cotizadorabc'/>?id=0&iddet=0"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de cotizaciones Vtas</a></li>
+			    	<li><a class="dropdown-item" href = "<c:url value='/ventas/tarjetas/cotizador/cotizadorabc'/>?id=0&iddet=0"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro Cotizaciones/Requerimientos</a></li>
+			    	<li><a class="dropdown-item" href = "<c:url value='/ventas/tarjetas/cotizador/autorizacion_cotizacion_vtas'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de cotizaciones Ventas</a></li>
+			    	<li><a class="dropdown-item" href = "<c:url value='/ventas/tarjetas/cotizador/autorizacion_cotizacion_prog'/>"><i class="fa fa-thumbs-up" aria-hidden="true"></i> Autorización de cotizaciones Programación</a></li>
 			    </ul>
 			 </li>
 			 <li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-check-square-o" aria-hidden="true"></i> Requerimientos</a>
 			    <ul class="dropdown-menu">
-			    	<li><a class="dropdown-item" href = "<c:url value='/ventas/tarjetas/requerimientos/requerimientoabc'/>"><i class="fa fa-check-circle-o" aria-hidden="true"></i> Registro requerimientos</a></li>
+			    	<li><a class="dropdown-item" href = "<c:url value='/ventas/tarjetas/requerimientos/requerimientoabc'/>"><i class="fa fa-check-circle-o" aria-hidden="true"></i> Imprimir requerimientos</a></li>
 			    </ul>
 			 </li>
 		</ul>

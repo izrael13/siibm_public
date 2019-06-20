@@ -44,4 +44,16 @@ public class Especialidades_cotizacionDAOImpl extends AbstractDao<Integer,Especi
 		delete(obj);
 	}
 
+	@Override
+	public void Borrar(List<Especialidades_cotizacion> lista) {
+		// FIXME Auto-generated method stub
+		delete(lista);
+	}
+
+	@Override
+	public void Guardar(List<Especialidades_cotizacion> lista) {
+		// FIXME Auto-generated method stub
+		persist(lista);
+	}
+
 }

@@ -26,4 +26,10 @@ public class Cotizador_busqueda implements Serializable{/**
 	private String fecha_insert;
 	private String simbolo;
 	private String caja;
+	private Double comision_directo;
+	private Double precio_objetivo;
+	private Double precio_sugerido;
+	private Double precio_neto;
+	private Double descuento_vendedor;
+	private String nombrecorto;
 }

@@ -47,12 +47,21 @@ public abstract class AbstractDao<PK extends Serializable, T> {
 		for (T temp : list) {
 			Session session = getSession();
 			session.clear();
-			session.persist(temp);
+			session.save(temp);
 	        session.flush();
 		}
 		
 	}
-
+	
+	public void delete(List<T> list) {
+		for (T temp : list) {
+			Session session = getSession();
+			session.clear();
+			session.delete(temp);
+	        session.flush();
+		}
+	}
+	
 	public void update(T entity) {
 		getSession().update(entity);
 	}

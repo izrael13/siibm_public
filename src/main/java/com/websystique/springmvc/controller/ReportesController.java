@@ -65,7 +65,7 @@ import com.websystique.springmvc.service.reportes.Viajes_mes_ciudadService;
 
 //import net.sf.jasperreports.engine.JRDataSource;
 //import net.sf.jasperreports.engine.JREmptyDataSource;
-/*import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -76,7 +76,7 @@ import net.sf.jasperreports.engine.util.JRLoader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap; */
+import java.util.HashMap; 
 
 @Controller
 @RequestMapping("/reportes")
@@ -838,15 +838,20 @@ public class ReportesController {
 	}
 	
 	
-	/*@RequestMapping(value = "helloReport1", method = RequestMethod.GET)
+	@RequestMapping(value = "/ingenieria/imprmiramortherr", method = RequestMethod.GET)
 	  @ResponseBody
-	  public void getRpt1(HttpServletResponse response) throws JRException, IOException {
-		//System.out.println(this.getClass().getResourceAsStream("/jasperreports/Blank_A4.jasper"));
-	    InputStream jasperStream = this.getClass().getResourceAsStream("/jasperreports/Blank_A4.jasper");
+	  public void getRpt1(HttpServletResponse response,HttpServletRequest request,ModelMap model,@RequestParam("select") String select,@RequestParam("herramental") String herramental) throws JRException, IOException {
+
+	    InputStream jasperStream = this.getClass().getResourceAsStream("/jasperreports/reportes/Herramentales.jasper");
 	    Map<String,Object> params = new HashMap<>();
+	    
 	    JasperReport jasperReport = (JasperReport) JRLoader.loadObject(jasperStream);
-	    JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(cai.findByIntervalo());
-	    //JRDataSource dataSource = getDataSource();
+	    JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(ahs.findAmortHerram(Integer.valueOf(select), herramental));
+	    Integer Select = Integer.valueOf(select);
+	    params.put("dataSource", dataSource);
+	    params.put("TipoAmortiza", (Select == 1 ? "No Amortizados" : Select == 2 ? "Amortizados" : "Todos"));
+	    params.put("Imagen",request.getServletContext().getRealPath("/"));
+
 	    JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, dataSource);
 
 	    response.setContentType("application/pdf");
@@ -854,16 +859,6 @@ public class ReportesController {
 
 	    final OutputStream outStream = response.getOutputStream();
 	    JasperExportManager.exportReportToPdfStream(jasperPrint, outStream);
-	  } */
-	//cks
-	//todos_pedidos_ing_
-	/*@RequestMapping(value = "/profile", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody String processAJAXRequest() {
-	        String response = "respuesta";
-	        // Process the request
-	        // Prepare the response string
-	        return response;
-	  FUNCIONA OK CON AJAX  
-	}*/
+	  } 
 		
 }

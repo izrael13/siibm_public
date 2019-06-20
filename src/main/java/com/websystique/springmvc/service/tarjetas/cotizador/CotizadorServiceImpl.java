@@ -18,6 +18,12 @@ public class CotizadorServiceImpl implements CotizadorService{
 	CotizadorDAO dao;
 	
 	@Override
+	public Cotizador BuscarxId(Integer id) {
+		// FIXME Auto-generated method stub
+		return dao.BuscarxId(id);
+	}
+	
+	@Override
 	public Cotizador BuscarxId(Integer id, Integer userInsert) {
 		// FIXME Auto-generated method stub
 		return dao.BuscarxId(id,userInsert);
@@ -49,9 +55,15 @@ public class CotizadorServiceImpl implements CotizadorService{
 	}
 
 	@Override
-	public List<Cotizador_busqueda> ListaBusquedaxIdCardCodeDet(Integer id, String cardCode, Integer idUser) {
+	public List<Cotizador_busqueda> ListaBusquedaxIdCardCodeDet(Integer id, String cardCode, Integer idUser,Integer IdDet, Boolean autVtas,Boolean autProg) {
 		// FIXME Auto-generated method stub
-		return dao.ListaBusquedaxIdCardCodeDet(id, cardCode, idUser);
+		return dao.ListaBusquedaxIdCardCodeDet(id, cardCode, idUser, IdDet, autVtas,autProg);
+	}
+
+	@Override
+	public List<Object> ListaCotizacionesJasper(Integer id,Boolean autProg) {
+		// FIXME Auto-generated method stub
+		return dao.ListaCotizacionesJasper(id, autProg);
 	}
 
 }
