@@ -32,4 +32,6 @@ public class Cotizador_busqueda implements Serializable{/**
 	private Double precio_neto;
 	private Double descuento_vendedor;
 	private String nombrecorto;
+	private Double cpcc;
+	private Double ref_para_com;
 }

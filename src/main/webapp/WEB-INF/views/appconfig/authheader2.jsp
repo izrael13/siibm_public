@@ -28,13 +28,13 @@
 	left:200px;
 	top:0px;
 	font-size: small;
-	width: 300px;
+	width: 350px;
 }
 .dropdown-item:hover{color:blue;}/*Color azul para los links*/
 a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
-.dropdown:hover>.dropdown-menu{display:block;} /*Desplieque de meú principal (Módulos)*/
+.dropdown:hover>.dropdown-menu{display:block;} /*Desplieque de menú principal (Módulos)*/
 .dropdown-submenu:hover>.dropdown-menu{display:block;}/*Desplieque de submenus (reportes)*/
-.dropdown-menu .dropdown-menu-right{width: 200px;font-size: smaller;}/*Propiedades menu (Módulos)*/
+.dropdown-menu .dropdown-menu-right{width: 220px;font-size: smaller;}/*Propiedades menu (Módulos)*/
 .fa-user-circle-o:hover{color: green;}/**/
 </style>
 
@@ -98,7 +98,7 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 	 <li class="nav-item dropdown"><a class="dropdown-item" href="" data-toggle="dropdown"><i class="fa fa-industry" aria-hidden="true"> Ventas</i></a>
 	 	<ul class="dropdown-menu dropdown-menu-right">
 	   		<li class="dropdown-submenu dropdown-menu-right">
-	   			<a class="dropdown-item" href = "<c:url value='/ventas/pronosticoscte____' />"><i class="fa fa-lightbulb-o" aria-hidden="true"></i>	Pronósticos</a>
+	   			<a class="dropdown-item" href = "<c:url value='/qlikview/ventas/pronosticoscte____' />"><i class="fa fa-lightbulb-o" aria-hidden="true"></i>	Pronósticos</a>
 	  		</li>
 	   </ul>
 	 </li>
@@ -109,20 +109,16 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 		<ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu">
 			<li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-user-circle" aria-hidden="true"></i> Prospectos</a>
 			    <ul class="dropdown-menu">
-			    	<li><a class="dropdown-item" href = "<c:url value='/ventas/tarjetas/prospectos/prospectosabc' />?id=0"><i class="fa fa-user-plus" aria-hidden="true"></i> Registro prospectos y actividades</a></li>
-			    	<li><a class="dropdown-item" href = "<c:url value='/ventas/tarjetas/prospectos/prospectosgerenteventas'/>"><i class="fa fa-male" aria-hidden="true"></i> Prospectos gerente de ventas</a></li>
+			    	<li><a class="dropdown-item" href = "<c:url value='/prospectos/vendedor/prospectosabc' />?id=0"><i class="fa fa-user-plus" aria-hidden="true"></i> Registro prospectos y actividades</a></li>
+			    	<li><a class="dropdown-item" href = "<c:url value='/prospectos/ventas/prospectosgerenteventas'/>"><i class="fa fa-male" aria-hidden="true"></i> Prospectos gerente de ventas</a></li>
 			    </ul>
 			 </li>
-			 <li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-dot-circle-o" aria-hidden="true"></i> Cotizador</a>
+			 <li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-dot-circle-o" aria-hidden="true"></i> Cotizador/Requerimiento</a>
 			    <ul class="dropdown-menu">
-			    	<li><a class="dropdown-item" href = "<c:url value='/ventas/tarjetas/cotizador/cotizadorabc'/>?id=0&iddet=0"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro Cotizaciones/Requerimientos</a></li>
-			    	<li><a class="dropdown-item" href = "<c:url value='/ventas/tarjetas/cotizador/autorizacion_cotizacion_vtas'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de cotizaciones Ventas</a></li>
-			    	<li><a class="dropdown-item" href = "<c:url value='/ventas/tarjetas/cotizador/autorizacion_cotizacion_prog'/>"><i class="fa fa-thumbs-up" aria-hidden="true"></i> Autorización de cotizaciones Programación</a></li>
-			    </ul>
-			 </li>
-			 <li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-check-square-o" aria-hidden="true"></i> Requerimientos</a>
-			    <ul class="dropdown-menu">
-			    	<li><a class="dropdown-item" href = "<c:url value='/ventas/tarjetas/requerimientos/requerimientoabc'/>"><i class="fa fa-check-circle-o" aria-hidden="true"></i> Imprimir requerimientos</a></li>
+			    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/vendedor/cotizadorabc'/>?id=0&iddet=0"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro Cotizaciones/Requerimientos</a></li>
+			    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/ventas/autorizacion_cotizacion_vtas'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de cotizaciones Ventas</a></li>
+			    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/programacion/autorizacion_cotizacion_prog'/>"><i class="fa fa-thumbs-up" aria-hidden="true"></i> Autorización de requerimientos Programación</a></li>
+			    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/ingenieria/requerimientoabc'/>"><i class="fa fa-check-circle-o" aria-hidden="true"></i> Imprimir/Asignar diseñador requerimientos</a></li>
 			    </ul>
 			 </li>
 		</ul>

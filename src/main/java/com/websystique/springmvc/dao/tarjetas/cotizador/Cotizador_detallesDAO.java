@@ -10,4 +10,5 @@ public interface Cotizador_detallesDAO {
 	List<Cotizador_detalles> BuscarxCotId(Integer idCot);
 	Integer Guardar(Cotizador_detalles cot);
 	void Actualizar(Cotizador_detalles cot);
+	Cotizador_detalles BuscarxIdDet(Integer id, Integer iddet);
 }

@@ -44,6 +44,7 @@ import com.websystique.springmvc.model.tarjetas.Especialidades_cotizacion;
 import com.websystique.springmvc.model.tarjetas.Vendedores_especiales_comision_sap_vw;
 import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador;
 import com.websystique.springmvc.model.tarjetas.cotizador.CotizadorDataBean;
+import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador_detalles;
 import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador_detallesValidator;
 import com.websystique.springmvc.service.UserService;
 import com.websystique.springmvc.service.tarjetas.Catalogo_bolsas_sap_vwService;
@@ -71,7 +72,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.util.JRLoader;
 
 @Controller
-@RequestMapping("/ventas/tarjetas")
+@RequestMapping("/cotizador")
 public class CotizadorController {
 	
 	private Logger logger = Logger.getLogger(CotizadorController.class);
@@ -116,8 +117,9 @@ public class CotizadorController {
 	DecimalFormat decimal2 = new DecimalFormat("###########0.##");
 	DecimalFormat decimal4 = new DecimalFormat("###########0.####");
 	////////////////////////////////////***COTIZADOR***////////////////////////////
-	@RequestMapping(value = {"/cotizador/cotizadorabc" }, method = RequestMethod.GET)
+	@RequestMapping(value = {"/vendedor/cotizadorabc" }, method = RequestMethod.GET)
 	public String cotizadotget(ModelMap model, @RequestParam("id") String id, @RequestParam("iddet") String iddet) {
+		String msj = "";
 		try {
 				List<Catalogo_especialidades_sap_vw> ListaEsp = ces.ListaEsp();
 				User user = us.findBySSO(AppController.getPrincipal());
@@ -165,12 +167,14 @@ public class CotizadorController {
 		}
 		catch(Exception e)
 		{
-			logger.error(AppController.getPrincipal() + " - cotizadorabc. - " + e.getMessage());
+			msj = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
+			logger.error(AppController.getPrincipal() + " - cotizadorabc. - " + msj);
 		}
+		model.addAttribute("mensajes", msj);
 		return "/tarjetas/cotizador/cotizador";
 	}
 	
-	@RequestMapping(value = {"/cotizador/cotizadorabc" }, method = RequestMethod.POST)
+	@RequestMapping(value = {"/vendedor/cotizadorabc" }, method = RequestMethod.POST)
 	public String cotizadotpost(@Valid @ModelAttribute("cotizadordatabean") CotizadorDataBean cotizadorDataBean, BindingResult result, ModelMap model) {
 		try {
 			String msj = "";
@@ -274,11 +278,12 @@ public class CotizadorController {
 		catch(Exception e)
 		{
 			model.addAttribute("mensajes", e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage());
+			logger.info(AppController.getPrincipal() + " - cotizadotpost. " + e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage());
 		}
 			return "/tarjetas/cotizador/cotizador";
 	}
 	
-	@RequestMapping(value = {"/cotizador/buscardirecciones"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/vendedor/buscardirecciones"}, method = RequestMethod.GET)
 	public @ResponseBody String buscardirecciones(HttpServletRequest req, HttpServletResponse res)
 	   throws Exception {
 		String cardcode = req.getParameter("cardcode");
@@ -288,7 +293,7 @@ public class CotizadorController {
 	
 	}
 	
-	@RequestMapping(value = {"/cotizador/buscarinfodir"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/vendedor/buscarinfodir"}, method = RequestMethod.GET)
 	public @ResponseBody String buscarinfodir(HttpServletRequest req, HttpServletResponse res)
 	   throws Exception {
 		String cardcode = req.getParameter("cardcode");
@@ -300,181 +305,205 @@ public class CotizadorController {
 	
 	}
 	
-	@RequestMapping(value = {"/cotizador/cotizadorbusqueda" }, method = RequestMethod.GET)
+	@RequestMapping(value = {"/vendedor/cotizadorbusqueda" }, method = RequestMethod.GET)
 	public String cotizadorbusqueda(ModelMap model,@RequestParam("id") String id,@RequestParam("cardcode") String cardcode) {
+		String msj = "";
+		try
+		{
+			User user = us.findBySSO(AppController.getPrincipal());
+			model.addAttribute("lista",cs.ListaBusquedaxIdCardCode(Integer.valueOf(id), cardcode, user.getId()));
+			model.addAttribute("listaDet",cs.ListaBusquedaxIdCardCodeDet(Integer.valueOf(id), cardcode, user.getId(), 0, false,false));
+			
+		}
+		catch(Exception e)
+		{
+			msj = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
+			model.addAttribute("mensajes", msj);			
+		}
 		
-		User user = us.findBySSO(AppController.getPrincipal());
-		model.addAttribute("lista",cs.ListaBusquedaxIdCardCode(Integer.valueOf(id), cardcode, user.getId()));
-		model.addAttribute("listaDet",cs.ListaBusquedaxIdCardCodeDet(Integer.valueOf(id), cardcode, user.getId(), 0, false,false));
-		
-		logger.info(AppController.getPrincipal() + " - cotizadorbusqueda.");
-		
+		logger.info(AppController.getPrincipal() + " - cotizadorbusqueda. "+msj);
 		return "/tarjetas/cotizador/cotizador_busqueda";
+
 	}
 	
-	@RequestMapping(value = {"/cotizador/buscarinforesistenciabarca"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/vendedor/buscarinforesistenciabarca"}, method = RequestMethod.GET)
 	public @ResponseBody String buscarinforesistenciabarca(HttpServletRequest req, HttpServletResponse res)
 	   throws Exception {
-		String id = req.getParameter("id");
-		
-		Catalogo_resistencias_sap_vw crs = new Catalogo_resistencias_sap_vw();
-		crs = crss.BuscarxId(Integer.valueOf(id));
-		Gson g=new Gson();
-		
-		return g.toJson(crs);
+		try
+		{
+			String id = req.getParameter("id");
+			
+			Catalogo_resistencias_sap_vw crs = new Catalogo_resistencias_sap_vw();
+			crs = crss.BuscarxId(Integer.valueOf(id));
+			Gson g=new Gson();
+			
+			return g.toJson(crs);
+		}
+		catch(Exception e)
+		{
+			return e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
+		}
 	}
 
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value = {"/cotizador/calculardatos"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/vendedor/calculardatos"}, method = RequestMethod.GET)
 	public @ResponseBody String calculardatos(HttpServletRequest req, HttpServletResponse res) throws Exception
 	{
-		String mystring = req.getParameter("mystring");
-		JsonParser jsonParser = new JsonParser();
-		JsonElement jsonTree = jsonParser.parse(mystring);
-		JsonObject jsonObjectParams = jsonTree.getAsJsonObject();
-		JsonObject object = new JsonObject();//Objeto JSon
-		Catalogo_cajas_sap_vw objCaja = ccss.BuscarxId(jsonObjectParams.get("idcaja").getAsInt());//Datos de la caja seleccionada.
-		if(objCaja != null)
+		try
 		{
-			String[] AnchoStr = String.valueOf(jsonObjectParams.get("ancho").getAsDouble()).split("\\.");//Split del Ancho para obtener los decimales.
-			List<Integer> vals = Arrays.asList(0,2,4,6,8);//Lista de valores enteros pares.
-			User user = us.findBySSO(AppController.getPrincipal());
-			Catalogo_vendedores_sap_vw Vendedor = cvss.BuscarXid(user.getCvevendedor_sap());
-			
-			Double AnchoVar = 0.0;
-			Double LargoVar = 0.0;
-			
-			if(objCaja != null) {
-				AnchoVar = ((objCaja.getMaa() * jsonObjectParams.get("ancho").getAsDouble()) + (objCaja.getMaf() * jsonObjectParams.get("fondo").getAsDouble()) + (objCaja.getTr() * ((jsonObjectParams.get("espsup").getAsDouble() + jsonObjectParams.get("espinf").getAsDouble()) / 2)) + (vals.contains(Integer.valueOf(AnchoStr[1])) ? objCaja.getDesami() : objCaja.getDesam()));
-				object.addProperty("AnchoVar", decimal2.format(AnchoVar));
-				LargoVar = (objCaja.getMll() * jsonObjectParams.get("largo").getAsDouble()) + (objCaja.getMla() * jsonObjectParams.get("ancho").getAsDouble() + objCaja.getMlf() * jsonObjectParams.get("fondo").getAsDouble()) + (jsonObjectParams.get("score").getAsInt() == 1 ? objCaja.getDeslm() : objCaja.getDeslmi());
-				object.addProperty("LargoVar", decimal2.format(LargoVar));
-			}
-	
-			Double AreaUni = (LargoVar * AnchoVar) / 10000;
-			object.addProperty("AreaUni", decimal4.format(AreaUni));
-			
-			Double PesoTeorico = AreaUni * jsonObjectParams.get("pesoresis").getAsDouble();
-			object.addProperty("PesoTeorico", decimal4.format(PesoTeorico));
-			
-			Double PrecioNeto = jsonObjectParams.get("preciom2resis").getAsDouble() * AreaUni;
-			object.addProperty("PrecioNeto", decimal2.format(PrecioNeto));
-			
-			Double M2 = jsonObjectParams.get("cantpedmes").getAsDouble() * AreaUni;
-			object.addProperty("M2", decimal4.format(M2));
-			
-			Double PesoPza = AreaUni * jsonObjectParams.get("pesoresis").getAsDouble();
-			object.addProperty("PesoPza", decimal4.format(PesoPza));
-			
-			Double KG = PesoPza * jsonObjectParams.get("cantpedmes").getAsDouble() ;
-			object.addProperty("KG", decimal2.format(KG));
-			
-			String MedLamina = String.valueOf(LargoVar) + " x " + AnchoVar;
-			object.addProperty("MedLamina", MedLamina);
-			
-			Double ComisionDirecto = PrecioNeto > 0 ? (1 - (jsonObjectParams.get("precioobj").getAsDouble() / PrecioNeto)) * 100 : 0.0;
-			object.addProperty("ComisionDirecto", decimal2.format(ComisionDirecto));
-			
-			Double CostoPapel = jsonObjectParams.get("costopapelresis").getAsDouble() * AreaUni * jsonObjectParams.get("pzasxjgo").getAsInt();
-			object.addProperty("CostoPapel", decimal2.format(CostoPapel));
-			
-			Double CostoFlete = 0.0;
-			try {
-				CostoFlete = (jsonObjectParams.get("totalflete").getAsDouble() / (4500 /(PesoPza * jsonObjectParams.get("pzasxjgo").getAsDouble()))) * 1000;
-			}catch(Exception e) {CostoFlete = 0.0;}
-			object.addProperty("CostoFlete", decimal2.format(CostoFlete));
-			
-			////////CALCULOS ESPECIALIDADES
-			JSONArray arr = new JSONArray();
-			String ids = jsonObjectParams.get("idsesp").getAsString();
-			String costoscap = jsonObjectParams.get("costoscapturados").getAsString();
-			String ajustescap = jsonObjectParams.get("ajustes").getAsString();
-			String esquemascap = jsonObjectParams.get("esquemas").getAsString();
-			
-			Double TotCostoEsp = 0.0;
-			if(ids.length() > 1)
+			String mystring = req.getParameter("mystring");
+			JsonParser jsonParser = new JsonParser();
+			JsonElement jsonTree = jsonParser.parse(mystring);
+			JsonObject jsonObjectParams = jsonTree.getAsJsonObject();
+			JsonObject object = new JsonObject();//Objeto JSon
+			Catalogo_cajas_sap_vw objCaja = ccss.BuscarxId(jsonObjectParams.get("idcaja").getAsInt());//Datos de la caja seleccionada.
+			if(objCaja != null)
 			{
-				String[] idsarr = ids.split("\\|");
-				String[] costoscaparr = costoscap.split("\\|");
-				String[] ajustescaparr = ajustescap.split("\\|");
-				String[] esquemascaparr = esquemascap.split("\\|");
+				String[] AnchoStr = String.valueOf(jsonObjectParams.get("ancho").getAsDouble()).split("\\.");//Split del Ancho para obtener los decimales.
+				List<Integer> vals = Arrays.asList(0,2,4,6,8);//Lista de valores enteros pares.
+				User user = us.findBySSO(AppController.getPrincipal());
+				Catalogo_vendedores_sap_vw Vendedor = cvss.BuscarXid(user.getCvevendedor_sap());
 				
-				for(int i = 0; i < idsarr.length; i++)
-				{
-					JsonObject objEsp = new JsonObject();
-					//Catalogo_especialidades_sap_vw Esp = ces.BuscaxId(Integer.valueOf(idsarr[i]));
-					String Costo = calcular_especialidades((ajustescaparr[i].trim().length() > 0 ? Double.valueOf(ajustescaparr[i].trim()) : 0.0 ),(esquemascaparr[i].trim().length() > 0 ? Integer.valueOf(esquemascaparr[i].trim()) : 0 ),AreaUni,LargoVar,AnchoVar,jsonObjectParams.get("pzasxtar").getAsInt(),
-															jsonObjectParams.get("fondo").getAsDouble(),objCaja.getDesami(),costoscaparr[i]);
-					objEsp.addProperty("id", idsarr[i]);
-					objEsp.addProperty("costo", Costo);
-					arr.add(objEsp);
-					TotCostoEsp = TotCostoEsp + Double.valueOf(Costo);
+				Double AnchoVar = 0.0;
+				Double LargoVar = 0.0;
+				
+				if(objCaja != null) {
+					AnchoVar = ((objCaja.getMaa() * jsonObjectParams.get("ancho").getAsDouble()) + (objCaja.getMaf() * jsonObjectParams.get("fondo").getAsDouble()) + (objCaja.getTr() * ((jsonObjectParams.get("espsup").getAsDouble() + jsonObjectParams.get("espinf").getAsDouble()) / 2)) + (vals.contains(Integer.valueOf(AnchoStr[1])) ? objCaja.getDesami() : objCaja.getDesam()));
+					object.addProperty("AnchoVar", decimal2.format(AnchoVar));
+					LargoVar = (objCaja.getMll() * jsonObjectParams.get("largo").getAsDouble()) + (objCaja.getMla() * jsonObjectParams.get("ancho").getAsDouble() + objCaja.getMlf() * jsonObjectParams.get("fondo").getAsDouble()) + (jsonObjectParams.get("score").getAsInt() == 1 ? objCaja.getDeslm() : objCaja.getDeslmi());
+					object.addProperty("LargoVar", decimal2.format(LargoVar));
 				}
-			}
-			object.addProperty("Esp", arr.toString());
-			object.addProperty("TotCostoEsp", TotCostoEsp); 
-			
-			Double CPSC = (jsonObjectParams.get("precioobj").getAsDouble() - TotCostoEsp - CostoFlete) > 0 ? (CostoPapel / (jsonObjectParams.get("precioobj").getAsDouble() - TotCostoEsp - CostoFlete)) * 100 : 0.0;			
-			object.addProperty("CPSC", decimal2.format(CPSC));
-			
-			Double PorcComision = 0.0;
-			List<Vendedores_especiales_comision_sap_vw> ListaVES = vecs.VenEsp(user.getCvevendedor_sap(), jsonObjectParams.get("cardcode").getAsString());
-			if(ListaVES.size() > 0)
-			{	
-				PorcComision = ListaVES.get(0).getU_comision();
-			}
-			else
-			{			
-				ListaVES.clear();
-				ListaVES = vecs.VenEsp(user.getCvevendedor_sap(), "");
-				if(ListaVES.size() > 0)
+		
+				Double AreaUni = (LargoVar * AnchoVar) / 10000;
+				object.addProperty("AreaUni", decimal4.format(AreaUni));
+				
+				Double PesoTeorico = AreaUni * jsonObjectParams.get("pesoresis").getAsDouble();
+				object.addProperty("PesoTeorico", decimal4.format(PesoTeorico));
+				
+				Double PrecioNeto = jsonObjectParams.get("preciom2resis").getAsDouble() * AreaUni;
+				object.addProperty("PrecioNeto", decimal2.format(PrecioNeto));
+				
+				Double M2 = jsonObjectParams.get("cantpedmes").getAsDouble() * AreaUni;
+				object.addProperty("M2", decimal4.format(M2));
+				
+				Double PesoPza = AreaUni * jsonObjectParams.get("pesoresis").getAsDouble();
+				object.addProperty("PesoPza", decimal4.format(PesoPza));
+				
+				Double KG = PesoPza * jsonObjectParams.get("cantpedmes").getAsDouble() ;
+				object.addProperty("KG", decimal2.format(KG));
+				
+				String MedLamina = String.valueOf(LargoVar) + " x " + AnchoVar;
+				object.addProperty("MedLamina", MedLamina);
+				
+				Double ComisionDirecto = PrecioNeto > 0 ? ((jsonObjectParams.get("precioobj").getAsDouble() / PrecioNeto) - 1) * 100 : 0.0;
+				object.addProperty("ComisionDirecto", decimal2.format(ComisionDirecto));
+				
+				Double CostoPapel = jsonObjectParams.get("costopapelresis").getAsDouble() * AreaUni * jsonObjectParams.get("pzasxjgo").getAsInt();
+				object.addProperty("CostoPapel", decimal2.format(CostoPapel));
+				
+				Double CostoFlete = 0.0;
+				try {
+					CostoFlete = (jsonObjectParams.get("totalflete").getAsDouble() / (4500 /(PesoPza * jsonObjectParams.get("pzasxjgo").getAsDouble()))) * 1000;
+				}catch(Exception e) {CostoFlete = 0.0;}
+				object.addProperty("CostoFlete", decimal2.format(CostoFlete));
+				
+				////////CALCULOS ESPECIALIDADES
+				JSONArray arr = new JSONArray();
+				String ids = jsonObjectParams.get("idsesp").getAsString();
+				String costoscap = jsonObjectParams.get("costoscapturados").getAsString();
+				String ajustescap = jsonObjectParams.get("ajustes").getAsString();
+				String esquemascap = jsonObjectParams.get("esquemas").getAsString();
+				
+				Double TotCostoEsp = 0.0;
+				if(ids.length() > 1)
 				{
+					String[] idsarr = ids.split("\\|");
+					String[] costoscaparr = costoscap.split("\\|");
+					String[] ajustescaparr = ajustescap.split("\\|");
+					String[] esquemascaparr = esquemascap.split("\\|");
+					
+					for(int i = 0; i < idsarr.length; i++)
+					{
+						JsonObject objEsp = new JsonObject();
+						//Catalogo_especialidades_sap_vw Esp = ces.BuscaxId(Integer.valueOf(idsarr[i]));
+						String Costo = calcular_especialidades((ajustescaparr[i].trim().length() > 0 ? Double.valueOf(ajustescaparr[i].trim()) : 0.0 ),(esquemascaparr[i].trim().length() > 0 ? Integer.valueOf(esquemascaparr[i].trim()) : 0 ),AreaUni,LargoVar,AnchoVar,jsonObjectParams.get("pzasxtar").getAsInt(),
+																jsonObjectParams.get("fondo").getAsDouble(),objCaja.getDesami(),costoscaparr[i]);
+						objEsp.addProperty("id", idsarr[i]);
+						objEsp.addProperty("costo", Costo);
+						arr.add(objEsp);
+						TotCostoEsp = TotCostoEsp + Double.valueOf(Costo);
+					}
+				}
+				object.addProperty("Esp", arr.toString());
+				object.addProperty("TotCostoEsp", TotCostoEsp); 
+				
+				Double CPSC = (jsonObjectParams.get("precioobj").getAsDouble() - TotCostoEsp - CostoFlete) > 0 ? (CostoPapel / (jsonObjectParams.get("precioobj").getAsDouble() - TotCostoEsp - CostoFlete)) * 100 : 0.0;			
+				object.addProperty("CPSC", decimal2.format(CPSC));
+				
+				Double PorcComision = 0.0;
+				List<Vendedores_especiales_comision_sap_vw> ListaVES = vecs.VenEsp(user.getCvevendedor_sap(), jsonObjectParams.get("cardcode").getAsString());
+				if(ListaVES.size() > 0)
+				{	
 					PorcComision = ListaVES.get(0).getU_comision();
 				}
 				else
-				{
-					if(PorcComision == 0.0 && Vendedor.getClasevendedor().equals("Directo"))
+				{			
+					ListaVES.clear();
+					ListaVES = vecs.VenEsp(user.getCvevendedor_sap(), "");
+					if(ListaVES.size() > 0)
 					{
-						List<Comision_directo_sap_vw> ListaD = cdss.ListaCDSV();
-						Supplier<Stream<Comision_directo_sap_vw>> stream = () ->  ListaD.stream().filter(a -> a.getCode() <= ComisionDirecto && a.getName() >= ComisionDirecto);
-						if(stream.get().count() > 0)
-							PorcComision = stream.get().findFirst().get().getU_comision();
+						PorcComision = ListaVES.get(0).getU_comision();
 					}
 					else
 					{
-						if(PorcComision == 0.0 && Vendedor.getClasevendedor().equals("Comisionista"))
+						if(PorcComision == 0.0 && Vendedor.getClasevendedor().equals("Directo"))
 						{
-							List<Comision_comisionista_sap_vw> ListaC = ccs.ListaCCSV();
-							Supplier<Stream<Comision_comisionista_sap_vw>> streamc = () -> ListaC.stream().filter(a -> a.getName() <= CPSC && a.getCode() <= CPSC);
-							if(streamc.get().count() > 0)
-								PorcComision = streamc.get().findFirst().get().getU_comision(); 
+							List<Comision_directo_sap_vw> ListaD = cdss.ListaCDSV();
+							Supplier<Stream<Comision_directo_sap_vw>> stream = () ->  ListaD.stream().filter(a -> a.getCode() <= ComisionDirecto && a.getName() >= ComisionDirecto);
+							if(stream.get().count() > 0)
+								PorcComision = stream.get().findFirst().get().getU_comision();
+						}
+						else
+						{
+							if(PorcComision == 0.0 && Vendedor.getClasevendedor().equals("Comisionista"))
+							{
+								List<Comision_comisionista_sap_vw> ListaC = ccs.ListaCCSV();
+								Supplier<Stream<Comision_comisionista_sap_vw>> streamc = () -> ListaC.stream().filter(a -> a.getName() <= CPSC && a.getCode() <= CPSC);
+								if(streamc.get().count() > 0)
+									PorcComision = streamc.get().findFirst().get().getU_comision(); 
+							}
 						}
 					}
-				}
-			}		
-			object.addProperty("PorcComision", decimal2.format(PorcComision));
+				}		
+				object.addProperty("PorcComision", decimal2.format(PorcComision));
+				
+				Double ComXmillar = (PorcComision  / 100) * jsonObjectParams.get("precioobj").getAsDouble();
+				object.addProperty("ComXmillar", decimal2.format(ComXmillar));
+				
+				Double CPCC  = (jsonObjectParams.get("precioobj").getAsDouble() - TotCostoEsp - CostoFlete - ComXmillar) > 0 ? (CostoPapel / (jsonObjectParams.get("precioobj").getAsDouble() - TotCostoEsp - CostoFlete - ComXmillar)) * 100 : 0.0;
+				object.addProperty("CPCC", decimal2.format(CPCC));
+				
+				Double LimVendedor = PrecioNeto * (jsonObjectParams.get("descven").getAsDouble() / 100);
+				
+				Double PrecioSugerido = PrecioNeto - LimVendedor;
+				object.addProperty("PrecioSugerido", decimal2.format(PrecioSugerido));
+				
+				Double PorcFlete =  jsonObjectParams.get("precioobj").getAsDouble() > 0 ? (CostoFlete * 100) / jsonObjectParams.get("precioobj").getAsDouble() : 0.0;
+				object.addProperty("PorcFlete", decimal2.format(PorcFlete));
+				
+				object.addProperty("AreaTotal",decimal4.format(AreaUni * jsonObjectParams.get("pzasxjgo").getAsInt()));
+				object.addProperty("PesoTotal",decimal4.format(AreaUni * PesoPza));
+				object.addProperty("PK_Teorico",decimal4.format( (jsonObjectParams.get("cantpedmes").getAsDouble() / 1000) * (jsonObjectParams.get("precioobj").getAsDouble() / KG)));
+				
+			}//Fin Si hay Caja seleccionada
 			
-			Double ComXmillar = (PorcComision  / 100) * jsonObjectParams.get("precioobj").getAsDouble();
-			object.addProperty("ComXmillar", decimal2.format(ComXmillar));
-			
-			Double CPCC  = (jsonObjectParams.get("precioobj").getAsDouble() - TotCostoEsp - CostoFlete - ComXmillar) > 0 ? (CostoPapel / (jsonObjectParams.get("precioobj").getAsDouble() - TotCostoEsp - CostoFlete - ComXmillar)) * 100 : 0.0;
-			object.addProperty("CPCC", decimal2.format(CPCC));
-			
-			Double LimVendedor = PrecioNeto * (jsonObjectParams.get("descven").getAsDouble() / 100);
-			
-			Double PrecioSugerido = PrecioNeto - LimVendedor;
-			object.addProperty("PrecioSugerido", decimal2.format(PrecioSugerido));
-			
-			Double PorcFlete =  jsonObjectParams.get("precioobj").getAsDouble() > 0 ? (CostoFlete * 100) / jsonObjectParams.get("precioobj").getAsDouble() : 0.0;
-			object.addProperty("PorcFlete", decimal2.format(PorcFlete));
-			
-			object.addProperty("AreaTotal",decimal4.format(AreaUni * jsonObjectParams.get("pzasxjgo").getAsInt()));
-			object.addProperty("PesoTotal",decimal4.format(AreaUni * PesoPza));
-			object.addProperty("PK_Teorico",decimal4.format( (jsonObjectParams.get("cantpedmes").getAsDouble() / 1000) * (jsonObjectParams.get("precioobj").getAsDouble() / KG)));
-			
-		}//Fin Si hay Caja seleccionada
+			return object.toString();
+		}
+		catch(Exception e)
+		{
+			return e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
+		}
 		
-		return object.toString();
 	}
 	
 	public String calcular_especialidades(Double ajuste,Integer esquema,Double area_uni, Double largopliego, Double anchopliego,Integer pzasxtar,Double fondo,Double desami, String costoscap)
@@ -520,22 +549,42 @@ public class CotizadorController {
 		return decimal2.format(costo);
 	}
 	
-	@RequestMapping(value = {"/cotizador/enviaragerenteventasprog" }, method = RequestMethod.POST)
-	public @ResponseBody String enviaragerenteventas(ModelMap model, @RequestParam("idcot") String idcot)
+	@RequestMapping(value = {"/vendedor/enviaragerenteventasprog" }, method = RequestMethod.POST)
+	public @ResponseBody String enviaragerenteventasprog(ModelMap model, @RequestParam("idcot") String idcot)
 	{
+		String msj = "";
 		try
 		{
 			User user = us.findBySSO(AppController.getPrincipal());
 			Cotizador c = cs.BuscarxId(Integer.valueOf(idcot), user.getId());
+			Cotizador_detalles cd = cds.BuscarxId(Integer.valueOf(idcot), 1, user.getId());
+			
 			java.util.Date date = new java.util.Date();
 			
-			if((c.getUsuario_envia_ventas() == null && c.getFecha_envia_ventas() == null) || (c.getUsuario_rech_ventas() != null && c.getFecha_rech_ventas() != null))
-			{
-				c.setUsuario_envia_ventas(user.getId());
-				c.setFecha_envia_ventas(date);
-				c.setUsuario_rech_ventas(null);
-				c.setFecha_rech_ventas(null);
-			}
+			
+				if((c.getUsuario_envia_ventas() == null && c.getFecha_envia_ventas() == null) || (c.getUsuario_rech_ventas() != null && c.getFecha_rech_ventas() != null))
+				{
+					if(cd.getComision_directo() > cd.getDescuento_vendedor() )
+					{
+						c.setUsuario_envia_ventas(user.getId());
+						c.setFecha_envia_ventas(date);
+						c.setUsuario_rech_ventas(null);
+						c.setFecha_rech_ventas(null);
+					}
+					else
+					{
+						c.setUsuario_envia_ventas(user.getId());
+						c.setFecha_envia_ventas(date);
+						
+						c.setUsuario_aut_ventas(16);
+						c.setFecha_aut_ventas(date);
+						c.setObservaciones_ventas("Autorización automática por sistema.");
+						
+						c.setUsuario_rech_ventas(null);
+						c.setFecha_rech_ventas(null);
+					}
+				}
+			
 			
 			if((c.getUsuario_envia_a_prog() == null && c.getFecha_envia_a_prog() == null) || (c.getUsuario_rech_prog() != null && c.getFecha_rech_prog() != null))
 			{
@@ -546,16 +595,20 @@ public class CotizadorController {
 			}
 			
 			cs.Actualizar(c);
-			
+			logger.info(AppController.getPrincipal() + " - enviaragerenteventasprog.");
 			return "OK";
 		}
 		catch(Exception e)
 		{
-			return e.getMessage()+ " - "+e.getStackTrace();
+			msj = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
+			logger.info(AppController.getPrincipal() + " - enviaragerenteventasprog :"+ msj);
+			return msj;
 		}
-	}		
-	@RequestMapping(value = {"/cotizador/cancelarcotizacion" }, method = RequestMethod.POST)
+	}
+
+	@RequestMapping(value = {"/vendedor/cancelarcotizacion" }, method = RequestMethod.POST)
 	public @ResponseBody String cancelarcotizacion(ModelMap model, @RequestParam("idcot") String idcot) {
+		String msj = "";
 		try
 		{
 			User user = us.findBySSO(AppController.getPrincipal());
@@ -564,17 +617,20 @@ public class CotizadorController {
 			c.setUsuario_cancel(user.getId());
 			c.setFecha_cancel(date);
 			cs.Actualizar(c);
+			logger.info(AppController.getPrincipal() + " - cancelarcotizacion.");
 			return "OK";
 		}
 		catch(Exception e)
 		{
-			return e.getMessage()+ " - "+e.getStackTrace();
+			msj = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
+			logger.info(AppController.getPrincipal() + " - cancelarcotizacion :"+ msj);
+			return msj;
 		}
 		
 	}
 		
 	////////////////////////////////////AUTORIZACIÓNES***//////////////////////////
-	@RequestMapping(value = {"/cotizador/autorizacion_cotizacion_vtas" }, method = RequestMethod.GET)
+	@RequestMapping(value = {"/ventas/autorizacion_cotizacion_vtas" }, method = RequestMethod.GET)
 	public String autventas(ModelMap model) {
 		
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
@@ -584,7 +640,7 @@ public class CotizadorController {
 		return "/tarjetas/cotizador/autorizacion_cotizacion_vtas";
 	}
 	
-	@RequestMapping(value = {"/cotizador/autorizacion_cotizacion_prog" }, method = RequestMethod.GET)
+	@RequestMapping(value = {"/programacion/autorizacion_cotizacion_prog" }, method = RequestMethod.GET)
 	public String autorizacion_cotizacion_prog(ModelMap model) {
 		
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
@@ -594,8 +650,9 @@ public class CotizadorController {
 		return "/tarjetas/cotizador/autorizacion_cotizacion_prog";
 	}
 	
-	@RequestMapping(value = {"/cotizador/autorizacion_cotizacion_vtas_desicion" }, method = RequestMethod.POST)
+	@RequestMapping(value = {"/ventas/autorizacion_cotizacion_vtas_desicion" }, method = RequestMethod.POST)
 	public @ResponseBody String autorizacion_cotizacion_vtas_desicion(ModelMap model, @RequestParam("idcot") String idcot, @RequestParam("coment") String coment, @RequestParam("ban") String ban) {
+		String msj = "";
 		try
 		{
 			User user = us.findBySSO(AppController.getPrincipal());
@@ -614,17 +671,21 @@ public class CotizadorController {
 				c.setObservaciones_ventas(coment);
 			}
 			cs.Actualizar(c);
+			logger.info(AppController.getPrincipal() + " - autorizacion_cotizacion_vtas_desicion :"+ msj);
 			return "OK";
 		}
 		catch(Exception e)
 		{
-			return e.getMessage()+ " - "+e.getStackTrace();
+			msj = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
+			logger.info(AppController.getPrincipal() + " - autorizacion_cotizacion_vtas_desicion :"+ msj);
+			return msj;
 		}
 		
 	}
 	
-	@RequestMapping(value = {"/cotizador/autorizacion_cotizacion_prog_desicion" }, method = RequestMethod.POST)
+	@RequestMapping(value = {"/programacion/autorizacion_cotizacion_prog_desicion" }, method = RequestMethod.POST)
 	public @ResponseBody String autorizacion_cotizacion_prog_desicion(ModelMap model, @RequestParam("idcot") String idcot, @RequestParam("coment") String coment, @RequestParam("ban") String ban) {
+		String msj = "";
 		try
 		{
 			User user = us.findBySSO(AppController.getPrincipal());
@@ -645,47 +706,68 @@ public class CotizadorController {
 				c.setFecha_aut_ventas(null);
 				c.setUsuario_envia_ventas(null);
 				c.setFecha_envia_ventas(null);
+				c.setObservaciones_ventas(null);
 			}
 			cs.Actualizar(c);
+			logger.info(AppController.getPrincipal() + " - autorizacion_cotizacion_prog_desicion :"+ msj);
 			return "OK";
 		}
 		catch(Exception e)
 		{
-			return e.getMessage()+ " - "+e.getStackTrace();
+			msj = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
+			logger.info(AppController.getPrincipal() + " - autorizacion_cotizacion_prog_desicion :"+ msj);
+			return msj;
 		}
 		
 	}
 	////////////////////////////////////IMPRIMIR JASPER/////////////////////////////
-	@RequestMapping(value = "/cotizador/imprimircotizador", method = RequestMethod.GET)
+	@RequestMapping(value = "/ventas/imprimircotizador", method = RequestMethod.GET)
     @ResponseBody
     public void getRpt1(HttpServletResponse response,HttpServletRequest request,ModelMap model,@RequestParam("id") String id) throws JRException, IOException {
-
-	InputStream jasperStream = this.getClass().getResourceAsStream("/jasperreports/cotizador/Cotizador.jasper");
-	Map<String,Object> params = new HashMap<>();
-	
-	JasperReport jasperReport = (JasperReport) JRLoader.loadObject(jasperStream);
-	JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(cs.ListaCotizacionesJasper(Integer.valueOf(id),false));
-	params.put("dataSource", dataSource);
-	params.put("Imagen",request.getServletContext().getRealPath("/"));
-	
-	JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, dataSource);
-	
-	response.setContentType("application/pdf");
-	response.setHeader("Content-disposition", "inline");
-	
-	    final OutputStream outStream = response.getOutputStream();
-	    JasperExportManager.exportReportToPdfStream(jasperPrint, outStream);
+		String msj = "";
+		try
+		{
+			InputStream jasperStream = this.getClass().getResourceAsStream("/jasperreports/cotizador/Cotizador.jasper");
+			Map<String,Object> params = new HashMap<>();
+			
+			JasperReport jasperReport = (JasperReport) JRLoader.loadObject(jasperStream);
+			JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(cs.ListaCotizacionesJasper(Integer.valueOf(id),false));
+			params.put("dataSource", dataSource);
+			params.put("Imagen",request.getServletContext().getRealPath("/"));
+			
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, dataSource);
+			
+			response.setContentType("application/pdf");
+			response.setHeader("Content-disposition", "inline");
+			
+			    final OutputStream outStream = response.getOutputStream();
+			    JasperExportManager.exportReportToPdfStream(jasperPrint, outStream);
+			logger.info(AppController.getPrincipal() + " - imprimircotizador :"+ msj);
+		}
+		catch(Exception e)
+		{
+			msj = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
+			logger.info(AppController.getPrincipal() + " - imprimircotizador :"+ msj);
+		}
 	} 
 		
-	////////////////////////////////////***REQUERIMIENTOS***////////////////////////////
-	@RequestMapping(value = {"/requerimientos/requerimientoabc" }, method = RequestMethod.GET)
+
+	@RequestMapping(value = {"/ingenieria/requerimientoabc" }, method = RequestMethod.GET)
 	public String requerimientoabcget(ModelMap model) {
-		
-		model.addAttribute("loggedinuser", AppController.getPrincipal());
-		
-		logger.info(AppController.getPrincipal() + " - requerimientoabcget.");
-		
-		return "/tarjetas/requerimientos/requerimientoabc";
+		String msj = "";
+		try 
+		{
+			model.addAttribute("loggedinuser", AppController.getPrincipal());
+			model.addAttribute("listaDet",cs.ListaBusquedaxIdCardCodeDet(0, "0", 0, 1, false,true));
+			logger.info(AppController.getPrincipal() + " - requerimientoabcget.");
+		}
+		catch(Exception e)
+		{
+			msj = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
+		}
+		logger.info(AppController.getPrincipal() + " - requerimientoabcget :"+ msj);
+		model.addAttribute("mensajes", msj);
+		return "/tarjetas/cotizador/requerimientoabc";
 	}
 	
 }

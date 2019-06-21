@@ -63,6 +63,7 @@ function FBuscarId(id,iddet)
 		</tbody>
 	</table>
 	</div>
+	<div id = "mensajes" class = "${!empty mensajes ? 'alert alert-success' : ''}">${mensajes}</div>
 	<%@include file="../../appconfig/authfootter.jsp"%>
 </body>
 </html>

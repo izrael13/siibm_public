@@ -99,10 +99,10 @@ public class CotizadorDAOImpl extends AbstractDao<Integer,Cotizador> implements 
 	}
 
 	@Override
-	public List<Cotizador_busqueda> ListaBusquedaxIdCardCodeDet(Integer id, String cardCode, Integer idUser,Integer idDet,Boolean autVtas,Boolean autProg) {
+	public List<Cotizador_busqueda> ListaBusquedaxIdCardCodeDet(Integer id, String cardCode, Integer idUser,Integer idDet,Boolean autVtas,Boolean autProgAsigDis) {
 		// FIXME Auto-generated method stub
 		String query = "select ROW_NUMBER() OVER(ORDER BY a.ID ASC) AS count,a.ID id,b.cardname,c.address +' '+c.direccion direccion,a.FECHA_INSERT fecha_insert,d.SIMBOLO simbolo,e.nombrelargo,d.iddetalle iddet, \r\n"+
-				"d.comision_directo,d.precio_objetivo,d.precio_sugerido,d.precio_neto,d.descuento_vendedor,e.nombrecorto \r\n" + 
+				"d.comision_directo,d.precio_objetivo,d.precio_sugerido,d.precio_neto,d.descuento_vendedor,e.nombrecorto,d.cpcc,d.ref_para_comision \r\n" + 
 				"from COTIZADOR a\r\n" + 
 				"inner join CATALOGO_CLIENTES_SAP b on a.CARDCODE = b.cardcode\r\n" + 
 				"inner join CATALOGO_DIRECCIONES_SAP c on a.CARDCODE = c.cardcode and a.LINENUM_DIR_ENTREGA = c.linenum\r\n" + 
@@ -123,10 +123,9 @@ public class CotizadorDAOImpl extends AbstractDao<Integer,Cotizador> implements 
 					"and a.fecha_aut_ventas is null and a.usuario_aut_ventas is null and a.fecha_rech_ventas is null and a.usuario_rech_ventas is null  \r\n" +
 					"and a.usuario_cancel is null and a.fecha_cancel is null ";
 		}
-		if(autProg)
+		if(autProgAsigDis)
 		{
-			query = query + "and a.fecha_envia_a_prog is not null and a.usuario_envia_a_prog is not null \r\n" + 
-					"and a.fecha_aut_prog is null and a.usuario_aut_prog is null and a.fecha_rech_prog is null and a.usuario_rech_prog is null  \r\n" +
+			query = query + "and a.fecha_aut_prog is not null and a.usuario_aut_prog is not null  \r\n" +
 					"and a.usuario_cancel is null and a.fecha_cancel is null ";
 		}
 		
@@ -156,6 +155,8 @@ public class CotizadorDAOImpl extends AbstractDao<Integer,Cotizador> implements 
 			   cb.setPrecio_neto(Double.parseDouble(String.valueOf(obj[11])));
 			   cb.setDescuento_vendedor(Double.parseDouble(String.valueOf(obj[12])));
 			   cb.setNombrecorto(String.valueOf(obj[13]));
+			   cb.setCpcc(Double.parseDouble(String.valueOf(obj[14])));
+			   cb.setRef_para_com(Double.parseDouble(String.valueOf(obj[15])));
 			   Lista.add(cb); 
 			}
 		
@@ -193,7 +194,7 @@ public class CotizadorDAOImpl extends AbstractDao<Integer,Cotizador> implements 
 				"(select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=35) as 'maquila de ensamble',\r\n" + 
 				"(select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=36) as 'trim adicional',\r\n" + 
 				"(select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=37) as 'doble paso'\r\n" + 
-				",total_especialidades,b.costo_flete,porc_flete,g.direccion,g.ciudad,g.estado,(select  h.first_name +' '+ h.last_name from app_user h where c.id=a.usuario_aut_ventas) as 'autorizador',  \r\n" +
+				",total_especialidades,b.costo_flete,porc_flete,g.direccion,g.ciudad,g.estado,(select distinct  h.first_name +' '+ h.last_name from app_user h where h.id=a.usuario_aut_ventas) as 'autorizador',  \r\n" +
 				"(select  isnull(h.name,'')  from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=1) as 'michelman intn' ,\r\n" + 
 				"(select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=2) as 'michelman extn',\r\n" + 
 				"(select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=3) as 'open sesamen',\r\n" + 

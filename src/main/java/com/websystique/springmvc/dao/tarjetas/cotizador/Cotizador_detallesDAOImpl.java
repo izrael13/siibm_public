@@ -51,4 +51,14 @@ public class Cotizador_detallesDAOImpl  extends AbstractDao<Integer,Cotizador_de
 		update(cot);
 	}
 
+	@Override
+	public Cotizador_detalles BuscarxIdDet(Integer id, Integer iddet) {
+		// FIXME Auto-generated method stub
+		Map<String,Integer> mRes =  new HashMap<String, Integer>();
+		mRes.put("idcotizacion", id);
+		mRes.put("iddetalle", iddet);
+		
+		return (Cotizador_detalles) criteriaQueryIntEqObj(mRes);
+	}
+
 }

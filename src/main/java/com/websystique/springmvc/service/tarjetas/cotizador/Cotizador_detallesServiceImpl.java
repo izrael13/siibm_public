@@ -40,4 +40,10 @@ public class Cotizador_detallesServiceImpl implements Cotizador_detallesService{
 		dao.Actualizar(cot);
 	}
 
+	@Override
+	public Cotizador_detalles BuscarxIdDet(Integer id, Integer iddet) {
+		// FIXME Auto-generated method stub
+		return dao.BuscarxIdDet(id, iddet);
+	}
+
 }

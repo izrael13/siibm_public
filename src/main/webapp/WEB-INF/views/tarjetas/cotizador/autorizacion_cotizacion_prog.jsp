@@ -17,7 +17,7 @@ function FAut(id)
 		if(id > 0)
 		{
 			var http = new XMLHttpRequest();
-			var url = '<c:url value="/ventas/tarjetas/cotizador/autorizacion_cotizacion_vtas_desicion"/>';
+			var url = '<c:url value="/cotizador/programacion/autorizacion_cotizacion_prog_desicion"/>';
 			var params = 'idcot='+id+'&coment='+$("#TComent"+id).val()+'&ban='+1;
 			
 			http.open('POST', url, true);
@@ -36,20 +36,20 @@ function FAut(id)
 		    			if(http.responseText === 'OK')
 		    			{
 		    				alert("Autorización existosa.");
-				    		window.location.replace('<c:url value="/ventas/tarjetas/cotizador/autorizacion_cotizacion_vtas"/>');
+				    		window.location.replace('<c:url value="/cotizador/programacion/autorizacion_cotizacion_prog"/>');
 		    			}
 		    			else
 		    			{
-		    				alert("Algo salió mal, por favor vuelva a intentarlo.");
-				    		window.location.replace('<c:url value="/ventas/tarjetas/cotizador/autorizacion_cotizacion_vtas"/>');
+		    				alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
+				    		window.location.replace('<c:url value="/cotizador/programacion/autorizacion_cotizacion_prog"/>');
 		    			}
 		    		}
 			    }
 			    else
 			    {
 			    	if(http.readyState == 4 && http.status != 200){
-			    		alert("Algo salió mal, por favor vuelva a intentarlo...");
-			    		window.location.replace('<c:url value="/ventas/tarjetas/cotizador/autorizacion_cotizacion_vtas"/>');
+			    		alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
+			    		window.location.replace('<c:url value="/cotizador/programacion/autorizacion_cotizacion_prog"/>');
 			    	}
 			    }
 			    
@@ -67,7 +67,7 @@ function FReach(id)
 		if(id > 0)
 		{
 			var http = new XMLHttpRequest();
-			var url = '<c:url value="/ventas/tarjetas/cotizador/autorizacion_cotizacion_prog_desicion"/>';
+			var url = '<c:url value="/cotizador/programacion/autorizacion_cotizacion_prog_desicion"/>';
 			var params = 'idcot='+id+'&coment='+$("#TComent"+id).val()+'&ban='+0;
 			
 			http.open('POST', url, true);
@@ -86,20 +86,20 @@ function FReach(id)
 		    			if(http.responseText === 'OK')
 		    			{
 		    				alert("Rechazo enviado.");
-				    		window.location.replace('<c:url value="/ventas/tarjetas/cotizador/autorizacion_cotizacion_prog"/>');
+				    		window.location.replace('<c:url value="/cotizador/programacion/autorizacion_cotizacion_prog"/>');
 		    			}
 		    			else
 		    			{
-		    				alert("Algo salió mal, por favor vuelva a intentarlo.");
-				    		window.location.replace('<c:url value="/ventas/tarjetas/cotizador/autorizacion_cotizacion_prog"/>');
+		    				alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
+				    		window.location.replace('<c:url value="/cotizador/programacion/autorizacion_cotizacion_prog"/>');
 		    			}
 		    		}
 			    }
 			    else
 			    {
 			    	if(http.readyState == 4 && http.status != 200){
-			    		alert("Algo salió mal, por favor vuelva a intentarlo...");
-			    		window.location.replace('<c:url value="/ventas/tarjetas/cotizador/autorizacion_cotizacion_prog"/>');
+			    		alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
+			    		window.location.replace('<c:url value="/cotizador/programacion/autorizacion_cotizacion_prog"/>');
 			    	}
 			    }
 			    
@@ -151,6 +151,7 @@ function FReach(id)
 		</tbody>
 	</table>
 	</div>
+	<div id = "mensajes" class = "${!empty mensajes ? 'alert alert-success' : ''}">${mensajes}</div>
 	<%@include file="../../appconfig/authfootter.jsp"%>
 </body>
 </html>

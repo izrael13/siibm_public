@@ -15,7 +15,7 @@ import com.websystique.springmvc.service.ventas.PronosticoscteService;
 import com.websystique.springmvc.service.ventas.WarningspronService;
 
 @Controller
-@RequestMapping("/ventas")
+@RequestMapping("/qlikview")
 public class VentasController {
 	private Logger logger = Logger.getLogger(VentasController.class);
 	
@@ -27,7 +27,7 @@ public class VentasController {
 	
 	Calendar cal= Calendar.getInstance();
 	
-	@RequestMapping(value = {"/pronosticoscte____" }, method = RequestMethod.GET)
+	@RequestMapping(value = {"/ventas/pronosticoscte____" }, method = RequestMethod.GET)
 	public String uploadFileGET(ModelMap model) {
 		try {
 			model.addAttribute("loggedinuser", AppController.getPrincipal());
@@ -43,7 +43,7 @@ public class VentasController {
 		return "ventas/pronosticoscte";
 	}
 	
-	@RequestMapping(value = {"/upload" }, method = RequestMethod.POST)
+	@RequestMapping(value = {"/ventas/upload" }, method = RequestMethod.POST)
 	public String uploadFilePOST(ModelMap model,@RequestParam("file") MultipartFile file) {
 		try
 		{
@@ -66,13 +66,13 @@ public class VentasController {
 		}
 		catch(Exception e)
 		{
-			model.addAttribute("error",e.getMessage());
+			model.addAttribute("error","El archivo no cumple con las especificaciones necesarias: "+e.getMessage());
 			logger.error(AppController.getPrincipal() + " - upload. - "+e.getMessage());
 		}
 		return "/ventas/pronosticoscte";
 	}
 	
-	@RequestMapping(value = {"/subirqv" }, method = RequestMethod.GET)
+	@RequestMapping(value = {"/ventas/subirqv" }, method = RequestMethod.GET)
 	public String subirqv(ModelMap model,@RequestParam("mes") String mes, @RequestParam("anio") String anio) {
 		try {
 			model.addAttribute("loggedinuser", AppController.getPrincipal());

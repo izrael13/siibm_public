@@ -35,7 +35,7 @@ import com.websystique.springmvc.service.tarjetas.prospectos.Prospectos_ventasSe
 import com.websystique.springmvc.service.tarjetas.prospectos.Prospectos_ventas_detalleService;
 
 @Controller
-@RequestMapping("/ventas/tarjetas/prospectos")
+@RequestMapping("/prospectos")
 public class Prospectos_ventasController {
 	
 	private Logger logger = Logger.getLogger(Prospectos_ventasController.class);
@@ -57,7 +57,7 @@ public class Prospectos_ventasController {
 	@Autowired
 	Catalogo_vendedores_sap_vwService cvsv;
 	
-	@RequestMapping(value = {"/prospectosabc" }, method = RequestMethod.GET)
+	@RequestMapping(value = {"/vendedor/prospectosabc" }, method = RequestMethod.GET)
 	public String abc(ModelMap model,@RequestParam("id") String id) {
 			User user = us.findBySSO(AppController.getPrincipal());
 			ProspectosDataBean pdb = new ProspectosDataBean();
@@ -88,7 +88,7 @@ public class Prospectos_ventasController {
 		return "/tarjetas/prospectos/prospectos_abc";
 	}
 	
-	@RequestMapping(value = {"/buscarciudadxestado"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/vendedor/buscarciudadxestado"}, method = RequestMethod.GET)
 	public @ResponseBody String buscarciudadxestado(HttpServletRequest req, HttpServletResponse res)
 	   throws Exception {
 		String cve_estado = req.getParameter("cve_estado");
@@ -99,7 +99,7 @@ public class Prospectos_ventasController {
 	
 	}
 	
-	@RequestMapping(value = {"/prospectosabc" }, method = RequestMethod.POST)
+	@RequestMapping(value = {"/vendedor/prospectosabc" }, method = RequestMethod.POST)
 	public String abcpost(@Valid @ModelAttribute("prospectos_bean") ProspectosDataBean prospectosDataBean,BindingResult result,ModelMap model) {
 		/*
 		for (ObjectError error : result.getAllErrors()) { // 1.
@@ -170,7 +170,7 @@ public class Prospectos_ventasController {
 		return "/tarjetas/prospectos/prospectos_abc";
 	}
 	
-	@RequestMapping(value = {"/prospectosbusqueda" }, method = RequestMethod.GET)
+	@RequestMapping(value = {"/vendedor/prospectosbusqueda" }, method = RequestMethod.GET)
 	public String prospectosbusqueda(ModelMap model,@RequestParam("id") String id,@RequestParam("cardcode") String cardcode) {
 		
 		User user = us.findBySSO(AppController.getPrincipal());
@@ -185,7 +185,7 @@ public class Prospectos_ventasController {
 		return "/tarjetas/prospectos/prospectos_busqueda";
 	}
 	
-	@RequestMapping(value = {"/prospectosgerenteventas" }, method = RequestMethod.GET)
+	@RequestMapping(value = {"/ventas/prospectosgerenteventas" }, method = RequestMethod.GET)
 	public String prospectosgerenteventas(ModelMap model) {
 			
 			model.addAttribute("loggedinuser", AppController.getPrincipal());
@@ -196,7 +196,7 @@ public class Prospectos_ventasController {
 		return "/tarjetas/prospectos/prospectos_gerente_ventas";
 	}
 	
-	@RequestMapping(value = {"/vistagerenteventas" }, method = RequestMethod.GET)
+	@RequestMapping(value = {"/ventas/vistagerenteventas" }, method = RequestMethod.GET)
 	public String vistagerenteventas(ModelMap model,@RequestParam("id") String id,
 													@RequestParam("cardcode") String cardcode,
 													@RequestParam("cve_vendedor") Integer cve_vendedor,

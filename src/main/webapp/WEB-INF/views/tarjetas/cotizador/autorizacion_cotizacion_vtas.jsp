@@ -17,7 +17,7 @@ function FAut(id)
 		if(id > 0)
 		{
 			var http = new XMLHttpRequest();
-			var url = '<c:url value="/ventas/tarjetas/cotizador/autorizacion_cotizacion_vtas_desicion"/>';
+			var url = '<c:url value="/cotizador/ventas/autorizacion_cotizacion_vtas_desicion"/>';
 			var params = 'idcot='+id+'&coment='+$("#TComent"+id).val()+'&ban='+1;
 			
 			http.open('POST', url, true);
@@ -36,20 +36,20 @@ function FAut(id)
 		    			if(http.responseText === 'OK')
 		    			{
 		    				alert("Autorización existosa.");
-				    		window.location.replace('<c:url value="/ventas/tarjetas/cotizador/autorizacion_cotizacion_vtas"/>');
+				    		window.location.replace('<c:url value="/cotizador/ventas/autorizacion_cotizacion_vtas"/>');
 		    			}
 		    			else
 		    			{
-		    				alert("Algo salió mal, por favor vuelva a intentarlo.");
-				    		window.location.replace('<c:url value="/ventas/tarjetas/cotizador/autorizacion_cotizacion_vtas"/>');
+		    				alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
+				    		window.location.replace('<c:url value="/cotizador/ventas/autorizacion_cotizacion_vtas"/>');
 		    			}
 		    		}
 			    }
 			    else
 			    {
 			    	if(http.readyState == 4 && http.status != 200){
-			    		alert("Algo salió mal, por favor vuelva a intentarlo...");
-			    		window.location.replace('<c:url value="/ventas/tarjetas/cotizador/autorizacion_cotizacion_vtas"/>');
+			    		alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
+			    		window.location.replace('<c:url value="/cotizador/ventas/autorizacion_cotizacion_vtas"/>');
 			    	}
 			    }
 			    
@@ -67,7 +67,7 @@ function FReach(id)
 		if(id > 0)
 		{
 			var http = new XMLHttpRequest();
-			var url = '<c:url value="/ventas/tarjetas/cotizador/autorizacion_cotizacion_vtas_desicion"/>';
+			var url = '<c:url value="/cotizador/ventas/autorizacion_cotizacion_vtas_desicion"/>';
 			var params = 'idcot='+id+'&coment='+$("#TComent"+id).val()+'&ban='+0;
 			
 			http.open('POST', url, true);
@@ -86,20 +86,20 @@ function FReach(id)
 		    			if(http.responseText === 'OK')
 		    			{
 		    				alert("Rechazo enviado.");
-				    		window.location.replace('<c:url value="/ventas/tarjetas/cotizador/autorizacion_cotizacion_vtas"/>');
+				    		window.location.replace('<c:url value="/cotizador/ventas/autorizacion_cotizacion_vtas"/>');
 		    			}
 		    			else
 		    			{
-		    				alert("Algo salió mal, por favor vuelva a intentarlo.");
-				    		window.location.replace('<c:url value="/ventas/tarjetas/cotizador/autorizacion_cotizacion_vtas"/>');
+		    				alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
+				    		window.location.replace('<c:url value="/cotizador/ventas/autorizacion_cotizacion_vtas"/>');
 		    			}
 		    		}
 			    }
 			    else
 			    {
 			    	if(http.readyState == 4 && http.status != 200){
-			    		alert("Algo salió mal, por favor vuelva a intentarlo...");
-			    		window.location.replace('<c:url value="/ventas/tarjetas/cotizador/autorizacion_cotizacion_vtas"/>');
+			    		alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
+			    		window.location.replace('<c:url value="/cotizador/ventas/autorizacion_cotizacion_vtas"/>');
 			    	}
 			    }
 			    
@@ -110,7 +110,7 @@ function FReach(id)
 }
 function FImprimir(id)
 {
-	var redirectWindow = window.open('<c:url value="/ventas/tarjetas/cotizador/imprimircotizador"/>?id='+id);
+	var redirectWindow = window.open('<c:url value="/cotizador/ventas/imprimircotizador"/>?id='+id);
 	redirectWindow.replace;
 }
 </script>
@@ -121,8 +121,8 @@ function FImprimir(id)
 		<span class="badge badge-secondary">Autorización de cotizaciones por Gerente de Ventas</span>
 	</div>
 	<br>
-	<div align="center" class="container">
-	<table class="table-hover text-center table-bordered small">
+	<div align="center" class="container-fluid">
+	<table class="container-fluid table-hover text-center table-bordered small">
 		<thead>
 			<tr>
 				<th>Folio</th>
@@ -134,6 +134,8 @@ function FImprimir(id)
 				<th>$ sugerido</th>
 				<th>$ neto</th>
 				<th>Desc vendedor</th>
+				<th>CPCC</th>
+				<th>CPSC</th>
 				<th>Comentarios</th>
 				<th>Imprimir</th>
 				<th>Autorizar</th>
@@ -152,6 +154,8 @@ function FImprimir(id)
 				<td>${item.precio_sugerido}</td>
 				<td>${item.precio_neto}</td>
 				<td>${item.descuento_vendedor}</td>
+				<td>${item.cpcc}</td>
+				<td>${item.ref_para_com}</td>
 				<td><input id="TComent${item.id}" type="text" size="50" onkeypress="return SinCaracteresEspeciales(event)" maxlength="100" class="border border-primary"/></td>
 				<td><a href="javascript:FImprimir(${item.id})"><i class="fa fa-print" aria-hidden="true"></i></a></td>
 				<td><a href="javascript:FAut(${item.id})"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></a></td>
@@ -161,6 +165,7 @@ function FImprimir(id)
 		</tbody>
 	</table>
 	</div>
+	<div id = "mensajes" class = "${!empty mensajes ? 'alert alert-success' : ''}">${mensajes}</div>
 	<%@include file="../../appconfig/authfootter.jsp"%>
 </body>
 </html>

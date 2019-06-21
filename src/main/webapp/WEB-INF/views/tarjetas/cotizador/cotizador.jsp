@@ -113,7 +113,7 @@ $(document).ready(function() {
 			$("#TPzasxTar").attr("readonly",false);
 			$("#BEnvVtas").prop('disabled',false);
 			$("#BGrabar").prop('disabled',false);
-			$("#BCancel").prop('disabled',false);
+			//$("#BCancel").prop('disabled',false);
 		}
 	} 
 });
@@ -126,7 +126,7 @@ function FBuscarDirecciones()
 	var opciones = "";
 	$.ajax({
 		//dataType: 'text',
-		url: '<c:url value="/ventas/tarjetas/cotizador/buscardirecciones"/>?cardcode='+cardcode,
+		url: '<c:url value="/cotizador/vendedor/buscardirecciones"/>?cardcode='+cardcode,
 		//contentType : 'application/json',
 		//cache: false,    
 		//data: cve_estado,
@@ -168,7 +168,7 @@ function FBuscarInfoDir()
 	
 	$.ajax({
 		//dataType: 'text',
-		url: '<c:url value="/ventas/tarjetas/cotizador/buscarinfodir"/>?cardcode='+cardcode+'&linenum='+linenum,
+		url: '<c:url value="/cotizador/vendedor/buscarinfodir"/>?cardcode='+cardcode+'&linenum='+linenum,
 		//contentType : 'application/json',
 		//cache: false,    
 		//data: cve_estado,
@@ -218,7 +218,7 @@ function FBuscarInfoDir()
 }
 function FLimpar()
 {
-	window.location.replace('<c:url value="/ventas/tarjetas/cotizador/cotizadorabc"/>?id=0'+'&iddet='+0);
+	window.location.replace('<c:url value="/cotizador/vendedor/cotizadorabc"/>?id=0'+'&iddet='+0);
 }
 function FBuscar()
 {
@@ -232,7 +232,7 @@ function FBuscar()
 	$( "#BGrabar" ).prop( "disabled", true );
 	if(($( "#TId" ).val() > 0 || $( "#SClientes" ).val() != "0") && isDisabled == true)
 	{
-		popupwindow('<c:url value="/ventas/tarjetas/cotizador/cotizadorbusqueda" />?id='+$( "#TId" ).val()+'&cardcode='+$( "#SClientes" ).val(),'Detalle de viaje',800,1000);
+		popupwindow('<c:url value="/cotizador/vendedor/cotizadorbusqueda" />?id='+$( "#TId" ).val()+'&cardcode='+$( "#SClientes" ).val(),'Detalle de viaje',800,1000);
 	}
 
 		$( "#TId").removeClass().addClass("border border-danger");
@@ -242,7 +242,7 @@ function FBuscar()
 }
 function FBuscarxId(id,iddet)
 {
-	window.location.replace('<c:url value="/ventas/tarjetas/cotizador/cotizadorabc" />?id='+id+'&iddet='+iddet);
+	window.location.replace('<c:url value="/cotizador/vendedor/cotizadorabc" />?id='+id+'&iddet='+iddet);
 }
 function FBuscarResisId()
 {
@@ -251,7 +251,7 @@ function FBuscarResisId()
 	
 	$.ajax({
 		//dataType: 'text',
-		url: '<c:url value="/ventas/tarjetas/cotizador/buscarinforesistenciabarca"/>?id='+idresis,
+		url: '<c:url value="/cotizador/vendedor/buscarinforesistenciabarca"/>?id='+idresis,
 		//contentType : 'application/json',
 		//cache: false,    
 		//data: cve_estado,
@@ -394,7 +394,7 @@ function CalcularDatos()
 	
 	$.ajax({
 		//dataType: 'text',
-		url: '<c:url value="/ventas/tarjetas/cotizador/calculardatos"/>?mystring='+encodeURI(mystring),
+		url: '<c:url value="/cotizador/vendedor/calculardatos"/>?mystring='+encodeURI(mystring),
 		//contentType : 'application/json',
 		//cache: false,    
 		//data: cve_estado,
@@ -483,7 +483,7 @@ function FEnviarVtaProg()
 	if(idcot > 0)
 	{
 		var http = new XMLHttpRequest();
-		var url = '<c:url value="/ventas/tarjetas/cotizador/enviaragerenteventasprog"/>';
+		var url = '<c:url value="/cotizador/vendedor/enviaragerenteventasprog"/>';
 		var params = 'idcot='+idcot;
 		
 		http.open('POST', url, true);
@@ -504,20 +504,20 @@ function FEnviarVtaProg()
 	    			if(http.responseText === 'OK')
 	    			{
 	    				alert("Exitoso envío a autorización de ventas.");
-			    		window.location.replace('<c:url value="/ventas/tarjetas/cotizador/cotizadorabc"/>?id=0'+'&iddet='+0);
+			    		window.location.replace('<c:url value="/cotizador/vendedor/cotizadorabc"/>?id=0'+'&iddet='+0);
 	    			}
 	    			else
 	    			{
 	    				alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
-			    		window.location.replace('<c:url value="/ventas/tarjetas/cotizador/cotizadorabc"/>?id='+idcot+'&iddet='+iddet);
+			    		window.location.replace('<c:url value="/cotizador/vendedor/cotizadorabc"/>?id='+idcot+'&iddet='+iddet);
 	    			}
 	    		}
 		    }
 		    else
 		    {
 		    	if(http.readyState == 4 && http.status != 200){
-		    		alert("Algo salió mal, por favor vuelva a intentarlo...");
-		    		window.location.replace('<c:url value="/ventas/tarjetas/cotizador/cotizadorabc"/>?id='+idcot+'&iddet='+iddet);
+		    		alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
+		    		window.location.replace('<c:url value="/cotizador/vendedor/cotizadorabc"/>?id='+idcot+'&iddet='+iddet);
 		    	}
 		    }
 		    
@@ -532,7 +532,7 @@ function FCancelar()
 	if(idcot > 0)
 	{
 		var http = new XMLHttpRequest();
-		var url = '<c:url value="/ventas/tarjetas/cotizador/cancelarcotizacion"/>';
+		var url = '<c:url value="/cotizador/vendedor/cancelarcotizacion"/>';
 		var params = 'idcot='+idcot;
 		
 		http.open('POST', url, true);
@@ -553,20 +553,20 @@ function FCancelar()
 	    			if(http.responseText === 'OK')
 	    			{
 	    				alert("COTIZACIÓN CANCELADA!!!!!!");
-			    		window.location.replace('<c:url value="/ventas/tarjetas/cotizador/cotizadorabc"/>?id=0'+'&iddet='+0);
+			    		window.location.replace('<c:url value="/cotizador/vendedor/cotizadorabc"/>?id=0'+'&iddet='+0);
 	    			}
 	    			else
 	    			{
-	    				alert("Algo salió mal, por favor vuelva a intentarlo.");
-			    		window.location.replace('<c:url value="/ventas/tarjetas/cotizador/cotizadorabc"/>?id='+idcot+'&iddet='+iddet);
+	    				alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
+			    		window.location.replace('<c:url value="/cotizador/vendedor/cotizadorabc"/>?id='+idcot+'&iddet='+iddet);
 	    			}
 	    		}
 		    }
 		    else
 		    {
 		    	if(http.readyState == 4 && http.status != 200){
-		    		alert("Algo salió mal, por favor vuelva a intentarlo...");
-		    		window.location.replace('<c:url value="/ventas/tarjetas/cotizador/cotizadorabc"/>?id='+idcot+'&iddet='+iddet);
+		    		alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
+		    		window.location.replace('<c:url value="/cotizador/vendedor/cotizadorabc"/>?id='+idcot+'&iddet='+iddet);
 		    	}
 		    }
 		    

@@ -14,7 +14,7 @@
 function FBuscar()
 {
 	//alert($( "#SVendedores" ).val() + $( "#SClientes" ).val() + $( "#SActividades" ).val() + $( "#SPrioridades" ).val() +" -"+ $( "#TOporton" ).val() +" -"+ $( "#SStatus" ).val());
-	window.location.replace('<c:url value="/ventas/tarjetas/prospectos/vistagerenteventas" />?id='+0+'&cardcode='+$( "#SClientes" ).val()+'&cve_vendedor='+$( "#SVendedores" ).val()+'&porcavan='+$( "#SActividades" ).val()+'&prioridad='+$( "#SPrioridades" ).val()+'&oporton='+($( "#TOporton" ).val() == '' ? 0 : $( "#TOporton" ).val())+'&estatus='+$( "#SStatus" ).val()+'&fecha1='+$( "#TFecha1" ).val()+'&fecha2='+$( "#TFecha2" ).val());
+	window.location.replace('<c:url value="/prospectos/ventas/vistagerenteventas" />?id='+0+'&cardcode='+$( "#SClientes" ).val()+'&cve_vendedor='+$( "#SVendedores" ).val()+'&porcavan='+$( "#SActividades" ).val()+'&prioridad='+$( "#SPrioridades" ).val()+'&oporton='+($( "#TOporton" ).val() == '' ? 0 : $( "#TOporton" ).val())+'&estatus='+$( "#SStatus" ).val()+'&fecha1='+$( "#TFecha1" ).val()+'&fecha2='+$( "#TFecha2" ).val());
 }
 </script>
 <style type="text/css">

@@ -16,7 +16,7 @@ function FBuscarCiudades()
 	var opciones = "";
 	$.ajax({
 		//dataType: 'text',
-		url: '<c:url value="/ventas/tarjetas/prospectos/buscarciudadxestado"/>?cve_estado='+cve_estado,
+		url: '<c:url value="/prospectos/vendedor/buscarciudadxestado"/>?cve_estado='+cve_estado,
 		//contentType : 'application/json',
 		//cache: false,    
 		//data: cve_estado,
@@ -57,7 +57,7 @@ function FBuscar()
 	$( "#BGrabar" ).prop( "disabled", true );
 	if(($( "#TId" ).val() > 0 || $( "#SClientes" ).val() != "0") && isDisabled == true)
 	{
-		popupwindow('<c:url value="/ventas/tarjetas/prospectos/prospectosbusqueda" />?id='+$( "#TId" ).val()+'&cardcode='+$( "#SClientes" ).val(),'Detalle de viaje',800,1000);
+		popupwindow('<c:url value="/prospectos/vendedor/prospectosbusqueda" />?id='+$( "#TId" ).val()+'&cardcode='+$( "#SClientes" ).val(),'Detalle de viaje',800,1000);
 	}
 
 		$( "#TId").removeClass().addClass("border border-danger");
@@ -66,11 +66,11 @@ function FBuscar()
 }
 function FBuscarxId(id)
 {
-	window.location.replace('<c:url value="/ventas/tarjetas/prospectos/prospectosabc" />?id='+id);
+	window.location.replace('<c:url value="/prospectos/vendedor/prospectosabc" />?id='+id);
 }
 function FLimpar()
 {
-	window.location.replace('<c:url value="/ventas/tarjetas/prospectos/prospectosabc" />?id='+0);
+	window.location.replace('<c:url value="/prospectos/vendedor/prospectosabc" />?id='+0);
 }
 </script>
 <style type="text/css">

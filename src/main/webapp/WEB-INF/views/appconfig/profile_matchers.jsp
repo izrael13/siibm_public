@@ -14,10 +14,13 @@
 		<span class="badge badge-secondary">Permisos a perfiles</span>
 	</div>
 	<br>
-	
+	<div align="center">
+		<span class="alert alert-info">Para que se apliquen los cambios se debe reiniciar el servidor tomcat</span>
+	</div>
+	<br>
 	<div align="center" id="tabla1" class = "container">
 	 <div class="row">
-	 <div class="col-6"><!-- mx-auto  para centrar en pantalla -->
+	 <div class="col-9"><!-- mx-auto  para centrar en pantalla -->
 		<div id="tablePag" class="container">
 		<div class="row border border-dark">
 			  <div class="col-sm">
@@ -50,7 +53,7 @@
 	</div>
 	<br>
 	</div>
-	<div class="col-6">
+	<div class="col-3">
 	<form:form method="POST" modelAttribute="profilematchers" class="form-horizontal" autocomplete="off">
 		<table>
 		<thead>
