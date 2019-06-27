@@ -14,8 +14,8 @@
 	</div>
 	 <br>
 	<div align="center">
-		<img class="img-fluid" alt="Responsive image" src="<c:url value='/static/img/BarcaLogoV.png'/>"align="top">
-		<img class="img-fluid" alt="Responsive image" src="<c:url value='/static/img/Barca.png' />" align="top">
+		<img class="rounded img-fluid" alt="Responsive image" src="<c:url value='/static/img/BarcaLogoV.png'/>"align="top">
+		<img class="rounded img-fluid" alt="Responsive image" src="<c:url value='/static/img/Barca.png' />" align="top">
 	</div>
 	<br>
 	<%@include file="authfootter.jsp"%>

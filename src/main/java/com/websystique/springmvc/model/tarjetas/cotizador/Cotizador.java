@@ -71,6 +71,11 @@ public class Cotizador implements Serializable{/**
 	private Integer usuario_cancel;
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date fecha_cancel;
+	
+	private Integer id_diseniador;
+	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+	private Date fecha_asign_diseniador;
+	private String observaciones_diseniador;
 
 	
 }

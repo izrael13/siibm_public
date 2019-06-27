@@ -9,9 +9,66 @@
 <%@include file="../../appconfig/authheader2.jsp"%>
 <title>Imprimir/Asignar diseñador requerimientos</title>
 <script>
-function FTarjeta()
+function FTarjeta(id,b)
 {
-
+	if(b == 0)
+		var r = confirm("Grabar comentario!");
+	else
+		var r = confirm("Covertir a tarjeta!");
+	
+	if(r == true)
+	{
+		if(id > 0)
+		{
+			var http = new XMLHttpRequest();
+			var url = '<c:url value="/cotizador/ingenieria/convertiratarjeta"/>';
+			var params = 'idcot='+id+'&coment='+$("#TComent"+id).val()+'&ban='+b;
+			
+			http.open('POST', url, true);
+		
+			//Send the proper header information along with the request
+			http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+		
+			http.onreadystatechange = function() {//Call a function when the state changes.
+			    if(http.readyState == 4 && http.status == 200) 
+			    {
+			    	if (http.responseText.search(/Login page/i) != -1) {
+			    		alert("La sessión ha expirado, Por favor vuelva a intentarlo.");
+		    			window.location.replace('<c:url value="/login?expired"/>');
+			    	}
+		    		else{
+		    			if(http.responseText === 'OK')
+		    			{
+		    				if(b == 0)
+		    				{
+		    					alert("Comentario grabado correctamente.");
+					    		window.location.replace('<c:url value="/cotizador/ingenieria/requerimientoabc"/>');
+		    				}
+		    				else
+		    				{
+			    				alert("Tarjeta de fabricación creada correctamente.");
+					    		window.location.replace('<c:url value="/cotizador/ingenieria/requerimientoabc"/>');
+		    				}
+		    			}
+		    			else
+		    			{
+		    				alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
+				    		window.location.replace('<c:url value="/cotizador/ingenieria/requerimientoabc"/>');
+		    			}
+		    		}
+			    }
+			    else
+			    {
+			    	if(http.readyState == 4 && http.status != 200){
+			    		alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
+			    		window.location.replace('<c:url value="/cotizador/ingenieria/requerimientoabc"/>');
+			    	}
+			    }
+			    
+			}
+			http.send(encodeURI(params));
+		}
+	}
 }
 </script>
 </head>
@@ -35,6 +92,7 @@ function FTarjeta()
 				<th>$ neto</th>
 				<th>Desc vendedor</th>
 				<th>Comentarios</th>
+				<th>Grabar comentario</th>
 				<th>Imprimir</th>
 				<th>Convertir a Tarjeta</th>
 			</tr>
@@ -51,9 +109,10 @@ function FTarjeta()
 				<td>${item.precio_sugerido}</td>
 				<td>${item.precio_neto}</td>
 				<td>${item.descuento_vendedor}</td>
-				<td><input id="TComent${item.id}" type="text" size="50" onkeypress="return SinCaracteresEspeciales(event)" maxlength="100" class="border border-primary"/></td>
+				<td><input id="TComent${item.id}" type="text" size="50" onkeypress="return SinCaracteresEspeciales(event)" value="${item.observaciones_diseniador == 'null' ? '' : item.observaciones_diseniador}" maxlength="100" class="border border-primary"/></td>
+				<td><a href="javascript:FTarjeta(${item.id},0)"><i class="fa fa-floppy-o" aria-hidden="true"></i></a></td>
 				<td><a href="javascript:FImprimir(${item.id})"><i class="fa fa-print" aria-hidden="true"></i></a></td>
-				<td><a href="javascript:FTarjeta(${item.id})"><i class="fa fa-file-text-o" aria-hidden="true"></i></a></td>
+				<td><a href="javascript:FTarjeta(${item.id},1)"><i class="fa fa-file-text-o" aria-hidden="true"></i></a></td>
 			</tr>
 		</c:forEach>
 		</tbody>

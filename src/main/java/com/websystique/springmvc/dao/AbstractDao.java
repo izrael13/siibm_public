@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Order;
@@ -273,6 +274,21 @@ public abstract class AbstractDao<PK extends Serializable, T> {
 		
 		return result;
 		
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected List<Object> criteriaQueryStr(String query,Map<Integer,Integer> paramsInt, Map<Integer,String> paramStr)
+	{
+		Query queryQ = getSession().createNativeQuery(query);
+		
+		if(paramsInt.size() > 0)
+			paramsInt.forEach((k,v) -> queryQ.setParameter(k, v));
+		
+		if(paramStr.size() > 0)
+			paramStr.forEach((k,v) -> queryQ.setParameter(k, v));
+		
+		List<Object> Lista = queryQ.getResultList();
+		return Lista;
 	}
 	
 }

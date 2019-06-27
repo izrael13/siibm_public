@@ -25,7 +25,7 @@ $(document).ready(function() {
 			if(('${cotizadordatabean.cotizador.usuario_rech_prog}' == '' && '${cotizadordatabean.cotizador.fecha_rech_prog}' == '') ||
 			   ('${cotizadordatabean.cotizador.usuario_cancel}' > 0  && '${cotizadordatabean.cotizador.fecha_cancel}' != ''))
 			{
-				$("#BCancel").prop('disabled',true);
+				//$("#BCancel").prop('disabled',true);
 				$("#BGrabar").prop('disabled',true);
 				$("#BEnvVtas").prop('disabled',true);
 				
@@ -47,6 +47,7 @@ $(document).ready(function() {
 				$("#TPreciObj").attr("readonly","readonly");
 				$("#TPzasxTar").attr("readonly","readonly");
 				
+				////////////****ESPECIALIDADES****///////////////////
 				var nodes = document.getElementById("DEsp").getElementsByTagName('*');
 				for(var i = 0; i < nodes.length; i++)
 				{				
@@ -70,6 +71,20 @@ $(document).ready(function() {
 				    		
 					}
 				}
+				////////////****FIN ESPECIALIDADES****///////////////
+				////////////****CODIGO DE BARRAS****/////////////////
+				var nodescb = document.getElementById("TBodyCodBarras").getElementsByTagName('*');
+				for(var i = 0; i < nodescb.length; i++)
+				{
+					if(nodescb[i].id != "")
+					{
+						if(nodescb[i].type == 'text')
+							$("#"+nodescb[i].id).prop("readonly", true);
+					}
+				}
+				$("#BAddFila").prop("disabled",true);
+				$("#BDelFila").prop("disabled",true);
+				////////////****FIN CODIGO DE BARRAS****//////////////
 				
 				$("#SEntrego option:not(:selected)").prop("disabled", true);
 				$("#SColor1 option:not(:selected)").prop("disabled", true);
@@ -96,6 +111,8 @@ $(document).ready(function() {
 				$("#CCajaSeca").bind("click", preventDef, false);
 				$("#CCertFum").bind("click", preventDef, false);
 				$("#CEPP").bind("click", preventDef, false);
+				$("#CImpFech").bind("click", preventDef, false);
+				$("#CImpPed").bind("click", preventDef, false);
 				$("#TAltPallet").attr("readonly","readonly");
 				$("#TCamasPallet").attr("readonly","readonly");
 				$("#TFlejesPallet").attr("readonly","readonly");
@@ -602,6 +619,25 @@ $(document).on("keypress", "input", function (e) {//deshabilitar enter submit
         return false;
     }
 });
+
+function FAddFila()
+{
+	var numfilas = $("#TBodyCodBarras tr").length;
+	
+	 var nuevaFila   = '<tr>';
+	 nuevaFila   = nuevaFila + '<td><input id="TCodBarras'+numfilas+'" name="cotizador_detalles.codigo_barra_cotizador['+numfilas+'].idcodigo" type="text" value="" onkeypress="return SinCaracteresEspeciales(event)" class="border border-primary" size="20" maxlength="50"></td>';
+	 nuevaFila   = nuevaFila + '<td><input id="TCodComent'+numfilas+'" name="cotizador_detalles.codigo_barra_cotizador['+numfilas+'].observaciones" type="text" value="" onkeypress="return SinCaracteresEspeciales(event)" class="border border-primary" size="40" maxlength="100"></td>';
+	 nuevaFila   = nuevaFila + '</tr>';
+	
+	 document.getElementById("TBodyCodBarras").insertRow(-1).innerHTML = nuevaFila;
+
+}
+function FDelFila()
+{
+	var table = document.getElementById("TBodyCodBarras");
+	var rowCount = table.rows.length;
+	table.deleteRow(rowCount -1);
+}
 </script>
 <title>Registro cotizaciones</title>
 </head>
@@ -662,7 +698,7 @@ $(document).on("keypress", "input", function (e) {//deshabilitar enter submit
 											</div>
 										</div>
 									</div>
-									<div class="col-sm-1"><button type="button" data-toggle="modal" data-target="#AutModal" class="btn btn-outline-primary"><i class="fa fa-thumbs-o-up" aria-hidden="true"> Info</i></button></div>
+									<div class="col-sm-1"><button type="button" data-toggle="modal" data-target="#AutModal" class="float-right btn btn-outline-primary btn-sm"><i class="fa fa-info-circle" aria-hidden="true"> Info</i></button></div>
 								</div>
 							</div>
 							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
@@ -1130,6 +1166,9 @@ $(document).on("keypress", "input", function (e) {//deshabilitar enter submit
 										Caja seca: <form:checkbox id="CCajaSeca" path="cotizador_detalles.caja_seca"/>
 										Certif fumigación: <form:checkbox id="CCertFum" path="cotizador_detalles.certif_fumig"/>
 										EPP transportista: <form:checkbox id="CEPP" path="cotizador_detalles.epp_transportista"/>
+										Imprimir fechador: <form:checkbox id="CImpFech" path="cotizador_detalles.imprimir_fechador"/>
+										Imprimir pedido: <form:checkbox id="CImpPed" path="cotizador_detalles.imprimir_pedido"/>
+										<button id="BCodBarras" type="button" data-toggle="modal" data-target="#CodigoBarras" class="float-right btn btn-outline-primary btn-sm"><i class="fa fa-barcode" aria-hidden="true"> Código de barras</i></button>
 									</div>
 									<div class="col-sm-1">Altura pallet</div>
 									<div class="col-sm-1"><form:input id="TAltPallet" size="10" maxlength="8" type="text" path="cotizador_detalles.altura_pallet" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
@@ -1244,16 +1283,55 @@ $(document).on("keypress", "input", function (e) {//deshabilitar enter submit
 		 <div id = "mensajes" class = "${!empty mensajes ? 'alert alert-success' : ''}">${mensajes}</div>
 		<div align="left" class = "container">
 		<div class = "row" align="center">			
-			<div class="col-sm-2"><form:button id="BGrabar" class="btn btn-outline-primary"><i class="fa fa-floppy-o" aria-hidden="true"> Grabar</i></form:button></div>
-			<div class="col-sm-2"><a href="javascript:FBuscar()" class="btn btn-outline-primary"><i class="fa fa-search" aria-hidden="true"> Buscar</i></a></div>
-			<div class="col-sm-2"><button type="button" data-toggle="modal" data-target="#LimpiarModal" class="btn btn-outline-primary"><i class="fa fa-refresh" aria-hidden="true"> Limpiar</i></button></div>
-			<div class="col-sm-4"><button id="BEnvVtas" type="button" data-toggle="modal" data-target="#VtaModal" class="btn btn-outline-primary"><i class="fa fa-caret-right" aria-hidden="true">Enviar AUT Ventas y Programación</i></button></div>
-			<div class="col-sm-2"><button id="BCancel" type="button" data-toggle="modal" data-target="#CancelModal" class="btn btn-outline-primary"><i class="fa fa-times-circle-o" aria-hidden="true"> Cancelar</i></button></div>
+			<div class="col-sm-2"><form:button id="BGrabar" class="btn btn-outline-primary btn-sm"><i class="fa fa-floppy-o" aria-hidden="true"> Grabar</i></form:button></div>
+			<div class="col-sm-2"><a href="javascript:FBuscar()" class="btn btn-outline-primary btn-sm"><i class="fa fa-search" aria-hidden="true"> Buscar</i></a></div>
+			<div class="col-sm-2"><button type="button" data-toggle="modal" data-target="#LimpiarModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-refresh" aria-hidden="true"> Limpiar</i></button></div>
+			<div class="col-sm-4"><button id="BEnvVtas" type="button" data-toggle="modal" data-target="#VtaModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-paper-plane-o" aria-hidden="true"> Enviar AUT Ventas y Programación</i></button></div>
+			<div class="col-sm-2"><button id="BCancel" type="button" data-toggle="modal" data-target="#CancelModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-times-circle-o" aria-hidden="true"> Cancelar</i></button></div>
 		</div>
 		</div>
+		
+			<!-- REGION DE MODALS -->
+		<div class="modal fade bd-example-modal-lg" id="CodigoBarras" tabindex="-1" role="dialog" aria-labelledby="CodigoBarrasLabel" aria-hidden="true">
+		  <div class="modal-dialog modal-lg" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header alert alert-info">
+		        <h5 class="modal-title">AGREGAR CÓDIGO DE BARRAS</h5>
+		      </div>
+		      <div class="modal-body">
+		        <table class="table table-sm table-bordered table-hover">
+		        	<thead>
+		        		<tr>
+		        			<th>Código de barras</th>
+		        			<th>Comentarios</th>
+		        		</tr>
+		        	</thead>
+		        	<tbody id="TBodyCodBarras">
+		        	<c:forEach var="item" items="${cotizadordatabean.cotizador_detalles.codigo_barra_cotizador}" varStatus="status">
+		        		<tr>
+		        			<td>
+		        				<form:input type="text" size="20" maxlength="50" id="TCodBarras${status.index}" onkeypress="return SinCaracteresEspeciales(event)" path="cotizador_detalles.codigo_barra_cotizador[${status.index}].idcodigo" value="${item.idcodigo}"  class="border border-primary"/>
+		        			</td>
+		        			<td>
+		        				<form:input type="text" size="40" maxlength="100" id="TCodComent${status.index}" onkeypress="return SinCaracteresEspeciales(event)" path="cotizador_detalles.codigo_barra_cotizador[${status.index}].observaciones" value="${item.observaciones}"  class="border border-primary"/>
+		        			</td>
+		        		</tr>
+		        	</c:forEach>
+		        	</tbody>
+		        </table>
+		      </div>
+		      <div class="modal-footer">
+		        <button id="BAddFila" type="button" class="btn btn-primary" onClick="FAddFila()">Agregar fila</button>
+		        <button id="BDelFila" type="button" class="btn btn-warning" onClick="FDelFila()">Borrar fila</button>
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>	
+		
 	</form:form>
 	
-	<!-- REGION DE MODALS -->
+
 	<div class="modal fade" id="LimpiarModal" tabindex="-1" role="dialog" aria-labelledby="LimpiarModallLabel" aria-hidden="true">
 	  <div class="modal-dialog" role="document">
 	    <div class="modal-content">
@@ -1395,6 +1473,7 @@ $(document).on("keypress", "input", function (e) {//deshabilitar enter submit
 	    </div>
 	  </div>
 	</div>	
+	
 	<!-- FIN REGION DE MODALS  -->
 	
 	</div>

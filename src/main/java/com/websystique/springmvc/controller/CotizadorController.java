@@ -38,6 +38,7 @@ import com.websystique.springmvc.model.tarjetas.Catalogo_direcciones_sap_vw;
 import com.websystique.springmvc.model.tarjetas.Catalogo_especialidades_sap_vw;
 import com.websystique.springmvc.model.tarjetas.Catalogo_resistencias_sap_vw;
 import com.websystique.springmvc.model.tarjetas.Catalogo_vendedores_sap_vw;
+import com.websystique.springmvc.model.tarjetas.Codigo_barras_cotizador;
 import com.websystique.springmvc.model.tarjetas.Comision_comisionista_sap_vw;
 import com.websystique.springmvc.model.tarjetas.Comision_directo_sap_vw;
 import com.websystique.springmvc.model.tarjetas.Especialidades_cotizacion;
@@ -56,6 +57,7 @@ import com.websystique.springmvc.service.tarjetas.Catalogo_especialidades_sap_vw
 import com.websystique.springmvc.service.tarjetas.Catalogo_resistencias_sap_vwService;
 import com.websystique.springmvc.service.tarjetas.Catalogo_sellosService;
 import com.websystique.springmvc.service.tarjetas.Catalogo_vendedores_sap_vwService;
+import com.websystique.springmvc.service.tarjetas.Codigo_barras_cotizadorService;
 import com.websystique.springmvc.service.tarjetas.Comision_comisionista_sap_vwService;
 import com.websystique.springmvc.service.tarjetas.Comision_directo_sap_vwService;
 import com.websystique.springmvc.service.tarjetas.Especialidades_cotizacionService;
@@ -111,6 +113,8 @@ public class CotizadorController {
 	Catalogo_bolsas_sap_vwService cbs;
 	@Autowired
 	Catalogo_coloresService ccos;
+	@Autowired
+	Codigo_barras_cotizadorService cbsc;
 	
 	Integer idN = 0;
 	Integer idND = 0;
@@ -155,6 +159,7 @@ public class CotizadorController {
 						}
 						
 						cdb.getCotizador_detalles().setEspecialidades_cotizacion(ListaEspDet);
+						cdb.getCotizador_detalles().setCodigo_barra_cotizador(cbsc.BuscarXCotDet(Integer.valueOf(id), Integer.valueOf(iddet)));
 					}
 					
 					//System.out.println(cdb.getCotizador_detalles().toString());
@@ -201,8 +206,8 @@ public class CotizadorController {
 			for (ObjectError error : result.getAllErrors()) {
 			       String fieldErrors [] = error.getCodes();
 			       System.out.println(fieldErrors[0]);
-			   }*/
-			  
+			   }
+			 */ 
 			if (result.hasErrors() )
 			{
 				return "/tarjetas/cotizador/cotizador";
@@ -271,7 +276,30 @@ public class CotizadorController {
 					}
 				}
 			}
+			
+			List<Codigo_barras_cotizador> ListaCodBarrasBorrar = cbsc.BuscarXCotDet(idN, idND);
+			List<Codigo_barras_cotizador> ListaCodBarras = cotizadorDataBean.getCotizador_detalles().getCodigo_barra_cotizador();
+			
+			if(ListaCodBarrasBorrar.size() > 0)
+				cbsc.Borrar(ListaCodBarrasBorrar);
+			
+			if(ListaCodBarras.size() > 0)
+			{
+				for(int i = 0; i < ListaCodBarras.size(); i++)
+				{
+					if( (ListaCodBarras.get(i).getIdcodigo() == null ? 0 : ListaCodBarras.get(i).getIdcodigo().trim().length()) > 0 )
+					{
+						Codigo_barras_cotizador objcb = new Codigo_barras_cotizador();
+						objcb.setIdcodigo(ListaCodBarras.get(i).getIdcodigo());
+						objcb.setObservaciones(ListaCodBarras.get(i).getObservaciones());
+						objcb.setIdcotizacion(idN);
+						objcb.setIddetalle(idND);
+						cbsc.Guardar(objcb);
+					}
+				}
 				
+			} 
+			
 			logger.info(AppController.getPrincipal() + " - cotizadotpost.");
 			model.addAttribute("mensajes", msj);
 		}
@@ -395,9 +423,6 @@ public class CotizadorController {
 				String MedLamina = String.valueOf(LargoVar) + " x " + AnchoVar;
 				object.addProperty("MedLamina", MedLamina);
 				
-				Double ComisionDirecto = PrecioNeto > 0 ? ((jsonObjectParams.get("precioobj").getAsDouble() / PrecioNeto) - 1) * 100 : 0.0;
-				object.addProperty("ComisionDirecto", decimal2.format(ComisionDirecto));
-				
 				Double CostoPapel = jsonObjectParams.get("costopapelresis").getAsDouble() * AreaUni * jsonObjectParams.get("pzasxjgo").getAsInt();
 				object.addProperty("CostoPapel", decimal2.format(CostoPapel));
 				
@@ -436,6 +461,9 @@ public class CotizadorController {
 				}
 				object.addProperty("Esp", arr.toString());
 				object.addProperty("TotCostoEsp", TotCostoEsp); 
+				
+				Double ComisionDirecto = PrecioNeto > 0 ? (((jsonObjectParams.get("precioobj").getAsDouble() - TotCostoEsp ) / PrecioNeto)  * 100) : 0.0;
+				object.addProperty("ComisionDirecto", decimal2.format(ComisionDirecto));
 				
 				Double CPSC = (jsonObjectParams.get("precioobj").getAsDouble() - TotCostoEsp - CostoFlete) > 0 ? (CostoPapel / (jsonObjectParams.get("precioobj").getAsDouble() - TotCostoEsp - CostoFlete)) * 100 : 0.0;			
 				object.addProperty("CPSC", decimal2.format(CPSC));
@@ -768,6 +796,39 @@ public class CotizadorController {
 		logger.info(AppController.getPrincipal() + " - requerimientoabcget :"+ msj);
 		model.addAttribute("mensajes", msj);
 		return "/tarjetas/cotizador/requerimientoabc";
+	}
+	@RequestMapping(value = "/ingenieria/convertiratarjeta", method = RequestMethod.POST)
+    public @ResponseBody String convertiratarjeta(ModelMap model, @RequestParam("idcot") String idcot, @RequestParam("coment") String coment, @RequestParam("ban") String ban) throws JRException, IOException {
+		String msj = "";
+		try
+		{
+			User user = us.findBySSO(AppController.getPrincipal());
+			Cotizador c = cs.BuscarxId(Integer.valueOf(idcot));
+			
+			if(Integer.valueOf(ban) == 0)
+			{
+				c.setObservaciones_diseniador(coment);
+				cs.Actualizar(c);
+				logger.info(AppController.getPrincipal() + " - convertiratarjeta. Commentario");
+			}
+			else
+			{
+				 
+				java.util.Date date = new java.util.Date();
+				c.setId_diseniador(user.getId());
+				c.setFecha_asign_diseniador(date);
+				c.setObservaciones_diseniador(coment);
+				cs.Actualizar(c);
+				logger.info(AppController.getPrincipal() + " - convertiratarjeta.");
+			}
+			return "OK";
+		}
+		catch(Exception e)
+		{
+			msj = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
+			logger.info(AppController.getPrincipal() + " - convertiratarjeta :"+ msj);
+			return msj;
+		}
 	}
 	
 }

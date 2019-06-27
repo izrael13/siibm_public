@@ -62,23 +62,39 @@ public class CotizadorDAOImpl extends AbstractDao<Integer,Cotizador> implements 
 	@Override
 	public List<Cotizador_busqueda> ListaBusquedaxIdCardCode(Integer id, String cardCode,Integer idUser) {
 		// FIXME Auto-generated method stub
+		Map<Integer,Integer> paramsInt = new HashMap<Integer, Integer>();
+		Map<Integer,String> paramStr = new HashMap<Integer, String>();
+		int posicion = 0;
+		
 		String query = "select ROW_NUMBER() OVER(ORDER BY a.ID ASC) AS count, a.ID,b.cardname,c.address +' '+c.direccion direccion,a.FECHA_INSERT fecha_insert\r\n" + 
 				"from COTIZADOR a\r\n" + 
 				"inner join CATALOGO_CLIENTES_SAP b on a.CARDCODE = b.cardcode\r\n" + 
 				"inner join CATALOGO_DIRECCIONES_SAP c on a.CARDCODE = c.cardcode and a.LINENUM_DIR_ENTREGA = c.linenum\r\n" + 
 				"where a.ID > 0";
 		if(id > 0)
-			query = query + " and a.ID = "+id+" ";
+		{
+			posicion ++;
+			query = query + " and a.ID = ?"+posicion;
+			paramsInt.put(posicion, id);
+		}
 		if (!cardCode.equals("0"))
-			query = query + " and a.CARDCODE = '"+cardCode+"' ";
+		{
+			posicion ++;
+			query = query + " and a.CARDCODE = ?"+posicion;
+			paramStr.put(posicion, cardCode);
+		}
 		if(idUser > 0)
-			query = query + " and a.USUARIO_INSERT = "+idUser+" ";
+		{
+			posicion ++;
+			query = query + " and a.USUARIO_INSERT = ?"+posicion;
+			paramsInt.put(posicion, idUser);
+		}
 		
 		query = query + " order by a.FECHA_INSERT ";
 		
 		List<Cotizador_busqueda> Lista = new ArrayList<Cotizador_busqueda>();
-		@SuppressWarnings({ "unchecked" })
-		List<Object> result = (List<Object>) getSession().createNativeQuery(query).getResultList();
+		
+		List<Object> result = criteriaQueryStr(query,paramsInt,paramStr);//getSession().createNativeQuery(query).getResultList();
 		
 		@SuppressWarnings("rawtypes")
 		Iterator itr = result.iterator();
@@ -101,8 +117,12 @@ public class CotizadorDAOImpl extends AbstractDao<Integer,Cotizador> implements 
 	@Override
 	public List<Cotizador_busqueda> ListaBusquedaxIdCardCodeDet(Integer id, String cardCode, Integer idUser,Integer idDet,Boolean autVtas,Boolean autProgAsigDis) {
 		// FIXME Auto-generated method stub
+		Map<Integer,Integer> paramsInt = new HashMap<Integer, Integer>();
+		Map<Integer,String> paramStr = new HashMap<Integer, String>();
+		int posicion = 0;
+		
 		String query = "select ROW_NUMBER() OVER(ORDER BY a.ID ASC) AS count,a.ID id,b.cardname,c.address +' '+c.direccion direccion,a.FECHA_INSERT fecha_insert,d.SIMBOLO simbolo,e.nombrelargo,d.iddetalle iddet, \r\n"+
-				"d.comision_directo,d.precio_objetivo,d.precio_sugerido,d.precio_neto,d.descuento_vendedor,e.nombrecorto,d.cpcc,d.ref_para_comision \r\n" + 
+				"d.comision_directo,d.precio_objetivo,d.precio_sugerido,d.precio_neto,d.descuento_vendedor,e.nombrecorto,d.cpcc,d.ref_para_comision, a.observaciones_diseniador \r\n" + 
 				"from COTIZADOR a\r\n" + 
 				"inner join CATALOGO_CLIENTES_SAP b on a.CARDCODE = b.cardcode\r\n" + 
 				"inner join CATALOGO_DIRECCIONES_SAP c on a.CARDCODE = c.cardcode and a.LINENUM_DIR_ENTREGA = c.linenum\r\n" + 
@@ -110,30 +130,47 @@ public class CotizadorDAOImpl extends AbstractDao<Integer,Cotizador> implements 
 				"inner join CATALOGO_CAJAS_SAP e on d.IDCAJA_SAP = e.idtipocaja \r\n" + 
 				"where a.ID > 0";
 		if(id > 0)
-			query = query + " and a.ID = "+id+" ";
+		{
+			posicion ++;			
+			query = query + " and a.ID =  ?"+posicion;
+			paramsInt.put(posicion, id);
+		}
 		if (!cardCode.equals("0"))
-			query = query + " and a.CARDCODE = '"+cardCode+"' ";
+		{
+			posicion ++;
+			query = query + " and a.CARDCODE =  ?"+posicion;
+			paramStr.put(posicion, cardCode);
+		}
 		if(idUser > 0)
-			query = query + " and a.USUARIO_INSERT = "+idUser+" ";
+		{
+			posicion ++;
+			query = query + " and a.USUARIO_INSERT =  ?"+posicion;
+			paramsInt.put(posicion, idUser);
+			
+		}
 		if(idDet > 0)
-			query = query + " and d.iddetalle = "+idDet+" ";
+		{
+			posicion ++;
+			query = query + " and d.iddetalle =  ?"+posicion;
+			paramsInt.put(posicion, idDet);
+		}
 		if(autVtas)
 		{
-			query = query + "and a.fecha_envia_ventas is not null and a.usuario_envia_ventas is not null \r\n" + 
+			query = query + " and a.fecha_envia_ventas is not null and a.usuario_envia_ventas is not null \r\n" + 
 					"and a.fecha_aut_ventas is null and a.usuario_aut_ventas is null and a.fecha_rech_ventas is null and a.usuario_rech_ventas is null  \r\n" +
 					"and a.usuario_cancel is null and a.fecha_cancel is null ";
 		}
 		if(autProgAsigDis)
 		{
-			query = query + "and a.fecha_aut_prog is not null and a.usuario_aut_prog is not null  \r\n" +
-					"and a.usuario_cancel is null and a.fecha_cancel is null ";
+			query = query + " and a.fecha_aut_prog is not null and a.usuario_aut_prog is not null  \r\n" +
+					"and a.usuario_cancel is null and a.fecha_cancel is null and a.id_diseniador is null and a.fecha_asign_diseniador is null ";
 		}
 		
 		query = query + " order by a.FECHA_INSERT ";
 		//System.out.println(query);
 		List<Cotizador_busqueda> Lista = new ArrayList<Cotizador_busqueda>();
-		@SuppressWarnings({ "unchecked" })
-		List<Object> result = (List<Object>) getSession().createNativeQuery(query).getResultList();
+
+		List<Object> result = criteriaQueryStr(query,paramsInt,paramStr);
 		
 		@SuppressWarnings("rawtypes")
 		Iterator itr = result.iterator();
@@ -157,16 +194,20 @@ public class CotizadorDAOImpl extends AbstractDao<Integer,Cotizador> implements 
 			   cb.setNombrecorto(String.valueOf(obj[13]));
 			   cb.setCpcc(Double.parseDouble(String.valueOf(obj[14])));
 			   cb.setRef_para_com(Double.parseDouble(String.valueOf(obj[15])));
+			   cb.setObservaciones_diseniador(String.valueOf(obj[16]));
 			   Lista.add(cb); 
 			}
 		
 		return Lista;
 	}
+	
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Object> ListaCotizacionesJasper(Integer id,Boolean autProg) {
 		// FIXME Auto-generated method stub
+		Map<Integer,Integer> paramsInt = new HashMap<Integer, Integer>();
+		Map<Integer,String> paramStr = new HashMap<Integer, String>();
+		
 		String query = "select a.cardcode,d.cardname,c.first_name +' '+ c.last_name as 'representante',b.simbolo,a.fecha_insert,a.id,b.largo,b.ancho,b.fondo,b.medida_lamina,b.area_unitaria,\r\n" + 
 				"peso_pieza,piezasxjuego,area_total,peso_juego,e.tipocajabarca,f.resistencia,f.corrugado,f.color,b.peso_resis,b.preciom2resistencia,b.precio_neto,\r\n" + 
 				"b.precio_objetivo,b.pk_teorico,b.kg,b.descuento_vendedor,piezasxtarima,porcentaje_comision,comisionxmillar,costo_papel,b.ref_para_comision,\r\n" + 
@@ -225,8 +266,10 @@ public class CotizadorDAOImpl extends AbstractDao<Integer,Cotizador> implements 
 				"join catalogo_cajas_sap e on e.idtipocaja=b.idcaja_sap\r\n" + 
 				"join catalogo_resistencias_sap f on f.idresistencia=b.idresistencia_barca\r\n" + 
 				"join catalogo_direcciones_sap g on g.cardcode=a.cardcode and g.linenum=a.linenum_dir_entrega " ;
-				if(id > 0)
-					query = query + "where idcotizacion = "+ id +" order by b.iddetalle ";
+				if(id > 0) {
+					query = query + "where idcotizacion =  ?1 order by b.iddetalle ";
+					paramsInt.put(1, id);
+				}
 				else
 				{
 					if(autProg)
@@ -237,7 +280,7 @@ public class CotizadorDAOImpl extends AbstractDao<Integer,Cotizador> implements 
 					}
 				}	
 		
-		List<Object> result = (List<Object>) getSession().createNativeQuery(query).getResultList();
+		List<Object> result = criteriaQueryStr(query,paramsInt,paramStr);
 		
 		return result;
 	}

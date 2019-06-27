@@ -34,4 +34,5 @@ public class Cotizador_busqueda implements Serializable{/**
 	private String nombrecorto;
 	private Double cpcc;
 	private Double ref_para_com;
+	private String observaciones_diseniador;
 }

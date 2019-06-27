@@ -158,7 +158,7 @@ function SinCaracteresEspeciales(e) {//Con espacios
     }
 
     // Patron de entrada, en este caso solo acepta numeros y letras
-    patron = /[A-Za-z0-9-\.\-_@ /]/;
+    patron = /[A-Za-z0-9-\.\-_@ñÑ /]/;
     tecla_final = String.fromCharCode(tecla);
     return patron.test(tecla_final);
 }

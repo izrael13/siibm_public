@@ -17,6 +17,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.websystique.springmvc.model.tarjetas.Codigo_barras_cotizador;
 import com.websystique.springmvc.model.tarjetas.Especialidades_cotizacion;
 
 import lombok.Data;
@@ -156,13 +157,13 @@ public class Cotizador_detalles implements Serializable{
 	private Double flejes_atado;
 	private Double atados_cama;
 	private Double pzas_atado;
+	private Boolean imprimir_fechador;
+	private Boolean imprimir_pedido;
 	
-	//@NotEmpty
 	@Transient
-	/*@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "ESPECIALIDADES_COTIZACION", 
-             joinColumns = { @JoinColumn(name = "iddetalle") }, 
-             inverseJoinColumns = { @JoinColumn(name = "iddetalle") }) */
 	private List<Especialidades_cotizacion>  especialidades_cotizacion = new ArrayList<Especialidades_cotizacion>();
-	//private String especialidades_cotizacionJson;
+	
+	@Transient
+	private List<Codigo_barras_cotizador> codigo_barra_cotizador = new ArrayList<Codigo_barras_cotizador>();
+
 }

@@ -36,6 +36,7 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 .dropdown-submenu:hover>.dropdown-menu{display:block;}/*Desplieque de submenus (reportes)*/
 .dropdown-menu .dropdown-menu-right{width: 220px;font-size: smaller;}/*Propiedades menu (Módulos)*/
 .fa-user-circle-o:hover{color: green;}/**/
+
 </style>
 
 <link rel="shortcut icon" href="<c:url value='/static/img/BarcaLogoV.png' />"/>
@@ -43,7 +44,7 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
-<a class="text-dark" href="<c:url value='/principal'/>">SIIBM <i class="fa fa-user-o" aria-hidden="true"></i> ${loggedinuser}</a>
+<img class="rounded img-fluid" alt="Responsive image" src="<c:url value='/static/img/BarcaLogoM.png'/>" align="top">&nbsp;<a class="text-dark" href="<c:url value='/principal'/>"> SIIBM ${loggedinuser}</a>
 <div id = "navbarSupportedContent" class="collapse navbar-collapse">
 <ul class="navbar-nav mr-auto">
 	<li class="nav-item dropdown">				
@@ -105,7 +106,7 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 	 </sec:authorize>
 	 
 	 <li class="nav-item dropdown">				
-		<a class="dropdown-item" href="" data-toggle="dropdown"><i class="fa fa-id-card" aria-hidden="true">	Sistema de tarjetas</i></a>
+		<a class="dropdown-item" href="" data-toggle="dropdown"><i class="fa fa-id-card" aria-hidden="true"> Sistema de tarjetas</i></a>
 		<ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu">
 			<li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-user-circle" aria-hidden="true"></i> Prospectos</a>
 			    <ul class="dropdown-menu">
