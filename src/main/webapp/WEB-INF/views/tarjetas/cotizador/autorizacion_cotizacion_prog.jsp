@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
@@ -7,11 +7,11 @@
 <html>
 <head>
 <%@include file="../../appconfig/authheader2.jsp"%>
-<title>AutorizaciÃ³n de cotizaciones por ProgramaciÃ³n</title>
+<title>Autorización de cotizaciones por Programación</title>
 <script>
 function FAut(id)
 {
-	var r = confirm("Enviar autorizaciÃ³n!");
+	var r = confirm("Enviar autorización!");
 	if(r == true)
 	{
 		if(id > 0)
@@ -29,18 +29,18 @@ function FAut(id)
 			    if(http.readyState == 4 && http.status == 200) 
 			    {
 			    	if (http.responseText.search(/Login page/i) != -1) {
-			    		alert("La sessiÃ³n ha expirado, Por favor vuelva a intentarlo.");
+			    		alert("La sessión ha expirado, Por favor vuelva a intentarlo.");
 		    			window.location.replace('<c:url value="/login?expired"/>');
 			    	}
 		    		else{
 		    			if(http.responseText === 'OK')
 		    			{
-		    				alert("AutorizaciÃ³n existosa.");
+		    				alert("Autorización existosa.");
 				    		window.location.replace('<c:url value="/cotizador/programacion/autorizacion_cotizacion_prog"/>');
 		    			}
 		    			else
 		    			{
-		    				alert("Algo saliÃ³ mal, por favor vuelva a intentarlo: "+http.responseText);
+		    				alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
 				    		window.location.replace('<c:url value="/cotizador/programacion/autorizacion_cotizacion_prog"/>');
 		    			}
 		    		}
@@ -48,8 +48,13 @@ function FAut(id)
 			    else
 			    {
 			    	if(http.readyState == 4 && http.status != 200){
-			    		alert("Algo saliÃ³ mal, por favor vuelva a intentarlo: "+http.responseText);
+			    		alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
 			    		window.location.replace('<c:url value="/cotizador/programacion/autorizacion_cotizacion_prog"/>');
+			    	}
+			    	else
+			    	{
+				    	$("#mensajes" ).text("Procesando petición");
+						$("#mensajes").removeClass().addClass("alert alert-info");
 			    	}
 			    }
 			    
@@ -79,7 +84,7 @@ function FReach(id)
 			    if(http.readyState == 4 && http.status == 200) 
 			    {
 			    	if (http.responseText.search(/Login page/i) != -1) {
-			    		alert("La sessiÃ³n ha expirado, Por favor vuelva a intentarlo.");
+			    		alert("La sessión ha expirado, Por favor vuelva a intentarlo.");
 		    			window.location.replace('<c:url value="/login?expired"/>');
 			    	}
 		    		else{
@@ -90,7 +95,7 @@ function FReach(id)
 		    			}
 		    			else
 		    			{
-		    				alert("Algo saliÃ³ mal, por favor vuelva a intentarlo: "+http.responseText);
+		    				alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
 				    		window.location.replace('<c:url value="/cotizador/programacion/autorizacion_cotizacion_prog"/>');
 		    			}
 		    		}
@@ -98,8 +103,13 @@ function FReach(id)
 			    else
 			    {
 			    	if(http.readyState == 4 && http.status != 200){
-			    		alert("Algo saliÃ³ mal, por favor vuelva a intentarlo: "+http.responseText);
+			    		alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
 			    		window.location.replace('<c:url value="/cotizador/programacion/autorizacion_cotizacion_prog"/>');
+			    	}
+			    	else
+			    	{
+				    	$("#mensajes" ).text("Procesando petición");
+						$("#mensajes").removeClass().addClass("alert alert-info");
 			    	}
 			    }
 			    
@@ -113,7 +123,7 @@ function FReach(id)
 <body>
 	<br>
 	<div align="center">
-		<span class="badge badge-secondary">AutorizaciÃ³n de cotizaciones por ProgramaciÃ³n</span>
+		<span class="badge badge-secondary">Autorización de cotizaciones por Programación</span>
 	</div>
 	<br>
 	<div align="center" class="container-fluid small">
@@ -142,7 +152,7 @@ function FReach(id)
 				<td>${item[17]}</td>
 				<td>${item[9]}</td>
 				<td>${item[65]} ${item[66]} ${item[67]} ${item[68]} ${item[69]} ${item[70]} ${item[71]} ${item[72]} ${item[73]} ${item[74]} ${item[75]} ${item[76]} ${item[77]} ${item[78]} ${item[79]} 
-				${item[80]} ${item[81]} ${item[82]} ${item[83]} ${item[84]} ${item[85]} ${item[86]} ${item[87]} </td>
+				${item[80]} ${item[81]} ${item[82]} ${item[83]} ${item[84]} ${item[85]} ${item[86]} ${item[87]} ${item[88]} ${item[89]} ${item[90]} ${item[91]} ${item[92]}</td>
 				<td><input id="TComent${item[5]}" type="text" size="50" onkeypress="return SinCaracteresEspeciales(event)" maxlength="100" class="border border-primary"/></td>
 				<td><a href="javascript:FAut(${item[5]})"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></a></td>
 				<td><a href="javascript:FReach(${item[5]})"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i></a></td>

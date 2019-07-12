@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
@@ -8,7 +8,6 @@
 <head>
 <%@include file="../../appconfig/authheader2.jsp"%>
 <script>
-
 $(document).ready(function() {
 		
 	if('${cotizadordatabean.cotizador.id}' > 0)
@@ -17,14 +16,17 @@ $(document).ready(function() {
 		   ('${cotizadordatabean.cotizador.usuario_envia_a_prog}' > 0 && '${cotizadordatabean.cotizador.fecha_envia_a_prog}' != '')||
 		   ('${cotizadordatabean.cotizador.usuario_cancel}' > 0  && '${cotizadordatabean.cotizador.fecha_cancel}' != ''))
 		{
-			$("#SClientes option:not(:selected)").prop("disabled", true);
-			$("#direcciones option:not(:selected)").prop("disabled", true);
-			$("#SCajas option:not(:selected)").prop("disabled", true);
-			$("#SResisBarca option:not(:selected)").prop("disabled", true);
 			
-			if(('${cotizadordatabean.cotizador.usuario_rech_prog}' == '' && '${cotizadordatabean.cotizador.fecha_rech_prog}' == '') ||
-			   ('${cotizadordatabean.cotizador.usuario_cancel}' > 0  && '${cotizadordatabean.cotizador.fecha_cancel}' != ''))
+			if( ('${cotizadordatabean.cotizador.usuario_rech_prog}' == '' && '${cotizadordatabean.cotizador.fecha_rech_prog}' == '') ||
+			    ('${cotizadordatabean.cotizador.usuario_rech_diseniador}' == '' && '${cotizadordatabean.cotizador.fecha_rech_diseniador}' == '') ||
+			    ('${cotizadordatabean.cotizador.usuario_cancel}' > 0  && '${cotizadordatabean.cotizador.fecha_cancel}' != '')
+			  )
 			{
+				$("#SClientes option:not(:selected)").prop("disabled", true);
+				$("#direcciones option:not(:selected)").prop("disabled", true);
+				$("#SCajas option:not(:selected)").prop("disabled", true);
+				$("#SResisBarca option:not(:selected)").prop("disabled", true);
+				
 				//$("#BCancel").prop('disabled',true);
 				$("#BGrabar").prop('disabled',true);
 				$("#BEnvVtas").prop('disabled',true);
@@ -113,6 +115,7 @@ $(document).ready(function() {
 				$("#CEPP").bind("click", preventDef, false);
 				$("#CImpFech").bind("click", preventDef, false);
 				$("#CImpPed").bind("click", preventDef, false);
+				$("#CTarxUni").bind("click", preventDef, false);
 				$("#TAltPallet").attr("readonly","readonly");
 				$("#TCamasPallet").attr("readonly","readonly");
 				$("#TFlejesPallet").attr("readonly","readonly");
@@ -132,6 +135,8 @@ $(document).ready(function() {
 			$("#BGrabar").prop('disabled',false);
 			//$("#BCancel").prop('disabled',false);
 		}
+		if('${cotizadordatabean.cotizador.usuario_diseniador}' != ''  && '${cotizadordatabean.cotizador.fecha_asign_diseniador}' != '')
+			$("#BCancel").prop('disabled',true);
 	} 
 });
 function preventDef(event) {
@@ -509,23 +514,23 @@ function FEnviarVtaProg()
 		http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 	
 		http.onreadystatechange = function() {//Call a function when the state changes.
-			$("#DivMensaje").text("Procesando petici√≥n. Por favor espere...");
+			$("#DivMensaje").text("Procesando peticiÛn. Por favor espere...");
 	    	$("#DivMensaje").removeClass().addClass("alert alert-danger");
 		    if(http.readyState == 4 && http.status == 200) 
 		    {
 		    	if (http.responseText.search(/Login page/i) != -1) {
-		    		alert("La sessi√≥n ha expirado, Por favor vuelva a intentarlo.");
+		    		alert("La sessiÛn ha expirado, Por favor vuelva a intentarlo.");
 	    			window.location.replace('<c:url value="/login?expired"/>');
 		    	}
 	    		else{
 	    			if(http.responseText === 'OK')
 	    			{
-	    				alert("Exitoso env√≠o a autorizaci√≥n de ventas.");
+	    				alert("Exitoso envÌo a autorizaciÛn de ventas.");
 			    		window.location.replace('<c:url value="/cotizador/vendedor/cotizadorabc"/>?id=0'+'&iddet='+0);
 	    			}
 	    			else
 	    			{
-	    				alert("Algo sali√≥ mal, por favor vuelva a intentarlo: "+http.responseText);
+	    				alert("Algo saliÛ mal, por favor vuelva a intentarlo: "+http.responseText);
 			    		window.location.replace('<c:url value="/cotizador/vendedor/cotizadorabc"/>?id='+idcot+'&iddet='+iddet);
 	    			}
 	    		}
@@ -533,7 +538,7 @@ function FEnviarVtaProg()
 		    else
 		    {
 		    	if(http.readyState == 4 && http.status != 200){
-		    		alert("Algo sali√≥ mal, por favor vuelva a intentarlo: "+http.responseText);
+		    		alert("Algo saliÛ mal, por favor vuelva a intentarlo: "+http.responseText);
 		    		window.location.replace('<c:url value="/cotizador/vendedor/cotizadorabc"/>?id='+idcot+'&iddet='+iddet);
 		    	}
 		    }
@@ -558,23 +563,23 @@ function FCancelar()
 		http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 	
 		http.onreadystatechange = function() {//Call a function when the state changes.
-			$("#DivMensaje").text("Procesando petici√≥n. Por favor espere...");
+			$("#DivMensaje").text("Procesando peticiÛn. Por favor espere...");
 	    	$("#DivMensaje").removeClass().addClass("alert alert-danger");
 		    if(http.readyState == 4 && http.status == 200) 
 		    {
 		    	if (http.responseText.search(/Login page/i) != -1) {
-		    		alert("La sessi√≥n ha expirado, Por favor vuelva a intentarlo.");
+		    		alert("La sessiÛn ha expirado, Por favor vuelva a intentarlo.");
 	    			window.location.replace('<c:url value="/login?expired"/>');
 		    	}
 	    		else{
 	    			if(http.responseText === 'OK')
 	    			{
-	    				alert("COTIZACI√ìN CANCELADA!!!!!!");
+	    				alert("COTIZACI”N CANCELADA!!!!!!");
 			    		window.location.replace('<c:url value="/cotizador/vendedor/cotizadorabc"/>?id=0'+'&iddet='+0);
 	    			}
 	    			else
 	    			{
-	    				alert("Algo sali√≥ mal, por favor vuelva a intentarlo: "+http.responseText);
+	    				alert("Algo saliÛ mal, por favor vuelva a intentarlo: "+http.responseText);
 			    		window.location.replace('<c:url value="/cotizador/vendedor/cotizadorabc"/>?id='+idcot+'&iddet='+iddet);
 	    			}
 	    		}
@@ -582,7 +587,7 @@ function FCancelar()
 		    else
 		    {
 		    	if(http.readyState == 4 && http.status != 200){
-		    		alert("Algo sali√≥ mal, por favor vuelva a intentarlo: "+http.responseText);
+		    		alert("Algo saliÛ mal, por favor vuelva a intentarlo: "+http.responseText);
 		    		window.location.replace('<c:url value="/cotizador/vendedor/cotizadorabc"/>?id='+idcot+'&iddet='+iddet);
 		    	}
 		    }
@@ -625,8 +630,8 @@ function FAddFila()
 	var numfilas = $("#TBodyCodBarras tr").length;
 	
 	 var nuevaFila   = '<tr>';
-	 nuevaFila   = nuevaFila + '<td><input id="TCodBarras'+numfilas+'" name="cotizador_detalles.codigo_barra_cotizador['+numfilas+'].idcodigo" type="text" value="" onkeypress="return SinCaracteresEspeciales(event)" class="border border-primary" size="20" maxlength="50"></td>';
-	 nuevaFila   = nuevaFila + '<td><input id="TCodComent'+numfilas+'" name="cotizador_detalles.codigo_barra_cotizador['+numfilas+'].observaciones" type="text" value="" onkeypress="return SinCaracteresEspeciales(event)" class="border border-primary" size="40" maxlength="100"></td>';
+	 nuevaFila   = nuevaFila + '<td><input id="TCodBarras'+numfilas+'" name="cotizador_detalles.codigo_barra_cotizador['+numfilas+'].idcodigo" type="text" value="" onkeypress="return SinCaracteresEspeciales(event)" class="border border-primary" maxlength="50"></td>';
+	 nuevaFila   = nuevaFila + '<td><input id="TCodComent'+numfilas+'" name="cotizador_detalles.codigo_barra_cotizador['+numfilas+'].observaciones" type="text" value="" onkeypress="return SinCaracteresEspeciales(event)" class="border border-primary" maxlength="100"></td>';
 	 nuevaFila   = nuevaFila + '</tr>';
 	
 	 document.getElementById("TBodyCodBarras").insertRow(-1).innerHTML = nuevaFila;
@@ -658,10 +663,13 @@ function FDelFila()
 						<div class="row small">
 							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
 								<div class="row border border-right">
-									<div class="col-sm-1">Folio</div>
-									<div class="col-sm-1"><form:input class="border border-secondary" size="9" maxlength="8" onkeypress="return Enteros(event)" id="TId" readonly="true" type="text" value="${empty cotizadordatabean.cotizador.id ? 0 : cotizadordatabean.cotizador.id}"  path="cotizador.id"/></div>
-									<div class="col-sm-1">Cliente</div>
-									<div class="col-sm-7">
+									<div class="col col-lg-1">Folio</div>
+									<div class="col col-lg-1">
+										<form:input class="border border-secondary" size="9" maxlength="8" onkeypress="return Enteros(event)" id="TId" readonly="true" type="text" 
+										 value="${empty cotizadordatabean.cotizador.id ? 0 : cotizadordatabean.cotizador.id}" path="cotizador.id"/>
+									</div>
+									<div class="col col-lg-1">Cliente</div>
+									<div class="col col-lg-7">
 										<form:select Onchange="FBuscarDirecciones()" id="SClientes" path="cotizador.cardcode" multiple="false" class="border border-primary">
 											<form:option value="0">Seleccione un cliente</form:option>
 											<c:forEach var="cte" items="${clientes}">
@@ -672,8 +680,8 @@ function FDelFila()
 											<form:errors path="cotizador.cardcode" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-1 font-weight-bold">Flete</div>
-									<div class="col-1">
+									<div class="col col-lg-1 font-weight-bold">Flete</div>
+									<div class="col col-lg-">
 										<form:input ondblclick="FBuscarInfoDir()" readonly = "true" size="10" type="text" id= "TFlete" path="cotizador.costo_flete" class="border border-secondary"
 													data-toggle="tooltip" data-placement="top" title="Doble click para actualizar." />
 										<div class="has-error">
@@ -684,8 +692,8 @@ function FDelFila()
 							</div>
 							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
 								<div class="row border border-right">
-									<div class="col-sm-1">Direcci√≥n</div>
-									<div class="col-sm-10">
+									<div class="col col-lg-1">DirecciÛn</div>
+									<div class="col col-lg-10">
 										<div class ="input-group">
 											<form:select Onchange="FBuscarInfoDir()" path="cotizador.linenum_dir_entrega" id = "direcciones" multiple="false" class="border border-primary">
 												<form:option value="-1"> - - - </form:option>
@@ -698,17 +706,14 @@ function FDelFila()
 											</div>
 										</div>
 									</div>
-									<div class="col-sm-1"><button type="button" data-toggle="modal" data-target="#AutModal" class="float-right btn btn-outline-primary btn-sm"><i class="fa fa-info-circle" aria-hidden="true"> Info</i></button></div>
+									<div class="col col-lg-1"><button type="button" data-toggle="modal" data-target="#AutModal" class="float-right btn btn-outline-primary btn-sm"><i class="fa fa-info-circle" aria-hidden="true"> Info</i></button></div>
 								</div>
 							</div>
 							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
 								<div class="row border border-right">
-									<div class="col-1">Contacto</div>
-									<div class="col-3"><div id="DContacto">${direccionSelect[0].contacto}</div></div>
-									<div class="col-1">Tel√©fono</div>
-									<div class="col-3"><div id="DTelefono">${direccionSelect[0].telefono}</div></div>
-									<div class="col-1">Email</div>
-									<div class="col-3"><div id="DEmail">${direccionSelect[0].email}</div></div>
+									<div class="col col-lg-4">Contacto: <span id="DContacto">${direccionSelect[0].contacto}</span></div>
+									<div class="col col-lg-4">TelÈfono: <span id="DTelefono">${direccionSelect[0].telefono}</span></div>
+									<div class="col col-lg-4">Email: <span id="DEmail">${direccionSelect[0].email}</span></div>
 								</div>
 							</div>
 						</div>
@@ -728,18 +733,21 @@ function FDelFila()
 						<div class="row small">
 							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
 								<div class="row border border-right">
-									<div class="col-sm-1">
-										<form:input id="TIdDet" value="${empty cotizadordatabean.cotizador_detalles.iddetalle ? 0 : cotizadordatabean.cotizador_detalles.iddetalle}" class="border border-secondary" size="9" maxlength="8" onkeypress="return Enteros(event)" readonly="true" type="text"  path="cotizador_detalles.iddetalle"/>
+									<div class="col col-lg-1">
+										<form:input id="TIdCotDet" class="border border-secondary" size="9" maxlength="8" onkeypress="return Enteros(event)" readonly="true" type="hidden"  
+										 value="${empty cotizadordatabean.cotizador_detalles.idcotizacion ? 0 : cotizadordatabean.cotizador_detalles.idcotizacion}" path="cotizador_detalles.idcotizacion"/>
+										<form:input id="TIdDet" class="border border-secondary" size="9" maxlength="8" onkeypress="return Enteros(event)" readonly="true" type="text" 
+										 value="${empty cotizadordatabean.cotizador_detalles.iddetalle ? 0 : cotizadordatabean.cotizador_detalles.iddetalle}" path="cotizador_detalles.iddetalle"/>
 									</div>
-									<div class="col-sm-1">S√≠mbolo</div>
-									<div class="col-sm-3">
-										<form:input id="TSimbolo" type="text" size="50" onkeypress="return SinCaracteresEspeciales(event)" maxlength="100" path="cotizador_detalles.simbolo" class="border border-primary"/>
+									<div class="col col-lg-1">SÌmbolo</div>
+									<div class="col col-lg-3">
+										<form:input id="TSimbolo" type="text" size="40" onkeypress="return SinCaracteresEspeciales(event)" maxlength="100" path="cotizador_detalles.simbolo" class="border border-primary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.simbolo" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-1">Caja</div>
-									<div class="col-sm-6">
+									<div class="col col-lg-1">Caja</div>
+									<div class="col col-lg-6">
 										<form:select onChange="CalcularDatos()" id="SCajas" path="cotizador_detalles.idcaja_sap" multiple="false" class="border border-primary">
 											<form:option value="0">Seleccione caja</form:option>
 											<c:forEach var="caj" items="${listacajas}">
@@ -752,29 +760,29 @@ function FDelFila()
 									</div>
 								</div>
 								<div class="row border border-right">
-									<div class="col-sm-1">Largo</div>
-									<div class="col-sm-1">
+									<div class="col col-lg-1">Largo</div>
+									<div class="col col-lg-1">
 										<form:input onKeyUp="CalcularDatos()" id="TLargo" size="10" type="text" path="cotizador_detalles.largo" onkeypress="return filterFloat1(event,this);" class="border border-primary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.largo" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-1">Ancho</div>
-									<div class="col-sm-1">
+									<div class="col col-lg-1">Ancho</div>
+									<div class="col col-lg-1">
 										<form:input onKeyUp="CalcularDatos()" id="TAncho" size="10" type="text" path="cotizador_detalles.ancho" onkeypress="return filterFloat1(event,this);" class="border border-primary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.ancho" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-1">Fondo</div>
-									<div class="col-sm-1">
+									<div class="col col-lg-1">Fondo</div>
+									<div class="col col-lg-1">
 										<form:input onKeyUp="CalcularDatos()" id="TFondo" size="10" type="text" path="cotizador_detalles.fondo" onkeypress="return filterFloat1(event,this);" class="border border-primary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.fondo" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-1">Resistencia</div>
-									<div class="col-sm-3">
+									<div class="col col-lg-1">Resistencia</div>
+									<div class="col col-lg-3">
 										<form:select onChange="FBuscarResisId()" id="SResisBarca" path="cotizador_detalles.idresistencia_barca" multiple="false" class="border border-primary">
 											<form:option value="0">Seleccione resistencia</form:option>
 											<c:forEach var="res" items="${listaresisbarca}">
@@ -785,8 +793,8 @@ function FDelFila()
 											<form:errors path="cotizador_detalles.idresistencia_barca" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-1">Precio M2</div>
-									<div class="col-sm-1">
+									<div class="col col-lg-1">Precio M2</div>
+									<div class="col col-lg-1">
 										<form:input ondblclick="FBuscarResisId()" readonly="true" id="TPreciom2resis" type="text" size="10" path="cotizador_detalles.preciom2resistencia"  class="border border-secondary"
 													data-toggle="tooltip" data-placement="top" title="Doble click para actualizar."/>
 										<div class="has-error">
@@ -795,8 +803,8 @@ function FDelFila()
 									</div>
 								</div>
 								<div class="row border border-right">
-									<div class="col-sm-1">ResistenciaCTE</div>
-									<div class="col-sm-2">
+									<div class="col col-lg-1">ResistenciaCTE</div>
+									<div class="col col-lg-2">
 										<form:select id="SResisCte" path="cotizador_detalles.resistencia_cte" multiple="false" class="border border-primary">
 											<form:option value="0">Seleccione resistencia CTE</form:option>
 											<c:forEach var="rescte" items="${listaresiscte}">
@@ -807,8 +815,8 @@ function FDelFila()
 											<form:errors path="cotizador_detalles.resistencia_cte" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-1">Cierre</div>
-									<div class="col-sm-1">
+									<div class="col col-lg-1">Cierre</div>
+									<div class="col col-lg-1">
 										<form:select id="SCierre" path="cotizador_detalles.cierre" multiple="false" class="border border-primary">
 											<form:option value="pegada">PEGADA</form:option>
 											<form:option value="grapada">GRAPADA</form:option>
@@ -818,8 +826,8 @@ function FDelFila()
 											<form:errors path="cotizador_detalles.cierre" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-1">Cierre detalle</div>
-									<div class="col-sm-1">
+									<div class="col col-lg-1">Cierre detalle</div>
+									<div class="col col-lg-1">
 										<form:select id="SCierreDet" path="cotizador_detalles.cierre_detalle" multiple="false" class="border border-primary">
 											<form:option value="nc">N/C</form:option>
 											<form:option value="interior">INTERIOR</form:option>
@@ -829,12 +837,12 @@ function FDelFila()
 											<form:errors path="cotizador_detalles.cierre_detalle" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-1">Ceja despl: <form:checkbox id="CCejaDesp" path="cotizador_detalles.ceja_desplegada"/></div>
-									<div class="col-sm-1">Entrega OC</div>
-									<div class="col-sm-2">
+									<div class="col col-lg-1">Ceja despl: <form:checkbox id="CCejaDesp" path="cotizador_detalles.ceja_desplegada"/></div>
+									<div class="col col-lg-1">Entrega OC</div>
+									<div class="col col-lg-2">
 										<div class="">
 										<div class="input-group date" id="datetimepicker4" data-target-input="nearest">
-						                    <form:input id="TFechaOC" onkeypress="return false" path="cotizador_detalles.fecha_entrega_oc" size="10" data-target="#datetimepicker4" placeholder="yyyy-mm-dd" class="border border-primary"/>
+						                    <form:input id="TFechaOC" onkeypress="return false" path="cotizador.fecha_entrega_oc" size="10" data-target="#datetimepicker4" placeholder="yyyy-mm-dd" class="border border-primary"/>
 						                    <div class="input-group-append" data-target="#datetimepicker4" data-toggle="datetimepicker">
 						                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
 						                    </div>
@@ -851,8 +859,8 @@ function FDelFila()
 									<form:input id="TCostoPapelResis" size="10" readonly = "true" type="hidden" path="cotizador_detalles.costo_papel_resis" class="border border-secondary"/>
 								</div>
 								<div class="row border border-right">
-									<div class="col-sm-1">Comisi√≥nMillar</div>
-									<div class="col-sm-1">
+									<div class="col col-lg-1">ComisiÛnMillar</div>
+									<div class="col col-lg-1">
 										<form:input id="TComxMillar" size="10" readonly = "true" type="text" path="cotizador_detalles.comisionxmillar" class="border border-secondary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.comisionxmillar" class="badge badge-danger small"/>
@@ -860,27 +868,27 @@ function FDelFila()
 									</div>
 									<div class="col-sm-1">Observaciones</div>
 									<div class="col-sm-3">
-										<form:input id="TObs" type="text" size="50" onkeypress="return SinCaracteresEspeciales(event)" maxlength="100" path="cotizador_detalles.observaciones_vendedor" class="border border-primary"/>
+										<form:input id="TObs" type="text" size="40" onkeypress="return SinCaracteresEspeciales(event)" maxlength="100" path="cotizador_detalles.observaciones_vendedor" class="border border-primary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.observaciones_vendedor" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-1">Esp Inf</div>
-									<div class="col-sm-1">
+									<div class="col col-lg-1">Esp Inf</div>
+									<div class="col col-lg-1">
 										<form:input onKeyUp="CalcularDatos()" id="TEspInf" size="10" type="text" path="cotizador_detalles.esp_inf" onkeypress="return filterFloat2(event,this);" class="border border-primary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.esp_inf" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-1">Esp Sup</div>
-									<div class="col-sm-1">
+									<div class="col col-lg-1">Esp Sup</div>
+									<div class="col col-lg-1">
 										<form:input onKeyUp="CalcularDatos()" id="TEspSup" size="10" type="text" path="cotizador_detalles.esp_sup" onkeypress="return filterFloat2(event,this);" class="border border-primary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.esp_sup" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-1">Peso Resis</div>
-									<div class="col-sm-1">
+									<div class="col col-lg-1">Peso Resis</div>
+									<div class="col col-lg-1">
 										<form:input id="TPesoResis" size="10" ondblclick="FBuscarResisId()" readonly = "true" type="text" path="cotizador_detalles.peso_resis" class="border border-secondary"
 													data-toggle="tooltip" data-placement="top" title="Doble click para actualizar."/>
 										<div class="has-error">
@@ -889,8 +897,8 @@ function FDelFila()
 									</div>
 								</div>
 								<div class="row border border-right">
-									<div class="col-sm-1">$ Objetivo</div>
-									<div class="col-sm-1">
+									<div class="col col-lg-1">$ Objetivo</div>
+									<div class="col col-lg-1">
 										<form:input onKeyUp="CalcularDatos()" id="TPreciObj" size="10" type="text" path="cotizador_detalles.precio_objetivo" onkeypress="return filterFloat(event,this);" class="border border-primary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.precio_objetivo" class="badge badge-danger small"/>
@@ -899,8 +907,8 @@ function FDelFila()
 									
 									<!-- <div class="col-sm-1">Costo tarima</div>
 									<div class="col-sm-1">???</div>  -->
-									<div class="col-sm-1">Score</div>
-									<div class="col-sm-1">
+									<div class="col col-lg-1">Imp rebasada</div>
+									<div class="col col-lg-1">
 										<form:select onChange="CalcularDatos()" id="SScore" path="cotizador_detalles.score" multiple="false" class="border border-primary">
 											<form:option value="0">0</form:option>
 											<form:option value="1">1</form:option>
@@ -909,29 +917,29 @@ function FDelFila()
 											<form:errors path="cotizador_detalles.score" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-1">Med L√°mina</div>
-									<div class="col-sm-1">
+									<div class="col col-lg-1">Med L·mina</div>
+									<div class="col col-lg--1">
 										<form:input readonly="true" id="TMedLamina" type="text" size="10" path="cotizador_detalles.medida_lamina"  class="border border-secondary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.medida_lamina" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-1">√Årea Unitaria</div>
-									<div class="col-sm-1">
+									<div class="col col-lg-1">¡rea Unitaria</div>
+									<div class="col col-lg-1">
 										<form:input readonly="true" id="TAreaUni" type="text" size="10" path="cotizador_detalles.area_unitaria"  class="border border-secondary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.area_unitaria" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-1">Costo flete</div>
-									<div class="col-sm-1">
+									<div class="col col-lg-1">Costo flete</div>
+									<div class="col col-lg-1">
 										<form:input id="TCostoFlete" size="10" readonly = "true" type="text" path="cotizador_detalles.costo_flete" class="border border-secondary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.costo_flete" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-1">% Comisi√≥n</div>
-									<div class="col-sm-1">
+									<div class="col col-lg-1">% ComisiÛn</div>
+									<div class="col col-lg-1">
 										<form:input readonly="true" id="TPorcCom" type="text" size="10" path="cotizador_detalles.porcentaje_comision"  class="border border-secondary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.porcentaje_comision" class="badge badge-danger small"/>
@@ -939,43 +947,43 @@ function FDelFila()
 									</div>
 								</div>
 								<div class="row border border-right">
-									<div class="col-sm-1">M2</div>
-									<div class="col-sm-1">
+									<div class="col col-lg-1">M2</div>
+									<div class="col col-lg-1">
 										<form:input readonly="true" id="TM2" type="text" size="10" path="cotizador_detalles.m2"  class="border border-secondary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.m2" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-1">Kg</div>
-									<div class="col-sm-1">
+									<div class="col col-lg-1">Kg</div>
+									<div class="col col-lg-1">
 										<form:input readonly="true" id="TKg" type="text" size="10" path="cotizador_detalles.kg"  class="border border-secondary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.kg" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-1">Peso te√≥rico</div>
-									<div class="col-sm-1">
+									<div class="col col-lg-1">Peso teÛrico</div>
+									<div class="col col-lg-1">
 										<form:input readonly="true" id="TPesoT" type="text" size="10" path="cotizador_detalles.peso_teorico"  class="border border-secondary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.peso_teorico" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-1">$ Neto</div>
-									<div class="col-sm-1">
+									<div class="col col-lg-1">$ Neto</div>
+									<div class="col col-lg-1">
 										<form:input readonly="true" id="TPrecioN" type="text" size="10" path="cotizador_detalles.precio_neto"  class="border border-secondary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.precio_neto" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-1">$ Sugerido</div>
-									<div class="col-sm-1">
+									<div class="col col-lg-1">$ Sugerido</div>
+									<div class="col col-lg-1">
 										<form:input readonly="true" id="TPrecioS" type="text" size="10" path="cotizador_detalles.precio_sugerido"  class="border border-secondary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.precio_sugerido" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-1">Costo papel</div>
-									<div class="col-sm-1">
+									<div class="col col-lg-1">Costo papel</div>
+									<div class="col col-lg-1">
 										<form:input readonly="true" id="TCostoPapel" type="text" size="10" path="cotizador_detalles.costo_papel"  class="border border-secondary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.costo_papel" class="badge badge-danger small"/>
@@ -983,37 +991,37 @@ function FDelFila()
 									</div>
 								</div>
 								<div class="row border border-right">
-									<div class="col-sm-1">Desc Vend</div>
-									<div class="col-sm-1">
+									<div class="col col-lg-1">Desc Vend</div>
+									<div class="col col-lg-1">
 										<form:input ondblclick="FBuscarResisId()" readonly="true" id="TDescVen" type="text" size="10" path="cotizador_detalles.descuento_vendedor"  class="border border-secondary"
 													data-toggle="tooltip" data-placement="top" title="Doble click para actualizar." />
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.descuento_vendedor" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-1">Peso pieza</div>
-									<div class="col-sm-1">
+									<div class="col col-lg-1">Peso pieza</div>
+									<div class="col col-lg-1">
 										<form:input readonly="true" id="TPespPza" type="text" size="10" path="cotizador_detalles.peso_pieza"  class="border border-secondary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.peso_pieza" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-1">Ref comisi√≥n</div>
-									<div class="col-sm-1">
+									<div class="col col-lg-1">Ref comisiÛn</div>
+									<div class="col col-lg-1">
 										<form:input readonly="true" id="TRefCom" type="text" size="10" path="cotizador_detalles.ref_para_comision"  class="border border-secondary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.ref_para_comision" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-1">Pzas tarima</div>
-									<div class="col-sm-1">
+									<div class="col col-lg-1">Pzas tarima</div>
+									<div class="col col-lg-1">
 										<form:input id="TPzasxTar" onKeyUp="CalcularDatos()" size="10" maxlength="8" type="text" path="cotizador_detalles.piezasxtarima" onkeypress="return Enteros(event);" class="border border-primary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.piezasxtarima" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-1">Pzas x juego</div>
-									<div class="col-sm-1">
+									<div class="col col-lg-1">Pzas x juego</div>
+									<div class="col col-lg-1">
 										<form:input onKeyUp="CalcularDatos()" id="TPzasxjgo" size="10" value="${empty cotizadordatabean.cotizador_detalles.iddetalle ? 1 : cotizadordatabean.cotizador_detalles.iddetalle == 1 ? 1: ''}"
 											readonly="${empty cotizadordatabean.cotizador.id ? 'true' : cotizadordatabean.cotizador_detalles.iddetalle == 1 ? 'true': 'false'}" 
 											maxlength="8" type="text" path="cotizador_detalles.piezasxjuego" onkeypress="return Enteros(event);" class="border border-primary"/>
@@ -1021,8 +1029,8 @@ function FDelFila()
 											<form:errors path="cotizador_detalles.piezasxjuego" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-1">Pedido Mes</div>
-									<div class="col-sm-1">
+									<div class="col col-lg-1">Pedido Mes</div>
+									<div class="col col-lg-1">
 										<form:input onKeyUp="CalcularDatos()" id="TCantPedMes" size="10" maxlength="8" type="text" path="cotizador_detalles.cantidad_pedido_mes" onkeypress="return Enteros(event);" class="border border-primary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.cantidad_pedido_mes" class="badge badge-danger small"/>
@@ -1030,8 +1038,8 @@ function FDelFila()
 									</div>
 								</div>
 								<div class="row border border-right">
-									<div class="col-sm-1">N Tintas</div>
-									<div class="col-sm-1">
+									<div class="col col-lg-1">N Tintas</div>
+									<div class="col col-lg-1">
 										<form:select id="SNumTintas" onChange="FColores()" path="cotizador_detalles.num_tintas" multiple="false" class="border border-primary">
 											<form:option value="0">0</form:option>
 											<form:option value="1">1</form:option>
@@ -1046,7 +1054,7 @@ function FDelFila()
 											<form:errors path="cotizador_detalles.num_tintas" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-10">
+									<div class="col col-lg-10">
 										<form:select id="SColor1" path="cotizador_detalles.color1" multiple="false" class="border border-primary"
 										style="${!empty cotizadordatabean.cotizador_detalles.color1 ? (cotizadordatabean.cotizador_detalles.color1 > 0 ? 'visibility:visible' : 'visibility:hidden') : 'visibility:hidden'}">
 											<form:option value="">COLOR1</form:option>
@@ -1105,9 +1113,9 @@ function FDelFila()
 									</div>
 								</div>
 								<div class="row border border-right">
-									<div class="col-sm-1">Se entreg√≥</div>
-									<div class="col-sm-1">
-										<form:select id="SEntrego" path="cotizador_detalles.se_entrego" multiple="false" class="border border-primary">
+									<div class="col col-lg-1">Se entregÛ</div>
+									<div class="col col-lg-1">
+										<form:select id="SEntrego" path="cotizador.se_entrego" multiple="false" class="border border-primary">
 											<form:option value="nc">N/C</form:option>
 											<form:option value="Muestra">Muestra</form:option>
 											<form:option value="Software">Software</form:option>
@@ -1115,19 +1123,19 @@ function FDelFila()
 											<form:option value="Sin entrega">Sin entrega</form:option>
 										</form:select>
 										<div class="has-error">
-											<form:errors path="cotizador_detalles.se_entrego" class="badge badge-danger small"/>
+											<form:errors path="cotizador.se_entrego" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col-sm-1">Tolerancia</div>
-									<div class="col-sm-1">
-										<form:select id="STolerancia" path="cotizador_detalles.tolerancia_pedido" multiple="false" class="border border-primary">
+									<div class="col col-lg-1">Tolerancia</div>
+									<div class="col col-lg-1">
+										<form:select id="STolerancia" path="cotizador.tolerancia_pedido" multiple="false" class="border border-primary">
 											<form:option value="0">0</form:option>
 											<form:option value="5">5</form:option>
 											<form:option value="10">10</form:option>
 										</form:select> 
 									</div>
-									<div class="col-sm-5">Dise√±o
-										<form:select id="SDisenio" path="cotizador_detalles.disenio" multiple="false" class="border border-primary">
+									<div class="col col-lg-5">DiseÒo
+										<form:select id="SDisenio" path="cotizador.disenio" multiple="false" class="border border-primary">
 											<form:option value="Nuevo">Nuevo</form:option>
 											<form:option value="Con cambios">Con cambios</form:option>
 											<form:option value="Referencia de TF">Referencia de TF</form:option>
@@ -1135,8 +1143,8 @@ function FDelFila()
 										Cancelar/Sustituir: <form:checkbox id="CCancSust" path="cotizador_detalles.cancelar_sustituir"/>
 										TF: <form:input id="TTF" size="10" maxlength="8" type="text" path="cotizador_detalles.tf_cs" onkeypress="return SinCaracteresEspeciales(event);" class="border border-primary"/>
 									</div>
-									<div class="col-sm-1">Num ranuras</div>
-									<div class="col-sm-1"><form:input id="TNumRanuras" size="10" maxlength="8" type="text" path="cotizador_detalles.num_raturas" onkeypress="return Enteros(event);" class="border border-primary"/></div>
+									<div class="col col-lg-1">Num ranuras</div>
+									<div class="col col-lg-1"><form:input id="TNumRanuras" size="10" maxlength="8" type="text" path="cotizador_detalles.num_raturas" onkeypress="return Enteros(event);" class="border border-primary"/></div>
 								</div>
 							</div>
 						</div>	
@@ -1156,33 +1164,34 @@ function FDelFila()
 						<div class="row small">
 							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
 								<div class="row border border-right">
-									<div class="col-sm-12">
-										Emplayado: <form:checkbox id="CEmplayado" path="cotizador_detalles.emplayado"/> 
-										Vueltas: <form:input id="TVueltasEmp" size="10" maxlength="8" type="text" path="cotizador_detalles.vueltas_emplaye" onkeypress="return filterFloat(event,this);" class="border border-primary"/>
-										Factura: <form:checkbox id="CFactura" path="cotizador_detalles.factura"/>
-										Certif calidad: <form:checkbox id="CCertCal" path="cotizador_detalles.certif_calidad"/>
-										Imprimir OC: <form:checkbox id="CImpOC" path="cotizador_detalles.imprimir_oc"/>
-										Protecciones: <form:checkbox id="CProtecciones" path="cotizador_detalles.protecciones"/>
-										Caja seca: <form:checkbox id="CCajaSeca" path="cotizador_detalles.caja_seca"/>
-										Certif fumigaci√≥n: <form:checkbox id="CCertFum" path="cotizador_detalles.certif_fumig"/>
-										EPP transportista: <form:checkbox id="CEPP" path="cotizador_detalles.epp_transportista"/>
-										Imprimir fechador: <form:checkbox id="CImpFech" path="cotizador_detalles.imprimir_fechador"/>
-										Imprimir pedido: <form:checkbox id="CImpPed" path="cotizador_detalles.imprimir_pedido"/>
-										<button id="BCodBarras" type="button" data-toggle="modal" data-target="#CodigoBarras" class="float-right btn btn-outline-primary btn-sm"><i class="fa fa-barcode" aria-hidden="true"> C√≥digo de barras</i></button>
+									<div class="col col-lg-12">
+										Emplayado: <form:checkbox id="CEmplayado" path="cotizador.emplayado"/> 
+										Vueltas: <form:input id="TVueltasEmp" size="10" maxlength="8" type="text" path="cotizador.vueltas_emplaye" onkeypress="return filterFloat(event,this);" class="border border-primary"/>
+										Factura: <form:checkbox id="CFactura" path="cotizador.factura"/>
+										Certif calidad: <form:checkbox id="CCertCal" path="cotizador.certif_calidad"/>
+										Imprimir OC: <form:checkbox id="CImpOC" path="cotizador.imprimir_oc"/>
+										Protecciones: <form:checkbox id="CProtecciones" path="cotizador.protecciones"/>
+										Caja seca: <form:checkbox id="CCajaSeca" path="cotizador.caja_seca"/>
+										Certif fumigaciÛn: <form:checkbox id="CCertFum" path="cotizador.certif_fumig"/>
+										EPP transportista: <form:checkbox id="CEPP" path="cotizador.epp_transportista"/>
+										Imprimir fechador: <form:checkbox id="CImpFech" path="cotizador.imprimir_fechador"/>
+										Imprimir pedido: <form:checkbox id="CImpPed" path="cotizador.imprimir_pedido"/>
+										TarimaXunitizado: <form:checkbox id="CTarxUni" path="cotizador.tarimaxunitizado"/> 
+										<button id="BCodBarras" type="button" data-toggle="modal" data-target="#CodigoBarras" class="float-right btn btn-outline-primary btn-sm"><i class="fa fa-barcode" aria-hidden="true"> CÛdigo de barras</i></button>
 									</div>
-									<div class="col-sm-1">Altura pallet</div>
-									<div class="col-sm-1"><form:input id="TAltPallet" size="10" maxlength="8" type="text" path="cotizador_detalles.altura_pallet" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
-									<div class="col-sm-1">Camas pallet</div>
-									<div class="col-sm-1"><form:input id="TCamasPallet" size="10" maxlength="8" type="text" path="cotizador_detalles.camas_pallet" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
-									<div class="col-sm-1">Flejes pallet</div>
-									<div class="col-sm-1"><form:input id="TFlejesPallet" size="10" maxlength="8" type="text" path="cotizador_detalles.flejes_pallet" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
+									<div class="col col-lg-1">Altura pallet</div>
+									<div class="col col-lg-1"><form:input id="TAltPallet" size="10" maxlength="8" type="text" path="cotizador_detalles.altura_pallet" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
+									<div class="col col-lg-1">Camas pallet</div>
+									<div class="col col-lg-1"><form:input id="TCamasPallet" size="10" maxlength="8" type="text" path="cotizador_detalles.camas_pallet" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
+									<div class="col col-lg-1">Flejes pallet</div>
+									<div class="col col-lg-1"><form:input id="TFlejesPallet" size="10" maxlength="8" type="text" path="cotizador_detalles.flejes_pallet" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
 									
-									<div class="col-sm-1">Flejes atado</div>
-									<div class="col-sm-1"><form:input id="TFlejesAtado" size="10" maxlength="8" type="text" path="cotizador_detalles.flejes_atado" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
-									<div class="col-sm-1">Pzas atado</div>
-									<div class="col-sm-1"><form:input id="TPzasAtado" size="10" maxlength="8" type="text" path="cotizador_detalles.pzas_atado" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
-									<div class="col-sm-1">Atados cama</div>
-									<div class="col-sm-1"><form:input id="TAtaCama" size="10" maxlength="8" type="text" path="cotizador_detalles.atados_cama" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
+									<div class="col col-lg-1">Flejes atado</div>
+									<div class="col col-lg-1"><form:input id="TFlejesAtado" size="10" maxlength="8" type="text" path="cotizador_detalles.flejes_atado" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
+									<div class="col col-lg-1">Pzas atado</div>
+									<div class="col col-lg-1"><form:input id="TPzasAtado" size="10" maxlength="8" type="text" path="cotizador_detalles.pzas_atado" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
+									<div class="col col-lg-1">Atados cama</div>
+									<div class="col col-lg-1"><form:input id="TAtaCama" size="10" maxlength="8" type="text" path="cotizador_detalles.atados_cama" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
 									
 								</div>
 							</div>
@@ -1204,7 +1213,7 @@ function FDelFila()
 							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
 								<div id="DEsp" class="row border border-right">
 									<c:forEach var="item" items="${especialidades}" varStatus="status">
-									<div class="col-sm-3">
+									<div class="col col-lg-3">
 										<form:checkbox id="ChEsp" onChange="CalcularDatos()"
 		                              		path="cotizador_detalles.especialidades_cotizacion[${status.index}].idespecialidad" value="${item.code}"/>${item.name}
 		<form:input type="hidden" id="TEsquema${item.code}" 
@@ -1283,11 +1292,11 @@ function FDelFila()
 		 <div id = "mensajes" class = "${!empty mensajes ? 'alert alert-success' : ''}">${mensajes}</div>
 		<div align="left" class = "container">
 		<div class = "row" align="center">			
-			<div class="col-sm-2"><form:button id="BGrabar" class="btn btn-outline-primary btn-sm"><i class="fa fa-floppy-o" aria-hidden="true"> Grabar</i></form:button></div>
-			<div class="col-sm-2"><a href="javascript:FBuscar()" class="btn btn-outline-primary btn-sm"><i class="fa fa-search" aria-hidden="true"> Buscar</i></a></div>
-			<div class="col-sm-2"><button type="button" data-toggle="modal" data-target="#LimpiarModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-refresh" aria-hidden="true"> Limpiar</i></button></div>
-			<div class="col-sm-4"><button id="BEnvVtas" type="button" data-toggle="modal" data-target="#VtaModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-paper-plane-o" aria-hidden="true"> Enviar AUT Ventas y Programaci√≥n</i></button></div>
-			<div class="col-sm-2"><button id="BCancel" type="button" data-toggle="modal" data-target="#CancelModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-times-circle-o" aria-hidden="true"> Cancelar</i></button></div>
+			<div class="col col-lg-2"><form:button id="BGrabar" class="btn btn-outline-primary btn-sm"><i class="fa fa-floppy-o" aria-hidden="true"> Grabar</i></form:button></div>
+			<div class="col col-lg-2"><a href="javascript:FBuscar()" class="btn btn-outline-primary btn-sm"><i class="fa fa-search" aria-hidden="true"> Buscar</i></a></div>
+			<div class="col col-lg-2"><button type="button" data-toggle="modal" data-target="#LimpiarModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-refresh" aria-hidden="true"> Limpiar</i></button></div>
+			<div class="col col-lg-4"><button id="BEnvVtas" type="button" data-toggle="modal" data-target="#VtaModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-paper-plane-o" aria-hidden="true"> Enviar AUT Ventas y ProgramaciÛn</i></button></div>
+			<div class="col col-lg-2"><button id="BCancel" type="button" data-toggle="modal" data-target="#CancelModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-times-circle-o" aria-hidden="true"> Cancelar</i></button></div>
 		</div>
 		</div>
 		
@@ -1296,13 +1305,13 @@ function FDelFila()
 		  <div class="modal-dialog modal-lg" role="document">
 		    <div class="modal-content">
 		      <div class="modal-header alert alert-info">
-		        <h5 class="modal-title">AGREGAR C√ìDIGO DE BARRAS</h5>
+		        <h5 class="modal-title">AGREGAR C”DIGO DE BARRAS</h5>
 		      </div>
 		      <div class="modal-body">
 		        <table class="table table-sm table-bordered table-hover">
 		        	<thead>
 		        		<tr>
-		        			<th>C√≥digo de barras</th>
+		        			<th>CÛdigo de barras</th>
 		        			<th>Comentarios</th>
 		        		</tr>
 		        	</thead>
@@ -1310,10 +1319,10 @@ function FDelFila()
 		        	<c:forEach var="item" items="${cotizadordatabean.cotizador_detalles.codigo_barra_cotizador}" varStatus="status">
 		        		<tr>
 		        			<td>
-		        				<form:input type="text" size="20" maxlength="50" id="TCodBarras${status.index}" onkeypress="return SinCaracteresEspeciales(event)" path="cotizador_detalles.codigo_barra_cotizador[${status.index}].idcodigo" value="${item.idcodigo}"  class="border border-primary"/>
+		        				<form:input type="text" maxlength="50" id="TCodBarras${status.index}" onkeypress="return SinCaracteresEspeciales(event)" path="cotizador_detalles.codigo_barra_cotizador[${status.index}].idcodigo" value="${item.idcodigo}"  class="border border-primary"/>
 		        			</td>
 		        			<td>
-		        				<form:input type="text" size="40" maxlength="100" id="TCodComent${status.index}" onkeypress="return SinCaracteresEspeciales(event)" path="cotizador_detalles.codigo_barra_cotizador[${status.index}].observaciones" value="${item.observaciones}"  class="border border-primary"/>
+		        				<form:input type="text" maxlength="100" id="TCodComent${status.index}" onkeypress="return SinCaracteresEspeciales(event)" path="cotizador_detalles.codigo_barra_cotizador[${status.index}].observaciones" value="${item.observaciones}"  class="border border-primary"/>
 		        			</td>
 		        		</tr>
 		        	</c:forEach>
@@ -1347,22 +1356,22 @@ function FDelFila()
 	  </div>
 	</div>
 	
-	<div class="modal fade bd-example-modal-lg" id="AutModal" tabindex="-1" role="dialog" aria-labelledby="AutModalLabel" aria-hidden="true">
-	  <div class="modal-dialog modal-lg">
+	<div class="modal fade bd-example-modal-xl" id="AutModal" tabindex="-1" role="dialog" aria-labelledby="AutModalLabel" aria-hidden="true">
+	  <div class="modal-dialog modal-xl">
 	    <div class="modal-content">
 	   	  <div class="modal-header alert alert-info">
-	        <h5 class="modal-title" id="ReqModal">Informaci√≥n adicional</h5>
+	        <h5 class="modal-title" id="ReqModal">InformaciÛn adicional</h5>
 	      </div>
 	      <div class="container">
 		  <div class="row">
 		    <div class="col-sm">
-		      Fecha creaci√≥n:
+		      Fecha creaciÛn:
 		    </div>
 		    <div class="col-sm">
 		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_insert}" pattern="yyyy-MM-dd hh:mm"/>
 		    </div>
 		    <div class="col-sm">
-		      Fecha actualizaci√≥n:
+		      Fecha actualizaciÛn:
 		    </div>
 		    <div class="col-sm">
 		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_update}" pattern="yyyy-MM-dd hh:mm"/>
@@ -1370,7 +1379,7 @@ function FDelFila()
 		  </div>
 		  <div class="row">
 		    <div class="col-sm">
-		      Fecha env√≠o ventas:
+		      Fecha envÌo ventas:
 		    </div>
 		    <div class="col-sm">
 		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_envia_ventas}" pattern="yyyy-MM-dd hh:mm"/>
@@ -1384,7 +1393,7 @@ function FDelFila()
 		  </div>
 		   <div class="row">
 		    <div class="col-sm">
-		      Fecha env√≠o prog:
+		      Fecha envÌo prog:
 		    </div>
 		    <div class="col-sm">
 		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_envia_a_prog}" pattern="yyyy-MM-dd hh:mm"/>
@@ -1412,7 +1421,7 @@ function FDelFila()
 		  </div>
 		  <div class="row">
 		    <div class="col-sm">
-		      Fecha cancelaci√≥n:
+		      Fecha cancelaciÛn:
 		    </div>
 		    <div class="col-sm">
 		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_cancel}" pattern="yyyy-MM-dd hh:mm"/>
@@ -1431,10 +1440,32 @@ function FDelFila()
 		    <div class="col-sm">
 		     	${cotizadordatabean.cotizador.observaciones_prog}
 		    </div>
-		    <div class="modal-footer">
-	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-	      </div>
+		    <div class="col-sm">
+		      Fecha rechaza diseÒador:
+		    </div>
+		    <div class="col-sm">
+		     	${cotizadordatabean.cotizador.fecha_rech_diseniador}
+		    </div>
 		  </div>
+		  
+		  <div class="row">
+		    <div class="col-sm">
+		      Observaciones diseÒador:
+		    </div>
+		    <div class="col-sm">
+		     	${cotizadordatabean.cotizador.observaciones_diseniador}
+		    </div>
+		    <div class="col-sm">
+		      Fecha aut diseÒador
+		    </div>
+		    <div class="col-sm">
+		     	${cotizadordatabean.cotizador.fecha_asign_diseniador}
+		    </div>
+		  </div>
+		  
+		  <div class="modal-footer">
+	        	<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+	      </div>
 		</div>
 	    </div>
 	  </div>
@@ -1444,10 +1475,10 @@ function FDelFila()
 	  <div class="modal-dialog" role="document">
 	    <div class="modal-content">
 	      <div class="modal-header alert alert-info">
-	        <h5 class="modal-title">Enviar a autorizaci√≥n VENTAS y PROGRAMACI√ìN</h5>
+	        <h5 class="modal-title">Enviar a autorizaciÛn VENTAS y PROGRAMACI”N</h5>
 	      </div>
 	      <div class="modal-body alert alert-warning">
-	        ¬°¬°¬°ATENCI√ìN!!! ¬øDesea enviar esta cotizaci√≥n a autorizaci√≥n?
+	        °°°ATENCI”N!!! øDesea enviar esta cotizaciÛn a autorizaciÛn?
 	      </div>
 	      <div id="DivMensaje" class="modal-footer">
 	        <button type="button" class="btn btn-primary" onClick="FEnviarVtaProg()">Enviar</button>
@@ -1461,10 +1492,10 @@ function FDelFila()
 	  <div class="modal-dialog" role="document">
 	    <div class="modal-content">
 	      <div class="modal-header alert alert-info">
-	        <h5 class="modal-title">CANCELAR COTIZACI√ìN</h5>
+	        <h5 class="modal-title">CANCELAR COTIZACI”N</h5>
 	      </div>
 	      <div class="modal-body alert alert-danger">
-	        ¬°¬°¬°ATENCI√ìN!!! ¬øDesea CANCELAR esta cotizaci√≥n?
+	        °°°ATENCI”N!!! øDesea CANCELAR esta cotizaciÛn?
 	      </div>
 	      <div id="DivMensaje" class="modal-footer">
 	        <button type="button" class="btn btn-primary" onClick="FCancelar()">Cancelar</button>
@@ -1472,7 +1503,24 @@ function FDelFila()
 	      </div>
 	    </div>
 	  </div>
-	</div>	
+	</div>
+	
+		<div class="modal fade" id="CancelModal" tabindex="-1" role="dialog" aria-labelledby="CancelModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header alert alert-info">
+	        <h5 class="modal-title">CANCELAR COTIZACI”N</h5>
+	      </div>
+	      <div class="modal-body alert alert-danger">
+	        °°°ATENCI”N!!! øDesea CANCELAR esta cotizaciÛn?
+	      </div>
+	      <div id="DivMensaje" class="modal-footer">
+	        <button type="button" class="btn btn-primary" onClick="FCancelar()">Cancelar</button>
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>		
 	
 	<!-- FIN REGION DE MODALS  -->
 	

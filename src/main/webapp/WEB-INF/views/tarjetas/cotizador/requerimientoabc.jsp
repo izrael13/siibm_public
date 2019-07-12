@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
@@ -7,14 +7,24 @@
 <html>
 <head>
 <%@include file="../../appconfig/authheader2.jsp"%>
-<title>Imprimir/Asignar diseÃ±ador requerimientos</title>
+<title>Imprimir/Asignar diseñador requerimientos</title>
 <script>
 function FTarjeta(id,b)
 {
 	if(b == 0)
 		var r = confirm("Grabar comentario!");
 	else
-		var r = confirm("Covertir a tarjeta!");
+	{
+		if(b == 1)
+			var r = confirm("¿Covertir a tarjeta?");
+		else
+		{
+			if(b == 2)
+				var r = confirm("¿¡¡¡¡CANCELAR COTIZACIÓN!!!!?");
+			else
+				var r = confirm("¿¡¡¡¡RECHAZAR COTIZACIÓN!!!!?");
+		}	
+	}
 	
 	if(r == true)
 	{
@@ -33,11 +43,11 @@ function FTarjeta(id,b)
 			    if(http.readyState == 4 && http.status == 200) 
 			    {
 			    	if (http.responseText.search(/Login page/i) != -1) {
-			    		alert("La sessiÃ³n ha expirado, Por favor vuelva a intentarlo.");
+			    		alert("La sessión ha expirado, Por favor vuelva a intentarlo.");
 		    			window.location.replace('<c:url value="/login?expired"/>');
 			    	}
 		    		else{
-		    			if(http.responseText === 'OK')
+		    			if (http.responseText.search("OK") != -1)
 		    			{
 		    				if(b == 0)
 		    				{
@@ -45,14 +55,30 @@ function FTarjeta(id,b)
 					    		window.location.replace('<c:url value="/cotizador/ingenieria/requerimientoabc"/>');
 		    				}
 		    				else
-		    				{
-			    				alert("Tarjeta de fabricaciÃ³n creada correctamente.");
-					    		window.location.replace('<c:url value="/cotizador/ingenieria/requerimientoabc"/>');
+		    				{	
+		    					if(b == 1)
+		    					{
+				    				alert("Tarjeta de fabricación creada correctamente.\n"+http.responseText);
+						    		window.location.replace('<c:url value="/cotizador/ingenieria/requerimientoabc"/>');
+		    					}
+		    					else
+		    					{
+		    						if(b == 2)
+		    						{
+			    						alert("¡¡¡¡COTIZACIÓN CANCELADA CORRECTAMENTE!!!");
+							    		window.location.replace('<c:url value="/cotizador/ingenieria/requerimientoabc"/>');
+							    	}
+		    						else
+		    						{
+		    							alert("¡¡¡¡COTIZACIÓN RECAHZADA CORRECTAMENTE!!!");
+							    		window.location.replace('<c:url value="/cotizador/ingenieria/requerimientoabc"/>');
+		    						}
+		    					}
 		    				}
 		    			}
 		    			else
 		    			{
-		    				alert("Algo saliÃ³ mal, por favor vuelva a intentarlo: "+http.responseText);
+		    				alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
 				    		window.location.replace('<c:url value="/cotizador/ingenieria/requerimientoabc"/>');
 		    			}
 		    		}
@@ -60,8 +86,13 @@ function FTarjeta(id,b)
 			    else
 			    {
 			    	if(http.readyState == 4 && http.status != 200){
-			    		alert("Algo saliÃ³ mal, por favor vuelva a intentarlo: "+http.responseText);
+			    		alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
 			    		window.location.replace('<c:url value="/cotizador/ingenieria/requerimientoabc"/>');
+			    	}
+			    	else
+			    	{
+				    	$("#mensajes" ).text("Procesando petición");
+						$("#mensajes").removeClass().addClass("alert alert-info");
 			    	}
 			    }
 			    
@@ -75,18 +106,18 @@ function FTarjeta(id,b)
 <body>
 		<br>
 	<div align="center">
-		<span class="badge badge-secondary">Imprimir/Asignar diseÃ±ador requerimientos</span>
+		<span class="badge badge-secondary">Imprimir/Asignar diseñador requerimientos</span>
 	</div>
 	<br>
-	<div align="center" class="container">
-	<table class="table-hover text-center table-bordered small">
+	<div align="center" class="container-fluid">
+	<table class="container-fluid table-hover text-center table-bordered small">
 		<thead>
 			<tr>
 				<th>Folio</th>
 				<th>Cliente</th>
-				<th>SÃ­mbolo</th>
+				<th>Símbolo</th>
 				<th>Caja</th>
-				<th>%ComisiÃ³n</th>
+				<th>%Comisión</th>
 				<th>$ Objetivo</th>
 				<th>$ sugerido</th>
 				<th>$ neto</th>
@@ -94,7 +125,9 @@ function FTarjeta(id,b)
 				<th>Comentarios</th>
 				<th>Grabar comentario</th>
 				<th>Imprimir</th>
-				<th>Convertir a Tarjeta</th>
+				<th class="text-success">Convertir a Tarjeta</th>
+				<th class="text-warning">Rechazar</th>
+				<th class="text-danger">Cancelar</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -112,7 +145,9 @@ function FTarjeta(id,b)
 				<td><input id="TComent${item.id}" type="text" size="50" onkeypress="return SinCaracteresEspeciales(event)" value="${item.observaciones_diseniador == 'null' ? '' : item.observaciones_diseniador}" maxlength="100" class="border border-primary"/></td>
 				<td><a href="javascript:FTarjeta(${item.id},0)"><i class="fa fa-floppy-o" aria-hidden="true"></i></a></td>
 				<td><a href="javascript:FImprimir(${item.id})"><i class="fa fa-print" aria-hidden="true"></i></a></td>
-				<td><a href="javascript:FTarjeta(${item.id},1)"><i class="fa fa-file-text-o" aria-hidden="true"></i></a></td>
+				<td><a href="javascript:FTarjeta(${item.id},1)"><i class="text-success fa fa-file-text-o" aria-hidden="true"></i></a></td>
+				<td><a href="javascript:FTarjeta(${item.id},3)"><i class="text-warning fa fa-thumbs-o-down" aria-hidden="true"></i></a></td>
+				<td><a href="javascript:FTarjeta(${item.id},2)"><i class="text-danger fa fa-times-circle-o" aria-hidden="true"></i></a></td>
 			</tr>
 		</c:forEach>
 		</tbody>

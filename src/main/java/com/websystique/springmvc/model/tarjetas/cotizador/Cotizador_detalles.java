@@ -15,7 +15,6 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.Range;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import com.websystique.springmvc.model.tarjetas.Codigo_barras_cotizador;
 import com.websystique.springmvc.model.tarjetas.Especialidades_cotizacion;
@@ -125,13 +124,9 @@ public class Cotizador_detalles implements Serializable{
 	private Double peso_juego;
 	private Double pk_teorico;
 	
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date fecha_entrega_oc;
-	private String se_entrego;
 	private Boolean ceja_desplegada;
 	private Integer num_raturas;
-	private Integer tolerancia_pedido;
-	private String disenio;
+	
 	private Boolean cancelar_sustituir;
 	private String tf_cs;
 	private Integer color1;
@@ -140,25 +135,14 @@ public class Cotizador_detalles implements Serializable{
 	private Integer color4;
 	private Integer color5;
 	private Integer color6;
-	private Integer color7;
+	private Integer color7;	
 	
-	private Boolean emplayado;
-	private Integer vueltas_emplaye;
-	private Boolean factura;
-	private Boolean certif_calidad;
-	private Boolean imprimir_oc;
-	private Boolean protecciones;
-	private Boolean caja_seca;
-	private Boolean certif_fumig;
-	private Boolean epp_transportista;
 	private Double altura_pallet;
 	private Double camas_pallet;
 	private Double flejes_pallet;
 	private Double flejes_atado;
 	private Double atados_cama;
 	private Double pzas_atado;
-	private Boolean imprimir_fechador;
-	private Boolean imprimir_pedido;
 	
 	@Transient
 	private List<Especialidades_cotizacion>  especialidades_cotizacion = new ArrayList<Especialidades_cotizacion>();

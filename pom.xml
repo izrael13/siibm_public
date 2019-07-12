@@ -209,7 +209,18 @@
 		    <version>1.18.6</version>
 		    <scope>provided</scope>
 		</dependency>
+		
+		<dependency>
+		    <groupId>commons-fileupload</groupId>
+		    <artifactId>commons-fileupload</artifactId>
+		    <version>1.4</version>
+		</dependency>
 				
+		<!-- <dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.2.12</version>
+		</dependency> -->
 <!--  <dependency>
     <groupId>com.javaconnSAPB1_1</groupId>
     <artifactId>com.javaconnSAPB1_1</artifactId>
@@ -250,6 +261,31 @@
 						<failOnMissingWebXml>false</failOnMissingWebXml>
 					</configuration>
 				</plugin>
+				
+				<!-- tag::wsdl[] 
+            <plugin>
+                <groupId>org.jvnet.jaxb2.maven2</groupId>
+                <artifactId>maven-jaxb2-plugin</artifactId>
+                <version>0.12.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <schemaLanguage>WSDL</schemaLanguage>
+                    <generatePackage>com.diserver.sap.wsdl</generatePackage>
+                    <schemas>
+                        <schema>
+                            <url>http://192.169.1.50/SAP/DIServer.asmx?WSDL</url>
+                        </schema>
+                    </schemas>
+                </configuration>
+            </plugin>
+             end::wsdl[] -->
+				
 			</plugins>
 		</pluginManagement>
 		<finalName>barcasii</finalName>

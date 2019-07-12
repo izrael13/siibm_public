@@ -1,10 +1,10 @@
-<%@ page language="java" contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>Propectos bÃºsqueda</title>
+<title>Propectos búsqueda</title>
 <%@include file="../../appconfig/imports.jsp"%>
 <script type="text/javascript">
 function FBuscarId(id)
@@ -25,7 +25,7 @@ function FBuscarId(id)
 				<td>Contacto</td>
 				<td>Opor Ton</td>
 				<td>Fecha cierre</td>
-				<td>TelÃ©fono</td>
+				<td>Teléfono</td>
 				<td>Estado</td>
 				<td>ciudad</td>
 			</tr>

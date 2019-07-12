@@ -449,7 +449,7 @@ public class AppController {
 					String base = url.substring(0, url.length() - uri.length() + ctx.length()) + "/";
 					//System.out.println(base);
 					
-					email.sendMail(user.getEmail(),email.generaMensage(base,Solicitud.getSso_id(), Solicitud.getEmail(), Solicitud.getFecha_sol(), Solicitud.getFecha_caducidad()));
+					email.sendMail(user.getEmail(),email.generaMensage(base,Solicitud.getSso_id(), Solicitud.getEmail(), Solicitud.getFecha_sol(), Solicitud.getFecha_caducidad()),"Recupareación de contraseña SIIBM");
 					model.addAttribute("result", "Se ha enviado un correo a la dirección indicada.\n "
 							+ "Favor de revisarlo y seguir las indicaciones para el reseteo de contraseña. \n"
 							+ "El correo tiene vigencia de un día a partir de la fecha de envío.");

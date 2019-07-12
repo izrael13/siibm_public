@@ -1,8 +1,5 @@
 package com.websystique.springmvc.configuration;
 
-import javax.servlet.MultipartConfigElement;
-import javax.servlet.ServletRegistration;
-
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class AppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
@@ -22,6 +19,7 @@ public class AppInitializer extends AbstractAnnotationConfigDispatcherServletIni
 		return new String[] { "/" };
 	}
 	
+	/*
 	@Override
     protected void customizeRegistration(ServletRegistration.Dynamic registration) {
         registration.setMultipartConfig(getMultipartConfigElement());
@@ -39,4 +37,5 @@ public class AppInitializer extends AbstractAnnotationConfigDispatcherServletIni
     private static final long MAX_REQUEST_SIZE = 20971520; // 20MB : Total request size containing Multi part.
      
     private static final int FILE_SIZE_THRESHOLD = 0; // Size threshold after which files will be written to disk
+    */
 }

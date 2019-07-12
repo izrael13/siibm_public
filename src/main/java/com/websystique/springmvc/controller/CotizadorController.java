@@ -3,12 +3,17 @@ package com.websystique.springmvc.controller;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -47,6 +52,7 @@ import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador;
 import com.websystique.springmvc.model.tarjetas.cotizador.CotizadorDataBean;
 import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador_detalles;
 import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador_detallesValidator;
+import com.websystique.springmvc.model.tarjetas.fabricacion.Tarjeta_fabricacion;
 import com.websystique.springmvc.service.UserService;
 import com.websystique.springmvc.service.tarjetas.Catalogo_bolsas_sap_vwService;
 import com.websystique.springmvc.service.tarjetas.Catalogo_cajas_sap_vwService;
@@ -64,6 +70,8 @@ import com.websystique.springmvc.service.tarjetas.Especialidades_cotizacionServi
 import com.websystique.springmvc.service.tarjetas.Vendedores_especiales_comision_sap_vwService;
 import com.websystique.springmvc.service.tarjetas.cotizador.CotizadorService;
 import com.websystique.springmvc.service.tarjetas.cotizador.Cotizador_detallesService;
+import com.websystique.springmvc.service.tarjetas.fabricacion.Tarjeta_fabricacionService;
+import com.websystique.springmvc.utilities.SendMailGmail;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -115,6 +123,8 @@ public class CotizadorController {
 	Catalogo_coloresService ccos;
 	@Autowired
 	Codigo_barras_cotizadorService cbsc;
+	@Autowired
+	Tarjeta_fabricacionService tfs;
 	
 	Integer idN = 0;
 	Integer idND = 0;
@@ -122,8 +132,8 @@ public class CotizadorController {
 	DecimalFormat decimal4 = new DecimalFormat("###########0.####");
 	////////////////////////////////////***COTIZADOR***////////////////////////////
 	@RequestMapping(value = {"/vendedor/cotizadorabc" }, method = RequestMethod.GET)
-	public String cotizadotget(ModelMap model, @RequestParam("id") String id, @RequestParam("iddet") String iddet) {
-		String msj = "";
+	public String cotizadotget(ModelMap model, @RequestParam("id") String id, @RequestParam("iddet") String iddet, @RequestParam(value = "mensajes", defaultValue = "", required = false) String mensajes) throws UnsupportedEncodingException {
+		String msj = mensajes;
 		try {
 				List<Catalogo_especialidades_sap_vw> ListaEsp = ces.ListaEsp();
 				User user = us.findBySSO(AppController.getPrincipal());
@@ -145,10 +155,12 @@ public class CotizadorController {
 				else
 				{
 					CotizadorDataBean cdb = new CotizadorDataBean();
-					cdb.setCotizador(cs.BuscarxId(Integer.valueOf(id),user.getId()));
+					Cotizador cot = cs.BuscarxId(Integer.valueOf(id),user.getId());
+					cdb.setCotizador(cot == null ? (new Cotizador()): cot);
 					if(Integer.valueOf(iddet) > 0)
 					{	
-						cdb.setCotizador_detalles(cds.BuscarxId(Integer.valueOf(id),Integer.valueOf(iddet),user.getId()));
+						Cotizador_detalles cotDet = cds.BuscarxId(Integer.valueOf(id),Integer.valueOf(iddet),user.getId());
+						cdb.setCotizador_detalles(cotDet == null ? (new Cotizador_detalles()): cotDet );
 						
 						List<Especialidades_cotizacion> ListaEspDet = new ArrayList<Especialidades_cotizacion>();
 						for(int i = 0; i < ListaEsp.size(); i++)
@@ -175,7 +187,7 @@ public class CotizadorController {
 			msj = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
 			logger.error(AppController.getPrincipal() + " - cotizadorabc. - " + msj);
 		}
-		model.addAttribute("mensajes", msj);
+		model.addAttribute("mensajes", URLDecoder.decode(msj, StandardCharsets.UTF_8.toString()));
 		return "/tarjetas/cotizador/cotizador";
 	}
 	
@@ -187,7 +199,6 @@ public class CotizadorController {
 			model.addAttribute("clientes", ccavs.ListaCtes(user.getCvevendedor_sap()));
 			model.addAttribute("loggedinuser", AppController.getPrincipal());
 			
-			model.addAttribute("cotizadordatabean", cotizadorDataBean);
 			model.addAttribute("direcciones", cdsv.ListaDirCardCode(cotizadorDataBean.getCotizador().getCardcode()));
 			model.addAttribute("direccionSelect", cdsv.ListaDirCardCodeNumLine(cotizadorDataBean.getCotizador().getCardcode(),cotizadorDataBean.getCotizador().getLinenum_dir_entrega()));
 			model.addAttribute("bolsas", cbs.ListaBolsas());
@@ -224,6 +235,7 @@ public class CotizadorController {
 				cotizadorDataBean.getCotizador().setFecha_insert(date);			
 				cotizadorDataBean.getCotizador().setUsuario_insert(user.getId());
 				idN = cs.Guardar(cotizadorDataBean.getCotizador());
+				cotizadorDataBean.getCotizador().setId(idN);
 				msj= "COTIZACIÓN: "+idN+" GRABADA SATISFACTORIAMENTE";
 			}
 			else
@@ -300,15 +312,24 @@ public class CotizadorController {
 				
 			} 
 			
+			/*CotizadorDataBean cotdataB = new CotizadorDataBean();
+			cotdataB.setCotizador(cs.BuscarxId(idN, user.getId()));
+			cotdataB.setCotizador_detalles(cds.BuscarxId(idN, idND, user.getId()));
+			System.out.println(cotdataB.getCotizador().getId());
+			System.out.println(cotdataB.getCotizador_detalles().getIddetalle()); */
+			
+			//model.addAttribute("cotizadordatabean", cotizadorDataBean);
+			//model.replace("cotizadordatabean", cotdataB);
+
 			logger.info(AppController.getPrincipal() + " - cotizadotpost.");
-			model.addAttribute("mensajes", msj);
+			model.addAttribute("mensajes", URLEncoder.encode(msj, StandardCharsets.UTF_8.toString()));
 		}
 		catch(Exception e)
 		{
 			model.addAttribute("mensajes", e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage());
 			logger.info(AppController.getPrincipal() + " - cotizadotpost. " + e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage());
 		}
-			return "/tarjetas/cotizador/cotizador";
+		return "redirect:/cotizador/vendedor/cotizadorabc?id="+idN+"&iddet="+idND;
 	}
 	
 	@RequestMapping(value = {"/vendedor/buscardirecciones"}, method = RequestMethod.GET)
@@ -452,7 +473,7 @@ public class CotizadorController {
 						JsonObject objEsp = new JsonObject();
 						//Catalogo_especialidades_sap_vw Esp = ces.BuscaxId(Integer.valueOf(idsarr[i]));
 						String Costo = calcular_especialidades((ajustescaparr[i].trim().length() > 0 ? Double.valueOf(ajustescaparr[i].trim()) : 0.0 ),(esquemascaparr[i].trim().length() > 0 ? Integer.valueOf(esquemascaparr[i].trim()) : 0 ),AreaUni,LargoVar,AnchoVar,jsonObjectParams.get("pzasxtar").getAsInt(),
-																jsonObjectParams.get("fondo").getAsDouble(),objCaja.getDesami(),costoscaparr[i]);
+																jsonObjectParams.get("fondo").getAsDouble(),objCaja.getDesami(),costoscaparr[i], jsonObjectParams.get("precioobj").getAsDouble());
 						objEsp.addProperty("id", idsarr[i]);
 						objEsp.addProperty("costo", Costo);
 						arr.add(objEsp);
@@ -462,7 +483,7 @@ public class CotizadorController {
 				object.addProperty("Esp", arr.toString());
 				object.addProperty("TotCostoEsp", TotCostoEsp); 
 				
-				Double ComisionDirecto = PrecioNeto > 0 ? (((jsonObjectParams.get("precioobj").getAsDouble() - TotCostoEsp ) / PrecioNeto)  * 100) : 0.0;
+				Double ComisionDirecto = PrecioNeto > 0 ? ((1 - (jsonObjectParams.get("precioobj").getAsDouble() / PrecioNeto))  * 100) : 0.0;
 				object.addProperty("ComisionDirecto", decimal2.format(ComisionDirecto));
 				
 				Double CPSC = (jsonObjectParams.get("precioobj").getAsDouble() - TotCostoEsp - CostoFlete) > 0 ? (CostoPapel / (jsonObjectParams.get("precioobj").getAsDouble() - TotCostoEsp - CostoFlete)) * 100 : 0.0;			
@@ -534,7 +555,8 @@ public class CotizadorController {
 		
 	}
 	
-	public String calcular_especialidades(Double ajuste,Integer esquema,Double area_uni, Double largopliego, Double anchopliego,Integer pzasxtar,Double fondo,Double desami, String costoscap)
+	public String calcular_especialidades(Double ajuste,Integer esquema,Double area_uni, Double largopliego, Double anchopliego,
+										  Integer pzasxtar,Double fondo,Double desami, String costoscap, Double precio_obj)
 	   throws Exception {
 		
 		Double costo = 0.0;
@@ -543,11 +565,11 @@ public class CotizadorController {
 		else
 		{
 			if(esquema == 1)//Largo pliego
-				costo = ((largopliego / 100.00) * ajuste);
+				costo = ((largopliego / 100.00) * ajuste) * 1000.00;
 			else
 			{
 				if(esquema == 2)//Ancho pliego
-					costo = ((anchopliego / 100.00) * ajuste);
+					costo = ((anchopliego / 100.00) * ajuste) * 1000.00;
 				else
 				{
 					if(esquema == 7)//Desbarbe
@@ -561,11 +583,17 @@ public class CotizadorController {
 						else
 						{
 							if(esquema == 4)//pegado-grapado
-								costo = (fondo + desami) * ajuste;
+								costo = ((fondo + desami) * ajuste) * 1000.00;
 							else
 							{
 								if(esquema == 8)//Captura
 									return costoscap;
+								else
+								{
+									if(esquema == 9)//Doble paso
+										costo = precio_obj * 0.07;
+									
+								}
 							}
 						}
 					}
@@ -608,6 +636,13 @@ public class CotizadorController {
 						c.setFecha_aut_ventas(date);
 						c.setObservaciones_ventas("Autorización automática por sistema.");
 						
+						////ENVÍO DE EMAIL
+						SendMailGmail Email = new SendMailGmail();
+						String emailMsj="Cotización: ("+c.getId()+") autorizada automáticamente por precio a través del sistema.";
+						User userInsertCot = us.findById(c.getUsuario_insert());
+						Email.sendMail(userInsertCot.getEmail(), emailMsj, "Cotización autorizada");
+						/////
+						
 						c.setUsuario_rech_ventas(null);
 						c.setFecha_rech_ventas(null);
 					}
@@ -645,6 +680,14 @@ public class CotizadorController {
 			c.setUsuario_cancel(user.getId());
 			c.setFecha_cancel(date);
 			cs.Actualizar(c);
+			
+			////ENVÍO DE EMAIL
+			SendMailGmail Email = new SendMailGmail();
+			String emailMsj="Cotización cancelada: ("+c.getId()+") por el usuario: "+user.getFirstName()+ " " +user.getLastName()+ " (" + user.getSsoId() + ") \r\n\n Contacto: "+user.getEmail();
+			User userInsertCot = us.findById(c.getUsuario_insert());
+			Email.sendMail(userInsertCot.getEmail(), emailMsj, "Cotización cancelada");
+			/////
+			
 			logger.info(AppController.getPrincipal() + " - cancelarcotizacion.");
 			return "OK";
 		}
@@ -686,19 +729,30 @@ public class CotizadorController {
 			User user = us.findBySSO(AppController.getPrincipal());
 			Cotizador c = cs.BuscarxId(Integer.valueOf(idcot)); 
 			java.util.Date date = new java.util.Date();
+			String emailMsj = "";
+			String asunto = "";
 			if(Integer.valueOf(ban) == 1)
 			{
 				c.setUsuario_aut_ventas(user.getId());
 				c.setFecha_aut_ventas(date);
 				c.setObservaciones_ventas(coment);
+				emailMsj="Cotización: ("+c.getId()+") autorizada (PRECIO) por el usuario: "+user.getFirstName()+ " " +user.getLastName()+ " (" + user.getSsoId() + ") \r\n\n Contacto: "+user.getEmail()+" \r\n\n Motivo: "+coment ;
+				asunto = "Cotización autorizada";
 			}
 			else
 			{
 				c.setUsuario_rech_ventas(user.getId());
 				c.setFecha_rech_ventas(date);
 				c.setObservaciones_ventas(coment);
+				emailMsj="Cotización: ("+c.getId()+") rechazada (PRECIO) por el usuario: "+user.getFirstName()+ " " +user.getLastName()+ " (" + user.getSsoId() + ") \r\n\n Contacto: "+user.getEmail()+" \r\n\n Motivo: "+coment ;
+				asunto = "Cotización rechazada";
 			}
 			cs.Actualizar(c);
+			////ENVÍO DE EMAIL
+			SendMailGmail Email = new SendMailGmail();
+			User userInsertCot = us.findById(c.getUsuario_insert());
+			Email.sendMail(userInsertCot.getEmail(), emailMsj, asunto);
+			/////
 			logger.info(AppController.getPrincipal() + " - autorizacion_cotizacion_vtas_desicion :"+ msj);
 			return "OK";
 		}
@@ -719,24 +773,42 @@ public class CotizadorController {
 			User user = us.findBySSO(AppController.getPrincipal());
 			Cotizador c = cs.BuscarxId(Integer.valueOf(idcot)); 
 			java.util.Date date = new java.util.Date();
+			String emailMsj = "";
+			String asunto = "";
 			if(Integer.valueOf(ban) == 1)
 			{
 				c.setUsuario_aut_prog(user.getId());
 				c.setFecha_aut_prog(date);
 				c.setObservaciones_prog(coment);
+				emailMsj="Cotización: ("+c.getId()+") autorizada (PROGRAMACIÓN) por el usuario: "+user.getFirstName()+ " " +user.getLastName()+ " (" + user.getSsoId() + ") \r\n\n Contacto: "+user.getEmail()+" \r\n\n Motivo: "+coment ;
+				asunto = "Cotización autorizada departamento Programación";
 			}
 			else
 			{
 				c.setUsuario_rech_prog(user.getId());
 				c.setFecha_rech_prog(date);
 				c.setObservaciones_prog(coment);
+				
 				c.setUsuario_aut_ventas(null);
 				c.setFecha_aut_ventas(null);
+				
 				c.setUsuario_envia_ventas(null);
 				c.setFecha_envia_ventas(null);
+				
+				c.setUsuario_envia_a_prog(null);
+				c.setFecha_envia_a_prog(null);
 				c.setObservaciones_ventas(null);
+				emailMsj="Cotización: ("+c.getId()+") rechazada (PROGRAMACIÓN) por el usuario: "+user.getFirstName()+ " " +user.getLastName()+ " (" + user.getSsoId() + ") \r\n\n Contacto: "+user.getEmail()+" \r\n\n Motivo: "+coment ;
+				asunto = "Cotización rechazada";
 			}
 			cs.Actualizar(c);
+			
+			////ENVÍO DE EMAIL
+			SendMailGmail Email = new SendMailGmail();
+			User userInsertCot = us.findById(c.getUsuario_insert());
+			Email.sendMail(userInsertCot.getEmail(), emailMsj, asunto);
+			/////
+			
 			logger.info(AppController.getPrincipal() + " - autorizacion_cotizacion_prog_desicion :"+ msj);
 			return "OK";
 		}
@@ -804,28 +876,101 @@ public class CotizadorController {
 		{
 			User user = us.findBySSO(AppController.getPrincipal());
 			Cotizador c = cs.BuscarxId(Integer.valueOf(idcot));
+			java.util.Date date = new java.util.Date();
 			
 			if(Integer.valueOf(ban) == 0)
 			{
 				c.setObservaciones_diseniador(coment);
 				cs.Actualizar(c);
-				logger.info(AppController.getPrincipal() + " - convertiratarjeta. Commentario");
+				logger.info(AppController.getPrincipal() + " - convertiratarjeta. Grabar commentario");
 			}
 			else
 			{
-				 
-				java.util.Date date = new java.util.Date();
-				c.setId_diseniador(user.getId());
-				c.setFecha_asign_diseniador(date);
-				c.setObservaciones_diseniador(coment);
-				cs.Actualizar(c);
-				logger.info(AppController.getPrincipal() + " - convertiratarjeta.");
+				String emailMsj = "";
+				String asunto = "";
+				if(Integer.valueOf(ban) == 1)
+				{
+					
+					c.setUsuario_diseniador(user.getId());
+					c.setFecha_asign_diseniador(date);
+					c.setObservaciones_diseniador(coment);
+					cs.Actualizar(c);
+					
+					List<Cotizador_detalles>  ListaDetalles = cds.BuscarxCotId(Integer.valueOf(idcot));
+					
+					
+					if(ListaDetalles.size() > 0)
+					{
+						for(int i = 0; i < ListaDetalles.size(); i++)
+						{
+							// TODO Auto-generated method stub
+							Tarjeta_fabricacion Tarjeta = new Tarjeta_fabricacion();
+							Tarjeta.setIdcotizacion(ListaDetalles.get(i).getIdcotizacion());
+							Tarjeta.setIddetalle(ListaDetalles.get(i).getIddetalle());
+							Catalogo_cajas_sap_vw objCaja = ccss.BuscarxId(ListaDetalles.get(i).getIdcaja_sap());
+							StringTokenizer stPalabras = new StringTokenizer(objCaja.getNombrelargo());
+							Tarjeta.setDescripcion_factura(stPalabras.nextToken() + " de cartón corrugado. Símbolo: " + ListaDetalles.get(i).getSimbolo());
+							Tarjeta.setFolio_tarjeta(ListaDetalles.get(i).getIddetalle() == 1 ? ListaDetalles.get(i).getIdcotizacion().toString() : ListaDetalles.get(i).getIdcotizacion().toString() +"-"+ (char)(63+ListaDetalles.get(i).getIddetalle()));
+							msj= "\n"+msj+"Tarjetas creada: "+Tarjeta.getFolio_tarjeta()+"\n";
+							tfs.Guardar(Tarjeta);
+						}
+					}
+					emailMsj="Cotización: ("+c.getId()+") convertida a Tarjeta de Fabricación por el usuario: "+user.getFirstName()+ " " +user.getLastName()+ " (" + user.getSsoId() + ") \r\n\n Contacto: "+user.getEmail()+" \r\n\n Motivo: "+coment ;
+					asunto = "Cotización convertida a Tarjeta de Fabricación";
+					logger.info(AppController.getPrincipal() + " - convertiratarjeta.Convertir a tarjeta");
+				}
+				else
+				{
+					if(Integer.valueOf(ban) == 2)
+					{
+						c.setUsuario_cancel(user.getId());
+						c.setFecha_cancel(date);
+						c.setObservaciones_diseniador(coment);
+						cs.Actualizar(c);
+						
+						emailMsj="Cotización: ("+c.getId()+") cancelada por el usuario: "+user.getFirstName()+ " " +user.getLastName()+ " (" + user.getSsoId() + ") \r\n\n Contacto: "+user.getEmail()+" \r\n\n Motivo: "+coment ;
+						asunto = "Cotización cancelada";
+						
+						logger.info(AppController.getPrincipal() + " - convertiratarjeta - cancelarcotizacion ingeniería.");
+					}
+					else
+					{
+						c.setUsuario_rech_prog(null);
+						c.setFecha_rech_prog(null);
+						c.setObservaciones_prog(null);
+						c.setUsuario_envia_a_prog(null);
+						c.setFecha_envia_a_prog(null);
+						
+						c.setUsuario_aut_ventas(null);
+						c.setFecha_aut_ventas(null);
+						c.setUsuario_envia_ventas(null);
+						c.setFecha_envia_ventas(null);
+						c.setObservaciones_ventas(null);
+						
+						c.setUsuario_rech_diseniador(user.getId());
+						c.setFecha_rech_diseniador(date);
+						c.setObservaciones_diseniador(coment);
+						cs.Actualizar(c);
+						
+						emailMsj="Cotización: ("+c.getId()+") rechazada por el usuario: "+user.getFirstName()+ " " +user.getLastName()+ " (" + user.getSsoId() + ") \r\n\n Contacto: "+user.getEmail()+" \r\n\n Motivo: "+coment ;
+						asunto = "Cotización rechazada";						
+						
+						logger.info(AppController.getPrincipal() + " - convertiratarjeta - rechazarcotizacion ingeniería.");
+					}
+				}
+				
+				////ENVÍO DE EMAIL
+				SendMailGmail Email = new SendMailGmail();
+				User userInsertCot = us.findById(c.getUsuario_insert());
+				Email.sendMail(userInsertCot.getEmail(), emailMsj, asunto);
+				/////
+				
 			}
-			return "OK";
+			return "OK "+msj;
 		}
 		catch(Exception e)
 		{
-			msj = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
+			msj = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage() + " "+e.getClass().getName();
 			logger.info(AppController.getPrincipal() + " - convertiratarjeta :"+ msj);
 			return msj;
 		}

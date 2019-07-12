@@ -121,13 +121,15 @@ public class CotizadorDAOImpl extends AbstractDao<Integer,Cotizador> implements 
 		Map<Integer,String> paramStr = new HashMap<Integer, String>();
 		int posicion = 0;
 		
-		String query = "select ROW_NUMBER() OVER(ORDER BY a.ID ASC) AS count,a.ID id,b.cardname,c.address +' '+c.direccion direccion,a.FECHA_INSERT fecha_insert,d.SIMBOLO simbolo,e.nombrelargo,d.iddetalle iddet, \r\n"+
-				"d.comision_directo,d.precio_objetivo,d.precio_sugerido,d.precio_neto,d.descuento_vendedor,e.nombrecorto,d.cpcc,d.ref_para_comision, a.observaciones_diseniador \r\n" + 
-				"from COTIZADOR a\r\n" + 
-				"inner join CATALOGO_CLIENTES_SAP b on a.CARDCODE = b.cardcode\r\n" + 
-				"inner join CATALOGO_DIRECCIONES_SAP c on a.CARDCODE = c.cardcode and a.LINENUM_DIR_ENTREGA = c.linenum\r\n" + 
+		String query = "select ROW_NUMBER() OVER(ORDER BY a.ID ASC) AS count,a.ID id,b.cardname,c.address +' '+c.direccion direccion,a.FECHA_INSERT fecha_insert,d.SIMBOLO simbolo,e.nombrelargo,d.iddetalle iddet, \r\n" + 
+				"d.comision_directo,d.precio_objetivo,d.precio_sugerido,d.precio_neto,d.descuento_vendedor,e.nombrecorto,d.cpcc,d.ref_para_comision, a.observaciones_diseniador,f.resistencia,f.corrugado,f.color,g.SELLOS \r\n" + 
+				"from COTIZADOR a \r\n" + 
+				"inner join CATALOGO_CLIENTES_SAP b on a.CARDCODE = b.cardcode \r\n" + 
+				"inner join CATALOGO_DIRECCIONES_SAP c on a.CARDCODE = c.cardcode and a.LINENUM_DIR_ENTREGA = c.linenum \r\n" + 
 				"left join COTIZADOR_DETALLES d on a.ID = d.IDCOTIZACION\r\n" + 
-				"inner join CATALOGO_CAJAS_SAP e on d.IDCAJA_SAP = e.idtipocaja \r\n" + 
+				"inner join CATALOGO_CAJAS_SAP e on d.IDCAJA_SAP = e.idtipocaja\r\n" + 
+				"left join catalogo_resistencias_sap f on d.IDRESISTENCIA_BARCA = f.idresistencia\r\n" + 
+				"left join CATALOGO_SELLOS g on d.RESISTENCIA_CTE = g.ID \r\n" + 
 				"where a.ID > 0";
 		if(id > 0)
 		{
@@ -163,7 +165,7 @@ public class CotizadorDAOImpl extends AbstractDao<Integer,Cotizador> implements 
 		if(autProgAsigDis)
 		{
 			query = query + " and a.fecha_aut_prog is not null and a.usuario_aut_prog is not null  \r\n" +
-					"and a.usuario_cancel is null and a.fecha_cancel is null and a.id_diseniador is null and a.fecha_asign_diseniador is null ";
+					"and a.usuario_cancel is null and a.fecha_cancel is null and a.usuario_diseniador is null and a.fecha_asign_diseniador is null and a.usuario_rech_diseniador is null and a.fecha_rech_diseniador is null";
 		}
 		
 		query = query + " order by a.FECHA_INSERT ";
@@ -195,6 +197,10 @@ public class CotizadorDAOImpl extends AbstractDao<Integer,Cotizador> implements 
 			   cb.setCpcc(Double.parseDouble(String.valueOf(obj[14])));
 			   cb.setRef_para_com(Double.parseDouble(String.valueOf(obj[15])));
 			   cb.setObservaciones_diseniador(String.valueOf(obj[16]));
+			   cb.setResistencia(String.valueOf(obj[17]));
+			   cb.setCorrugado(String.valueOf(obj[18]));
+			   cb.setColor(String.valueOf(obj[19]));
+			   cb.setSellos(String.valueOf(obj[20]));
 			   Lista.add(cb); 
 			}
 		
@@ -208,57 +214,67 @@ public class CotizadorDAOImpl extends AbstractDao<Integer,Cotizador> implements 
 		Map<Integer,Integer> paramsInt = new HashMap<Integer, Integer>();
 		Map<Integer,String> paramStr = new HashMap<Integer, String>();
 		
-		String query = "select a.cardcode,d.cardname,c.first_name +' '+ c.last_name as 'representante',b.simbolo,a.fecha_insert,a.id,b.largo,b.ancho,b.fondo,b.medida_lamina,b.area_unitaria,\r\n" + 
-				"peso_pieza,piezasxjuego,area_total,peso_juego,e.tipocajabarca,f.resistencia,f.corrugado,f.color,b.peso_resis,b.preciom2resistencia,b.precio_neto,\r\n" + 
-				"b.precio_objetivo,b.pk_teorico,b.kg,b.descuento_vendedor,piezasxtarima,porcentaje_comision,comisionxmillar,costo_papel,b.ref_para_comision,\r\n" + 
-				"b.cpcc,cierre,cierre_detalle,b.num_tintas,(select  isnull(costo,0) \r\n" + 
-				"from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=1) as 'michelman int' ,\r\n" + 
-				"(select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=2) as 'michelman ext',\r\n" + 
-				"(select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=3) as 'open sesame',\r\n" + 
-				"(select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=4) as 'pegado',\r\n" + 
-				"(select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=8) as 'grapado',\r\n" + 
-				"(select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=9) as 'tarima estandar',\r\n" + 
-				"(select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=10) as 'water paper interior',\r\n" + 
-				"(select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=11) as 'water paper exterior',\r\n" + 
-				"(select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=12) as 'water paper ambas caras',\r\n" + 
-				"(select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=13) as 'emulsion acrilica',\r\n" + 
-				"(select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=14) as 'michelman ambas caras',\r\n" + 
-				"(select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=15) as 'string king',\r\n" + 
-				"(select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=16) as 'cera',\r\n" + 
-				"(select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=17) as 'maquila desvarbe',\r\n" + 
-				"(select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=18) as 'almidon especial',\r\n" + 
-				"(select  isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=19) as 'tarima especial',\r\n" + 
-				"(select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=20) as 'maquila pegado',\r\n" + 
-				"(select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=22) as 'bolsa',\r\n" + 
-				"(select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=23) as 'desvarbe',\r\n" + 
-				"(select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=24) as 'tarima viajer',\r\n" + 
-				"(select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=35) as 'maquila de ensamble',\r\n" + 
-				"(select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=36) as 'trim adicional',\r\n" + 
-				"(select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=37) as 'doble paso'\r\n" + 
-				",total_especialidades,b.costo_flete,porc_flete,g.direccion,g.ciudad,g.estado,(select distinct  h.first_name +' '+ h.last_name from app_user h where h.id=a.usuario_aut_ventas) as 'autorizador',  \r\n" +
-				"(select  isnull(h.name,'')  from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=1) as 'michelman intn' ,\r\n" + 
-				"(select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=2) as 'michelman extn',\r\n" + 
-				"(select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=3) as 'open sesamen',\r\n" + 
-				"(select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=4) as 'pegadon',\r\n" + 
-				"(select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=8) as 'grapadon',\r\n" + 
-				"(select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=9) as 'tarima estandarn',\r\n" + 
-				"(select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=10) as 'water paper interiorn',\r\n" + 
-				"(select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=11) as 'water paper exteriorn',\r\n" + 
-				"(select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=12) as 'water paper ambas carasn',\r\n" + 
-				"(select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=13) as 'emulsion acrilican',\r\n" + 
-				"(select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=14) as 'michelman ambas carasn',\r\n" + 
-				"(select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=15) as 'string kingn',\r\n" + 
-				"(select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=16) as 'ceran',\r\n" + 
-				"(select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=17) as 'maquila desvarben',\r\n" + 
-				"(select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=18) as 'almidon especialn',\r\n" + 
-				"(select  isnull(h.name,'')  from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=19) as 'tarima especialn',\r\n" + 
-				"(select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=20) as 'maquila pegadon',\r\n" + 
-				"(select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=22) as 'bolsan',\r\n" + 
-				"(select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=23) as 'desvarben',\r\n" + 
-				"(select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=24) as 'tarima viajern',\r\n" + 
-				"(select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=35) as 'maquila de ensamblen',\r\n" + 
-				"(select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=36) as 'trim adicionaln',\r\n" + 
-				"(select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=37) as 'doble pason' \r\n" +
+		String query = "select a.cardcode,d.cardname,c.first_name +' '+ c.last_name as 'representante',b.simbolo,a.fecha_insert,a.id,b.largo,b.ancho,b.fondo,b.medida_lamina,b.area_unitaria, \r\n" + 
+				" peso_pieza,piezasxjuego,area_total,peso_juego,e.tipocajabarca,f.resistencia,f.corrugado,f.color,b.peso_resis,b.preciom2resistencia,b.precio_neto, \r\n" + 
+				" b.precio_objetivo,b.pk_teorico,b.kg,b.descuento_vendedor,piezasxtarima,porcentaje_comision,comisionxmillar,costo_papel,b.ref_para_comision, \r\n" + 
+				" b.cpcc,cierre,cierre_detalle,b.num_tintas,(select  isnull(costo,0)  \r\n" + 
+				" from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=1) as 'michelman int' , \r\n" + 
+				" (select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=2) as 'michelman ext', \r\n" + 
+				" (select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=3) as 'open sesame', \r\n" + 
+				" (select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=4) as 'pegado', \r\n" + 
+				" (select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=8) as 'grapado', \r\n" + 
+				" (select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=9) as 'tarima estandar', \r\n" + 
+				" (select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=10) as 'water paper interior', \r\n" + 
+				" (select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=11) as 'water paper exterior', \r\n" + 
+				" (select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=12) as 'water paper ambas caras', \r\n" + 
+				" (select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=13) as 'emulsion acrilica', \r\n" + 
+				" (select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=14) as 'michelman ambas caras', \r\n" + 
+				" (select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=15) as 'string king', \r\n" + 
+				" (select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=16) as 'cera', \r\n" + 
+				" (select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=17) as 'maquila desvarbe', \r\n" + 
+				" (select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=38) as 'almidon especial', \r\n" + 
+				" (select  isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=19) as 'tarima especial', \r\n" + 
+				" (select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=20) as 'maquila pegado', \r\n" + 
+				" (select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=22) as 'bolsa', \r\n" + 
+				" (select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=23) as 'desvarbe', \r\n" + 
+				" (select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=24) as 'tarima viajer', \r\n" + 
+				" (select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=35) as 'maquila de ensamble', \r\n" + 
+				" (select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=36) as 'trim adicional', \r\n" + 
+				" (select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=37) as 'doble paso' \r\n" + 
+				" ,total_especialidades,b.costo_flete,porc_flete,g.direccion,g.ciudad,g.estado,(select distinct  h.first_name +' '+ h.last_name from app_user h where h.id=a.usuario_aut_ventas) as 'autorizador',  \r\n" + 
+				" (select  isnull(h.name,'')  from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=1) as 'michelman intn' , \r\n" + 
+				" (select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=2) as 'michelman extn', \r\n" + 
+				" (select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=3) as 'open sesamen', \r\n" + 
+				" (select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=4) as 'pegadon', \r\n" + 
+				" (select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=8) as 'grapadon', \r\n" + 
+				" (select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=9) as 'tarima estandarn', \r\n" + 
+				" (select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=10) as 'water paper interiorn', \r\n" + 
+				" (select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=11) as 'water paper exteriorn', \r\n" + 
+				" (select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=12) as 'water paper ambas carasn', \r\n" + 
+				" (select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=13) as 'emulsion acrilican', \r\n" + 
+				" (select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=14) as 'michelman ambas carasn', \r\n" + 
+				" (select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=15) as 'string kingn', \r\n" + 
+				" (select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=16) as 'ceran', \r\n" + 
+				" (select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=17) as 'maquila desvarben', \r\n" + 
+				" (select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=38) as 'almidon especialn', \r\n" + 
+				" (select  isnull(h.name,'')  from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=19) as 'tarima especialn', \r\n" + 
+				" (select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=20) as 'maquila pegadon', \r\n" + 
+				" (select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=22) as 'bolsan', \r\n" + 
+				" (select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=23) as 'desvarben', \r\n" + 
+				" (select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=24) as 'tarima viajern', \r\n" + 
+				" (select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=35) as 'maquila de ensamblen', \r\n" + 
+				" (select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=36) as 'trim adicionaln', \r\n" + 
+				" (select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=37) as 'doble pason',\r\n" + 
+				" (select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=18) as 'barnizexteriorn',\r\n" + 
+				" (select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=5) as 'pegadon2n', \r\n" + 
+				" (select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=6) as 'pegadon3n', \r\n" + 
+				" (select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=7) as 'pegadon4n',\r\n" + 
+				" (select   isnull(h.name,'') from especialidades_cotizacion g inner join catalogo_especialidades_sap h on g.idespecialidad = h.code where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=21) as 'MichelmanAltosSolidosn',\r\n" + 
+				" (select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=5) as 'pegadon2', \r\n" + 
+				" (select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=6) as 'pegadon3',\r\n" + 
+				" (select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=7) as 'pegadon4', \r\n" + 
+				" (select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=21) as 'MichelmanAltosSolidos',\r\n" + 
+				" (select   isnull(costo,0) from especialidades_cotizacion g where g.idcotizacion=b.idcotizacion and g.iddetalle=b.iddetalle and g.idespecialidad=18) as 'barnizexterior'	\r\n" +
 				"from cotizador a \r\n" + 
 				"join cotizador_detalles b on a.id=b.idcotizacion\r\n" + 
 				"join app_user c on a.usuario_insert=c.id\r\n" + 

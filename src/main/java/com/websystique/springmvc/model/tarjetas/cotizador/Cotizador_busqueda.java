@@ -35,4 +35,8 @@ public class Cotizador_busqueda implements Serializable{/**
 	private Double cpcc;
 	private Double ref_para_com;
 	private String observaciones_diseniador;
+	private String resistencia;
+	private String corrugado;
+	private String color;
+	private String sellos;
 }

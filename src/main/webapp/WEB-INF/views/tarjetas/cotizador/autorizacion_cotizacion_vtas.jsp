@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
@@ -7,11 +7,11 @@
 <html>
 <head>
 <%@include file="../../appconfig/authheader2.jsp"%>
-<title>AutorizaciÃ³n de cotizaciones por Gerente de Ventas</title>
+<title>Autorización de cotizaciones por Gerente de Ventas</title>
 <script>
 function FAut(id)
 {
-	var r = confirm("Enviar autorizaciÃ³n!");
+	var r = confirm("Enviar autorización!");
 	if(r == true)
 	{
 		if(id > 0)
@@ -29,18 +29,18 @@ function FAut(id)
 			    if(http.readyState == 4 && http.status == 200) 
 			    {
 			    	if (http.responseText.search(/Login page/i) != -1) {
-			    		alert("La sessiÃ³n ha expirado, Por favor vuelva a intentarlo.");
+			    		alert("La sessión ha expirado, Por favor vuelva a intentarlo.");
 		    			window.location.replace('<c:url value="/login?expired"/>');
 			    	}
 		    		else{
 		    			if(http.responseText === 'OK')
 		    			{
-		    				alert("AutorizaciÃ³n existosa.");
+		    				alert("Autorización existosa.");
 				    		window.location.replace('<c:url value="/cotizador/ventas/autorizacion_cotizacion_vtas"/>');
 		    			}
 		    			else
 		    			{
-		    				alert("Algo saliÃ³ mal, por favor vuelva a intentarlo: "+http.responseText);
+		    				alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
 				    		window.location.replace('<c:url value="/cotizador/ventas/autorizacion_cotizacion_vtas"/>');
 		    			}
 		    		}
@@ -48,8 +48,13 @@ function FAut(id)
 			    else
 			    {
 			    	if(http.readyState == 4 && http.status != 200){
-			    		alert("Algo saliÃ³ mal, por favor vuelva a intentarlo: "+http.responseText);
+			    		alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
 			    		window.location.replace('<c:url value="/cotizador/ventas/autorizacion_cotizacion_vtas"/>');
+			    	}
+			    	else
+			    	{
+				    	$("#mensajes" ).text("Procesando petición");
+						$("#mensajes").removeClass().addClass("alert alert-info");
 			    	}
 			    }
 			    
@@ -79,7 +84,7 @@ function FReach(id)
 			    if(http.readyState == 4 && http.status == 200) 
 			    {
 			    	if (http.responseText.search(/Login page/i) != -1) {
-			    		alert("La sessiÃ³n ha expirado, Por favor vuelva a intentarlo.");
+			    		alert("La sessión ha expirado, Por favor vuelva a intentarlo.");
 		    			window.location.replace('<c:url value="/login?expired"/>');
 			    	}
 		    		else{
@@ -90,7 +95,7 @@ function FReach(id)
 		    			}
 		    			else
 		    			{
-		    				alert("Algo saliÃ³ mal, por favor vuelva a intentarlo: "+http.responseText);
+		    				alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
 				    		window.location.replace('<c:url value="/cotizador/ventas/autorizacion_cotizacion_vtas"/>');
 		    			}
 		    		}
@@ -98,8 +103,13 @@ function FReach(id)
 			    else
 			    {
 			    	if(http.readyState == 4 && http.status != 200){
-			    		alert("Algo saliÃ³ mal, por favor vuelva a intentarlo: "+http.responseText);
+			    		alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
 			    		window.location.replace('<c:url value="/cotizador/ventas/autorizacion_cotizacion_vtas"/>');
+			    	}
+			    	else
+			    	{
+				    	$("#mensajes" ).text("Procesando petición");
+						$("#mensajes").removeClass().addClass("alert alert-info");
 			    	}
 			    }
 			    
@@ -118,7 +128,7 @@ function FImprimir(id)
 <body>
 	<br>
 	<div align="center">
-		<span class="badge badge-secondary">AutorizaciÃ³n de cotizaciones por Gerente de Ventas</span>
+		<span class="badge badge-secondary">Autorización de cotizaciones por Gerente de Ventas</span>
 	</div>
 	<br>
 	<div align="center" class="container-fluid">
@@ -127,15 +137,19 @@ function FImprimir(id)
 			<tr>
 				<th>Folio</th>
 				<th>Cliente</th>
-				<th>SÃ­mbolo</th>
+				<th>Símbolo</th>
 				<th>Caja</th>
-				<th>%ComisiÃ³n</th>
+				<th>%Comisión</th>
 				<th>$ Objetivo</th>
 				<th>$ sugerido</th>
 				<th>$ neto</th>
 				<th>Desc vendedor</th>
 				<th>CPCC</th>
 				<th>CPSC</th>
+				
+				<th>Resistencia</th>
+				<th>Sello</th>
+				
 				<th>Comentarios</th>
 				<th>Imprimir</th>
 				<th>Autorizar</th>
@@ -156,6 +170,10 @@ function FImprimir(id)
 				<td>${item.descuento_vendedor}</td>
 				<td>${item.cpcc}</td>
 				<td>${item.ref_para_com}</td>
+				
+				<td>${item.resistencia} ${item.corrugado} ${item.color}</td>
+				<td>${item.sellos}</td>
+				
 				<td><input id="TComent${item.id}" type="text" size="50" onkeypress="return SinCaracteresEspeciales(event)" maxlength="100" class="border border-primary"/></td>
 				<td><a href="javascript:FImprimir(${item.id})"><i class="fa fa-print" aria-hidden="true"></i></a></td>
 				<td><a href="javascript:FAut(${item.id})"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></a></td>

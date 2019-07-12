@@ -72,10 +72,31 @@ public class Cotizador implements Serializable{/**
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date fecha_cancel;
 	
-	private Integer id_diseniador;
+	private Integer usuario_diseniador;
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date fecha_asign_diseniador;
 	private String observaciones_diseniador;
-
+	
+	private Integer usuario_rech_diseniador;
+	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+	private Date fecha_rech_diseniador;
+	
+	private Boolean emplayado;
+	private Integer vueltas_emplaye;
+	private Boolean factura;
+	private Boolean certif_calidad;
+	private Boolean imprimir_oc;
+	private Boolean protecciones;
+	private Boolean caja_seca;
+	private Boolean certif_fumig;
+	private Boolean epp_transportista;
+	private Boolean imprimir_fechador;
+	private Boolean imprimir_pedido;
+	private Boolean tarimaxunitizado;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date fecha_entrega_oc;
+	private String se_entrego;
+	private Integer tolerancia_pedido;
+	private String disenio;
 	
 }

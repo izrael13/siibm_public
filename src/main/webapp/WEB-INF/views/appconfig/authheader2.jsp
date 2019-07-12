@@ -110,7 +110,7 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 		<ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu">
 			<li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-user-circle" aria-hidden="true"></i> Prospectos</a>
 			    <ul class="dropdown-menu">
-			    	<li><a class="dropdown-item" href = "<c:url value='/prospectos/vendedor/prospectosabc' />?id=0"><i class="fa fa-user-plus" aria-hidden="true"></i> Registro prospectos y actividades</a></li>
+			    	<li><a class="dropdown-item" href = "<c:url value='/prospectos/vendedor/prospectosabc' />?id=0"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro prospectos y actividades</a></li>
 			    	<li><a class="dropdown-item" href = "<c:url value='/prospectos/ventas/prospectosgerenteventas'/>"><i class="fa fa-male" aria-hidden="true"></i> Prospectos gerente de ventas</a></li>
 			    </ul>
 			 </li>
@@ -118,9 +118,18 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 			    <ul class="dropdown-menu">
 			    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/vendedor/cotizadorabc'/>?id=0&iddet=0"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro Cotizaciones/Requerimientos</a></li>
 			    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/ventas/autorizacion_cotizacion_vtas'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de cotizaciones Ventas</a></li>
-			    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/programacion/autorizacion_cotizacion_prog'/>"><i class="fa fa-thumbs-up" aria-hidden="true"></i> Autorización de requerimientos Programación</a></li>
+			    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/programacion/autorizacion_cotizacion_prog'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de requerimientos Programación</a></li>
 			    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/ingenieria/requerimientoabc'/>"><i class="fa fa-check-circle-o" aria-hidden="true"></i> Imprimir/Asignar diseñador requerimientos</a></li>
 			    </ul>
+			 </li>
+			 <li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-file-code-o" aria-hidden="true"></i> Tarjetas de fabricación</a>
+			 	<ul class="dropdown-menu">
+			 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/ingenieria/tarjeta_fabricacion'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro tarjetas</a></li>
+			 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/calidad/tarjeta_fabricacion'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Calidad</a></li>
+			 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/produccion/tarjeta_fabricacion'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Producción</a></li>
+			 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/ingenieria/tarjeta_fabricacion'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Ingeniería</a></li>
+			 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/cliente/tarjeta_fabricacion'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Cliente</a></li>
+			 	</ul>
 			 </li>
 		</ul>
 	</li>
@@ -137,12 +146,6 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 			<li class="dropdown-submenu dropdown-menu-right"><a class="dropdown-item" href="<c:url value='/edit_data_user' />"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar datos de usuario</a></li>
 			<li class="dropdown-submenu dropdown-menu-right"><a class="dropdown-item" href="<c:url value='/cambio_p__' />"><i class="fa fa-exchange" aria-hidden="true"></i> Cambiar contraseña</a></li>
 			<li class="dropdown-submenu dropdown-menu-right"><a class="dropdown-item" href="<c:url value='/logout' />"><i class="fa fa-minus-square" aria-hidden="true"></i> Cerrar Sesión</a></li>
-			 <!-- <li class="dropdown-submenu dropdown-menu-right">
-			    <a class="dropdown-item" href="<c:url value='/helloReport1' />">
-			    	<i class="fa fa-minus-square" aria-hidden="true"></i>
-			    	Rerpot 
-			    </a>
-			 </li> -->
 		</ul>
 	</li>
 </ul>

@@ -20,7 +20,7 @@ import javax.mail.internet.MimeMessage;
 
 public class SendMailGmail {
     
-	public void sendMail(String mail,String msg)
+	public void sendMail(String mail,String msg, String asunto)
 	{
 		final String username = "serversap@barcademexico.com";
 		final String password = "Sistemas#04";
@@ -30,7 +30,7 @@ public class SendMailGmail {
 		props.put("mail.smtp.starttls.enable", "true");
 		props.put("mail.smtp.host", "smtp.gmail.com");
 		props.put("mail.smtp.port", "587");
-		
+		Message message;
 		Session session = Session.getInstance(props,
 				  new javax.mail.Authenticator() {
 					protected PasswordAuthentication getPasswordAuthentication() {
@@ -40,18 +40,24 @@ public class SendMailGmail {
 		
 		try {
 
-				Message message = new MimeMessage(session);
+				message = new MimeMessage(session);
 				message.setFrom(new InternetAddress("serversap@barcademexico.com"));
 				message.setRecipients(Message.RecipientType.TO,
 					InternetAddress.parse(mail));
-				message.setSubject("Recupareación de contraseña SIIBM");
+				message.setSubject(asunto);
 				message.setContent(msg, "text/html");
 	
 				Transport.send(message);
-	
 
 		} catch (MessagingException e) {
 			throw new RuntimeException(e);
+		}
+		finally
+		{
+			session = null;
+			props.clear();
+			message = null;
+			
 		}
 		
 	}

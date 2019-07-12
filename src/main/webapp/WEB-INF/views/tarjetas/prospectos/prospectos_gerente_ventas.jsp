@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
@@ -55,14 +55,14 @@ function FBuscar()
 				<div class="col-sm-3">
 					<select id = "SActividades" class="border border-primary">
 						<option value="0"> - - - </option>
-						<option value="10">10 - IdentificaciÃ³n </option>
+						<option value="10">10 - Identificación </option>
 						<option value="20">20 - Contacto cliente </option>
-						<option value="30">30 - Recabar informaciÃ³n cotizaciÃ³n </option>
-						<option value="40">40 - Presentar cotizaciÃ³n </option>
-						<option value="50">50 - Respuesta cotizaciÃ³n </option>
-						<option value="60">60 - Cliente aceptÃ³ cotizaciÃ³n </option>
+						<option value="30">30 - Recabar información cotización </option>
+						<option value="40">40 - Presentar cotización </option>
+						<option value="50">50 - Respuesta cotización </option>
+						<option value="60">60 - Cliente aceptó cotización </option>
 						<option value="70">70 - Desarrollo TF </option>
-						<option value="80">80 - Cliente envÃ­a OC </option>
+						<option value="80">80 - Cliente envía OC </option>
 						<option value="100">100 - Embarque primer pedido realizado</option>
 					</select>
 				</div>
@@ -173,14 +173,14 @@ function FBuscar()
 				<td>${item.prioridad}</td>
 				<td>
 					<c:choose>
-						<c:when test ="${item.porc_avance == 10}">10 - IdentificaciÃ³n</c:when>
+						<c:when test ="${item.porc_avance == 10}">10 - Identificación</c:when>
 						<c:when test ="${item.porc_avance == 20}">20 - Contacto cliente</c:when>
-						<c:when test ="${item.porc_avance == 30}">30 - Recabar informaciÃ³n cotizaciÃ³n</c:when>
-						<c:when test ="${item.porc_avance == 40}">40 - Presentar cotizaciÃ³n</c:when>
-						<c:when test ="${item.porc_avance == 50}">50 - Respuesta cotizaciÃ³n</c:when>
-						<c:when test ="${item.porc_avance == 60}">60 - Cliente aceptÃ³ cotizaciÃ³n</c:when>
+						<c:when test ="${item.porc_avance == 30}">30 - Recabar información cotización</c:when>
+						<c:when test ="${item.porc_avance == 40}">40 - Presentar cotización</c:when>
+						<c:when test ="${item.porc_avance == 50}">50 - Respuesta cotización</c:when>
+						<c:when test ="${item.porc_avance == 60}">60 - Cliente aceptó cotización</c:when>
 						<c:when test ="${item.porc_avance == 70}">70 - Desarrollo TF</c:when>
-						<c:when test ="${item.porc_avance == 80}">80 - Cliente envÃ­a OC</c:when>
+						<c:when test ="${item.porc_avance == 80}">80 - Cliente envía OC</c:when>
 						<c:when test ="${item.porc_avance == 100}">100 - Embarque primer pedido realizado</c:when>
 												
 					</c:choose>

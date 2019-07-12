@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
@@ -145,7 +145,7 @@ function FLimpar()
 					</div>						
 				</div>
 				<div class="row border border-right">
-					<div class="col-sm-1">TelÃ©fono</div>
+					<div class="col-sm-1">Teléfono</div>
 					<div class="col-sm-3 border-right">
 						<form:input type="text" style="width:250px" onkeypress="return SinCaracteresEspeciales(event)" maxlength="20" path="prospectos_ventas.telefono" class="border border-primary"/>
 						<div class="has-error">
@@ -226,7 +226,7 @@ function FLimpar()
 					</div>
 					<div class="col-sm-1">% avance</div>
 					<div class="col-sm-1 border-right">${prospectos_bean.prospectos_ventas.porcentaje_avance}</div>
-					<div class="col-sm-2">Fecha ActualizaciÃ³n</div>
+					<div class="col-sm-2">Fecha Actualización</div>
 					<div class="col-sm-2 border-right">${prospectos_bean.prospectos_ventas.fecha_update}</div>
 				</div>				
 			</div>
@@ -269,14 +269,14 @@ function FLimpar()
 					<div class="col-sm-3">
 						<form:select path="prospectos_ventas_detalle.cve_actividad" class="border border-primary">
 								<form:option value="0" label="Seleccione actividad" />
-								<form:option value="10" label="IdentificaciÃ³n" />
+								<form:option value="10" label="Identificación" />
 								<form:option value="20" label="Contacto cliente" />
-								<form:option value="30" label="Recabar informaciÃ³n cotizaciÃ³n" />
-								<form:option value="40" label="Presentar cotizaciÃ³n" />
-								<form:option value="50" label="Respuesta cotizaciÃ³n" />
-								<form:option value="60" label="Cliente aceptÃ³ cotizaciÃ³n" />
+								<form:option value="30" label="Recabar información cotización" />
+								<form:option value="40" label="Presentar cotización" />
+								<form:option value="50" label="Respuesta cotización" />
+								<form:option value="60" label="Cliente aceptó cotización" />
 								<form:option value="70" label="Desarrollo TF" />
-								<form:option value="80" label="Cliente envÃ­a OC" />
+								<form:option value="80" label="Cliente envía OC" />
 								<form:option value="100" label="Embarque primer pedido realizado" />
 						</form:select>
 						<div class="has-error">
@@ -322,14 +322,14 @@ function FLimpar()
 					<td>${it.fecha_cierre}</td>
 					<td>
 						<c:choose>
-							<c:when test ="${it.cve_actividad == 10}">IdentificaciÃ³n</c:when>
+							<c:when test ="${it.cve_actividad == 10}">Identificación</c:when>
 							<c:when test ="${it.cve_actividad == 20}">Contacto cliente</c:when>
-							<c:when test ="${it.cve_actividad == 30}">Recabar informaciÃ³n cotizaciÃ³n</c:when>
-							<c:when test ="${it.cve_actividad == 40}">Presentar cotizaciÃ³n</c:when>
-							<c:when test ="${it.cve_actividad == 50}">Respuesta cotizaciÃ³n</c:when>
-							<c:when test ="${it.cve_actividad == 60}">Cliente aceptÃ³ cotizaciÃ³n</c:when>
+							<c:when test ="${it.cve_actividad == 30}">Recabar información cotización</c:when>
+							<c:when test ="${it.cve_actividad == 40}">Presentar cotización</c:when>
+							<c:when test ="${it.cve_actividad == 50}">Respuesta cotización</c:when>
+							<c:when test ="${it.cve_actividad == 60}">Cliente aceptó cotización</c:when>
 							<c:when test ="${it.cve_actividad == 70}">Desarrollo TF</c:when>
-							<c:when test ="${it.cve_actividad == 80}">Cliente envÃ­a OC</c:when>
+							<c:when test ="${it.cve_actividad == 80}">Cliente envía OC</c:when>
 							<c:when test ="${it.cve_actividad == 100}">Embarque primer pedido realizado</c:when>
 						</c:choose>
 					</td>

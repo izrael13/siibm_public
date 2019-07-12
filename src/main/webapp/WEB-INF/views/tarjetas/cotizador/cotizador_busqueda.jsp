@@ -1,10 +1,10 @@
-<%@ page language="java" contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>Cotizador bÃºsqueda</title>
+<title>Cotizador búsqueda</title>
 <%@include file="../../appconfig/imports.jsp"%>
 <script type="text/javascript">
 function FBuscarId(id,iddet)
@@ -13,6 +13,7 @@ function FBuscarId(id,iddet)
 	window.close();
 }
 </script>
+</head>
 <body>
 	<div id="tabla1" class = "table-responsive-xl container">
 		<table class="table-hover table-bordered text-center small">
@@ -21,7 +22,7 @@ function FBuscarId(id,iddet)
 			<tr>
 				<td>Folio</td>
 				<td>Cliente</td>
-				<td>DirecciÃ³n</td>
+				<td>Dirección</td>
 				<td>Fecha alta</td>
 			</tr>
 		</thead>
@@ -43,9 +44,9 @@ function FBuscarId(id,iddet)
 			<tr>
 				<td>Folio</td>
 				<td>Cliente</td>
-				<td>DirecciÃ³n</td>
+				<td>Dirección</td>
 				<td>Fecha alta</td>
-				<td>SÃ­mbolo</td>
+				<td>Símbolo</td>
 				<td>Caja</td>
 			</tr>
 		</thead>
