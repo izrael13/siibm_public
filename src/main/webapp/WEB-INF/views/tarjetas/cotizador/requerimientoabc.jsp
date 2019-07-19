@@ -30,6 +30,9 @@ function FTarjeta(id,b)
 	{
 		if(id > 0)
 		{
+			$("#mensajes" ).text("Procesando petición, por favor espere...");
+			$("#mensajes").removeClass().addClass("alert alert-info");
+			
 			var http = new XMLHttpRequest();
 			var url = '<c:url value="/cotizador/ingenieria/convertiratarjeta"/>';
 			var params = 'idcot='+id+'&coment='+$("#TComent"+id).val()+'&ban='+b;

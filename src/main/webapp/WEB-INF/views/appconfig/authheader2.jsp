@@ -47,8 +47,7 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 <img class="rounded img-fluid" alt="Responsive image" src="<c:url value='/static/img/BarcaLogoM.png'/>" align="top">&nbsp;<a class="text-dark" href="<c:url value='/principal'/>"> SIIBM ${loggedinuser}</a>
 <div id = "navbarSupportedContent" class="collapse navbar-collapse">
 <ul class="navbar-nav mr-auto">
-	<li class="nav-item dropdown">				
-		<a class="dropdown-item" href="" data-toggle="dropdown"><i class="fa fa-file-text" aria-hidden="true">	Reportes</i></a>
+	<li class="nav-item dropdown"><a class="dropdown-item" href="" data-toggle="dropdown"><i class="fa fa-file-text" aria-hidden="true">	Reportes</i></a>
 		<ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu">
 			<li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-newspaper-o" aria-hidden="true"></i> Papel</a>
 			    <ul class="dropdown-menu">
@@ -78,6 +77,8 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/golpes_pend_fab_2' />"><i class="fa fa-file-o" aria-hidden="true"></i> Golpes pendientes de fabricar</a></li>
 		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/todos_pedidos___' />"><i class="fa fa-file-o" aria-hidden="true"></i> Todos pedidos</a></li>
 		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/media_pedidos_cte1' />"><i class="fa fa-file-o" aria-hidden="true"></i> Media pedidos por cliente</a></li>
+		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/desempeniomesvend' />"><i class="fa fa-file-o" aria-hidden="true"></i> Desempeño mensual por vendedor</a></li>
+		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/desempeniomesxcte' />"><i class="fa fa-file-o" aria-hidden="true"></i> Desempeño mensual por cliente</a></li>
 			    </ul>
 		  	</li>	
 		  	<li class="dropdown-submenu dropdown-menu-right">
@@ -116,7 +117,7 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 			 </li>
 			 <li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-dot-circle-o" aria-hidden="true"></i> Cotizador/Requerimiento</a>
 			    <ul class="dropdown-menu">
-			    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/vendedor/cotizadorabc'/>?id=0&iddet=0"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro Cotizaciones/Requerimientos</a></li>
+			    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/vendedor/cotizadorabc'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro Cotizaciones/Requerimientos</a></li>
 			    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/ventas/autorizacion_cotizacion_vtas'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de cotizaciones Ventas</a></li>
 			    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/programacion/autorizacion_cotizacion_prog'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de requerimientos Programación</a></li>
 			    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/ingenieria/requerimientoabc'/>"><i class="fa fa-check-circle-o" aria-hidden="true"></i> Imprimir/Asignar diseñador requerimientos</a></li>

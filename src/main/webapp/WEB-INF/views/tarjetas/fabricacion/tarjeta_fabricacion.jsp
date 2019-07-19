@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1" %>
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
@@ -11,30 +11,28 @@
 <script>
 $(document).ready(function() {
 
-	if('${tarjeta_fabricacion.idcotizacion}' == "")
-	{
-		$("#BEnvAut").prop("disabled", true );
-		$("#BGrabar").prop("disabled", true );
-		$("#file").prop("disabled", true );
-		$("#CCama").prop("disabled", true );
-		var lista=document.getElementsByName("ABorrarImg");
-		for(var i=0; i<lista.length; i++){
-			$("#"+lista[i].id).prop("disabled", true );
-	    }
+	if(('${tarjeta_fabricacion.idcotizacion}' == "") || ('${tarjeta_fabricacion.fecha_aut_diseniador}' != "" && '${tarjeta_fabricacion.usuario_aut_diseniador}' > 0))
+	{		
+
+			$("#BCancelar").prop("disabled", true );
+			$("#BEnvAut").prop("disabled", true );
+			$("#BGrabar").prop("disabled", true );
+			$("#file").prop("disabled", true );
+			$("#CCama").prop("disabled", true );
+			var lista=document.getElementsByName("ABorrarImg");
+			for(var i=0; i<lista.length; i++){
+				$("#"+lista[i].id).prop("disabled", true );		
+			}
 	}
 });
 
 function FBuscar()
 {
 	if($( "#TFolioTF" ).val() =="")
-	{
 		$( "#TFolioTF" ).val("");
-	}
 	
 	if($( "#TIdCot" ).val() =="")
-	{
 		$( "#TIdCot" ).val("0");
-	}
 	
 	var isDisabled = $("#BGrabar").prop('disabled');
 	
@@ -44,9 +42,7 @@ function FBuscar()
 	$( "#BGrabar" ).prop( "disabled", true );
 	
 	if(($( "#TIdCot" ).val() > 0 || $( "#TFolioTF" ).val() != ""))
-	{
 		popupwindow('<c:url value="/tarjeta/ingenieria/tarjeta_fabricacion_buscar" />?idcot='+$( "#TIdCot" ).val()+'&foliotf='+$( "#TFolioTF" ).val(),'Búsqueda de tarjetas',800,1000);
-	}
 
 		$( "#TIdCot").removeClass().addClass("border border-danger");
 		$( "#TFolioTF").removeClass().addClass("border border-danger");
@@ -205,11 +201,7 @@ function FEnviarAut()
 	    	if (r.search(/Login page/i) != -1) {
     			window.location.replace('<c:url value="/login?expired"/>');
 			    return true;
-			  }
-	    	
-	    	document.getElementById("DImg").innerHTML = "";	    	
-    		document.getElementById("DImg").innerHTML = GeneraCarousel(r);
-	    	
+			  }    	
 	    	$("#mensajes" ).text("Tarjeta enviada OK");
 			$("#mensajes").removeClass().addClass("alert alert-success");
 			window.location.replace('<c:url value="/tarjeta/ingenieria/tarjeta_fabricacion" />');
@@ -217,6 +209,43 @@ function FEnviarAut()
 	    error: function(xhr, status, error) {
 	    	var err = xhr.responseText;
 	    	
+	    	$("#mensajes" ).text("Error: "+err.Message+" - "+error);
+			$("#mensajes").removeClass().addClass("alert alert-danger");
+	    }
+	  }); 
+}
+function FCancelar()
+{
+	var data = new FormData();
+	
+	data.append('idcotizacion', $( "#TIdCot" ).val());
+	data.append('iddetalle', $( "#TIdDet" ).val());
+	data.append('folio_tarjeta', $( "#TFolioTF" ).val());
+	
+	$("#mensajes" ).text("Cancelando tarjetas.");
+	$("#mensajes").removeClass().addClass("alert alert-info");
+	
+	$.ajax({
+	    url: '<c:url value="/tarjeta/ingenieria/cancelar_tarjetas"/>',
+	    data: data,
+	    type : 'POST',
+        enctype: 'multipart/form-data',
+        processData: false,
+        contentType: false,
+        before: function() {
+
+  	    },
+	    success: function(r) {	    	
+	    	if (r.search(/Login page/i) != -1) {
+    			window.location.replace('<c:url value="/login?expired"/>');
+			    return true;
+			  }	    	
+	    	$("#mensajes" ).text("Tarjetas canceladas OK");
+			$("#mensajes").removeClass().addClass("alert alert-success");
+			window.location.replace('<c:url value="/tarjeta/ingenieria/tarjeta_fabricacion" />');
+	    },
+	    error: function(xhr, status, error) {
+	    	var err = xhr.responseText;	    	
 	    	$("#mensajes" ).text("Error: "+err.Message+" - "+error);
 			$("#mensajes").removeClass().addClass("alert alert-danger");
 	    }
@@ -335,14 +364,15 @@ function FEnviarAut()
 				</div>
 			</div>
 		</div>
-		<div align="center" class = "container">
-			<div class = "row" align="center">			
-				<div class="col col-lg-2"><form:button id="BGrabar" class="btn btn-outline-primary btn-sm"><i class="fa fa-floppy-o" aria-hidden="true"> Grabar</i></form:button></div>
-				<div class="col col-lg-2"><a href="javascript:FBuscar()" class="btn btn-outline-primary btn-sm"><i class="fa fa-search" aria-hidden="true"> Buscar</i></a></div>
-				<div class="col col-lg-2"><a href="javascript:FLimpiar()" class="btn btn-outline-primary btn-sm"><i class="fa fa-refresh" aria-hidden="true"> Limpiar</i></a></div>
-				<div class="col col-lg-2"><button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target=".bd-example-modal-xl"><i class="fa fa-picture-o" aria-hidden="true"> Imágenes</i></button></div>
-				<div class="col col-lg-4"><button id="BEnvAut" type="button" data-toggle="modal" data-target="#EnvModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-paper-plane-o" aria-hidden="true"> Enviar para autorizaciones</i></button></div>
-				<div class="col col-lg-4"><button id="BEnvAut" type="button" data-toggle="modal" data-target="#CancelModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-paper-plane-o" aria-hidden="true"> Cancelar tarjeta</i></button></div>
+		<div align="center" class = "container-fluid">
+			<div class = "row" align="center">
+				<div class="col col-lg-1"></div>			
+				<div class="col col-lg-1"><form:button id="BGrabar" class="btn btn-outline-primary btn-sm"><i class="fa fa-floppy-o" aria-hidden="true"> Grabar</i></form:button></div>
+				<div class="col col-lg-1"><a href="javascript:FBuscar()" class="btn btn-outline-primary btn-sm"><i class="fa fa-search" aria-hidden="true"> Buscar</i></a></div>
+				<div class="col col-lg-1"><a href="javascript:FLimpiar()" class="btn btn-outline-primary btn-sm"><i class="fa fa-refresh" aria-hidden="true"> Limpiar</i></a></div>
+				<div class="col col-lg-1"><button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target=".bd-example-modal-xl"><i class="fa fa-picture-o" aria-hidden="true"> Imágenes</i></button></div>
+				<div class="col col-lg-3"><button id="BEnvAut" type="button" data-toggle="modal" data-target="#EnvModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-paper-plane-o" aria-hidden="true"> Enviar para autorizaciones</i></button></div>
+				<div class="col col-lg-2"><button id="BCancelar" type="button" data-toggle="modal" data-target="#CancelModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-paper-plane-o" aria-hidden="true"> Cancelar tarjeta</i></button></div>
 			</div>
 		</div>
 		

@@ -60,6 +60,26 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			http.authorizeRequests().antMatchers(String.valueOf(obj[2]))
 			.access("hasRole('"+(String.valueOf(obj[1]))+"')");
 		}
+		/*
+		 *			Object[] obj = (Object[]) itr.next();
+			String[] urlArr = String.valueOf(obj[2]).split("/");
+			String url = "";
+			if(urlArr.length >= 2)
+			{
+				for(int i = 2; i <= Integer.valueOf(String.valueOf(obj[3])); i++)
+				{
+					if(i < urlArr.length)
+						url = url + "/"+urlArr[i];
+					else
+						break;
+				}
+				url = url +"/**";
+			}
+			//System.out.println(url);
+			http.authorizeRequests().antMatchers(url)
+			.access("hasRole('"+(String.valueOf(obj[1]))+"')");
+			
+		 * */
 		
 		/*http.authorizeRequests().antMatchers("/viajes/aut_embarques","/viajes/act_viaje","/viajes/set_aut_embarques")
 					.access("hasRole('ADMIN') or hasRole('EMBARQUES')")

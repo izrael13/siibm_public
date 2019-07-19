@@ -11,4 +11,5 @@ public interface Tarjeta_fabricacionDAO {
 	void Guardar(Tarjeta_fabricacion Tarjeta);
 	void Actualizar(Tarjeta_fabricacion Tarjeta);
 	List<Tarjeta_fabricacion_Busqueda> TarjetaBusqueda(Integer IdCot, String Folio);
+	void Borrar(Tarjeta_fabricacion Tarjeta);
 }

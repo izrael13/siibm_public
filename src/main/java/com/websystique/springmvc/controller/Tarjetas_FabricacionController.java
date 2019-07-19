@@ -1,5 +1,6 @@
 package com.websystique.springmvc.controller;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,10 +28,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
 import com.websystique.springmvc.model.User;
+import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador;
 import com.websystique.springmvc.model.tarjetas.fabricacion.Tarjeta_fabricacion;
 import com.websystique.springmvc.model.tarjetas.fabricacion.Tarjeta_fabricacion_Busqueda;
 import com.websystique.springmvc.model.tarjetas.fabricacion.Tarjetas_fabricacion_imagenes;
 import com.websystique.springmvc.service.UserService;
+import com.websystique.springmvc.service.tarjetas.cotizador.CotizadorService;
 import com.websystique.springmvc.service.tarjetas.fabricacion.Tarjeta_fabricacionService;
 import com.websystique.springmvc.service.tarjetas.fabricacion.Tarjetas_fabricacion_imagenesService;
 
@@ -45,6 +48,8 @@ public class Tarjetas_FabricacionController {
 	Tarjetas_fabricacion_imagenesService tfis;
 	@Autowired
 	UserService us;
+	@Autowired
+	CotizadorService cs;
 	
 	@RequestMapping(value = {"/ingenieria/tarjeta_fabricacion" }, method = RequestMethod.GET)
 	public String tarjeta_fabricacion(ModelMap model, @RequestParam(value = "folio", defaultValue = "", required = false) String folio) {
@@ -207,6 +212,7 @@ public class Tarjetas_FabricacionController {
 			tf = tfs.BuscarxFolio(folio_tarjeta);
 			tf.setFecha_aut_diseniador(date);
 			tf.setUsuario_aut_diseniador(user.getId());
+			tfs.Actualizar(tf);
 			logger.info(AppController.getPrincipal() + " - enviar_tarjeta_aut. " + mensaje);
 			return new ResponseEntity<Object>("OK", HttpStatus.OK);
 		}
@@ -219,6 +225,46 @@ public class Tarjetas_FabricacionController {
 		}
 	
 	}
+	
+	@RequestMapping(value = {"/ingenieria/cancelar_tarjetas" }, method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<?> cancelar_tarjetas(ModelMap model,
+			@RequestParam("idcotizacion") Integer idcotizacion,@RequestParam("iddetalle") Integer iddetalle, @RequestParam("folio_tarjeta") String folio_tarjeta) {
+		String mensaje = "";
+		try 
+		{
+			List<Tarjeta_fabricacion> ListaTar = tfs.BuscarXIdCot(idcotizacion);
+			ListaTar.stream().forEach(a -> {
+				tfs.Borrar(a);
+				tfis.BuscarxIdCotidDert(a.getIdcotizacion(), a.getIddetalle()).stream().forEach(b -> {
+					String fullpath = b.getPath()+b.getNombre();
+					File file = new File(fullpath);
+					if(file.exists())
+						file.delete();
+					
+					tfis.Borrar(b);
+				});
+			});
+			
+			Cotizador cot = new Cotizador();
+			cot = cs.BuscarxId(idcotizacion);
+			cot.setFecha_asign_diseniador(null);
+			cot.setUsuario_diseniador(null);
+			cs.Actualizar(cot);
+			
+			logger.info(AppController.getPrincipal() + " - cancelar_tarjetas. " + mensaje);
+			return new ResponseEntity<Object>("OK", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			mensaje = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
+			model.addAttribute("mensajes", mensaje);
+			logger.info(AppController.getPrincipal() + " - cancelar_tarjetas. " + mensaje);
+			return new ResponseEntity<Object>(mensaje, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	
+	}
+	
 	
 	
 	

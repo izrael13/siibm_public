@@ -31,4 +31,5 @@ public class Catalogo_cajas_sap_vw implements Serializable{/**
 	private Double desami;
 	private Integer dospartes;
 	private String tipocajabarca;
+	private String corrugado;
 }

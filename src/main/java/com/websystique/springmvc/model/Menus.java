@@ -18,11 +18,10 @@ public class Menus implements Serializable{/**
 	
 	@Id
 	private Integer id;
-	private Integer master_id; 
 	private String nombre;
 	private String url;
 	private Integer padre;
-	private Integer ismenu;
+	private String ismenu;
 	private Integer perfil_acceso;
 	private String icon;
 	private Integer nivel;

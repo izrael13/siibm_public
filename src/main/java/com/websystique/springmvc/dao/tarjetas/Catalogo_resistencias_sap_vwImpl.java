@@ -30,4 +30,18 @@ public class Catalogo_resistencias_sap_vwImpl extends AbstractDao<Integer,Catalo
 		return getByKey(id);
 	}
 
+	@Override
+	public List<Catalogo_resistencias_sap_vw> ListaResis(String corrugado) {
+		// TODO Auto-generated method stub
+		Map<String,String> mResStr =  new HashMap<String, String>();
+		Map<String,Integer> mResInt =  new HashMap<String, Integer>();
+		Map<String,String> mOrd =  new HashMap<String, String>();
+		
+		mResStr.put("corrugado", corrugado);
+		mOrd.put("1", "resistencia");
+		
+		List<Catalogo_resistencias_sap_vw> ListaResis = criteriaQueryEqStrInt(mResStr,mResInt, mOrd);
+		return ListaResis;
+	}
+
 }

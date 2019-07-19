@@ -83,10 +83,6 @@ public class Tarjeta_fabricacion implements Serializable{/**
 	
 	private Integer ban;// Ver la clase Tarjeta_fabricacionValidator
 	
-	private Integer usuario_cancela;
-	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-	private Date fecha_cancela;
-	
 	@Transient
 	List<Tarjetas_fabricacion_imagenes> tarjeta_img = new ArrayList<Tarjetas_fabricacion_imagenes>();
 

@@ -96,7 +96,12 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 		String sql_query = "select ROW_NUMBER() OVER(ORDER BY TYPE ASC) AS ID, \r\n" + 
 				"TYPE PROFILE_NAME, MATCHER MATCHER_NAME \r\n" + 
 				"from PROFILE_MATCHERS a \r\n" + 
-				"inner join USER_PROFILE b on a.ID_PROFILE = b.ID "; 
+				"inner join USER_PROFILE b on a.ID_PROFILE = b.ID ";
+		/*
+		 *String sql_query = "select ROW_NUMBER() OVER(ORDER BY TYPE ASC) AS ID,b.type,a.url,a.nivel  \r\n" + 
+				"from menus a\r\n" + 
+				"inner join user_profile b on a.perfil_acceso = b.id;";
+		 * */
 				//"where SSO_ID = '"+sso+"'";
 		Query query = getSession().createNativeQuery(sql_query);
 		//query.setParameter(0, sso);

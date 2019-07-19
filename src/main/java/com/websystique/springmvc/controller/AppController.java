@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 //import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
@@ -51,8 +52,8 @@ import com.websystique.springmvc.utilities.SendMailGmail;
 
 @Controller
 @RequestMapping("/")
-//@SessionAttributes({"roles"})
-@SessionAttributes({"roles","menus"})
+@SessionAttributes({"roles"})
+//@SessionAttributes({"roles","menus"})
 public class AppController {
 	
 	private Logger logger = Logger.getLogger(AppController.class);
@@ -579,31 +580,77 @@ public class AppController {
 		
 		return "/appconfig/menus";
 	} */
-	
-/*    @ModelAttribute("menus")
-    public List<Menus> atrMenus()
+  /*
+   String menu = "";
+   Integer padre = 0; 
+   Integer last = -1;
+    @ModelAttribute("menus")
+    public String atrMenus()
     {
-    	return Menus(0);
+    	menu = "";
+    	List<Menus> Listax = mss.ListaMenusxpadre();   
+    	last = Listax.get(Listax.size() - 1).getId();
+    	Menus(last,0);
+    	//System.out.println(menu);
+    	return menu;
     }
-    String cadena = "";
-    int b = 0;
-	public List<Menus> Menus(Integer Padre)
-	{
-		List<Menus> Lista = mss.ListaMenusxpadre(Padre);
-		Menus menu = new Menus();
-		if(Lista.size() > 0)
-		{
-			for(int i = 0; i < Lista.size(); i++)
+    
+	public void Menus(Integer last, Integer padre)
+	{	
+		List<Menus> Lista = new ArrayList<Menus>();
+		if(padre == last)
+		{	
+			Lista = mss.ListaMenusxpadre(padre);
+			if(Lista.size() > 0)
 			{
+				menu = menu + "<ul>";
+				Lista.stream().forEach(a ->{
+					menu = menu + "	<li>"+a.getNombre()+"</li>\n";
+				});
+				menu = menu + "</ul>"+"\n";
 				
-				menu = Lista.get(i); 
-				ListaMenu.add(menu);				
-				Menus(Lista.get(i).getId());
 			}
-			
 		}
-		
-		return ListaMenu;
-	}*/
+		else
+		{
+			Lista = mss.ListaMenusxpadre(padre);
+			
+			if(Lista.size() > 0)
+			{
+				Integer ban = mss.ListaMenusxpadre(Lista.get(0).getId()).size();
+				
+				Lista.stream().forEach(a ->{
+					
+					menu = menu + (a.getPerfil_acceso() > 0 ? "<sec:authorize access=\"hasRole('"+userProfileService.findById(a.getPerfil_acceso()).getType()+"')\"> \n" : "");
+					
+					if(a.getPadre() == 0)
+					{
+						menu = menu + "<li class='nav-item dropdown'><a class='dropdown-item' href='"+a.getUrl()+"' data-toggle='dropdown'><i class='"+a.getIcon()+"' aria-hidden='true'>"+"&nbsp;"+a.getNombre()+"</i></a> \r\n"+
+								"	<ul class='dropdown-menu dropdown-menu-right' role='menu' aria-labelledby='dropdownMenu'> \n";
+					}
+					else
+					{
+						if(ban > 0)
+						{
+							menu = menu + "<li class='dropdown-submenu dropdown-menu-right'><a href='"+a.getUrl()+"' class='nav-link dropdown-toggle'><i class='"+a.getIcon()+"' aria-hidden='true'></i> "+"&nbsp;"+a.getNombre()+"</a> \n";
+									menu = menu + "	<ul class='dropdown-menu'> \n";
+						}
+						else
+							menu = menu + "	<li><a class='dropdown-item' href='"+a.getUrl()+"' ><i class='"+a.getIcon()+"' aria-hidden='true'></i> "+"&nbsp;"+a.getNombre()+"</a></li> \r\n";
+
+					}
+					
+					Menus(last,a.getId());
+					
+					if(ban > 0)
+						menu = menu +"</ul> \n </li> \n";
+						
+						menu = menu + (a.getPerfil_acceso() > 0 ? "</sec:authorize> \n" : "");
+
+				});
+			}
+		} 
+		//return menu;
+	}  */
 
 }

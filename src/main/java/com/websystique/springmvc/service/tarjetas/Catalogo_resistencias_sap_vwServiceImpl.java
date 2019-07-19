@@ -28,4 +28,10 @@ public class Catalogo_resistencias_sap_vwServiceImpl implements Catalogo_resiste
 		return dao.BuscarxId(id);
 	}
 
+	@Override
+	public List<Catalogo_resistencias_sap_vw> ListaResis(String corrugado) {
+		// TODO Auto-generated method stub
+		return dao.ListaResis(corrugado);
+	}
+
 }

@@ -52,9 +52,9 @@ function FBuscar()
     </div>
     <br>
     <div id="tabla1" class = "table-responsive-xl">
-	<table class="table-hover table-bordered text-center mx-auto"><!-- mx-auto  para centrar en pantalla -->
+	<table class="table-hover table-bordered mx-auto"><!-- mx-auto  para centrar en pantalla -->
     	<thead>
-    	<tr>
+    	<tr align="center">
     		<th>ItemCode</th>
     		<th>ItemName</th>
     		<th>BatchNum</th>
@@ -71,13 +71,13 @@ function FBuscar()
     	<tr>
     		<td>${item.itemcode}</td>
     		<td>${item.itemname}</td>
-    		<td>${item.batchnum}</td>
-    		<td>${item.millar}</td>
-    		<td>${item.kilos}</td>
+    		<td align="right">${item.batchnum}</td>
+    		<td align="right"><fmt:formatNumber type = "number" maxFractionDigits = "2" value = "${item.millar}" /></td>
+    		<td align="right"><fmt:formatNumber type = "number" maxFractionDigits = "2" value = "${item.kilos}" /></td>
     		<td>${item.cardname}</td>
     		<td>${item.slpname}</td>
-    		<td>${fn:substring(item.fecha,0,10)}</td>
-    		<td>${fn:substring(item.fechaentregasap,0,10)}</td>
+    		<td align="center">${fn:substring(item.fecha,0,10)}</td>
+    		<td align="center">${fn:substring(item.fechaentregasap,0,10)}</td>
     		<c:set var="invTK" value="${invTK = invTK + item.kilos}"/>
     	</tr>
     	</c:forEach>

@@ -7,6 +7,7 @@
 <html>
 <head>
 <%@include file="../../appconfig/authheader2.jsp"%>
+<script src="<c:url value="/static/js/sistemas_tarjetas/cotizador.js" />"></script>
 <script>
 $(document).ready(function() {
 		
@@ -139,9 +140,7 @@ $(document).ready(function() {
 			$("#BCancel").prop('disabled',true);
 	} 
 });
-function preventDef(event) {
-	  event.preventDefault();
-	}
+
 function FBuscarDirecciones()
 {
 	var cardcode = document.getElementById("SClientes").value;
@@ -319,70 +318,6 @@ function FBuscarResisId()
 			  $( "#imgload").hide();
 		  }
 	 });
-}
-
-var ids = ""
-var costoscapturados = "";
-var ajustes = "";
-var esquemas = "";
-
-function SumarEsp()
-{
-	ids = ""
-	costoscapturados = "";
-	ajustes = "";
-	esquemas = "";
-
-$("input[id='ChEsp']").each(function (){
-	idEsp = $(this).val();
-	if($(this).prop('checked'))
-	{
-		if(idEsp == 19)
-		{		
-			$("#TAjuste"+idEsp).attr("required","required");
-			$("#TAjuste"+idEsp).attr("type","text");
-		}
-		
-		$("#TCosto"+idEsp).attr("required","required");
-		if($("#TCosto"+idEsp).prop('type') == 'select-one')
-		{
-			$("#TCosto"+idEsp).css('visibility', 'visible')
-		}
-		else
-		{
-			$("#TCosto"+idEsp).attr("type","text"); 
-		}
-		
-		ids = idEsp+"|"+ids;
-		costoscapturados = ($("#TCosto"+idEsp).val() == "" ? 0 : ($("#TCosto"+idEsp).val() == null ? 0 : $("#TCosto"+idEsp).val())) +"|"+costoscapturados;
-		ajustes = ($("#TAjuste"+idEsp).val() == "" ? 0 : ($("#TAjuste"+idEsp).val() == null ? 0 : $("#TAjuste"+idEsp).val())) +"|"+ajustes;
-		esquemas = ($("#TEsquema"+idEsp).val() == "" ? 0 : ($("#TEsquema"+idEsp).val() == null ? 0 : $("#TEsquema"+idEsp).val())) +"|"+esquemas;
-	}
-	else
-	{
-		$("#TCosto"+idEsp).attr("required",false);
-		
-		if(idEsp == 19)
-		{
-			$("#TAjuste"+idEsp).attr("type","hidden");
-			$("#TAjuste"+idEsp).attr("required",false);
-			$("#TAjuste"+idEsp).val("");
-		}
-		
-		if($("#TCosto"+idEsp).prop('type') == 'select-one')
-		{
-			$("#TCosto"+idEsp).css('visibility', 'hidden')
-			$("#TCosto"+idEsp).val("0");
-		}
-		else
-		{
-			$("#TCosto"+idEsp).attr("type","hidden");
-			$("#TCosto"+idEsp).val("");
-		}
-		
-	}
-	
-});
 }
 
 function CalcularDatos()
@@ -596,52 +531,51 @@ function FCancelar()
 		http.send(encodeURI(params));
 	}
 }
-function FColores()
+function BuscarResistencias()
 {
-	var ntintas = $("#SNumTintas").val();
-
-	for(var i = 1; i <= 7; i++)
-	{
-		if(i <= ntintas)
-		{
-			$("#SColor"+i).css('visibility', 'visible');
-			$("#SColor"+i).attr("required","required");
-		}
-		else
-		{
-			$("#SColor"+i).css('visibility', 'hidden');
-			$("#SColor"+i).attr("required",false);
-			$("#SColor"+i).val("");
-		}
-	}
+	var idcaja = $("#SCajas").val();
+	var opciones = "";
 	
-}
-
-$(document).on("keypress", "input", function (e) {//deshabilitar enter submit
-    var code = e.keyCode || e.which;
-    if (code == 13) {
-        e.preventDefault();
-        return false;
-    }
-});
-
-function FAddFila()
-{
-	var numfilas = $("#TBodyCodBarras tr").length;
+	$("#imgload").show();
+	$("#SResisBarca" ).val(0);
+	$("#TPreciom2resis").val(0);
+	$("#TPesoResis").val(0);
+	$("#TDescVen").val(0);
+	$("#TCostoPapelResis").val(0);
+	$("#mensajes" ).text("");
+	$("#mensajes").removeClass();
+	$("#SResisBarca" ).empty();
 	
-	 var nuevaFila   = '<tr>';
-	 nuevaFila   = nuevaFila + '<td><input id="TCodBarras'+numfilas+'" name="cotizador_detalles.codigo_barra_cotizador['+numfilas+'].idcodigo" type="text" value="" onkeypress="return SinCaracteresEspeciales(event)" class="border border-primary" maxlength="50"></td>';
-	 nuevaFila   = nuevaFila + '<td><input id="TCodComent'+numfilas+'" name="cotizador_detalles.codigo_barra_cotizador['+numfilas+'].observaciones" type="text" value="" onkeypress="return SinCaracteresEspeciales(event)" class="border border-primary" maxlength="100"></td>';
-	 nuevaFila   = nuevaFila + '</tr>';
-	
-	 document.getElementById("TBodyCodBarras").insertRow(-1).innerHTML = nuevaFila;
+	$.ajax({
+		url: '<c:url value="/cotizador/vendedor/buscarresistenciasbarca"/>?idcaja='+idcaja,
+		
+		success : function(data) {
+			if (data.search(/Login page/i) != -1) {
+    			window.location.replace('<c:url value="/login?expired"/>');
+			    return true;
+			  }
 
-}
-function FDelFila()
-{
-	var table = document.getElementById("TBodyCodBarras");
-	var rowCount = table.rows.length;
-	table.deleteRow(rowCount -1);
+			var obj = JSON.parse(data);
+			if(obj != null)
+			{
+				opciones = opciones + "<option value='"+0+ "'> - - - </option>";
+				$.each(jQuery.parseJSON(data),function(index, value){
+	        		opciones = opciones + "<option value='"+value.idresistencia + "'>"+ value.resistencia+" Flauta:"+value.corrugado+" Papel:"+value.color+ "</option>";
+	        	});
+				$( "#SResisBarca" ).append(opciones);
+				CalcularDatos()
+			}
+
+        	$("#imgload").hide();
+        },
+				
+		error: function(xhr, status, error) {
+		  $( "#mensajes" ).text("Error: " + xhr.responseText + " Codigo" +  error);
+		  $( "#mensajes").removeClass().addClass("alert alert-danger");
+		  $( "#imgload").hide();
+		  }
+				
+	 });
 }
 </script>
 <title>Registro cotizaciones</title>
@@ -748,7 +682,7 @@ function FDelFila()
 									</div>
 									<div class="col col-lg-1">Caja</div>
 									<div class="col col-lg-6">
-										<form:select onChange="CalcularDatos()" id="SCajas" path="cotizador_detalles.idcaja_sap" multiple="false" class="border border-primary">
+										<form:select onChange="BuscarResistencias()" id="SCajas" path="cotizador_detalles.idcaja_sap" multiple="false" class="border border-primary">
 											<form:option value="0">Seleccione caja</form:option>
 											<c:forEach var="caj" items="${listacajas}">
 												<form:option value="${caj.idtipocaja}"><c:out value="${caj.nombrelargo}"/></form:option>

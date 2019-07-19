@@ -95,4 +95,10 @@ public class Tarjeta_fabricacionDAOImpl extends AbstractDao<Integer,Tarjeta_fabr
 		return Lista;
 	}
 
+	@Override
+	public void Borrar(Tarjeta_fabricacion Tarjeta) {
+		// TODO Auto-generated method stub
+		delete(Tarjeta);
+	}
+
 }

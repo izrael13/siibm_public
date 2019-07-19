@@ -47,4 +47,10 @@ public class Tarjeta_fabricacionServiceImpl implements Tarjeta_fabricacionServic
 		return dao.TarjetaBusqueda(IdCot, Folio);
 	}
 
+	@Override
+	public void Borrar(Tarjeta_fabricacion Tarjeta) {
+		// TODO Auto-generated method stub
+		dao.Borrar(Tarjeta);
+	}
+
 }

@@ -10,11 +10,13 @@ import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
@@ -132,15 +134,15 @@ public class CotizadorController {
 	DecimalFormat decimal4 = new DecimalFormat("###########0.####");
 	////////////////////////////////////***COTIZADOR***////////////////////////////
 	@RequestMapping(value = {"/vendedor/cotizadorabc" }, method = RequestMethod.GET)
-	public String cotizadotget(ModelMap model, @RequestParam("id") String id, @RequestParam("iddet") String iddet, @RequestParam(value = "mensajes", defaultValue = "", required = false) String mensajes) throws UnsupportedEncodingException {
+	public String cotizadotget(ModelMap model, @RequestParam(value = "id", defaultValue = "0", required = false) String id, @RequestParam(value = "iddet", defaultValue = "0", required = false) String iddet, @RequestParam(value = "mensajes", defaultValue = "", required = false) String mensajes) throws UnsupportedEncodingException {
 		String msj = mensajes;
 		try {
 				List<Catalogo_especialidades_sap_vw> ListaEsp = ces.ListaEsp();
+				List<Catalogo_resistencias_sap_vw> ListaResis = new ArrayList<Catalogo_resistencias_sap_vw>();
 				User user = us.findBySSO(AppController.getPrincipal());
 				model.addAttribute("bolsas", cbs.ListaBolsas());
 				model.addAttribute("clientes", ccavs.ListaCtes(user.getCvevendedor_sap()));
 				model.addAttribute("listacajas", ccss.ListaCajas());
-				model.addAttribute("listaresisbarca", crss.ListaResis());
 				model.addAttribute("listaresiscte", css.ListaSellos());
 				model.addAttribute("especialidades", ListaEsp);
 				model.addAttribute("colores", ccos.ListaColores());
@@ -162,6 +164,8 @@ public class CotizadorController {
 						Cotizador_detalles cotDet = cds.BuscarxId(Integer.valueOf(id),Integer.valueOf(iddet),user.getId());
 						cdb.setCotizador_detalles(cotDet == null ? (new Cotizador_detalles()): cotDet );
 						
+						ListaResis = ListaResis(cotDet.getIdcaja_sap());
+						
 						List<Especialidades_cotizacion> ListaEspDet = new ArrayList<Especialidades_cotizacion>();
 						for(int i = 0; i < ListaEsp.size(); i++)
 						{
@@ -174,7 +178,7 @@ public class CotizadorController {
 						cdb.getCotizador_detalles().setCodigo_barra_cotizador(cbsc.BuscarXCotDet(Integer.valueOf(id), Integer.valueOf(iddet)));
 					}
 					
-					//System.out.println(cdb.getCotizador_detalles().toString());
+					model.addAttribute("listaresisbarca", ListaResis);
 					model.addAttribute("cotizadordatabean", cdb);
 					model.addAttribute("direcciones", cdsv.ListaDirCardCode(cdb.getCotizador().getCardcode()));
 					model.addAttribute("direccionSelect", cdsv.ListaDirCardCodeNumLine(cdb.getCotizador().getCardcode(),cdb.getCotizador().getLinenum_dir_entrega()));
@@ -203,7 +207,7 @@ public class CotizadorController {
 			model.addAttribute("direccionSelect", cdsv.ListaDirCardCodeNumLine(cotizadorDataBean.getCotizador().getCardcode(),cotizadorDataBean.getCotizador().getLinenum_dir_entrega()));
 			model.addAttribute("bolsas", cbs.ListaBolsas());
 			model.addAttribute("listacajas", ccss.ListaCajas());
-			model.addAttribute("listaresisbarca", crss.ListaResis());
+			model.addAttribute("listaresisbarca", ListaResis(cotizadorDataBean.getCotizador_detalles().getIdcaja_sap()));
 			model.addAttribute("listaresiscte", css.ListaSellos());
 			model.addAttribute("especialidades", ces.ListaEsp());
 			model.addAttribute("colores", ccos.ListaColores());
@@ -974,6 +978,42 @@ public class CotizadorController {
 			logger.info(AppController.getPrincipal() + " - convertiratarjeta :"+ msj);
 			return msj;
 		}
+	}
+	
+	@RequestMapping(value = {"/vendedor/buscarresistenciasbarca"}, method = RequestMethod.GET)
+	public @ResponseBody String buscarresistenciasbarca(HttpServletRequest req, HttpServletResponse res)
+	   throws Exception {
+		String idcaja = req.getParameter("idcaja");
+		
+		Gson g=new Gson();
+		return g.toJson(ListaResis(Integer.valueOf(idcaja)));	
+	}
+	
+	private List<Catalogo_resistencias_sap_vw> ListaResis(Integer idcaja)
+	{
+		Catalogo_cajas_sap_vw objCaja = ccss.BuscarxId(Integer.valueOf(idcaja));//Datos de la caja seleccionada.
+		List<Catalogo_resistencias_sap_vw> ListaResis = new ArrayList<Catalogo_resistencias_sap_vw>();
+		if(objCaja.getCorrugado().equals("D"))
+		{
+			ListaResis = crss.ListaResis("BC");
+		}
+		else
+		{
+			if(objCaja.getCorrugado().equals("SD"))
+			{
+				ListaResis = crss.ListaResis();
+			}
+			else
+			{
+				if(objCaja.getCorrugado().equals("S"))
+				{
+					ListaResis = Stream.of(crss.ListaResis("B"),crss.ListaResis("C")).flatMap(Collection::stream).collect(Collectors.toList());
+				}
+			}
+			
+		}		
+		return ListaResis;
+		
 	}
 	
 }

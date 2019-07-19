@@ -24,6 +24,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.websystique.springmvc.excel.ConsKilosExcel;
 import com.websystique.springmvc.excel.ExcelAmortHerra;
+import com.websystique.springmvc.excel.ExcelDesempenio_mensual_vendedor;
+import com.websystique.springmvc.excel.ExcelDesempenio_mensual_xcliente;
 import com.websystique.springmvc.excel.ExcelGolpesPend2;
 import com.websystique.springmvc.excel.ExcelTodosPedidos;
 import com.websystique.springmvc.excel.ExcelView;
@@ -34,6 +36,8 @@ import com.websystique.springmvc.excel.MediaPedidosCte;
 import com.websystique.springmvc.model.User;
 import com.websystique.springmvc.model.reportes.Amortiza_herramentales;
 import com.websystique.springmvc.model.reportes.ConsumoKilos;
+import com.websystique.springmvc.model.reportes.Desempenio_mensual_vendedor;
+import com.websystique.springmvc.model.reportes.Desempenio_mensual_xcliente;
 import com.websystique.springmvc.model.reportes.Golpes_maquina_mes;
 import com.websystique.springmvc.model.reportes.Golpes_pendientes_fab;
 import com.websystique.springmvc.model.reportes.Golpeskilosmaquinas;
@@ -46,6 +50,8 @@ import com.websystique.springmvc.service.reportes.Amortiza_herramentalesService;
 import com.websystique.springmvc.service.reportes.Cobranza_acumService;
 import com.websystique.springmvc.service.reportes.Cobranza_detalleService;
 import com.websystique.springmvc.service.reportes.ConsumoKilosService;
+import com.websystique.springmvc.service.reportes.Desempenio_mensual_vendedorService;
+import com.websystique.springmvc.service.reportes.Desempenio_mensual_xclienteService;
 import com.websystique.springmvc.service.reportes.Flautas_prom_semService;
 import com.websystique.springmvc.service.reportes.Golpes_maquina_mesService;
 import com.websystique.springmvc.service.reportes.Golpes_pendientes_fabService;
@@ -62,6 +68,8 @@ import com.websystique.springmvc.service.reportes.Reportes_consumo_papel_utl_sem
 import com.websystique.springmvc.service.reportes.Semanas_anioService;
 import com.websystique.springmvc.service.reportes.Todos_pedidosService;
 import com.websystique.springmvc.service.reportes.Viajes_mes_ciudadService;
+import com.websystique.springmvc.service.tarjetas.Catalogo_clientes_sap_vwService;
+import com.websystique.springmvc.service.tarjetas.Catalogo_vendedores_sap_vwService;
 
 //import net.sf.jasperreports.engine.JRDataSource;
 //import net.sf.jasperreports.engine.JREmptyDataSource;
@@ -126,6 +134,14 @@ public class ReportesController {
 	Viajes_mes_ciudadService vmc;
 	@Autowired
 	UserService us;
+	@Autowired
+	Desempenio_mensual_vendedorService dms;
+	@Autowired
+	Desempenio_mensual_xclienteService dmcs;
+	@Autowired
+	Catalogo_clientes_sap_vwService ccsvs;
+	@Autowired
+	Catalogo_vendedores_sap_vwService cvsvs;
 	
 	Calendar calendar = Calendar.getInstance();
 	
@@ -859,6 +875,85 @@ public class ReportesController {
 
 	    final OutputStream outStream = response.getOutputStream();
 	    JasperExportManager.exportReportToPdfStream(jasperPrint, outStream);
-	  } 
+	  }
+	
+	@RequestMapping(value = {"/ventas/desempeniomesvend" }, method = RequestMethod.GET)
+	public String desempeniomesvend(ModelMap model,@RequestParam(value = "anio", defaultValue = "0", required = false) Integer anio) {
+		try 
+		{
+			anio = (anio == 0 ? Calendar.getInstance().get(Calendar.YEAR) : anio);
+			
+			model.addAttribute("loggedinuser", AppController.getPrincipal());
+			model.addAttribute("selectedValue", anio);
+			model.addAttribute("lista", dms.BuscarxAnio(anio));
+			
+			logger.info(AppController.getPrincipal() + " - ventas/desempeniomesvend.");
+		}
+		catch(Exception e) {
+			logger.error(AppController.getPrincipal() + " - ventas/desempeniomesvend. - " + e.getMessage());
+		}
+		return "/reportes/desempenio_mes_vend";
+	}
+	
+	@RequestMapping(value = { "/ventas/desempeniomesvendexcel" },method=RequestMethod.GET)
+	public ModelAndView desempeniomesvendexcel(HttpServletRequest req, HttpServletResponse res) {
+
+		List<Desempenio_mensual_vendedor> listaexcel = null;
+		try {
+			int anio = Integer.parseInt(req.getParameter("anio"));
+			listaexcel = dms.BuscarxAnio(anio);
+			logger.info(AppController.getPrincipal() + " - desempeniomesvendexcel.");
+		}
+		catch(Exception e) {
+			logger.error(AppController.getPrincipal() + " - desempeniomesvendexcel. - " + e.getMessage());
+		}
+		return new ModelAndView(new ExcelDesempenio_mensual_vendedor(), "listaexcel", listaexcel);
+	} 
+	
+	@RequestMapping(value = {"/ventas/desempeniomesxcte" }, method = RequestMethod.GET)
+	public String desempeniomesxcte(ModelMap model,@RequestParam(value = "anio", defaultValue = "0", required = false) Integer anio,
+												   @RequestParam(value = "cardcode", defaultValue = "", required = false) String cardcode,
+												   @RequestParam(value = "slpcode", defaultValue = "0", required = false) Integer slpcode) {
+		try 
+		{
+			anio = (anio == 0 ? Calendar.getInstance().get(Calendar.YEAR) : anio);
+						
+			model.addAttribute("loggedinuser", AppController.getPrincipal());
+			
+			model.addAttribute("listactes", ccsvs.ListaCtes());
+			model.addAttribute("listavend", cvsvs.ListaVendedores());
+			
+			model.addAttribute("selectedValueAnio", anio);
+			model.addAttribute("selectedValueCardCode", cardcode);
+			model.addAttribute("selectedValueSlpCode", slpcode);
+
+			model.addAttribute("lista", dmcs.Buscar(anio, cardcode, slpcode));
+			
+			logger.info(AppController.getPrincipal() + " - ventas/desempeniomesxcte.");
+		}
+		catch(Exception e) {
+			logger.error(AppController.getPrincipal() + " - ventas/desempeniomesxcte. - " + e.getMessage());
+		}
+		return "/reportes/desempenio_mes_xcte";
+	}
+	@RequestMapping(value = { "/ventas/desempeniomesxcteexcel" },method=RequestMethod.GET)
+	public ModelAndView desempeniomesxcteexcel(HttpServletRequest req, HttpServletResponse res) {
+
+		List<Desempenio_mensual_xcliente> listaexcel = null;
+		try {
+			int anio = Integer.parseInt(req.getParameter("anio"));
+			String cardcode = req.getParameter("cardcode");
+			int slpcode = Integer.parseInt(req.getParameter("slpcode"));
+			
+			listaexcel = dmcs.Buscar(anio, cardcode, slpcode);
+			logger.info(AppController.getPrincipal() + " - desempeniomesxcteexcel.");
+		}
+		catch(Exception e) {
+			logger.error(AppController.getPrincipal() + " - desempeniomesxcteexcel. - " + e.getMessage());
+		}
+		return new ModelAndView(new ExcelDesempenio_mensual_xcliente(), "listaexcel", listaexcel);
+	} 
+	
+	
 		
 }

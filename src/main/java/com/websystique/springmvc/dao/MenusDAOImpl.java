@@ -21,4 +21,15 @@ public class MenusDAOImpl extends AbstractDao<Integer, Menus>implements MenusDAO
 		return (List<Menus>)criteriaQueryEqInt(mRes,mOrd);
 	}
 
+	@Override
+	public List<Menus> ListaMenusxpadre() {
+		// TODO Auto-generated method stub
+		Map<String,String> mRes =  new HashMap<String, String>();
+		Map<String,String> mOrd =  new HashMap<String, String>();
+		
+		mOrd.put("1", "id");
+		
+		return (List<Menus>)criteriaQuery(mRes,mOrd);
+	}
+
 }

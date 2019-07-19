@@ -58,7 +58,7 @@ public class Prospectos_ventasController {
 	Catalogo_vendedores_sap_vwService cvsv;
 	
 	@RequestMapping(value = {"/vendedor/prospectosabc" }, method = RequestMethod.GET)
-	public String abc(ModelMap model,@RequestParam("id") String id) {
+	public String abc(ModelMap model,@RequestParam(value = "id", defaultValue = "0", required = false) String id) {
 			User user = us.findBySSO(AppController.getPrincipal());
 			ProspectosDataBean pdb = new ProspectosDataBean();
 			if(Integer.valueOf(id) > 0)

@@ -22,4 +22,10 @@ public class MenusServiceImpl implements MenusService{
 		return dao.ListaMenusxpadre(padre);
 	}
 
+	@Override
+	public List<Menus> ListaMenusxpadre() {
+		// TODO Auto-generated method stub
+		return dao.ListaMenusxpadre();
+	}
+
 }
