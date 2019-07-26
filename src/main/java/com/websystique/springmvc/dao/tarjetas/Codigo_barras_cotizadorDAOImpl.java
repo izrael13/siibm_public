@@ -1,5 +1,6 @@
 package com.websystique.springmvc.dao.tarjetas;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +8,7 @@ import java.util.Map;
 import org.springframework.stereotype.Repository;
 
 import com.websystique.springmvc.dao.AbstractDao;
+import com.websystique.springmvc.model.ParamsGeneral;
 import com.websystique.springmvc.model.tarjetas.Codigo_barras_cotizador;
 
 @Repository("codigo_barras_cotizadorDAO")
@@ -22,19 +24,26 @@ public class Codigo_barras_cotizadorDAOImpl extends AbstractDao<Integer,Codigo_b
 	public List<Codigo_barras_cotizador> BuscarXCotDet(Integer idcot, Integer idcotdet) {
 		// FIXME Auto-generated method stub
 		Map<String,String> mOrd =  new HashMap<String, String>();
-		Map<String,Integer> mRes =  new HashMap<String, Integer>();
-		mRes.put("idcotizacion", idcot);
-		mRes.put("iddetalle", idcotdet);
-		return criteriaQueryEqInt(mRes,mOrd);
+		//Map<String,Integer> mRes =  new HashMap<String, Integer>();
+		//mRes.put("idcotizacion", idcot);
+		//mRes.put("iddetalle", idcotdet);
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		Params.add(new ParamsGeneral(1,"idcotizacion",idcot,"EQ"));
+		Params.add(new ParamsGeneral(1,"iddetalle",idcotdet,"EQ"));
+		return criteriaGeneralList(Params, mOrd);
 	}
 
 	@Override
 	public List<Codigo_barras_cotizador> BuscarXCot(Integer idcot) {
 		// FIXME Auto-generated method stub
 		Map<String,String> mOrd =  new HashMap<String, String>();
-		Map<String,Integer> mRes =  new HashMap<String, Integer>();
-		mRes.put("idcotizacion", idcot);
-		return criteriaQueryEqInt(mRes,mOrd);
+		//Map<String,Integer> mRes =  new HashMap<String, Integer>();
+		//mRes.put("idcotizacion", idcot);
+		
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		Params.add(new ParamsGeneral(1,"idcotizacion",idcot,"EQ"));
+		
+		return criteriaGeneralList(Params, mOrd);
 	}
 
 	@Override

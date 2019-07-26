@@ -9,6 +9,7 @@ import java.util.Map;
 import org.springframework.stereotype.Repository;
 
 import com.websystique.springmvc.dao.AbstractDao;
+import com.websystique.springmvc.model.ParamsGeneral;
 import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador;
 import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador_busqueda;
 
@@ -18,30 +19,38 @@ public class CotizadorDAOImpl extends AbstractDao<Integer,Cotizador> implements 
 	@Override
 	public Cotizador BuscarxId(Integer id) {
 		// FIXME Auto-generated method stub
-		Map<String,Integer> mRes =  new HashMap<String, Integer>();
-		mRes.put("id", id);
-		return (Cotizador) criteriaQueryIntEqObj(mRes);
+		/*Map<String,Integer> mRes =  new HashMap<String, Integer>();
+		mRes.put("id", id);*/
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		Params.add(new ParamsGeneral(1,"id",id,"EQ"));
+		return (Cotizador) criteriaGeneralObj(Params);
 	}
 	
 	@Override
 	public Cotizador BuscarxId(Integer id, Integer userInsert) {
 		// FIXME Auto-generated method stub
-		Map<String,Integer> mRes =  new HashMap<String, Integer>();
+		/*Map<String,Integer> mRes =  new HashMap<String, Integer>();
 		mRes.put("id", id);
-		mRes.put("usuario_insert", userInsert);
-		return (Cotizador) criteriaQueryIntEqObj(mRes);
+		mRes.put("usuario_insert", userInsert);*/
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		Params.add(new ParamsGeneral(1,"id",id,"EQ"));
+		Params.add(new ParamsGeneral(1,"usuario_insert",userInsert,"EQ"));
+		return (Cotizador) criteriaGeneralObj(Params);
 	}
 
 	@Override
 	public List<Cotizador> BuscarxUser(Integer idUser) {
 		// FIXME Auto-generated method stub
-		Map<String,Integer> mRes =  new HashMap<String, Integer>();
+		//Map<String,Integer> mRes =  new HashMap<String, Integer>();
 		Map<String,String> mOrd =  new HashMap<String, String>();
 		
-		mRes.put("usuario_insert", idUser);
+		//mRes.put("usuario_insert", idUser);
 		mOrd.put("1", "id");
 		
-		List<Cotizador> Lista = criteriaQueryEqInt(mRes, mOrd);
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		Params.add(new ParamsGeneral(1,"usuario_insert",idUser,"EQ"));
+		
+		List<Cotizador> Lista = criteriaGeneralList(Params, mOrd);
 		
 		return Lista;
 	}

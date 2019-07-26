@@ -79,6 +79,7 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/media_pedidos_cte1' />"><i class="fa fa-file-o" aria-hidden="true"></i> Media pedidos por cliente</a></li>
 		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/desempeniomesvend' />"><i class="fa fa-file-o" aria-hidden="true"></i> Desempeño mensual por vendedor</a></li>
 		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/desempeniomesxcte' />"><i class="fa fa-file-o" aria-hidden="true"></i> Desempeño mensual por cliente</a></li>
+		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/desempeniomesxprod' />"><i class="fa fa-file-o" aria-hidden="true"></i> Desempeño mensual por producto</a></li>
 			    </ul>
 		  	</li>	
 		  	<li class="dropdown-submenu dropdown-menu-right">
@@ -126,10 +127,10 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 			 <li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-file-code-o" aria-hidden="true"></i> Tarjetas de fabricación</a>
 			 	<ul class="dropdown-menu">
 			 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/ingenieria/tarjeta_fabricacion'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro tarjetas</a></li>
-			 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/calidad/tarjeta_fabricacion'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Calidad</a></li>
-			 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/produccion/tarjeta_fabricacion'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Producción</a></li>
-			 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/ingenieria/tarjeta_fabricacion'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Ingeniería</a></li>
-			 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/cliente/tarjeta_fabricacion'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Cliente</a></li>
+			 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/calidad/tarjeta_aut_calidad'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Calidad</a></li>
+			 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/produccion/tarjeta_aut_produccion'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Producción</a></li>
+			 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/ingenieria/tarjeta_aut_ingenieria'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Ingeniería</a></li>
+			 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/cliente/tarjeta_aut_cliente'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Cliente</a></li>
 			 	</ul>
 			 </li>
 		</ul>

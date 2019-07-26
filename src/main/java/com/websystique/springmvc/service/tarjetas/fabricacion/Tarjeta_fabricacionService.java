@@ -12,4 +12,5 @@ public interface Tarjeta_fabricacionService {
 	void Actualizar(Tarjeta_fabricacion Tarjeta);
 	List<Tarjeta_fabricacion_Busqueda> TarjetaBusqueda(Integer IdCot, String Folio);
 	void Borrar(Tarjeta_fabricacion Tarjeta);
+	List<Tarjeta_fabricacion> BuscarXAut(String usuario_aut, String fecha_aut, String usuario_aut_act, String fecha_aut_act);
 }

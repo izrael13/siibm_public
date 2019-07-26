@@ -10,8 +10,8 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "DESEMPENIO_MENSUAL_VENDEDOR")
-public class Desempenio_mensual_vendedor implements Serializable{/**
+@Table(name = "DESEMPENIO_MENSUAL_XPRODUCTO")
+public class Desempenio_mensual_xproducto implements Serializable{/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
@@ -19,7 +19,9 @@ public class Desempenio_mensual_vendedor implements Serializable{/**
 	@Id
 	private Integer id;
 	
+	private String cardname;
 	private String slpname;
+	private String itemname;
 	private Double enero;
 	private Double febrero;
 	private Double marzo;
@@ -33,5 +35,5 @@ public class Desempenio_mensual_vendedor implements Serializable{/**
 	private Double noviembre;
 	private Double diciembre;
 	private Double totaltenanio;
-	private Double porcentaje;
+
 }

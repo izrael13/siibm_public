@@ -9,6 +9,7 @@ import java.util.Map;
 import org.springframework.stereotype.Repository;
 
 import com.websystique.springmvc.dao.AbstractDao;
+import com.websystique.springmvc.model.ParamsGeneral;
 import com.websystique.springmvc.model.tarjetas.fabricacion.Tarjeta_fabricacion;
 import com.websystique.springmvc.model.tarjetas.fabricacion.Tarjeta_fabricacion_Busqueda;
 
@@ -18,25 +19,27 @@ public class Tarjeta_fabricacionDAOImpl extends AbstractDao<Integer,Tarjeta_fabr
 	@Override
 	public Tarjeta_fabricacion BuscarxFolio(String Folio) {
 		// TODO Auto-generated method stub
-		Map<String,String> mRes =  new HashMap<String, String>();
-		
-		mRes.put("folio_tarjeta", Folio);
-
-		Tarjeta_fabricacion Tarjeta = (Tarjeta_fabricacion) criteriaQueryEqObj(mRes);
-		
+		//Map<String,String> mRes =  new HashMap<String, String>();
+		//mRes.put("folio_tarjeta", Folio);
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		Params.add( new ParamsGeneral(1,"folio_tarjeta",Folio,"EQ"));
+		Tarjeta_fabricacion Tarjeta = (Tarjeta_fabricacion) criteriaGeneralObj(Params);
 		return Tarjeta;
 	}
 
 	@Override
 	public List<Tarjeta_fabricacion> BuscarXIdCot(Integer IdCot) {
 		// TODO Auto-generated method stub
-		Map<String,Integer> mRes =  new HashMap<String, Integer>();
+		//Map<String,Integer> mRes =  new HashMap<String, Integer>();
+		//mRes.put("idcotizacion", IdCot);		
 		Map<String,String> mOrd =  new HashMap<String, String>();
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
 		
-		mRes.put("idcotizacion", IdCot);
+		Params.add( new ParamsGeneral(1,"idcotizacion",IdCot,"EQ"));
+		
 		mOrd.put("1", "folio_tarjeta");
 		
-		List<Tarjeta_fabricacion> Lista = criteriaQueryEqInt(mRes, mOrd);
+		List<Tarjeta_fabricacion> Lista = criteriaGeneralList(Params, mOrd);
 		
 		return Lista;
 	}
@@ -100,5 +103,21 @@ public class Tarjeta_fabricacionDAOImpl extends AbstractDao<Integer,Tarjeta_fabr
 		// TODO Auto-generated method stub
 		delete(Tarjeta);
 	}
+
+	@Override
+	public List<Tarjeta_fabricacion> BuscarXAut(String usuario_aut_ant, String fecha_aut_ant, String usuario_aut_act, String fecha_aut_act) {
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		Map<String,String> mOrd =  new HashMap<String, String>();
+		Params.add( new ParamsGeneral(1,usuario_aut_ant,"NE"));
+		Params.add( new ParamsGeneral(2,fecha_aut_ant,"NE"));
+		Params.add( new ParamsGeneral(3,usuario_aut_act,"EQ"));
+		Params.add( new ParamsGeneral(4,fecha_aut_act,"EQ"));
+		Params.add( new ParamsGeneral(5,"usuario_cancela","EQ"));
+		Params.add( new ParamsGeneral(6,"fecha_cancela","EQ"));
+		mOrd.put("1", "folio_tarjeta");
+		List<Tarjeta_fabricacion> Lista = criteriaGeneralList(Params, mOrd);
+		return Lista;
+	}
+	
 
 }

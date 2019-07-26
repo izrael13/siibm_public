@@ -1,8 +1,8 @@
 package com.websystique.springmvc.dao;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.websystique.springmvc.dao.AbstractDao;
+import com.websystique.springmvc.model.ParamsGeneral;
 import com.websystique.springmvc.model.PersistentLogin;
 
 @Repository("tokenRepositoryDao")
@@ -39,13 +40,11 @@ public class HibernateTokenRepositoryImpl extends AbstractDao<String, Persistent
 	public PersistentRememberMeToken getTokenForSeries(String seriesId) {
 		//logger.info("Fetch Token if any for seriesId : {}", seriesId);
 		try {
-			Map<String,String> mRes =  new HashMap<String, String>();
-			mRes.put("series",seriesId);
-			
-			PersistentLogin persistentLogin = (PersistentLogin) criteriaQueryEqList(mRes);
-			/*Criteria crit = createEntityCriteria();
-			crit.add(Restrictions.eq("series", seriesId));
-			PersistentLogin persistentLogin = (PersistentLogin) crit.uniqueResult();*/
+			/*Map<String,String> mRes =  new HashMap<String, String>();
+			mRes.put("series",seriesId);*/
+			List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+			Params.add(new ParamsGeneral(1,"series",seriesId,"EQ"));
+			PersistentLogin persistentLogin = (PersistentLogin) criteriaGeneralObj(Params);
 			
 			return new PersistentRememberMeToken(persistentLogin.getUsername(), persistentLogin.getSeries(),
 					persistentLogin.getToken(), persistentLogin.getLast_used());
@@ -58,9 +57,11 @@ public class HibernateTokenRepositoryImpl extends AbstractDao<String, Persistent
 	@Override
 	public void removeUserTokens(String username) {
 		//logger.info("Removing Token if any for user : {}", username);
-		Map<String,String> mRes =  new HashMap<String, String>();
-		mRes.put("username",username);
-		PersistentLogin persistentLogin = (PersistentLogin) criteriaQueryEqObj(mRes);
+		/*Map<String,String> mRes =  new HashMap<String, String>();
+		mRes.put("username",username);*/
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		Params.add(new ParamsGeneral(1,"username",username,"EQ"));
+		PersistentLogin persistentLogin = (PersistentLogin) criteriaGeneralObj(Params);
 		
 		/*Criteria crit = createEntityCriteria();
 		crit.add(Restrictions.eq("username", username));

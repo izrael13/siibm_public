@@ -20,6 +20,7 @@ import org.springframework.stereotype.Repository;
 
 import com.websystique.springmvc.dao.AbstractDao;
 import com.websystique.springmvc.dao.reportes.Reporte_consumo_papelDAO;
+import com.websystique.springmvc.model.ParamsGeneral;
 import com.websystique.springmvc.model.reportes.Reporte_consumo_papel;
 
 @SuppressWarnings("all")
@@ -29,17 +30,20 @@ public class Reporte_consumo_papelDAOImpl extends AbstractDao<Integer, Reporte_c
 	@Override
 	public List<Reporte_consumo_papel> findByAnioSem(int anio, int semana) {
 		
-		Map<String,String> mRes =  new HashMap<String, String>();
+		//Map<String,String> mRes =  new HashMap<String, String>();
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		Params.add(new ParamsGeneral(1,"anio",String.valueOf(anio),"EQ"));
+		Params.add(new ParamsGeneral(1,"semana",String.valueOf(semana),"EQ"));
 		Map<String,String> mOrd =  new HashMap<String, String>();
 		
-		mRes.put("anio",String.valueOf(anio));
-		mRes.put("semana",String.valueOf(semana));
+		//mRes.put("anio",String.valueOf(anio));
+		//mRes.put("semana",String.valueOf(semana));
 		
 		mOrd.put("1", "ancho");
 		mOrd.put("2", "anio");
 		mOrd.put("3", "semana");
 		
-		List<Reporte_consumo_papel> consumo = criteriaQuery(mRes, mOrd);
+		List<Reporte_consumo_papel> consumo = criteriaGeneralList(Params, mOrd);
 		
 		return consumo;
 	}
@@ -53,14 +57,15 @@ public class Reporte_consumo_papelDAOImpl extends AbstractDao<Integer, Reporte_c
 	@Override
 	public List<Reporte_consumo_papel> findAllRegistros() {
 		
-		Map<String,String> mRes =  new HashMap<String, String>();
+		//Map<String,String> mRes =  new HashMap<String, String>();
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
 		Map<String,String> mOrd =  new HashMap<String, String>();
 		
 		mOrd.put("1", "ancho");
 		mOrd.put("2", "anio");
 		mOrd.put("3", "semana");
 		
-		List<Reporte_consumo_papel> consumo = criteriaQuery(mRes, mOrd);
+		List<Reporte_consumo_papel> consumo = criteriaGeneralList(Params, mOrd);
 		
 		return consumo;
 		 

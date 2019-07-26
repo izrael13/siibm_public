@@ -1,5 +1,6 @@
 package com.websystique.springmvc.dao;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +8,7 @@ import java.util.Map;
 import org.springframework.stereotype.Repository;
 
 import com.websystique.springmvc.model.Catalogo_estados;
+import com.websystique.springmvc.model.ParamsGeneral;
 
 @Repository("catalogo_estadosDAO")
 public class Catalogo_estadosDAOImpl extends AbstractDao<Integer, Catalogo_estados>implements Catalogo_estadosDAO{
@@ -14,10 +16,11 @@ public class Catalogo_estadosDAOImpl extends AbstractDao<Integer, Catalogo_estad
 	@Override
 	public List<Catalogo_estados> ListEstados() {
 		// FIXME Auto-generated method stub
-		Map<String,String> mRes =  new HashMap<String, String>();
+		//Map<String,String> mRes =  new HashMap<String, String>();
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
 		Map<String,String> mOrd =  new HashMap<String, String>();
 		mOrd.put("1", "nombre");
-		return (List<Catalogo_estados>)criteriaQuery(mRes,mOrd);
+		return (List<Catalogo_estados>)criteriaGeneralList(Params, mOrd);
 	}
 
 	@Override

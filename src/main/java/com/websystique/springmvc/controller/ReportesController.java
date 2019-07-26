@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.google.gson.Gson;
 import com.websystique.springmvc.excel.ConsKilosExcel;
 import com.websystique.springmvc.excel.ExcelAmortHerra;
 import com.websystique.springmvc.excel.ExcelDesempenio_mensual_vendedor;
@@ -45,6 +46,7 @@ import com.websystique.springmvc.model.reportes.Media_pedidos_cte;
 import com.websystique.springmvc.model.reportes.Reporte_consumo_papel;
 import com.websystique.springmvc.model.reportes.Reportes_consumo_papel_utl_sem;
 import com.websystique.springmvc.model.reportes.Todos_pedidos;
+import com.websystique.springmvc.model.tarjetas.Catalogo_direcciones_sap_vw;
 import com.websystique.springmvc.service.UserService;
 import com.websystique.springmvc.service.reportes.Amortiza_herramentalesService;
 import com.websystique.springmvc.service.reportes.Cobranza_acumService;
@@ -52,6 +54,7 @@ import com.websystique.springmvc.service.reportes.Cobranza_detalleService;
 import com.websystique.springmvc.service.reportes.ConsumoKilosService;
 import com.websystique.springmvc.service.reportes.Desempenio_mensual_vendedorService;
 import com.websystique.springmvc.service.reportes.Desempenio_mensual_xclienteService;
+import com.websystique.springmvc.service.reportes.Desempenio_mensual_xproductoService;
 import com.websystique.springmvc.service.reportes.Flautas_prom_semService;
 import com.websystique.springmvc.service.reportes.Golpes_maquina_mesService;
 import com.websystique.springmvc.service.reportes.Golpes_pendientes_fabService;
@@ -142,6 +145,8 @@ public class ReportesController {
 	Catalogo_clientes_sap_vwService ccsvs;
 	@Autowired
 	Catalogo_vendedores_sap_vwService cvsvs;
+	@Autowired
+	Desempenio_mensual_xproductoService dmxp;
 	
 	Calendar calendar = Calendar.getInstance();
 	
@@ -806,8 +811,7 @@ public class ReportesController {
 		}
 		return "/reportes/mediapedidoscte2";
 	} */
-	
-	
+		
 	@RequestMapping(value = { "/ventas/mediapedidosExcel" },method=RequestMethod.GET)
 	public ModelAndView mediapedidosExcel(HttpServletRequest req, HttpServletResponse res) {
 
@@ -838,6 +842,7 @@ public class ReportesController {
 		}
 		return "/reportes/viajes_mes_ciudad";
 	}
+	
 	@RequestMapping(value = {"/ventas/buscarporMes" }, method = RequestMethod.GET)
 	public String buscarporMes(ModelMap model,@RequestParam("aniomes") String aniomes) {
 		try {
@@ -853,10 +858,9 @@ public class ReportesController {
 		return "/reportes/viajes_mes_ciudad";
 	}
 	
-	
 	@RequestMapping(value = "/ingenieria/imprmiramortherr", method = RequestMethod.GET)
-	  @ResponseBody
-	  public void getRpt1(HttpServletResponse response,HttpServletRequest request,ModelMap model,@RequestParam("select") String select,@RequestParam("herramental") String herramental) throws JRException, IOException {
+	@ResponseBody
+	public void getRpt1(HttpServletResponse response,HttpServletRequest request,ModelMap model,@RequestParam("select") String select,@RequestParam("herramental") String herramental) throws JRException, IOException {
 
 	    InputStream jasperStream = this.getClass().getResourceAsStream("/jasperreports/reportes/Herramentales.jasper");
 	    Map<String,Object> params = new HashMap<>();
@@ -910,6 +914,16 @@ public class ReportesController {
 		return new ModelAndView(new ExcelDesempenio_mensual_vendedor(), "listaexcel", listaexcel);
 	} 
 	
+	@RequestMapping(value = {"/ventas/buscarclientes"}, method = RequestMethod.GET)
+	public @ResponseBody String buscarclientes(HttpServletRequest req, HttpServletResponse res)
+	   throws Exception {
+		String slpcode = req.getParameter("id");
+		
+		Gson g=new Gson();
+		return g.toJson(ccsvs.ListaCtes(Integer.valueOf(slpcode)));
+	
+	}
+	
 	@RequestMapping(value = {"/ventas/desempeniomesxcte" }, method = RequestMethod.GET)
 	public String desempeniomesxcte(ModelMap model,@RequestParam(value = "anio", defaultValue = "0", required = false) Integer anio,
 												   @RequestParam(value = "cardcode", defaultValue = "", required = false) String cardcode,
@@ -920,7 +934,7 @@ public class ReportesController {
 						
 			model.addAttribute("loggedinuser", AppController.getPrincipal());
 			
-			model.addAttribute("listactes", ccsvs.ListaCtes());
+			model.addAttribute("listactes", ccsvs.ListaCtes(slpcode));
 			model.addAttribute("listavend", cvsvs.ListaVendedores());
 			
 			model.addAttribute("selectedValueAnio", anio);
@@ -936,6 +950,7 @@ public class ReportesController {
 		}
 		return "/reportes/desempenio_mes_xcte";
 	}
+	
 	@RequestMapping(value = { "/ventas/desempeniomesxcteexcel" },method=RequestMethod.GET)
 	public ModelAndView desempeniomesxcteexcel(HttpServletRequest req, HttpServletResponse res) {
 
@@ -954,6 +969,34 @@ public class ReportesController {
 		return new ModelAndView(new ExcelDesempenio_mensual_xcliente(), "listaexcel", listaexcel);
 	} 
 	
+	@RequestMapping(value = {"/ventas/desempeniomesxprod" }, method = RequestMethod.GET)
+	public String desempeniomesxprod(ModelMap model,@RequestParam(value = "anio", defaultValue = "0", required = false) Integer anio,
+												   @RequestParam(value = "slpcode", defaultValue = "0", required = false) Integer slpcode,
+												   @RequestParam(value = "xcte", defaultValue = "0", required = false) Integer xcte,
+												   @RequestParam(value = "xitem", defaultValue = "0", required = false) Integer xitem) {
+		try 
+		{
+			anio = (anio == 0 ? Calendar.getInstance().get(Calendar.YEAR) : anio);
+						
+			model.addAttribute("loggedinuser", AppController.getPrincipal());
+			
+			model.addAttribute("listavend", cvsvs.ListaVendedores());
+			
+			model.addAttribute("selectedValueAnio", anio);
+			model.addAttribute("selectedValueSlpCode", slpcode);
+			model.addAttribute("selectedValuexcte", xcte);
+			model.addAttribute("selectedValuexitem", xitem);
+
+			model.addAttribute("lista", dmxp.Buscar(anio, slpcode, xcte, xitem));
+			
+			logger.info(AppController.getPrincipal() + " - ventas/desempeniomesxprod.");
+		}
+		catch(Exception e) {
+			logger.error(AppController.getPrincipal() + " - ventas/desempeniomesxprod. - " + e.getMessage());
+		}
+		return "/reportes/desempenio_mes_xprod";
+	}
+	//
 	
 		
 }

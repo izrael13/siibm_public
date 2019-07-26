@@ -1,5 +1,6 @@
 package com.websystique.springmvc.dao;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.websystique.springmvc.model.ParamsGeneral;
 import com.websystique.springmvc.model.User;
 
 
@@ -39,9 +41,11 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 
 	public User findBySSO(String sso) {
 		//logger.info("SSO : {}", sso);
-		Map<String,String> mRes =  new HashMap<String, String>();
-		mRes.put("ssoId",sso);
-		User user =  (User) criteriaQueryEqObj(mRes);
+		/*Map<String,String> mRes =  new HashMap<String, String>();
+		mRes.put("ssoId",sso);*/
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		Params.add(new ParamsGeneral(1,"ssoId",sso,"EQ"));
+		User user =  (User) criteriaGeneralObj(Params);
 		if(user!=null){
 			Hibernate.initialize(user.getUserProfiles());
 		}
@@ -49,9 +53,10 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 	}
 
 	public List<User> findAllUsers() {
-		Map<String,String> mRes =  new HashMap<String, String>();
+		//Map<String,String> mRes =  new HashMap<String, String>();
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
 		Map<String,String> mOrd =  new HashMap<String, String>();
-		List<User> users = criteriaQuery(mRes,mOrd);
+		List<User> users = criteriaGeneralList(Params, mOrd);
 		return users;
 	}
 
@@ -60,9 +65,11 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 	}
 
 	public void deleteBySSO(String sso) {
-		Map<String,String> mRes =  new HashMap<String, String>();
-		mRes.put("ssoId",sso);
-		User user =  (User) criteriaQueryEqObj(mRes);
+		/*Map<String,String> mRes =  new HashMap<String, String>();
+		mRes.put("ssoId",sso);*/
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		Params.add(new ParamsGeneral(1,"ssoId",sso,"EQ"));
+		User user =  (User) criteriaGeneralObj(Params);
 		delete(user);
 	}
 
@@ -82,10 +89,13 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 	@Override
 	public User findBySSOnEmail(String sso, String email) {
 		// FIXME Auto-generated method stub
-		Map<String,String> mRes =  new HashMap<String, String>();
+		/*Map<String,String> mRes =  new HashMap<String, String>();
 		mRes.put("ssoId",sso);
-		mRes.put("email",email);
-		User user =  (User) criteriaQueryEqObj(mRes);
+		mRes.put("email",email);*/
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		Params.add(new ParamsGeneral(1,"ssoId",sso,"EQ"));
+		Params.add(new ParamsGeneral(1,"email",email,"EQ"));
+		User user =  (User) criteriaGeneralObj(Params);
 		return user;
 	}
 

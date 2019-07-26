@@ -53,4 +53,10 @@ public class Tarjeta_fabricacionServiceImpl implements Tarjeta_fabricacionServic
 		dao.Borrar(Tarjeta);
 	}
 
+	@Override
+	public List<Tarjeta_fabricacion> BuscarXAut(String usuario_aut, String fecha_aut, String usuario_aut_act, String fecha_aut_act) {
+		// TODO Auto-generated method stub
+		return dao.BuscarXAut(usuario_aut, fecha_aut,usuario_aut_act,fecha_aut_act);
+	}
+
 }

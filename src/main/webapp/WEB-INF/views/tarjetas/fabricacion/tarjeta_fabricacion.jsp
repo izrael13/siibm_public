@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"/>
 <html>
 <head>
 <%@include file="../../appconfig/authheader2.jsp"%>
@@ -11,7 +11,8 @@
 <script>
 $(document).ready(function() {
 
-	if(('${tarjeta_fabricacion.idcotizacion}' == "") || ('${tarjeta_fabricacion.fecha_aut_diseniador}' != "" && '${tarjeta_fabricacion.usuario_aut_diseniador}' > 0))
+	if(('${tarjeta_fabricacion.idcotizacion}' == "") || ('${tarjeta_fabricacion.fecha_aut_diseniador}' != "" && '${tarjeta_fabricacion.usuario_aut_diseniador}' > 0)
+		|| ('${tarjeta_fabricacion.fecha_cancela}' != "" && '${tarjeta_fabricacion.usuario_cancela}' > 0))
 	{		
 
 			$("#BCancelar").prop("disabled", true );
@@ -221,6 +222,7 @@ function FCancelar()
 	data.append('idcotizacion', $( "#TIdCot" ).val());
 	data.append('iddetalle', $( "#TIdDet" ).val());
 	data.append('folio_tarjeta', $( "#TFolioTF" ).val());
+	data.append('coment_diseniador', $( "#TComDis" ).val());
 	
 	$("#mensajes" ).text("Cancelando tarjetas.");
 	$("#mensajes").removeClass().addClass("alert alert-info");
@@ -358,7 +360,7 @@ function FCancelar()
 							<form:input class="border border-primary" type="text" onkeypress="return SinCaracteresEspeciales(event)" maxlength="100" path="observaciones"/>
 						</div>
 						<div class="col-sm-4">Observaciones diseñador:
-							<form:input class="border border-primary" type="text" onkeypress="return SinCaracteresEspeciales(event)" maxlength="100" path="observaciones_disenador"/>
+							<form:input id="TComDis" class="border border-primary" type="text" onkeypress="return SinCaracteresEspeciales(event)" maxlength="100" path="observaciones_disenador"/>
 						</div>
 					</div>
 				</div>
@@ -370,7 +372,7 @@ function FCancelar()
 				<div class="col col-lg-1"><form:button id="BGrabar" class="btn btn-outline-primary btn-sm"><i class="fa fa-floppy-o" aria-hidden="true"> Grabar</i></form:button></div>
 				<div class="col col-lg-1"><a href="javascript:FBuscar()" class="btn btn-outline-primary btn-sm"><i class="fa fa-search" aria-hidden="true"> Buscar</i></a></div>
 				<div class="col col-lg-1"><a href="javascript:FLimpiar()" class="btn btn-outline-primary btn-sm"><i class="fa fa-refresh" aria-hidden="true"> Limpiar</i></a></div>
-				<div class="col col-lg-1"><button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target=".bd-example-modal-xl"><i class="fa fa-picture-o" aria-hidden="true"> Imágenes</i></button></div>
+				<div class="col col-lg-2"><button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target=".bd-example-modal-xl"><i class="fa fa-picture-o" aria-hidden="true"> Imágenes</i></button></div>
 				<div class="col col-lg-3"><button id="BEnvAut" type="button" data-toggle="modal" data-target="#EnvModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-paper-plane-o" aria-hidden="true"> Enviar para autorizaciones</i></button></div>
 				<div class="col col-lg-2"><button id="BCancelar" type="button" data-toggle="modal" data-target="#CancelModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-paper-plane-o" aria-hidden="true"> Cancelar tarjeta</i></button></div>
 			</div>
@@ -445,7 +447,7 @@ function FCancelar()
 		        <h5 class="modal-title">CANCELAR TARJETA</h5>
 		      </div>
 		      <div class="modal-body alert alert-danger">
-		        ¡¡¡ATENCIÓN!!! ¿Desea CANCELAR esta tarjeta? IMPORTANTE!!!! ---> También se cancelarán las otras tarjetas relacionadas con la cotización!!
+		        ¡¡¡ATENCIÓN!!! ¿Desea CANCELAR esta tarjeta? IMPORTANTE!!!! ---> También se cancelará la Cotización y las otras Tarjetas relacionadas!!!
 		      </div>
 		      <div id="DivMensaje" class="modal-footer">
 		        <button type="button" class="btn btn-primary" onClick="FCancelar()">Cancelar</button>

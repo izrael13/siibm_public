@@ -1,5 +1,6 @@
 package com.websystique.springmvc.dao.reportes;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Repository;
 
 import com.websystique.springmvc.dao.AbstractDao;
 import com.websystique.springmvc.dao.reportes.Semanas_anioDAO;
+import com.websystique.springmvc.model.ParamsGeneral;
 import com.websystique.springmvc.model.Semanas_anio;
 
 @SuppressWarnings("all")
@@ -37,12 +39,13 @@ public class Semanas_anioDAOImpl extends AbstractDao<Integer, Semanas_anio> impl
 	@Override
 	public Map<Integer,String> findAllSemanas() {
 		
-		Map<String,String> mRes =  new HashMap<String, String>();
+		//Map<String,String> mRes =  new HashMap<String, String>();
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
 		Map<String,String> mOrd =  new HashMap<String, String>();
 		
 		mOrd.put("1", "fecha_inicial");
 		
-		List<Semanas_anio> semanasanio = criteriaQuery(mRes, mOrd);
+		List<Semanas_anio> semanasanio = criteriaGeneralList(Params, mOrd);
 		Map< Integer, String > sem = new TreeMap <Integer, String>();
 
 		for(int i = 0; i < semanasanio.size(); i++)

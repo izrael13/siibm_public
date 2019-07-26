@@ -7,51 +7,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>Desempeño mensual por cliente</title>
 <%@include file="../appconfig/authheader2.jsp"%>
+<title>Desempeño por producto</title>
 <script>
 function FBuscar()
 {
-	window.location.replace('<c:url value="/reportes/ventas/desempeniomesxcte" />?anio='+document.getElementById('SAnio').value+'&cardcode='+document.getElementById('SClientes').value+'&slpcode='+document.getElementById('SVendedores').value);
-}
-function Excel()
-{
-	window.location.replace('<c:url value="/reportes/ventas/desempeniomesxcteexcel" />?anio='+document.getElementById('SAnio').value+'&cardcode='+document.getElementById('SClientes').value+'&slpcode='+document.getElementById('SVendedores').value);
-}
-function FBuscarVen()
-{
-	var id = $("#SVendedores").val();
-	
-	$.ajax({
-		//dataType: 'text',
-		url: '<c:url value="/reportes/ventas/buscarclientes"/>?id='+id,
-		//contentType : 'application/json',
-		//cache: false,    
-		//data: cve_estado,
-		beforeSend: function(xhr) {
-							  $("#imgload").show();
-							  $("#SClientes" ).empty();
-							  },	
-        success : function(data) {
-        		if (data.search(/Login page/i) != -1) {
-        			window.location.replace('<c:url value="/login?expired"/>');
-				    return true;
-				  }
-	        	opciones = opciones + "<option value='""'>Seleccione un cliente</option>";
-	        	$.each(jQuery.parseJSON(data),function(index, value){
-	        		opciones = opciones + "<option value='"+value.cardcode + "'>"+value.cardname+ "</option>";
-	        	});
-	        	
-	        	$( "#SClientes" ).append(opciones);
-	        	$( "#imgload").hide();
-        },
-        error: function(xhr, status, error) {
-        	  $( "#SClientes" ).empty();
-			  $( "#mensajes" ).text("Error: " + xhr.responseText + " Codigo" +  error);
-			  $( "#mensajes").removeClass().addClass("alert alert-danger");
-			  $( "#imgload").hide();
-		  }
-	 });
+	window.location.replace('<c:url value="/reportes/ventas/desempeniomesxprod" />?anio='+document.getElementById('SAnio').value+'&slpcode='+document.getElementById('SVendedores').value+'&xcte='+($("#CXCte").is(':checked') == true ? 1 : 0)+'&xitem='+($("#CXItem").is(':checked') == true ? 1 : 0));
 }
 </script>
 </head>
@@ -63,6 +24,7 @@ function FBuscarVen()
 		<br>
 	<div align="center" class="container-fluid">
     <div class="row">
+    	<div class="col-md-3"></div>
         <div class="col-md-1">
         	<select id="SAnio" class="border border-primary small">
 				<option value="2015" ${not empty selectedValueAnio && selectedValueAnio eq 2015 ? 'selected' : '' }>2015</option>
@@ -78,19 +40,15 @@ function FBuscarVen()
 				<option value="2025" ${not empty selectedValueAnio && selectedValueAnio eq 2025 ? 'selected' : '' }>2025</option>
 			</select>
         </div>
-        <div class="col-md-3">
-			<select id="SVendedores" Onchange="FBuscarVen()" class="border border-primary small">
+        <div class="col-md-1">
+			<select id="SVendedores" class="border border-primary small">
 				<option value="0">Seleccione un vendedor</option>
 				<c:forEach var="ven" items="${listavend}">
 					<option value="${ven.clavevendedor}" ${ven.clavevendedor == selectedValueSlpCode ? 'selected' : ''}><c:out value="${ven.nombre}"/></option>
 				</c:forEach>
 			</select>
 		</div>
-        <div class="col-md-6">        
-        <select id="SClientes" class="border border-primary small">
-			<option value="">Seleccione un cliente</option>
-		</select>        
-		</div>
+		<div class="col-md-1"></div>x Cliente: <input id="CXCte" ${selectedValuexcte == 1 ? 'checked' : ''} type="checkbox"/> 	x Producto: <input ${selectedValuexitem == 1 ? 'checked' : ''} id="CXItem" type="checkbox"/>
 		<div class="col-md-1"><button type="button" class="btn btn-outline-primary btn-sm" onClick="FBuscar()">
 				<i class="fa fa-search"></i>
 				Buscar
@@ -108,8 +66,13 @@ function FBuscarVen()
 	<table id="tablePag" class="table-hover table-bordered mx-auto small"><!-- mx-auto  para centrar en pantalla -->
 		<thead>
 			<tr align="center">
-				<th>Cliente</th>
 				<th>Vendedor</th>
+				<c:if test="${selectedValuexcte == 1}">
+					<th>Cliente</th>
+				</c:if>
+				<c:if test="${selectedValuexitem == 1}">
+					<th>Producto</th>
+				</c:if>
 				<th>Enero</th>
 				<th>Febrero</th>
 				<th>Marzo</th>
@@ -128,8 +91,13 @@ function FBuscarVen()
 		<tbody>
 		<c:forEach var="item" items="${lista}">
 			<tr class="${item.id == 1 ? 'alert alert-info' : '' }" >
-				<td align="left">${item.cardname == 'zzTOTAL' ? fn:substring(item.cardname, 2, 7) : item.cardname} </td>
-				<td align="left">${item.slpname} </td>
+				<td align="left">${item.slpname == 'zzzTotal' ? fn:substring(item.slpname, 3, 8) : item.slpname} </td>
+				<c:if test="${selectedValuexcte == 1}">
+					<td align="left">${item.cardname} </td>
+				</c:if>
+				<c:if test="${selectedValuexitem == 1}">
+					<td align="left">${item.itemname} </td>
+				</c:if>
 				<td align="right"><fmt:formatNumber type = "number" maxFractionDigits = "0" value = "${item.enero}" /></td>
 				<td align="right"><fmt:formatNumber type = "number" maxFractionDigits = "0" value = "${item.febrero}" /></td>
 				<td align="right"><fmt:formatNumber type = "number" maxFractionDigits = "0" value = "${item.marzo}" /></td>
@@ -147,10 +115,6 @@ function FBuscarVen()
 		</c:forEach>
 		</tbody>
 	</table>
-	<div align="center">
-	 	<span id="imgload" style='display: none;'><img width="20px" height="20px" src='<c:url value="/static/img/sun_watch.gif"/>' /></span>
-	 	<div id = "mensajes" class = "${!empty mensajes ? 'alert alert-success' : ''}">${mensajes}</div>
-	</div>
 	</div>
 	<%@include file="../appconfig/authfootter.jsp"%>
 </body>

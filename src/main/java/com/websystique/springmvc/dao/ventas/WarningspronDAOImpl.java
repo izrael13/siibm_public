@@ -43,7 +43,7 @@ public class WarningspronDAOImpl extends AbstractDao<Integer,Pronosticoscte> imp
 	@Override
 	public String subirQV(Integer mes, Integer anio) {
 		// FIXME Auto-generated method stub
-		String result = "";
+		/*String result = "";
 		ProcedureCall criteria = createStoredProcedureCriteriaStr("spSubirPronosticosQV");
 		criteria.registerParameter("pMes", Integer.class, ParameterMode.IN);
 		criteria.registerParameter("pAnio", Integer.class, ParameterMode.IN);
@@ -54,9 +54,9 @@ public class WarningspronDAOImpl extends AbstractDao<Integer,Pronosticoscte> imp
 		
 		if (output.isResultSet()) {
 			result = (String) ((ResultSetOutput)output).getSingleResult();
-        }
+        }*/
 		
-		return result;
+		return null;
 	}
 	
 }

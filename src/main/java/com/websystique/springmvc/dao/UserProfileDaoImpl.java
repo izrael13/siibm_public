@@ -1,10 +1,13 @@
 package com.websystique.springmvc.dao;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Repository;
+
+import com.websystique.springmvc.model.ParamsGeneral;
 import com.websystique.springmvc.model.UserProfile;
 
 
@@ -17,10 +20,11 @@ public class UserProfileDaoImpl extends AbstractDao<Integer, UserProfile>impleme
 	}
 	
 	public List<UserProfile> findAll(){
-		Map<String,String> mRes =  new HashMap<String, String>();
+		//Map<String,String> mRes =  new HashMap<String, String>();
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
 		Map<String,String> mOrd =  new HashMap<String, String>();
 		mOrd.put("1", "type");
-		return (List<UserProfile>)criteriaQuery(mRes,mOrd);
+		return (List<UserProfile>)criteriaGeneralList(Params, mOrd);
 	}
 
 	@Override

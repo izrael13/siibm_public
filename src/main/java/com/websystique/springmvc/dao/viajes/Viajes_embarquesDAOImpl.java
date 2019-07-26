@@ -50,7 +50,7 @@ public class Viajes_embarquesDAOImpl extends AbstractDao<Integer,Viajes_embarque
 	public List<Viajes_embarques> updateViajes(String nviaje, Integer demora, Integer devolucion, Integer cbo_estado) {
 		// FIXME Auto-generated method stub
 		List<Viajes_embarques> result = null;
-		ProcedureCall criteria = createStoredProcedureCriteriaStr("spViajesEmbarques");
+		/*ProcedureCall criteria = createStoredProcedureCriteriaStr("spViajesEmbarques");
 		
 		criteria.registerParameter("pBan", Integer.class, ParameterMode.IN);
 		criteria.registerParameter("pNumViaje", String.class, ParameterMode.IN);
@@ -72,7 +72,7 @@ public class Viajes_embarquesDAOImpl extends AbstractDao<Integer,Viajes_embarque
 		
 		if (output.isResultSet()) {
 			result = ((ResultSetOutput)output).getResultList();
-        }
+        }*/
 		return result;
 	}
 
@@ -80,7 +80,7 @@ public class Viajes_embarquesDAOImpl extends AbstractDao<Integer,Viajes_embarque
 	public String updateAutEmbarques(String nviaje) {
 		// FIXME Auto-generated method stub
 		String result = "";
-		ProcedureCall criteria = createStoredProcedureCriteriaStr("spViajesEmbarques");
+		/*ProcedureCall criteria = createStoredProcedureCriteriaStr("spViajesEmbarques");
 		
 		criteria.registerParameter("pBan", Integer.class, ParameterMode.IN);
 		criteria.registerParameter("pNumViaje", String.class, ParameterMode.IN);
@@ -102,7 +102,7 @@ public class Viajes_embarquesDAOImpl extends AbstractDao<Integer,Viajes_embarque
 		
 		if (output.isResultSet()) {
 			result = ((ResultSetOutput)output).getSingleResult().toString();
-        }
+        }*/
 		return result;
 	}
 
@@ -110,7 +110,7 @@ public class Viajes_embarquesDAOImpl extends AbstractDao<Integer,Viajes_embarque
 	public String updateAutLogistica(String nviaje) {
 		// FIXME Auto-generated method stub
 		String result = "";
-		ProcedureCall criteria = createStoredProcedureCriteriaStr("spViajesEmbarques");
+		/*ProcedureCall criteria = createStoredProcedureCriteriaStr("spViajesEmbarques");
 		
 		criteria.registerParameter("pBan", Integer.class, ParameterMode.IN);
 		criteria.registerParameter("pNumViaje", String.class, ParameterMode.IN);
@@ -132,7 +132,7 @@ public class Viajes_embarquesDAOImpl extends AbstractDao<Integer,Viajes_embarque
 		
 		if (output.isResultSet()) {
 			result = ((ResultSetOutput)output).getSingleResult().toString();
-        }
+        }*/
 		return result;
 	}
 
@@ -140,7 +140,7 @@ public class Viajes_embarquesDAOImpl extends AbstractDao<Integer,Viajes_embarque
 	public List<Viajes_embarques> findAllViajesByUserSapLog(Integer userSap) {
 		// FIXME Auto-generated method stub
 		List<Viajes_embarques> result = null;
-		ProcedureCall criteria = createStoredProcedureCriteria("spViajesEmbarques");
+		/*ProcedureCall criteria = createStoredProcedureCriteria("spViajesEmbarques");
 		
 		criteria.registerParameter("pBan", Integer.class, ParameterMode.IN);
 		criteria.registerParameter("pNumViaje", String.class, ParameterMode.IN);
@@ -161,7 +161,7 @@ public class Viajes_embarquesDAOImpl extends AbstractDao<Integer,Viajes_embarque
 		Output output = criteria.getOutputs().getCurrent();
 		if (output.isResultSet()) {
 			result = ((ResultSetOutput)output).getResultList();
-        }
+        }*/
 		
 		return result;
 	}
@@ -170,7 +170,7 @@ public class Viajes_embarquesDAOImpl extends AbstractDao<Integer,Viajes_embarque
 	public String updateRegAemb(String nviaje) {
 		// FIXME Auto-generated method stub
 		String result = "";
-		ProcedureCall criteria = createStoredProcedureCriteriaStr("spViajesEmbarques");
+		/*ProcedureCall criteria = createStoredProcedureCriteriaStr("spViajesEmbarques");
 		
 		criteria.registerParameter("pBan", Integer.class, ParameterMode.IN);
 		criteria.registerParameter("pNumViaje", String.class, ParameterMode.IN);
@@ -192,7 +192,7 @@ public class Viajes_embarquesDAOImpl extends AbstractDao<Integer,Viajes_embarque
 		
 		if (output.isResultSet()) {
 			result = ((ResultSetOutput)output).getSingleResult().toString();
-        }
+        }*/
 		return result;
 	}
 
@@ -200,7 +200,7 @@ public class Viajes_embarquesDAOImpl extends AbstractDao<Integer,Viajes_embarque
 	public List<Viajes_embarques> findAllViajesHistorial() {
 		// FIXME Auto-generated method stub
 		List<Viajes_embarques> result = null;
-		ProcedureCall criteria = createStoredProcedureCriteria("spViajesEmbarques");
+		/*ProcedureCall criteria = createStoredProcedureCriteria("spViajesEmbarques");
 		
 		criteria.registerParameter("pBan", Integer.class, ParameterMode.IN);
 		criteria.registerParameter("pNumViaje", String.class, ParameterMode.IN);
@@ -221,7 +221,7 @@ public class Viajes_embarquesDAOImpl extends AbstractDao<Integer,Viajes_embarque
 		Output output = criteria.getOutputs().getCurrent();
 		if (output.isResultSet()) {
 			result = ((ResultSetOutput)output).getResultList();
-        }
+        }*/
 		
 		return result;
 	}

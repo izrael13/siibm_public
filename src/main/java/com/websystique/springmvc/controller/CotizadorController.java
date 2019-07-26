@@ -136,7 +136,7 @@ public class CotizadorController {
 	@RequestMapping(value = {"/vendedor/cotizadorabc" }, method = RequestMethod.GET)
 	public String cotizadotget(ModelMap model, @RequestParam(value = "id", defaultValue = "0", required = false) String id, @RequestParam(value = "iddet", defaultValue = "0", required = false) String iddet, @RequestParam(value = "mensajes", defaultValue = "", required = false) String mensajes) throws UnsupportedEncodingException {
 		String msj = mensajes;
-		try {
+		try {				
 				List<Catalogo_especialidades_sap_vw> ListaEsp = ces.ListaEsp();
 				List<Catalogo_resistencias_sap_vw> ListaResis = new ArrayList<Catalogo_resistencias_sap_vw>();
 				User user = us.findBySSO(AppController.getPrincipal());
@@ -993,25 +993,28 @@ public class CotizadorController {
 	{
 		Catalogo_cajas_sap_vw objCaja = ccss.BuscarxId(Integer.valueOf(idcaja));//Datos de la caja seleccionada.
 		List<Catalogo_resistencias_sap_vw> ListaResis = new ArrayList<Catalogo_resistencias_sap_vw>();
-		if(objCaja.getCorrugado().equals("D"))
+		if(objCaja.getCorrugado() != null)
 		{
-			ListaResis = crss.ListaResis("BC");
-		}
-		else
-		{
-			if(objCaja.getCorrugado().equals("SD"))
+			if(objCaja.getCorrugado().equals("D"))
 			{
-				ListaResis = crss.ListaResis();
+				ListaResis = crss.ListaResis("BC");
 			}
 			else
 			{
-				if(objCaja.getCorrugado().equals("S"))
+				if(objCaja.getCorrugado().equals("SD"))
 				{
-					ListaResis = Stream.of(crss.ListaResis("B"),crss.ListaResis("C")).flatMap(Collection::stream).collect(Collectors.toList());
+					ListaResis = crss.ListaResis();
 				}
+				else
+				{
+					if(objCaja.getCorrugado().equals("S"))
+					{
+						ListaResis = Stream.of(crss.ListaResis("B"),crss.ListaResis("C")).flatMap(Collection::stream).collect(Collectors.toList());
+					}
+				}
+				
 			}
-			
-		}		
+		}
 		return ListaResis;
 		
 	}

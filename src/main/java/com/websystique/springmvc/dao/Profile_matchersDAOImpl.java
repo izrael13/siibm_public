@@ -3,9 +3,9 @@ package com.websystique.springmvc.dao;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.ArrayList;
 import org.springframework.stereotype.Repository;
-
+import com.websystique.springmvc.model.ParamsGeneral;
 import com.websystique.springmvc.model.Profile_matchers;
 
 @Repository("profile_matchersDAO")
@@ -14,10 +14,11 @@ public class Profile_matchersDAOImpl extends AbstractDao<Integer, Profile_matche
 	@Override
 	public List<Profile_matchers> findall() {
 		// FIXME Auto-generated method stub
-		Map<String,String> mRes =  new HashMap<String, String>();
+		//Map<String,String> mRes =  new HashMap<String, String>();
 		Map<String,String> mOrd =  new HashMap<String, String>();
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
 		mOrd.put("1", "ID_PROFILE");
-		return (List<Profile_matchers>)criteriaQuery(mRes,mOrd);
+		return (List<Profile_matchers>)criteriaGeneralList(Params, mOrd);
 	}
 
 	@Override

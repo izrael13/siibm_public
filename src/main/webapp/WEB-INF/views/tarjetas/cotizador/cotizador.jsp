@@ -239,7 +239,7 @@ function FBuscarInfoDir()
 }
 function FLimpar()
 {
-	window.location.replace('<c:url value="/cotizador/vendedor/cotizadorabc"/>?id=0'+'&iddet='+0);
+	window.location.replace('<c:url value="/cotizador/vendedor/cotizadorabc"/>');
 }
 function FBuscar()
 {

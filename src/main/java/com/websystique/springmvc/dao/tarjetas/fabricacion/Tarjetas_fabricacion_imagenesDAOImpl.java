@@ -1,5 +1,6 @@
 package com.websystique.springmvc.dao.tarjetas.fabricacion;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +8,7 @@ import java.util.Map;
 import org.springframework.stereotype.Repository;
 
 import com.websystique.springmvc.dao.AbstractDao;
+import com.websystique.springmvc.model.ParamsGeneral;
 import com.websystique.springmvc.model.tarjetas.fabricacion.Tarjetas_fabricacion_imagenes;
 
 @Repository("tarjetas_fabricacion_imagenesDAO")
@@ -15,15 +17,18 @@ public class Tarjetas_fabricacion_imagenesDAOImpl extends AbstractDao<Integer,Ta
 	@Override
 	public List<Tarjetas_fabricacion_imagenes> BuscarxIdCotidDert(Integer idCot, Integer idDet) {
 		// TODO Auto-generated method stub
-		Map<String,Integer> mRes =  new HashMap<String, Integer>();
-		Map<String,String> mResStr =  new HashMap<String, String>();
+		/*Map<String,Integer> mRes =  new HashMap<String, Integer>();
+		Map<String,String> mResStr =  new HashMap<String, String>();*/
 		Map<String,String> mOrd =  new HashMap<String, String>();
 		
-		mRes.put("idcotizacion", idCot);
-		mRes.put("iddetalle", idDet);
+		//mRes.put("idcotizacion", idCot);
+		//mRes.put("iddetalle", idDet);
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		Params.add(new ParamsGeneral(1,"idcotizacion",idCot,"EQ"));
+		Params.add(new ParamsGeneral(1,"iddetalle",idDet,"EQ"));
 		mOrd.put("1", "fecha_insert");
 		
-		List<Tarjetas_fabricacion_imagenes> Lista = criteriaQueryEqStrInt(mResStr,mRes, mOrd);
+		List<Tarjetas_fabricacion_imagenes> Lista = criteriaGeneralList(Params, mOrd);
 		
 		return Lista;
 	}
@@ -31,18 +36,21 @@ public class Tarjetas_fabricacion_imagenesDAOImpl extends AbstractDao<Integer,Ta
 	@Override
 	public List<Tarjetas_fabricacion_imagenes> BuscarxId(Integer idCot, Integer idDet, String nombre) {
 		// TODO Auto-generated method stub
-		Map<String,Integer> mResInt =  new HashMap<String, Integer>();
-		Map<String,String> mResStr =  new HashMap<String, String>();
+		//Map<String,Integer> mResInt =  new HashMap<String, Integer>();
+		//Map<String,String> mResStr =  new HashMap<String, String>();
 		Map<String,String> mOrd =  new HashMap<String, String>();
 		
-		mResInt.put("idcotizacion", idCot);
-		mResInt.put("iddetalle", idDet);
+		//mResInt.put("idcotizacion", idCot);
+		//mResInt.put("iddetalle", idDet);
+		//mResStr.put("nombre", nombre);
 		
-		mResStr.put("nombre", nombre);
-		
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		Params.add(new ParamsGeneral(1,"idcotizacion",idCot,"EQ"));
+		Params.add(new ParamsGeneral(1,"iddetalle",idDet,"EQ"));
+		Params.add(new ParamsGeneral(1,"nombre",nombre,"EQ"));
 		mOrd.put("1", "nombre");
 		
-		List<Tarjetas_fabricacion_imagenes> Lista = criteriaQueryEqStrInt(mResStr,mResInt,mOrd);
+		List<Tarjetas_fabricacion_imagenes> Lista = criteriaGeneralList(Params,mOrd);
 		return Lista;
 	}
 
