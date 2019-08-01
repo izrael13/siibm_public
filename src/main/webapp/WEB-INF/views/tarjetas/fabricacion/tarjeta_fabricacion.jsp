@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1" %>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
@@ -6,7 +6,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"/>
 <html>
 <head>
-<%@include file="../../appconfig/authheader2.jsp"%>
+<%@ include file="../../appconfig/authheader2.jsp"%>
 <title>Tarjetas de Fabricación</title>
 <script>
 $(document).ready(function() {
@@ -21,7 +21,8 @@ $(document).ready(function() {
 			$("#file").prop("disabled", true );
 			$("#CCama").prop("disabled", true );
 			var lista=document.getElementsByName("ABorrarImg");
-			for(var i=0; i<lista.length; i++){
+			for(var i=0; i<lista.length; i++)
+			{
 				$("#"+lista[i].id).prop("disabled", true );		
 			}
 	}
@@ -234,14 +235,14 @@ function FCancelar()
         enctype: 'multipart/form-data',
         processData: false,
         contentType: false,
-        before: function() {
+        before: function() {	
 
   	    },
 	    success: function(r) {	    	
 	    	if (r.search(/Login page/i) != -1) {
     			window.location.replace('<c:url value="/login?expired"/>');
 			    return true;
-			  }	    	
+			  }	    		
 	    	$("#mensajes" ).text("Tarjetas canceladas OK");
 			$("#mensajes").removeClass().addClass("alert alert-success");
 			window.location.replace('<c:url value="/tarjeta/ingenieria/tarjeta_fabricacion" />');

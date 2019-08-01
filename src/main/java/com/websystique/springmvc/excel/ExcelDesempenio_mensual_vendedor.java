@@ -45,6 +45,7 @@ public class ExcelDesempenio_mensual_vendedor extends AbstractXlsView{
         header.createCell(11).setCellValue("Noviembre");
         header.createCell(12).setCellValue("Diciembre");
         header.createCell(13).setCellValue("Total");
+        header.createCell(14).setCellValue("Porcentaje");
         
         for(int i = 0; i < listaexcel.size(); i++)
         {
@@ -63,6 +64,7 @@ public class ExcelDesempenio_mensual_vendedor extends AbstractXlsView{
         	dataRow.createCell(11).setCellValue(df.format(listaexcel.get(i).getNoviembre()));
         	dataRow.createCell(12).setCellValue(df.format(listaexcel.get(i).getDiciembre()));
         	dataRow.createCell(13).setCellValue(df.format(listaexcel.get(i).getTotaltenanio()));
+        	dataRow.createCell(14).setCellValue(df.format(listaexcel.get(i).getPorcentaje()));
         }
 		
 	}

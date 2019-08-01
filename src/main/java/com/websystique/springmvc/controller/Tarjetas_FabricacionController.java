@@ -93,7 +93,7 @@ public class Tarjetas_FabricacionController {
 			 
 			if (result.hasErrors() )
 			{
-				return "/tarjetas/cotizador/cotizador";
+				return "/tarjetas/fabricacion/tarjeta_fabricacion";
 			}
 			
 			logger.info(AppController.getPrincipal() + " - tarjeta_fabricacionpost.");
@@ -348,8 +348,7 @@ public class Tarjetas_FabricacionController {
 				
 		return "/tarjetas/fabricacion/tarjeta_aut_produccion";
 	}
-	
-	
+		
 	@RequestMapping(value = {"/produccion/tarjeta_aut_produccion_desicion" }, method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> tarjeta_aut_produccion(ModelMap model,
@@ -457,5 +456,48 @@ public class Tarjetas_FabricacionController {
 		return "/tarjetas/fabricacion/tarjeta_aut_cliente";
 	}
 	
+	@RequestMapping(value = {"/cliente/tarjeta_aut_cliente_desicion" }, method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<?> tarjeta_aut_cliente(ModelMap model,
+			@RequestParam("folio") String folio,@RequestParam("coment") String coment, @RequestParam("ban") Integer ban) {
+		String mensaje = "";
+		try 
+		{
+			Tarjeta_fabricacion tf = new Tarjeta_fabricacion();
+			java.util.Date date = new java.util.Date();
+			User user = us.findBySSO(AppController.getPrincipal());
+			tf = tfs.BuscarxFolio(folio);
+			
+			if(ban == 1) {
+				tf.setUsuario_aut_cliente(user.getId());
+				tf.setFecha_aut_cliente(date);
+			}
+			else {
+				tf.setUsuario_rech_cliente(user.getId());
+				tf.setFecha_rech_cliente(date);
+				tf.setUsuario_aut_ing(null);
+				tf.setFecha_aut_ing(null);
+				tf.setUsuario_aut_calidad(null);
+				tf.setFecha_aut_calidad(null);
+				tf.setUsuario_aut_diseniador(null);
+				tf.setFecha_aut_diseniador(null);
+				tf.setUsuario_aut_produccion(null);
+				tf.setFecha_aut_produccion(null);
+			}
+				
+			tf.setObservaciones_ing(coment);
+			tfs.Actualizar(tf);
+			logger.info(AppController.getPrincipal() + " - tarjeta_aut_cliente_desicion. " + mensaje);
+			return new ResponseEntity<Object>("OK", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			mensaje = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
+			model.addAttribute("mensajes", mensaje);
+			logger.info(AppController.getPrincipal() + " - tarjeta_aut_cliente_desicion. " + mensaje);
+			return new ResponseEntity<Object>(mensaje, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	
+	}
 	
 }

@@ -86,6 +86,7 @@ function FBuscar()
 				<th>Noviembre</th>
 				<th>Diciembre</th>
 				<th>Total</th>
+				<th>Porcentaje</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -111,6 +112,7 @@ function FBuscar()
 				<td align="right"><fmt:formatNumber type = "number" maxFractionDigits = "0" value = "${item.noviembre}" /></td>
 				<td align="right"><fmt:formatNumber type = "number" maxFractionDigits = "0" value = "${item.diciembre}" /></td>
 				<td align="right"><fmt:formatNumber type = "number" maxFractionDigits = "0" value = "${item.totaltenanio}" /></td>
+				<td align="right"><fmt:formatNumber type = "number" maxFractionDigits = "3" value = "${item.porcentaje}" /></td>
 			</tr>
 		</c:forEach>
 		</tbody>

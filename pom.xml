@@ -220,22 +220,22 @@
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
 			<version>2.2.12</version>
-		</dependency> -->
-<!--  <dependency>
-    <groupId>com.javaconnSAPB1_1</groupId>
-    <artifactId>com.javaconnSAPB1_1</artifactId>
-    <version>1.0</version>
-    <scope>system</scope>
-    <systemPath>C:\Program Files (x86)\SAP\SAP Business One DI API\JCO\LIB\sboapi.jar</systemPath>
-  </dependency>
-  
-  		<dependency>
-    <groupId>com.javaconnSAPB1_2</groupId>
-    <artifactId>com.javaconnSAPB1_2</artifactId>
-    <version>1.0</version>
-    <scope>system</scope>
-    <systemPath>C:\Program Files (x86)\SAP\SAP Business One DI API\JCO\LIB\sbowrapper.jar</systemPath>
-  </dependency>   -->
+		</dependency> 
+		<dependency>
+			<groupId>com.javaconnSAPB1_1</groupId>
+			<artifactId>com.javaconnSAPB1_1</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>C:\Program Files (x86)\SAP\SAP Business One DI API\JCO\LIB\sboapi.jar</systemPath>
+		</dependency>
+				
+		<dependency>
+			<groupId>com.javaconnSAPB1_2</groupId>
+			<artifactId>com.javaconnSAPB1_2</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>C:\Program Files (x86)\SAP\SAP Business One DI API\JCO\LIB\sbowrapper.jar</systemPath>
+		</dependency>   -->
 		
 	</dependencies>
 
@@ -262,30 +262,20 @@
 					</configuration>
 				</plugin>
 				
-				<!-- tag::wsdl[] 
-            <plugin>
-                <groupId>org.jvnet.jaxb2.maven2</groupId>
-                <artifactId>maven-jaxb2-plugin</artifactId>
-                <version>0.12.3</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <schemaLanguage>WSDL</schemaLanguage>
-                    <generatePackage>com.diserver.sap.wsdl</generatePackage>
-                    <schemas>
-                        <schema>
-                            <url>http://192.169.1.50/SAP/DIServer.asmx?WSDL</url>
-                        </schema>
-                    </schemas>
-                </configuration>
-            </plugin>
-             end::wsdl[] -->
-				
+			<!-- 			 
+	           <plugin>
+	               <groupId>org.jvnet.jax-ws-commons</groupId>
+	               <artifactId>jaxws-maven-plugin</artifactId>
+    				<version>2.3.1-b20150201.1248</version>
+	               <configuration>
+	               	<xdebug>true</xdebug>
+	                <sourceDestDir>src/main/java/diserver</sourceDestDir>
+					<wsdlUrls>
+						<wsdlUrl>http://192.169.1.50/SAP/DIServer.asmx?WSDL</wsdlUrl>
+					</wsdlUrls>
+	               </configuration>
+	           </plugin>            
+			 -->	
 			</plugins>
 		</pluginManagement>
 		<finalName>barcasii</finalName>

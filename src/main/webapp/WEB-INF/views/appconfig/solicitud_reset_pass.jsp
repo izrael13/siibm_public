@@ -7,6 +7,16 @@
 <head>
 <%@include file="imports.jsp"%>
 <title>Solicitud de cambio de contraseña</title>
+<script>
+function FMensaje()
+{
+	if($("#sso_id").val() != "" && $("#email").val() != "")
+	{
+		$("#mensajes" ).text("Enviando solicitud.");
+		$("#mensajes").removeClass().addClass("alert alert-info");
+	}
+}
+</script>
 </head>
 <body>
 <br>
@@ -51,7 +61,7 @@
 		<div>
 			<div class="col"></div>
 			<div class="col form-actions">
-				<input type="submit" value="Enviar solicitud" class="btn btn-outline-primary"/>    
+				<input onclick="FMensaje()" type="submit" value="Enviar solicitud" class="btn btn-outline-primary"/>    
 				<a class="btn btn-outline-primary" href="javascript:window.close()">Cerrar</a>
 			</div>
 			<div class="col"></div>

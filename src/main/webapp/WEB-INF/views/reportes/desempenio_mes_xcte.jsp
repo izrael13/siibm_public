@@ -21,7 +21,8 @@ function Excel()
 function FBuscarVen()
 {
 	var id = $("#SVendedores").val();
-	
+	var opciones = "";
+	//alert(id);
 	$.ajax({
 		//dataType: 'text',
 		url: '<c:url value="/reportes/ventas/buscarclientes"/>?id='+id,
@@ -37,7 +38,7 @@ function FBuscarVen()
         			window.location.replace('<c:url value="/login?expired"/>');
 				    return true;
 				  }
-	        	opciones = opciones + "<option value='""'>Seleccione un cliente</option>";
+	        	opciones = opciones + "<option value=''>Seleccione un cliente</option>";
 	        	$.each(jQuery.parseJSON(data),function(index, value){
 	        		opciones = opciones + "<option value='"+value.cardcode + "'>"+value.cardname+ "</option>";
 	        	});
@@ -51,7 +52,7 @@ function FBuscarVen()
 			  $( "#mensajes").removeClass().addClass("alert alert-danger");
 			  $( "#imgload").hide();
 		  }
-	 });
+	 }); 
 }
 </script>
 </head>
@@ -89,6 +90,9 @@ function FBuscarVen()
         <div class="col-md-6">        
         <select id="SClientes" class="border border-primary small">
 			<option value="">Seleccione un cliente</option>
+			<c:forEach var="item" items="${listactes}">
+				<option value="${item.cardcode}"  ${item.cardcode == selectedValueCardCode ? 'selected' : ''}>${item.cardname}</option>
+			</c:forEach>
 		</select>        
 		</div>
 		<div class="col-md-1"><button type="button" class="btn btn-outline-primary btn-sm" onClick="FBuscar()">
@@ -123,6 +127,7 @@ function FBuscarVen()
 				<th>Noviembre</th>
 				<th>Diciembre</th>
 				<th>Total</th>
+				<th>Porcentaje</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -143,6 +148,7 @@ function FBuscarVen()
 				<td align="right"><fmt:formatNumber type = "number" maxFractionDigits = "0" value = "${item.noviembre}" /></td>
 				<td align="right"><fmt:formatNumber type = "number" maxFractionDigits = "0" value = "${item.diciembre}" /></td>
 				<td align="right"><fmt:formatNumber type = "number" maxFractionDigits = "0" value = "${item.totaltenanio}" /></td>
+				<td align="right"><fmt:formatNumber type = "number" maxFractionDigits = "2" value = "${item.porcentaje}" /></td>
 			</tr>
 		</c:forEach>
 		</tbody>

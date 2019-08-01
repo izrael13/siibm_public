@@ -46,7 +46,6 @@ import com.websystique.springmvc.model.reportes.Media_pedidos_cte;
 import com.websystique.springmvc.model.reportes.Reporte_consumo_papel;
 import com.websystique.springmvc.model.reportes.Reportes_consumo_papel_utl_sem;
 import com.websystique.springmvc.model.reportes.Todos_pedidos;
-import com.websystique.springmvc.model.tarjetas.Catalogo_direcciones_sap_vw;
 import com.websystique.springmvc.service.UserService;
 import com.websystique.springmvc.service.reportes.Amortiza_herramentalesService;
 import com.websystique.springmvc.service.reportes.Cobranza_acumService;

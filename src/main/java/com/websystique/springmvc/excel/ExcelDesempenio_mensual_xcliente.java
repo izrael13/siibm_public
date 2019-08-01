@@ -46,6 +46,7 @@ DecimalFormat df = new DecimalFormat("####################");
         header.createCell(12).setCellValue("Noviembre");
         header.createCell(13).setCellValue("Diciembre");
         header.createCell(14).setCellValue("Total");
+        header.createCell(15).setCellValue("Porcentaje");
         
         for(int i = 0; i < listaexcel.size(); i++)
         {
@@ -65,6 +66,7 @@ DecimalFormat df = new DecimalFormat("####################");
         	dataRow.createCell(12).setCellValue(df.format(listaexcel.get(i).getNoviembre()));
         	dataRow.createCell(13).setCellValue(df.format(listaexcel.get(i).getDiciembre()));
         	dataRow.createCell(14).setCellValue(df.format(listaexcel.get(i).getTotaltenanio()));
+        	dataRow.createCell(15).setCellValue(df.format(listaexcel.get(i).getPorcentaje()));
         }
 	}
 

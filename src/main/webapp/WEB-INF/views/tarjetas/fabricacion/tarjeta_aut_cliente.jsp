@@ -8,6 +8,118 @@
 <head>
 <%@include file="../../appconfig/authheader2.jsp"%>
 <title>Autorización de tarjetas Cliente</title>
+<script>
+function FAut(folio)
+{
+	var r = confirm("Enviar autorización!");
+	if(r == true)
+	{
+		if(folio != "")
+		{
+			var http = new XMLHttpRequest();
+			var url = '<c:url value="/tarjeta/cliente/tarjeta_aut_cliente_desicion"/>';
+			var params = 'folio='+folio+'&coment='+$("#TComent"+folio).val()+'&ban='+1;
+			
+			http.open('POST', url, true);
+		
+			//Send the proper header information along with the request
+			http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+		
+			http.onreadystatechange = function() {//Call a function when the state changes.
+			    if(http.readyState == 4 && http.status == 200) 
+			    {
+			    	if (http.responseText.search(/Login page/i) != -1) {
+			    		alert("La sessión ha expirado, Por favor vuelva a intentarlo.");
+		    			window.location.replace('<c:url value="/login?expired"/>');
+			    	}
+		    		else{
+		    			if(http.responseText === 'OK')
+		    			{
+		    				alert("Autorización existosa.");
+				    		window.location.replace('<c:url value="/tarjeta/cliente/tarjeta_aut_cliente"/>');
+		    			}
+		    			else
+		    			{
+		    				alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
+				    		window.location.replace('<c:url value="/tarjeta/cliente/tarjeta_aut_cliente"/>');
+		    			}
+		    		}
+			    }
+			    else
+			    {
+			    	if(http.readyState == 4 && http.status != 200){
+			    		alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
+			    		window.location.replace('<c:url value="/tarjeta/cliente/tarjeta_aut_cliente"/>');
+			    	}
+			    	else
+			    	{
+				    	$("#mensajes" ).text("Procesando petición");
+						$("#mensajes").removeClass().addClass("alert alert-info");
+			    	}
+			    }
+			    
+			}
+			http.send(encodeURI(params));
+		}
+	}
+	
+}
+
+function FReach(folio)
+{
+	var r = confirm("Enviar rechazo!");
+	if(r == true)
+	{
+		if(folio != "")
+		{
+			var http = new XMLHttpRequest();
+			var url = '<c:url value="/tarjeta/cliente/tarjeta_aut_cliente_desicion"/>';
+			var params = 'folio='+folio+'&coment='+$("#TComent"+folio).val()+'&ban='+0;
+			
+			http.open('POST', url, true);
+		
+			//Send the proper header information along with the request
+			http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+		
+			http.onreadystatechange = function() {//Call a function when the state changes.
+			    if(http.readyState == 4 && http.status == 200) 
+			    {
+			    	if (http.responseText.search(/Login page/i) != -1) {
+			    		alert("La sessión ha expirado, Por favor vuelva a intentarlo.");
+		    			window.location.replace('<c:url value="/login?expired"/>');
+			    	}
+		    		else{
+		    			if(http.responseText === 'OK')
+		    			{
+		    				alert("Rechazo enviado.");
+				    		window.location.replace('<c:url value="/tarjeta/cliente/tarjeta_aut_cliente"/>');
+		    			}
+		    			else
+		    			{
+		    				alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
+				    		window.location.replace('<c:url value="/tarjeta/cliente/tarjeta_aut_cliente"/>');
+		    			}
+		    		}
+			    }
+			    else
+			    {
+			    	if(http.readyState == 4 && http.status != 200){
+			    		alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
+			    		window.location.replace('<c:url value="/tarjeta/cliente/tarjeta_aut_cliente"/>');
+			    	}
+			    	else
+			    	{
+				    	$("#mensajes" ).text("Procesando petición");
+						$("#mensajes").removeClass().addClass("alert alert-info");
+			    	}
+			    }
+			    
+			}
+			http.send(encodeURI(params));
+		}
+	}
+}
+</script>
 </head>
 <body>
 	<br>	

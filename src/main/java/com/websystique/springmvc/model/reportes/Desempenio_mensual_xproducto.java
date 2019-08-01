@@ -35,5 +35,6 @@ public class Desempenio_mensual_xproducto implements Serializable{/**
 	private Double noviembre;
 	private Double diciembre;
 	private Double totaltenanio;
+	private Double porcentaje;
 
 }

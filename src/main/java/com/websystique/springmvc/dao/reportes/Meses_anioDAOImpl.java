@@ -34,7 +34,7 @@ public class Meses_anioDAOImpl extends AbstractDao<Integer, Meses_anio> implemen
 		Map<String,String> mOrd =  new HashMap<String, String>();
 		
 		//mRes.put("anio", "2018");
-		Params.add(new ParamsGeneral(1,"anio","2018","EQ"));
+		Params.add(new ParamsGeneral(1,"anio","2018","GTE"));
 		mOrd.put("1", "anio");
 		mOrd.put("2", "mes");
 		
