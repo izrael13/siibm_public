@@ -225,7 +225,9 @@ function FLimpar()
 						</div>
 					</div>
 					<div class="col-sm-1">% avance</div>
-					<div class="col-sm-1 border-right">${prospectos_bean.prospectos_ventas.porcentaje_avance}</div>
+					<div class="col-sm-1 border-right">
+						<form:input type="text" style="width:80px" readonly="true" path="prospectos_ventas.porcentaje_avance" class="border border-secondary"/>
+					</div>
 					<div class="col-sm-2">Fecha Actualización</div>
 					<div class="col-sm-2 border-right">${prospectos_bean.prospectos_ventas.fecha_update}</div>
 				</div>				

@@ -49,6 +49,7 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 <ul class="navbar-nav mr-auto">
 	<li class="nav-item dropdown"><a class="dropdown-item" href="" data-toggle="dropdown"><i class="fa fa-file-text" aria-hidden="true">	Reportes</i></a>
 		<ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu">
+			<sec:authorize access="hasRole('ADMIN') or hasRole('MATERIAPRIMA')">
 			<li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-newspaper-o" aria-hidden="true"></i> Papel</a>
 			    <ul class="dropdown-menu">
 			    	<li><a class="dropdown-item" href = "<c:url value='/reportes/papel/consumo_kilos' />"><i class="fa fa-file-o" aria-hidden="true"></i> Consumo en kilos</a></li>
@@ -57,6 +58,8 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 					<li><a class="dropdown-item" href = "<c:url value='/reportes/papel/consumo_papel_mes' />"><i class="fa fa-file-o" aria-hidden="true"></i> Consumo papel mes</a></li>
 			  	</ul>
 			</li>
+			</sec:authorize>
+			<sec:authorize access="hasRole('ADMIN') or hasRole('PRODUCCION')">
 			<li class="dropdown-submenu dropdown-menu-right">
 				<a class="nav-link dropdown-toggle"><i class="fa fa-product-hunt" aria-hidden="true"></i> Producción</a>
 				<ul class="dropdown-menu">
@@ -66,22 +69,34 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 					<li><a class="dropdown-item" href = "<c:url value='/reportes/produccion/paros_concepto_d__' />"><i class="fa fa-file-o" aria-hidden="true"></i> Paros por concepto diarios</a></li>
 				</ul>
 			</li>
+			</sec:authorize>
+			<sec:authorize access="hasRole('ADMIN') or hasRole('VENTAS')">
 			<li class="dropdown-submenu dropdown-menu-right">
 		  		<a class="nav-link dropdown-toggle"><i class="fa fa-sellsy" aria-hidden="true"></i>	Ventas</a>
 		  		<ul class="dropdown-menu">
 		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/golpes_kilos_maquina__' />"><i class="fa fa-file-o" aria-hidden="true"></i> Golpes/Kilos por máquina captados</a></li>
-		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/peso_dia_d__' />"><i class="fa fa-file-o" aria-hidden="true"></i> Embarque diario</a></li>
 		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/viajes_mes_ciudad' />"><i class="fa fa-file-o" aria-hidden="true"></i> Viajes por ciudad</a></li>
-		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/inven_alm____' />"><i class="fa fa-file-o" aria-hidden="true"></i> Inventario almacen</a></li>
-		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/golpes_pend_fab_' />"><i class="fa fa-file-o" aria-hidden="true"></i> Captación</a></li>
 		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/golpes_pend_fab_2' />"><i class="fa fa-file-o" aria-hidden="true"></i> Golpes pendientes de fabricar</a></li>
 		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/todos_pedidos___' />"><i class="fa fa-file-o" aria-hidden="true"></i> Todos pedidos</a></li>
 		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/media_pedidos_cte1' />"><i class="fa fa-file-o" aria-hidden="true"></i> Media pedidos por cliente</a></li>
-		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/desempeniomesvend' />"><i class="fa fa-file-o" aria-hidden="true"></i> Desempeño mensual por vendedor</a></li>
-		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/desempeniomesxcte' />"><i class="fa fa-file-o" aria-hidden="true"></i> Desempeño mensual por cliente</a></li>
-		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/desempeniomesxprod' />"><i class="fa fa-file-o" aria-hidden="true"></i> Desempeño mensual por producto</a></li>
 			    </ul>
-		  	</li>	
+		  	</li>
+		  	</sec:authorize>
+		  	<sec:authorize access="hasRole('ADMIN') or hasRole('VENDEDOR')">
+		  	<li class="dropdown-submenu dropdown-menu-right">
+		  		<a class="nav-link dropdown-toggle"><i class="fa fa-sellsy" aria-hidden="true"></i>	Vendedores</a>
+		  		<ul class="dropdown-menu">
+		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/vendedores/golpes_pend_fab_' />"><i class="fa fa-file-o" aria-hidden="true"></i> Captación</a></li>
+		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/vendedores/inven_alm____' />"><i class="fa fa-file-o" aria-hidden="true"></i> Inventario almacen</a></li>
+		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/vendedores/desempeniomesvend' />"><i class="fa fa-file-o" aria-hidden="true"></i> Desempeño mensual por vendedor</a></li>
+		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/vendedores/desempeniomesxcte' />"><i class="fa fa-file-o" aria-hidden="true"></i> Desempeño mensual por cliente</a></li>
+		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/vendedores/desempeniomesxprod' />"><i class="fa fa-file-o" aria-hidden="true"></i> Desempeño mensual por producto</a></li>
+		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/vendedores/peso_dia_d__' />"><i class="fa fa-file-o" aria-hidden="true"></i> Embarque diario</a></li>
+		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/vendedores/embarquediariodetalle' />"><i class="fa fa-file-o" aria-hidden="true"></i> Embarque diario detalle</a></li>
+		    	</ul>
+		    </li>
+		    </sec:authorize>
+		    <sec:authorize access="hasRole('ADMIN') or hasRole('INGENIERIA')">
 		  	<li class="dropdown-submenu dropdown-menu-right">
 			    <a class="nav-link dropdown-toggle"><i class="fa fa-newspaper-o" aria-hidden="true"></i> Ingeniería</a>
 			    <ul class="dropdown-menu">
@@ -89,20 +104,26 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 			    	<li><a class="dropdown-item" href = "<c:url value='/reportes/ingenieria/todos_pedidos_ing_' />"><i class="fa fa-file-o" aria-hidden="true"></i> Todos pedidos</a></li>
 			  	</ul>
 			</li>
+			</sec:authorize>
+			<sec:authorize access="hasRole('ADMIN') or hasRole('VENDEDOR')">
 			<li class="dropdown-submenu dropdown-menu-right">				
 				<a class="nav-link dropdown-toggle"><i class="fa fa-money" aria-hidden="true"></i> Cobranza</a>
 				<ul class="dropdown-menu">
 			  		<li><a class="dropdown-item" href = "<c:url value='/reportes/cobranza/detalle_cobranza' />"><i class="fa fa-file-o" aria-hidden="true"></i>	Detalle de cobranza</a></li>
 			  	</ul>
-			</li>	  	
+			</li>
+			</sec:authorize>
 		</ul>
   	</li>
 	 <sec:authorize access="hasRole('ADMIN') or hasRole('VENTAS')">
 	 <li class="nav-item dropdown"><a class="dropdown-item" href="" data-toggle="dropdown"><i class="fa fa-industry" aria-hidden="true"> Ventas</i></a>
 	 	<ul class="dropdown-menu dropdown-menu-right">
-	   		<li class="dropdown-submenu dropdown-menu-right">
-	   			<a class="dropdown-item" href = "<c:url value='/qlikview/ventas/pronosticoscte____' />"><i class="fa fa-lightbulb-o" aria-hidden="true"></i>	Pronósticos</a>
-	  		</li>
+	   		<li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-line-chart" aria-hidden="true"></i> Pronósticos</a>
+			    <ul class="dropdown-menu">
+			    		<li><a class="dropdown-item" href = "<c:url value='/qlikview/ventas/pronosticoscte____' />"><i class="fa fa-cloud-upload" aria-hidden="true"></i> Subir archivo</a></li>
+			    		<li><a class="dropdown-item" href = "<c:url value='/qlikview/ventas/pronosticoscte____' />"><i class="fa fa-area-chart" aria-hidden="true"></i> Ver pronósticos</a></li>
+			    </ul>
+			 </li>
 	   </ul>
 	 </li>
 	 </sec:authorize>
@@ -112,25 +133,47 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 		<ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu">
 			<li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-user-circle" aria-hidden="true"></i> Prospectos</a>
 			    <ul class="dropdown-menu">
-			    	<li><a class="dropdown-item" href = "<c:url value='/prospectos/vendedor/prospectosabc' />?id=0"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro prospectos y actividades</a></li>
-			    	<li><a class="dropdown-item" href = "<c:url value='/prospectos/ventas/prospectosgerenteventas'/>"><i class="fa fa-male" aria-hidden="true"></i> Prospectos gerente de ventas</a></li>
+			    	<sec:authorize access="hasRole('ADMIN') or hasRole('VENDEDOR')">
+			    		<li><a class="dropdown-item" href = "<c:url value='/prospectos/vendedor/prospectosabc' />?id=0"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro prospectos y actividades</a></li>
+			    	</sec:authorize>
+			    	<sec:authorize access="hasRole('ADMIN') or hasRole('VENTAS')">
+			    		<li><a class="dropdown-item" href = "<c:url value='/prospectos/ventas/prospectosgerenteventas'/>"><i class="fa fa-male" aria-hidden="true"></i> Prospectos gerente de ventas</a></li>
+			    	</sec:authorize>
 			    </ul>
 			 </li>
 			 <li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-dot-circle-o" aria-hidden="true"></i> Cotizador/Requerimiento</a>
 			    <ul class="dropdown-menu">
-			    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/vendedor/cotizadorabc'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro Cotizaciones/Requerimientos</a></li>
+			    	<sec:authorize access="hasRole('ADMIN') or hasRole('VENDEDOR')">
+			    		<li><a class="dropdown-item" href = "<c:url value='/cotizador/vendedor/cotizadorabc'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro Cotizaciones/Requerimientos</a></li>
+			    	</sec:authorize>
+			    	<sec:authorize access="hasRole('ADMIN') or hasRole('VENTAS')">
 			    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/ventas/autorizacion_cotizacion_vtas'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de cotizaciones Ventas</a></li>
+			    	</sec:authorize>
+			    	<sec:authorize access="hasRole('ADMIN') or hasRole('PROGRAMACION')">
 			    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/programacion/autorizacion_cotizacion_prog'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de requerimientos Programación</a></li>
+			    	</sec:authorize>
+			    	<sec:authorize access="hasRole('ADMIN') or hasRole('INGENIERIA')">
 			    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/ingenieria/requerimientoabc'/>"><i class="fa fa-check-circle-o" aria-hidden="true"></i> Imprimir/Asignar diseñador requerimientos</a></li>
+			    	</sec:authorize>
 			    </ul>
 			 </li>
 			 <li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-file-code-o" aria-hidden="true"></i> Tarjetas de fabricación</a>
 			 	<ul class="dropdown-menu">
+			 		<sec:authorize access="hasRole('ADMIN') or hasRole('INGENIERIA')">
 			 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/ingenieria/tarjeta_fabricacion'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro tarjetas</a></li>
+			 		</sec:authorize>
+			 		<sec:authorize access="hasRole('ADMIN') or hasRole('CALIDAD')">
 			 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/calidad/tarjeta_aut_calidad'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Calidad</a></li>
+			 		</sec:authorize>
+			 		<sec:authorize access="hasRole('ADMIN') or hasRole('PRODUCCION')">
 			 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/produccion/tarjeta_aut_produccion'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Producción</a></li>
+			 		</sec:authorize>
+			 		<sec:authorize access="hasRole('ADMIN') or hasRole('INGENIERIA')">
 			 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/ingenieria/tarjeta_aut_ingenieria'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Ingeniería</a></li>
+			 		</sec:authorize>
+			 		<sec:authorize access="hasRole('ADMIN') or hasRole('CLIENTE')">
 			 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/cliente/tarjeta_aut_cliente'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Cliente</a></li>
+			 		</sec:authorize>
 			 	</ul>
 			 </li>
 		</ul>

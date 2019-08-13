@@ -12,11 +12,11 @@
 <script>
 function FBuscar()
 {
-	window.location.replace('<c:url value="/reportes/ventas/desempeniomesvend" />?anio='+document.getElementById('SAnio').value);
+	window.location.replace('<c:url value="/reportes/vendedores/desempeniomesvend" />?anio='+document.getElementById('SAnio').value);
 }
 function Excel()
 {
-	window.location.replace('<c:url value="/reportes/ventas/desempeniomesvendexcel" />?anio='+document.getElementById('SAnio').value);
+	window.location.replace('<c:url value="/reportes/vendedores/desempeniomesvendexcel" />?anio='+document.getElementById('SAnio').value);
 }
 </script>
 </head>

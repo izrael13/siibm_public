@@ -12,7 +12,7 @@
 <script>
 function FBuscar()
 {
-	window.location.replace('<c:url value="/reportes/ventas/desempeniomesxprod" />?anio='+document.getElementById('SAnio').value+'&slpcode='+document.getElementById('SVendedores').value+'&xcte='+($("#CXCte").is(':checked') == true ? 1 : 0)+'&xitem='+($("#CXItem").is(':checked') == true ? 1 : 0));
+	window.location.replace('<c:url value="/reportes/vendedores/desempeniomesxprod" />?anio='+document.getElementById('SAnio').value+'&slpcode='+document.getElementById('SVendedores').value+'&xcte='+($("#CXCte").is(':checked') == true ? 1 : 0)+'&xitem='+($("#CXItem").is(':checked') == true ? 1 : 0));
 }
 </script>
 </head>
@@ -44,7 +44,12 @@ function FBuscar()
 			<select id="SVendedores" class="border border-primary small">
 				<option value="0">Seleccione un vendedor</option>
 				<c:forEach var="ven" items="${listavend}">
-					<option value="${ven.clavevendedor}" ${ven.clavevendedor == selectedValueSlpCode ? 'selected' : ''}><c:out value="${ven.nombre}"/></option>
+						<option value="${ven.clavevendedor}" ${ven.clavevendedor == selectedValueSlpCode ? 'selected' : ''}
+							<sec:authorize access="!hasRole('ADMIN') or !hasRole('VENTAS')">
+								'disabled'
+							</sec:authorize>
+						><c:out value="${ven.nombre}"/></option>
+					
 				</c:forEach>
 			</select>
 		</div>
@@ -54,11 +59,11 @@ function FBuscar()
 				Buscar
 				</button>
 		</div>
-        <div class="col-md-1"><button type="button" class="btn btn-outline-primary btn-sm" onClick="Excel()">
+        <!-- <div class="col-md-1"><button type="button" class="btn btn-outline-primary btn-sm" onClick="Excel()">
 				<i class="fa fa-file-excel-o"></i>
 				Excel
 				</button>
-		</div>
+		</div> -->
     </div>
     </div>
 	<br>

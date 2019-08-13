@@ -121,7 +121,9 @@ public class Prospectos_ventasController {
 		
 		prospectosDataBean.getProspectos_ventas().setFecha_update(date);
 		prospectosDataBean.getProspectos_ventas().setUsuario_update(user.getId());
-		prospectosDataBean.getProspectos_ventas().setPorcentaje_avance(prospectosDataBean.getProspectos_ventas_detalle().getCve_actividad());
+		
+		if(prospectosDataBean.getProspectos_ventas_detalle().getCve_actividad() > 0)
+			prospectosDataBean.getProspectos_ventas().setPorcentaje_avance(prospectosDataBean.getProspectos_ventas_detalle().getCve_actividad());
 		
 		prospectosDataBean.getProspectos_ventas_detalle().setUsuario_insert(user.getId());
 		prospectosDataBean.getProspectos_ventas_detalle().setFecha_insert(date);

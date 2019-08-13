@@ -35,6 +35,7 @@ import com.websystique.springmvc.excel.ExcelViewGolpesMaqMes;
 import com.websystique.springmvc.excel.ExcelViewUltSem;
 import com.websystique.springmvc.excel.MediaPedidosCte;
 import com.websystique.springmvc.model.User;
+import com.websystique.springmvc.model.UserProfile;
 import com.websystique.springmvc.model.reportes.Amortiza_herramentales;
 import com.websystique.springmvc.model.reportes.ConsumoKilos;
 import com.websystique.springmvc.model.reportes.Desempenio_mensual_vendedor;
@@ -54,6 +55,7 @@ import com.websystique.springmvc.service.reportes.ConsumoKilosService;
 import com.websystique.springmvc.service.reportes.Desempenio_mensual_vendedorService;
 import com.websystique.springmvc.service.reportes.Desempenio_mensual_xclienteService;
 import com.websystique.springmvc.service.reportes.Desempenio_mensual_xproductoService;
+import com.websystique.springmvc.service.reportes.Embarque_diario_detalleService;
 import com.websystique.springmvc.service.reportes.Flautas_prom_semService;
 import com.websystique.springmvc.service.reportes.Golpes_maquina_mesService;
 import com.websystique.springmvc.service.reportes.Golpes_pendientes_fabService;
@@ -86,7 +88,8 @@ import net.sf.jasperreports.engine.util.JRLoader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap; 
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
 
 @Controller
 @RequestMapping("/reportes")
@@ -146,6 +149,8 @@ public class ReportesController {
 	Catalogo_vendedores_sap_vwService cvsvs;
 	@Autowired
 	Desempenio_mensual_xproductoService dmxp;
+	@Autowired
+	Embarque_diario_detalleService emds;
 	
 	Calendar calendar = Calendar.getInstance();
 	
@@ -450,7 +455,7 @@ public class ReportesController {
 		return "/reportes/paros_concepto_dia";
 	}
 	
-	@RequestMapping(value = {"/ventas/peso_dia_d__" })
+	@RequestMapping(value = {"/vendedores/peso_dia_d__" })
 	public String peso_dia_d__(ModelMap model) {
 		try {
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
@@ -465,7 +470,7 @@ public class ReportesController {
 		return "/reportes/peso_dia";
 	}
 	
-	@RequestMapping(value = {"/ventas/buscarPeso_dia_" }, method = RequestMethod.GET)
+	@RequestMapping(value = {"/vendedores/buscarPeso_dia_" }, method = RequestMethod.GET)
 	public String buscarPeso_dia_(ModelMap model,@RequestParam("aniomes") String aniomes) {
 		try {
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
@@ -480,12 +485,12 @@ public class ReportesController {
 		return "/reportes/peso_dia";
 	}
 	
-	@RequestMapping(value = {"/ventas/inven_alm____"})
+	@RequestMapping(value = {"/vendedores/inven_alm____"})
 	public String inventario_almacen(ModelMap model)
 	{
 		try {
-		model.addAttribute("loggedinuser", AppController.getPrincipal());
-		logger.info(AppController.getPrincipal() + " - inven_alm____.");
+			model.addAttribute("loggedinuser", AppController.getPrincipal());
+			logger.info(AppController.getPrincipal() + " - inven_alm____.");
 		}
 		catch(Exception e) {
 			logger.error(AppController.getPrincipal() + " - inven_alm____. - " + e.getMessage());
@@ -493,13 +498,24 @@ public class ReportesController {
 		return "/reportes/inventario_almacen";
 	}
 	
-	@RequestMapping(value = {"/ventas/buscaInvenalm_"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/vendedores/buscaInvenalm_"}, method = RequestMethod.GET)
 	public String busca_inventario_almacen(ModelMap model,@RequestParam("cve_almacen") String cve_almacen)
 	{
 		try {
 		User user = us.findBySSO(AppController.getPrincipal());
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
-		model.addAttribute("reporte", ias.findByAlmacen(cve_almacen, user.getCvevendedor_sap()));
+		
+		int b = 0;
+		for(UserProfile s : user.getUserProfiles())
+		{
+			if(s.getType().equals("ADMIN") || s.getType().equals("VENTAS"))
+				b++;
+		}
+		if(b == 0)
+			model.addAttribute("reporte", ias.findByAlmacen(cve_almacen, user.getCvevendedor_sap()));
+		else
+			model.addAttribute("reporte", ias.findByAlmacen(cve_almacen, 0));
+		
 		model.addAttribute("selectedValue", cve_almacen);
 		logger.info(AppController.getPrincipal() + " - buscaInvenalm_.");
 		}
@@ -509,7 +525,7 @@ public class ReportesController {
 		return "/reportes/inventario_almacen";
 	}
 	
-	@RequestMapping(value = {"/ventas/golpes_pend_fab_" }, method = RequestMethod.GET)
+	@RequestMapping(value = {"/vendedores/golpes_pend_fab_" }, method = RequestMethod.GET)
 	public String golpes_pend_fab_(ModelMap model) {
 		try {
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
@@ -524,7 +540,7 @@ public class ReportesController {
 		return "/reportes/golpes_pendientes_fab";
 	}
 	
-	@RequestMapping(value = {"/ventas/buscargplpenfab" }, method = RequestMethod.GET)
+	@RequestMapping(value = {"/vendedores/buscargplpenfab" }, method = RequestMethod.GET)
 	public String buscargplpenfab(ModelMap model,@RequestParam("aniomes") String aniomes) {
 		try {
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
@@ -539,7 +555,7 @@ public class ReportesController {
 		return "/reportes/golpes_pendientes_fab";
 	}
 	
-	@RequestMapping(value = { "/ventas/Excel_golpesPend" },method=RequestMethod.GET)
+	@RequestMapping(value = { "/vendedores/Excel_golpesPend" },method=RequestMethod.GET)
 	public ModelAndView excelGPend(HttpServletRequest req, HttpServletResponse res) {
 		String aniomes = "";
 		List<Golpes_pendientes_fab> listaexcel = null;
@@ -728,8 +744,24 @@ public class ReportesController {
 		try {
 		User user = us.findBySSO(AppController.getPrincipal());
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
-		model.addAttribute("reporte",cds.findByCteVen(user.getCvevendedor_sap()));
-		model.addAttribute("acumulado",cai.findByIntervalo(user.getCvevendedor_sap()));
+		//model.addAttribute("reporte",cds.findByCteVen(user.getCvevendedor_sap()));
+		//model.addAttribute("acumulado",cai.findByIntervalo(user.getCvevendedor_sap()));
+		int b = 0;
+		for(UserProfile s : user.getUserProfiles())
+		{
+			if(s.getType().equals("ADMIN") || s.getType().equals("VENTAS"))
+				b++;
+		}
+		
+		if(b == 0) {
+			model.addAttribute("acumulado",cai.findByIntervalo(user.getCvevendedor_sap()));
+			model.addAttribute("reporte",cds.findByCteVen(user.getCvevendedor_sap()));
+		}
+		else {
+			model.addAttribute("acumulado",cai.findByIntervalo(0));
+			model.addAttribute("reporte",cds.findByCteVen(0));
+		}
+		
 		logger.info(AppController.getPrincipal() + " - /cobranza/detalle_cobranza.");
 		}
 		catch(Exception e) {
@@ -880,15 +912,25 @@ public class ReportesController {
 	    JasperExportManager.exportReportToPdfStream(jasperPrint, outStream);
 	  }
 	
-	@RequestMapping(value = {"/ventas/desempeniomesvend" }, method = RequestMethod.GET)
+	@RequestMapping(value = {"/vendedores/desempeniomesvend" }, method = RequestMethod.GET)
 	public String desempeniomesvend(ModelMap model,@RequestParam(value = "anio", defaultValue = "0", required = false) Integer anio) {
 		try 
 		{
 			anio = (anio == 0 ? Calendar.getInstance().get(Calendar.YEAR) : anio);
-			
+			User user = us.findBySSO(AppController.getPrincipal());
 			model.addAttribute("loggedinuser", AppController.getPrincipal());
 			model.addAttribute("selectedValue", anio);
-			model.addAttribute("lista", dms.BuscarxAnio(anio));
+			
+			int b = 0;
+			for(UserProfile s : user.getUserProfiles())
+			{
+				if(s.getType().equals("ADMIN") || s.getType().equals("VENTAS"))
+					b++;
+			}
+			if(b == 0)
+				model.addAttribute("lista", dms.BuscarxAnio(anio,user.getCvevendedor_sap()));
+			else
+				model.addAttribute("lista", dms.BuscarxAnio(anio,0));
 			
 			logger.info(AppController.getPrincipal() + " - ventas/desempeniomesvend.");
 		}
@@ -898,14 +940,27 @@ public class ReportesController {
 		return "/reportes/desempenio_mes_vend";
 	}
 	
-	@RequestMapping(value = { "/ventas/desempeniomesvendexcel" },method=RequestMethod.GET)
+	@RequestMapping(value = { "/vendedores/desempeniomesvendexcel" },method=RequestMethod.GET)
 	public ModelAndView desempeniomesvendexcel(HttpServletRequest req, HttpServletResponse res) {
 
 		List<Desempenio_mensual_vendedor> listaexcel = null;
 		try {
+			
 			int anio = Integer.parseInt(req.getParameter("anio"));
-			listaexcel = dms.BuscarxAnio(anio);
+			User user = us.findBySSO(AppController.getPrincipal());
+			int b = 0;
+			for(UserProfile s : user.getUserProfiles())
+			{
+				if(s.getType().equals("ADMIN") || s.getType().equals("VENTAS"))
+					b++;
+			}
+			
+			if(b == 0)
+				listaexcel = dms.BuscarxAnio(anio, user.getCvevendedor_sap());
+			else
+				listaexcel = dms.BuscarxAnio(anio,0);
 			logger.info(AppController.getPrincipal() + " - desempeniomesvendexcel.");
+			
 		}
 		catch(Exception e) {
 			logger.error(AppController.getPrincipal() + " - desempeniomesvendexcel. - " + e.getMessage());
@@ -913,7 +968,7 @@ public class ReportesController {
 		return new ModelAndView(new ExcelDesempenio_mensual_vendedor(), "listaexcel", listaexcel);
 	} 
 	
-	@RequestMapping(value = {"/ventas/buscarclientes"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/vendedores/buscarclientes"}, method = RequestMethod.GET)
 	public @ResponseBody String buscarclientes(HttpServletRequest req, HttpServletResponse res)
 	   throws Exception {
 		String slpcode = req.getParameter("id");
@@ -923,7 +978,7 @@ public class ReportesController {
 	
 	}
 	
-	@RequestMapping(value = {"/ventas/desempeniomesxcte" }, method = RequestMethod.GET)
+	@RequestMapping(value = {"/vendedores/desempeniomesxcte" }, method = RequestMethod.GET)
 	public String desempeniomesxcte(ModelMap model,@RequestParam(value = "anio", defaultValue = "0", required = false) Integer anio,
 												   @RequestParam(value = "cardcode", defaultValue = "", required = false) String cardcode,
 												   @RequestParam(value = "slpcode", defaultValue = "0", required = false) Integer slpcode) {
@@ -933,14 +988,30 @@ public class ReportesController {
 						
 			model.addAttribute("loggedinuser", AppController.getPrincipal());
 			
-			model.addAttribute("listactes", ccsvs.ListaCtes(slpcode));
-			model.addAttribute("listavend", cvsvs.ListaVendedores());
+			User user = us.findBySSO(AppController.getPrincipal());
+			int b = 0;
+			for(UserProfile s : user.getUserProfiles())
+			{
+				if(s.getType().equals("ADMIN") || s.getType().equals("VENTAS"))
+					b++;
+			}
 			
+			if(b == 0)
+			{
+				model.addAttribute("listactes", ccsvs.ListaCtes(user.getCvevendedor_sap()));
+				model.addAttribute("selectedValueSlpCode", user.getCvevendedor_sap());
+				model.addAttribute("lista", dmcs.Buscar(anio, cardcode, user.getCvevendedor_sap()));
+			}
+			else
+			{
+				model.addAttribute("listactes", ccsvs.ListaCtes(slpcode));
+				model.addAttribute("selectedValueSlpCode", slpcode);
+				model.addAttribute("lista", dmcs.Buscar(anio, cardcode, slpcode));
+			}
+			
+			model.addAttribute("listavend", cvsvs.ListaVendedores());
 			model.addAttribute("selectedValueAnio", anio);
 			model.addAttribute("selectedValueCardCode", cardcode);
-			model.addAttribute("selectedValueSlpCode", slpcode);
-
-			model.addAttribute("lista", dmcs.Buscar(anio, cardcode, slpcode));
 			
 			logger.info(AppController.getPrincipal() + " - ventas/desempeniomesxcte.");
 		}
@@ -950,7 +1021,7 @@ public class ReportesController {
 		return "/reportes/desempenio_mes_xcte";
 	}
 	
-	@RequestMapping(value = { "/ventas/desempeniomesxcteexcel" },method=RequestMethod.GET)
+	@RequestMapping(value = { "/vendedores/desempeniomesxcteexcel" },method=RequestMethod.GET)
 	public ModelAndView desempeniomesxcteexcel(HttpServletRequest req, HttpServletResponse res) {
 
 		List<Desempenio_mensual_xcliente> listaexcel = null;
@@ -958,8 +1029,19 @@ public class ReportesController {
 			int anio = Integer.parseInt(req.getParameter("anio"));
 			String cardcode = req.getParameter("cardcode");
 			int slpcode = Integer.parseInt(req.getParameter("slpcode"));
+			User user = us.findBySSO(AppController.getPrincipal());
+			int b = 0;
+			for(UserProfile s : user.getUserProfiles())
+			{
+				if(s.getType().equals("ADMIN") || s.getType().equals("VENTAS"))
+					b++;
+			}
 			
-			listaexcel = dmcs.Buscar(anio, cardcode, slpcode);
+			if(b == 0)
+				listaexcel = dmcs.Buscar(anio, cardcode, user.getCvevendedor_sap());
+			else
+				listaexcel = dmcs.Buscar(anio, cardcode, slpcode);
+				
 			logger.info(AppController.getPrincipal() + " - desempeniomesxcteexcel.");
 		}
 		catch(Exception e) {
@@ -968,7 +1050,7 @@ public class ReportesController {
 		return new ModelAndView(new ExcelDesempenio_mensual_xcliente(), "listaexcel", listaexcel);
 	} 
 	
-	@RequestMapping(value = {"/ventas/desempeniomesxprod" }, method = RequestMethod.GET)
+	@RequestMapping(value = {"/vendedores/desempeniomesxprod" }, method = RequestMethod.GET)
 	public String desempeniomesxprod(ModelMap model,@RequestParam(value = "anio", defaultValue = "0", required = false) Integer anio,
 												   @RequestParam(value = "slpcode", defaultValue = "0", required = false) Integer slpcode,
 												   @RequestParam(value = "xcte", defaultValue = "0", required = false) Integer xcte,
@@ -982,11 +1064,25 @@ public class ReportesController {
 			model.addAttribute("listavend", cvsvs.ListaVendedores());
 			
 			model.addAttribute("selectedValueAnio", anio);
-			model.addAttribute("selectedValueSlpCode", slpcode);
 			model.addAttribute("selectedValuexcte", xcte);
 			model.addAttribute("selectedValuexitem", xitem);
-
-			model.addAttribute("lista", dmxp.Buscar(anio, slpcode, xcte, xitem));
+			
+			User user = us.findBySSO(AppController.getPrincipal());
+			int b = 0;
+			for(UserProfile s : user.getUserProfiles())
+			{
+				if(s.getType().equals("ADMIN") || s.getType().equals("VENTAS"))
+					b++;
+			}
+			
+			if(b == 0) {
+				model.addAttribute("selectedValueSlpCode", user.getCvevendedor_sap());
+				model.addAttribute("lista", dmxp.Buscar(anio, user.getCvevendedor_sap(), xcte, xitem));
+			}
+			else {
+				model.addAttribute("selectedValueSlpCode", slpcode);
+				model.addAttribute("lista", dmxp.Buscar(anio, slpcode, xcte, xitem));
+			}
 			
 			logger.info(AppController.getPrincipal() + " - ventas/desempeniomesxprod.");
 		}
@@ -995,7 +1091,40 @@ public class ReportesController {
 		}
 		return "/reportes/desempenio_mes_xprod";
 	}
-	//
 	
+	@RequestMapping(value = {"/vendedores/embarquediariodetalle" }, method = RequestMethod.GET)
+	public String embarquediariodetalle(ModelMap model,@RequestParam(value = "fecha", defaultValue = "", required = false) String fecha) {
+		try 
+		{
+			model.addAttribute("loggedinuser", AppController.getPrincipal());
+			Date date = new Date();
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");  
+			if(fecha.equals(""))
+				fecha = formatter.format(date);
+				
+			User user = us.findBySSO(AppController.getPrincipal());
+			int b = 0;
+			for(UserProfile s : user.getUserProfiles())
+			{
+				if(s.getType().equals("ADMIN") || s.getType().equals("VENTAS"))
+					b++;
+			}
+			model.addAttribute("selectedValue", fecha);
+			if(b == 0)
+			{
+				model.addAttribute("lista", emds.Lista(fecha,user.getCvevendedor_sap()));
+			}
+			else
+			{
+				model.addAttribute("lista",emds.Lista(fecha,0));
+			}
+			logger.info(AppController.getPrincipal() + " - embarquediariodetalle.");
+		}
+		catch(Exception e) {
+			logger.error(AppController.getPrincipal() + " - embarquediariodetalle. - " + e.getMessage());
+		}
 		
+		return "/reportes/embarque_diario_detalle";
+	}
+	
 }

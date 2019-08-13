@@ -52,7 +52,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		Iterator<Object> itr = result.iterator();
 		
 		http.authorizeRequests()
-		.antMatchers("/login","/sol_cam_passs_","/resetp","/static/**").permitAll();
+		.antMatchers("/login**","/sol_cam_passs_","/resetp","/static/**").permitAll();
 		
 		while(itr.hasNext())
 		{
@@ -106,8 +106,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		.and().sessionManagement()
 		//.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
 		.maximumSessions(1)
-		.sessionRegistry(sessionRegistry())
-		.expiredUrl("/login?expired").and().invalidSessionUrl("/login?expired")
+		//.sessionRegistry(sessionRegistry())
+		.expiredUrl("/login?expired").and().invalidSessionUrl("/login?logout")
 		.and().sessionManagement().sessionFixation().migrateSession();
 		//.and().addFilterAfter(new CustomFilter(),BasicAuthenticationFilter.class);
 	}

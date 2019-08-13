@@ -12,11 +12,11 @@
 <script>
 function FBuscar()
 {
-	window.location.replace('<c:url value="/reportes/ventas/desempeniomesxcte" />?anio='+document.getElementById('SAnio').value+'&cardcode='+document.getElementById('SClientes').value+'&slpcode='+document.getElementById('SVendedores').value);
+	window.location.replace('<c:url value="/reportes/vendedores/desempeniomesxcte" />?anio='+document.getElementById('SAnio').value+'&cardcode='+document.getElementById('SClientes').value+'&slpcode='+document.getElementById('SVendedores').value);
 }
 function Excel()
 {
-	window.location.replace('<c:url value="/reportes/ventas/desempeniomesxcteexcel" />?anio='+document.getElementById('SAnio').value+'&cardcode='+document.getElementById('SClientes').value+'&slpcode='+document.getElementById('SVendedores').value);
+	window.location.replace('<c:url value="/reportes/vendedores/desempeniomesxcteexcel" />?anio='+document.getElementById('SAnio').value+'&cardcode='+document.getElementById('SClientes').value+'&slpcode='+document.getElementById('SVendedores').value);
 }
 function FBuscarVen()
 {
@@ -25,7 +25,7 @@ function FBuscarVen()
 	//alert(id);
 	$.ajax({
 		//dataType: 'text',
-		url: '<c:url value="/reportes/ventas/buscarclientes"/>?id='+id,
+		url: '<c:url value="/reportes/vendedores/buscarclientes"/>?id='+id,
 		//contentType : 'application/json',
 		//cache: false,    
 		//data: cve_estado,
@@ -82,8 +82,13 @@ function FBuscarVen()
         <div class="col-md-3">
 			<select id="SVendedores" Onchange="FBuscarVen()" class="border border-primary small">
 				<option value="0">Seleccione un vendedor</option>
-				<c:forEach var="ven" items="${listavend}">
-					<option value="${ven.clavevendedor}" ${ven.clavevendedor == selectedValueSlpCode ? 'selected' : ''}><c:out value="${ven.nombre}"/></option>
+				<c:forEach var="ven" items="${listavend}"> 
+							<option value="${ven.clavevendedor}" ${ven.clavevendedor == selectedValueSlpCode ? 'selected' : ''}
+								<sec:authorize access="!hasRole('ADMIN') or !hasRole('VENTAS')">
+								 	'disabled'
+								</sec:authorize>
+							><c:out value="${ven.nombre}"/></option>
+						
 				</c:forEach>
 			</select>
 		</div>

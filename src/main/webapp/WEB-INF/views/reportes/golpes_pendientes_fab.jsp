@@ -12,11 +12,11 @@
 <script>
 function FBuscar()
 {
-	window.location.replace('<c:url value="/reportes/ventas/buscargplpenfab" />?aniomes='+document.getElementById("aniomes").value);
+	window.location.replace('<c:url value="/reportes/vendedores/buscargplpenfab" />?aniomes='+document.getElementById("aniomes").value);
 }
 function FExcel()
 {
-	window.location.replace('<c:url value="/reportes/ventas/Excel_golpesPend" />?aniomes='+document.getElementById("aniomes").value);
+	window.location.replace('<c:url value="/reportes/vendedores/Excel_golpesPend" />?aniomes='+document.getElementById("aniomes").value);
 }
 </script>
 <style type="text/css">
@@ -74,8 +74,8 @@ function FExcel()
     		<tr>
     			<th class="border border-secondary">Fecha</th>
     			<th class="border border-primary">Kilos captados</th>
-    			<th class="border border-primary">Golpes captados</th>
-    			<th class="border border-primary">Troquel golpes captados</th>
+    			<th class="border border-primary" data-toggle="tooltip" data-placement="top" title="Max 200,000">Flexo Golpes captados</th>
+    			<th class="border border-primary" data-toggle="tooltip" data-placement="top" title="Max 115,000">Troquel golpes captados</th>
     			<th class="border border-primary">Flexo kilos captados</th>
     			<th class="border border-primary">Troquel kilos captados</th>
     			<th class="border border-primary">Otros kilos captados</th>
@@ -90,8 +90,8 @@ function FExcel()
     		<tr>
     			<td class="border border-secondary">${fn:substring(item.fecha, 0, 10)}</td>
     			<td class="border border-primary"><fmt:formatNumber type = "number" pattern = "###,###,###,###,###.##" maxFractionDigits = "2" value = "${item.kilos_tkf}" /></td>
-    			<td class="border border-primary"><fmt:formatNumber type = "number" pattern = "###,###,###,###,###.##" maxFractionDigits = "2" value = "${item.flexosgp}" /></td>
-    			<td class="border border-primary"><fmt:formatNumber type = "number" pattern = "###,###,###,###,###.##" maxFractionDigits = "2" value = "${item.troqgp}" /></td>
+    			<td class="border border-primary" data-toggle="tooltip" data-placement="top" title="Max 200,000"><fmt:formatNumber type = "number" pattern = "###,###,###,###,###.##" maxFractionDigits = "2" value = "${item.flexosgp}" /></td>
+    			<td class="border border-primary" data-toggle="tooltip" data-placement="top" title="Max 115,000"><fmt:formatNumber type = "number" pattern = "###,###,###,###,###.##" maxFractionDigits = "2" value = "${item.troqgp}" /></td>
     			<td class="border border-primary"><fmt:formatNumber type = "number" pattern = "###,###,###,###,###.##" maxFractionDigits = "2" value = "${item.flexoskl}" /></td>
     			<td class="border border-primary"><fmt:formatNumber type = "number" pattern = "###,###,###,###,###.##" maxFractionDigits = "2" value = "${item.troqkl}" /></td>
     			<td class="border border-primary"><fmt:formatNumber type = "number" pattern = "###,###,###,###,###.##" maxFractionDigits = "2" value = "${item.otroskl}" /></td>

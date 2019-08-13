@@ -83,7 +83,7 @@ function FSubirQV()
 			<div class="col-md-2">
 				<button type="button" class="btn btn-outline-primary" onClick="FSubirQV()">
 					<i class="fa fa-file-excel-o"></i>
-					Subir a Qlick View
+					Subir archivo
 				</button>
 			</div>
 			<div class="col-1"><input onKeyPress="return Enteros(event)" value="${mesact}" id="TMes"/></div>

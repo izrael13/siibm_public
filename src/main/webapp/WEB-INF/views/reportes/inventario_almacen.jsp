@@ -11,7 +11,7 @@
 <script type="text/javascript">
 function FBuscar()
 {
-	window.location.replace('<c:url value="/reportes/ventas/buscaInvenalm_" />?cve_almacen='+document.getElementById("almacen").value);
+	window.location.replace('<c:url value="/reportes/vendedores/buscaInvenalm_" />?cve_almacen='+document.getElementById("almacen").value);
 }
 </script>
 <style type="text/css">
