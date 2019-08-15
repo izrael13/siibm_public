@@ -120,8 +120,8 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 	 	<ul class="dropdown-menu dropdown-menu-right">
 	   		<li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-line-chart" aria-hidden="true"></i> Pronósticos</a>
 			    <ul class="dropdown-menu">
-			    		<li><a class="dropdown-item" href = "<c:url value='/qlikview/ventas/pronosticoscte____' />"><i class="fa fa-cloud-upload" aria-hidden="true"></i> Subir archivo</a></li>
-			    		<li><a class="dropdown-item" href = "<c:url value='/qlikview/ventas/pronosticoscte____' />"><i class="fa fa-area-chart" aria-hidden="true"></i> Ver pronósticos</a></li>
+			    		<li><a class="dropdown-item" href = "<c:url value='/qlikview/ventas/pronosticoscte____' />"><i class="fa fa-cloud-upload" aria-hidden="true"></i> Subir pronóstico</a></li>
+			    		<li><a class="dropdown-item" href = "<c:url value='/qlikview/ventas/comparativo' />"><i class="fa fa-area-chart" aria-hidden="true"></i> Comparativo</a></li>
 			    </ul>
 			 </li>
 	   </ul>

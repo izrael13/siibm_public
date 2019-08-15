@@ -1,22 +1,10 @@
 package com.websystique.springmvc.service.ventas;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
-import org.apache.poi.EncryptedDocumentException;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.DataFormatter;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-import org.apache.poi.ss.usermodel.*;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 import com.websystique.springmvc.dao.ventas.PronosticoscteDAO;
 import com.websystique.springmvc.model.ventas.Pronosticoscte;
@@ -27,8 +15,20 @@ public class PronosticoscteServiceImpl implements PronosticoscteService{
 	
 	@Autowired
 	PronosticoscteDAO dao;
-	
+
 	@Override
+	public void Guardar(Integer idven, String idcte, String anio, String mes, Double pron, Integer accion, Integer code) {
+		// TODO Auto-generated method stub
+		dao.Guardar(idven, idcte, anio, mes, pron, accion, code);
+	}
+
+	@Override
+	public List<Pronosticoscte> Lista(String anio, String mes, Integer cveven, String cvecte, Integer cteban, Integer opcion) {
+		// TODO Auto-generated method stub
+		return dao.Lista(anio, mes, cveven, cvecte, cteban, opcion);
+	}
+	
+	/*@Override
 	public List<Pronosticoscte> readFile(MultipartFile file) {
 		List<Pronosticoscte> fileObj = new ArrayList<Pronosticoscte>();
 		
@@ -88,6 +88,6 @@ public class PronosticoscteServiceImpl implements PronosticoscteService{
 		}
 		dao.readFile(fileObj);
 		return fileObj;
-	}
+	} */
 
 }

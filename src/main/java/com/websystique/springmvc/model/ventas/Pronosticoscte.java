@@ -19,9 +19,13 @@ public class Pronosticoscte implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@Id //@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer ID;
-	private String CVE_CLIENTE;
-	private String CLIENTE;
-	private String VENDEDOR;
-	private Integer PRONOSTICO;	
+	private Integer id;
+	private String cliente;
+	private String vendedor;
+	private Double tkg;
+	private Double tm2;
+	private Double pron;
+	private String fecha;
+	private Double diferencia;
+	private Double porc;
 }

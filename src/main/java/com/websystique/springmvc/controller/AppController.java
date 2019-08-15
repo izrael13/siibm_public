@@ -408,6 +408,7 @@ public class AppController {
 			}
 			
 			User user = userService.findBySSOnEmail(Solicitud.getSso_id(), Solicitud.getEmail());
+			
 			Integer iduser = 0;
 			Integer iduserS = 0;
 			Solicitudes_reset_pass solVal = null;

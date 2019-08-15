@@ -105,10 +105,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		.tokenValiditySeconds(86400).and().csrf().disable().exceptionHandling().accessDeniedPage("/Access_Denied")
 		.and().sessionManagement()
 		//.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-		.maximumSessions(1)
+		.maximumSessions(1);
 		//.sessionRegistry(sessionRegistry())
-		.expiredUrl("/login?expired").and().invalidSessionUrl("/login?logout")
-		.and().sessionManagement().sessionFixation().migrateSession();
+		//.expiredUrl("/login?expired").and().invalidSessionUrl("/login?logout")
+		//.and().sessionManagement().sessionFixation().migrateSession();
 		//.and().addFilterAfter(new CustomFilter(),BasicAuthenticationFilter.class);
 	}
 

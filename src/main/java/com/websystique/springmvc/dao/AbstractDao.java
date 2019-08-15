@@ -86,9 +86,9 @@ public abstract class AbstractDao<PK extends Serializable, T> {
 		return getSession().createStoredProcedureCall(sp, persistentClass);
 	}
 	
-	/*protected ProcedureCall createStoredProcedureCriteriaStr(String sp){
+	protected ProcedureCall createStoredProcedureCriteriaStr(String sp){
 		return getSession().createStoredProcedureCall(sp);
-	}*/
+	}
 	
 	/*@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected List<T> criteriaQuery(Map< String, String > res, Map< String, String > ord)
