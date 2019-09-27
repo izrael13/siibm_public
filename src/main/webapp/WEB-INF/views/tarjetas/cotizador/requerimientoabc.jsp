@@ -28,11 +28,11 @@ function FTarjeta(id,b)
 	
 	if(r == true)
 	{
+		$("#mensajes" ).text("Procesando petición, por favor espere...");
+		$("#mensajes").removeClass().addClass("alert alert-info");
+		
 		if(id > 0)
-		{
-			$("#mensajes" ).text("Procesando petición, por favor espere...");
-			$("#mensajes").removeClass().addClass("alert alert-info");
-			
+		{			
 			var http = new XMLHttpRequest();
 			var url = '<c:url value="/cotizador/ingenieria/convertiratarjeta"/>';
 			var params = 'idcot='+id+'&coment='+$("#TComent"+id).val()+'&ban='+b;
@@ -61,7 +61,7 @@ function FTarjeta(id,b)
 		    				{	
 		    					if(b == 1)
 		    					{
-				    				alert("Tarjeta de fabricación creada correctamente.\n"+http.responseText);
+				    				alert(http.responseText);
 						    		window.location.replace('<c:url value="/cotizador/ingenieria/requerimientoabc"/>');
 		    					}
 		    					else
@@ -92,11 +92,11 @@ function FTarjeta(id,b)
 			    		alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
 			    		window.location.replace('<c:url value="/cotizador/ingenieria/requerimientoabc"/>');
 			    	}
-			    	else
+			    	/*else
 			    	{
 				    	$("#mensajes" ).text("Procesando petición");
 						$("#mensajes").removeClass().addClass("alert alert-info");
-			    	}
+			    	}*/
 			    }
 			    
 			}

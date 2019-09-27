@@ -2,6 +2,7 @@ package com.websystique.springmvc.dao.tarjetas.cotizador;
 
 import java.util.List;
 
+import com.websystique.springmvc.model.ParamsGeneral;
 import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador;
 import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador_busqueda;
 
@@ -13,5 +14,5 @@ public interface CotizadorDAO {
 	void Actualizar(Cotizador cot);
 	List<Cotizador_busqueda> ListaBusquedaxIdCardCode(Integer id, String cardCode,Integer idUser);
 	List<Cotizador_busqueda> ListaBusquedaxIdCardCodeDet(Integer id, String cardCode,Integer idUser, Integer IdDet, Boolean autVtas, Boolean autProg);
-	List<Object> ListaCotizacionesJasper(Integer id, Boolean autProg);
+	List<Cotizador> ListasCotAut(List<ParamsGeneral> params);
 }

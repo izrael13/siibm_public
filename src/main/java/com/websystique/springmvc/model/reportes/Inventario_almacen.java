@@ -22,7 +22,7 @@ public class Inventario_almacen implements Serializable{
 	private Integer id;
 	private String itemcode;
 	private String itemname;
-	private Integer batchnum;
+	private String batchnum;
 	private Double millar;
 	private Double kilos;
 	private String cardname;

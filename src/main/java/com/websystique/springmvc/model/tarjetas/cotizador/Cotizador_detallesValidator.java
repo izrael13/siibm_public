@@ -43,12 +43,12 @@ public class Cotizador_detallesValidator implements Validator{
 		
 		if(cotizador_detalles.getEspecialidades_cotizacion().size() > 0)
 		{
-			Supplier<Stream<Especialidades_cotizacion>> stream = () -> cotizador_detalles.getEspecialidades_cotizacion().stream().filter(a -> (a.getIdespecialidad() != null) && (a.getIdespecialidad() == 9 || a.getIdespecialidad() == 19));
+			Supplier<Stream<Especialidades_cotizacion>> stream = () -> cotizador_detalles.getEspecialidades_cotizacion().stream().filter(a -> (a.getIdespecialidad() != null) && (a.getIdespecialidad() == 9 || a.getIdespecialidad() == 19 || a.getIdespecialidad() == 24));
 			if(stream.get().count() > 0 &&  (cotizador_detalles.getPiezasxtarima() == null ? 0.0   : cotizador_detalles.getPiezasxtarima() ) == 0.0)
 			{
 				errors.rejectValue("cotizador_detalles.piezasxtarima", "NotNull");
-			}
-		}
+			}	
+		} 	
 		
 		if(idCajas2.contains(cotizador_detalles.getIdcaja_sap()) && (cotizador_detalles.getEsp_sup() == null ? 0.0 : cotizador_detalles.getEsp_sup()) == 0.0) 
 			errors.rejectValue("cotizador_detalles.esp_sup", "NotNull");
@@ -67,8 +67,15 @@ public class Cotizador_detallesValidator implements Validator{
 				errors.rejectValue("cotizador_detalles.esp_inf", "Required");
 		}
 		
+		if(cotizador_detalles.getIdcaja_sap() == 4 && (cotizador_detalles.getNum_raturas() == null || cotizador_detalles.getNum_raturas() <= 0)) //Si es  DIVISOR debe llevar número de ranuras.
+		{
+			errors.rejectValue("cotizador_detalles.num_raturas", "Required");
+		}
 		
-		
+		if(cotizador_detalles.getBan() != null)
+		{
+			errors.rejectValue("cotizador_detalles.piezasxtarima", "NotLess");
+		}
 		
 	}
 

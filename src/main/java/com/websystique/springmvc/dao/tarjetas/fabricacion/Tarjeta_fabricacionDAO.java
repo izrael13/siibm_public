@@ -3,14 +3,16 @@ package com.websystique.springmvc.dao.tarjetas.fabricacion;
 import java.util.List;
 
 import com.websystique.springmvc.model.tarjetas.fabricacion.Tarjeta_fabricacion;
-import com.websystique.springmvc.model.tarjetas.fabricacion.Tarjeta_fabricacion_Busqueda;
 
 public interface Tarjeta_fabricacionDAO {
+	Tarjeta_fabricacion BuscarxFolio(String Folio, Integer IdDis);
 	Tarjeta_fabricacion BuscarxFolio(String Folio);
-	List<Tarjeta_fabricacion> BuscarXIdCot(Integer IdCot);
+	List<Tarjeta_fabricacion> BuscarXIdCot(Integer IdCot, Integer IdDis);
 	void Guardar(Tarjeta_fabricacion Tarjeta);
 	void Actualizar(Tarjeta_fabricacion Tarjeta);
-	List<Tarjeta_fabricacion_Busqueda> TarjetaBusqueda(Integer IdCot, String Folio);
+	List<Tarjeta_fabricacion> TarjetaBusqueda(Integer IdCot, String Folio, String cardcode, Integer IdDis);
 	void Borrar(Tarjeta_fabricacion Tarjeta);
-	List<Tarjeta_fabricacion> BuscarXAut(String usuario_aut, String fecha_aut, String usuario_aut_act, String fecha_aut_act);
+	List<Tarjeta_fabricacion> BuscarXAut(String usuario_aut, String fecha_aut, String usuario_aut_act, String fecha_aut_act, String cardcode);
+	List<Object> BuscarEsp(Integer idcot, Integer Iddet);
+	List<Tarjeta_fabricacion> ListaSeguimiento(String Folio, Integer IdCot, Integer Status, String CardCode);
 }

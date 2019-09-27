@@ -22,4 +22,10 @@ public class Catalogo_coloresServiceImpl implements Catalogo_coloresService{
 		return dao.ListaColores();
 	}
 
+	@Override
+	public Catalogo_colores BuscarxId(Integer id) {
+		// TODO Auto-generated method stub
+		return dao.BuscarxId(id);
+	}
+
 }

@@ -8,4 +8,5 @@ public interface Catalogo_direcciones_sap_vwDAO {
 	List<Catalogo_direcciones_sap_vw> ListaDir();
 	List<Catalogo_direcciones_sap_vw> ListaDirCardCode(String CardCode);
 	List<Catalogo_direcciones_sap_vw> ListaDirCardCodeNumLine(String CardCode,Integer NumLine);
+	Catalogo_direcciones_sap_vw DirCardCodeNumLine(String CardCode,Integer NumLine);
 }

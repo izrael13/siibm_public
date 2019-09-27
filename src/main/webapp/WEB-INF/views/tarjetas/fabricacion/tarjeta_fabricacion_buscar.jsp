@@ -30,7 +30,7 @@ function FBuscarId(folio)
 			<tr>
 				<td><a href="javascript:FBuscarId(${item.folio_tarjeta})">${item.folio_tarjeta}</a></td>
 				<td>${item.idcotizacion}</td>
-				<td>${item.simbolo}</td>
+				<td>${item.descripcion_factura}</td>
 			</tr>
 		</c:forEach>
 		</tbody>

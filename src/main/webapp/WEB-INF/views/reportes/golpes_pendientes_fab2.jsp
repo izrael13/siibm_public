@@ -12,11 +12,11 @@
 <script>
 function FBuscar()
 {
-	window.location.replace('<c:url value="/buscargplpenfab2" />?aniomes='+document.getElementById("aniomes").value);
+	window.location.replace('<c:url value="/reportes/ventas/buscargplpenfab2" />?aniomes='+document.getElementById("aniomes").value);
 }
 function FExcel()
 {
-	window.location.replace('<c:url value="/Excel_golpesPend2" />?aniomes='+document.getElementById("aniomes").value);
+	window.location.replace('<c:url value="/reportes/ventas/Excel_golpesPend2" />?aniomes='+document.getElementById("aniomes").value);
 }
 </script>
 <style type="text/css">

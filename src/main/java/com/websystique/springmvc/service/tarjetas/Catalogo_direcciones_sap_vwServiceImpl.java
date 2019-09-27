@@ -34,4 +34,10 @@ public class Catalogo_direcciones_sap_vwServiceImpl implements Catalogo_direccio
 		return dao.ListaDirCardCodeNumLine(CardCode, NumLine);
 	}
 
+	@Override
+	public Catalogo_direcciones_sap_vw DirCardCodeNumLine(String CardCode, Integer NumLine) {
+		// TODO Auto-generated method stub
+		return dao.DirCardCodeNumLine(CardCode, NumLine);
+	}
+
 }

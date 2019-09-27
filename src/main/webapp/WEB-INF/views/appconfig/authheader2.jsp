@@ -20,6 +20,9 @@
 <script src="<c:url value="/static/js/moment.js" />"></script>
 <script src="<c:url value="/static/js/tempusdominus-bootstrap-4.js" />"></script>
 
+<script src="<c:url value="/static/js/selectize.js" />"></script>
+<link href="<c:url value='/static/css/selectize.css' />" rel="stylesheet"></link>
+
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <style>
 /*Propiedades de submenus*/
@@ -128,6 +131,18 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 	 </li>
 	 </sec:authorize>
 	 
+	 <sec:authorize access="hasRole('ADMIN') or hasRole('EMPACADOR')">
+	 <li class="nav-item dropdown"><a class="dropdown-item" href="" data-toggle="dropdown"><i class="fa fa-money" aria-hidden="true"> Costos</i></a>
+	 	<ul class="dropdown-menu dropdown-menu-right">
+	   		<li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-inbox" aria-hidden="true"></i> Control merma</a>
+			    <ul class="dropdown-menu">
+			    		<li><a class="dropdown-item" href = "<c:url value='/costos/controlpesomerma/controlmermaabc' />"><i class="fa fa-balance-scale" aria-hidden="true"></i> Control de peso</a></li>
+			    </ul>
+			 </li>
+	   </ul>
+	 </li>
+	 </sec:authorize>
+	 
 	 <li class="nav-item dropdown">				
 		<a class="dropdown-item" href="" data-toggle="dropdown"><i class="fa fa-id-card" aria-hidden="true"> Sistema de tarjetas</i></a>
 		<ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu">
@@ -170,14 +185,34 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 			 		</sec:authorize>
 			 		<sec:authorize access="hasRole('ADMIN') or hasRole('INGENIERIA')">
 			 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/ingenieria/tarjeta_aut_ingenieria'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Ingeniería</a></li>
+			 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/ingenieria/tarjetas_seguimiento'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Tarjetas Seguimiento</a></li>
 			 		</sec:authorize>
 			 		<sec:authorize access="hasRole('ADMIN') or hasRole('CLIENTE')">
 			 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/cliente/tarjeta_aut_cliente'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Cliente</a></li>
 			 		</sec:authorize>
 			 	</ul>
 			 </li>
-		</ul>
+			 <li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-inbox" aria-hidden="true"></i> Herramentales</a>
+			    <ul class="dropdown-menu">
+			    		<li><a class="dropdown-item" href = "<c:url value='/herramentales/ingenieria/herramentalesabc'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro de herramentales</a></li>
+			    </ul>
+			 </li>
+		</ul>		
 	</li>
+	
+	<sec:authorize access="hasRole('DIRECCION') or hasRole('ADMIN')">
+	<ul class="navbar-nav">
+		<li class="nav-item dropdown"><a class="dropdown-item" href="" data-toggle="dropdown"><i class="fa fa-square-o" aria-hidden="true"> Dirección</i></a>
+			<ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu">
+		 		<li><a class="dropdown-item" href = "<c:url value='/reportes/vendedores/golpes_pend_fab_' />"><i class="fa fa-file-o" aria-hidden="true"></i> Captación</a></li>
+		 		<li><a class="dropdown-item" href = "<c:url value='/reportes/vendedores/desempeniomesvend' />"><i class="fa fa-file-o" aria-hidden="true"></i> Desempeño mensual por vendedor</a></li>
+	    		<li><a class="dropdown-item" href = "<c:url value='/reportes/vendedores/desempeniomesxcte' />"><i class="fa fa-file-o" aria-hidden="true"></i> Desempeño mensual por cliente</a></li>
+	    		<li><a class="dropdown-item" href = "<c:url value='/qlikview/ventas/comparativo' />"><i class="fa fa-area-chart" aria-hidden="true"></i> Comparativo</a></li>
+			 </ul>
+		 </li>
+	</ul>
+	</sec:authorize>
+	
 </ul>
 <ul class="navbar-nav">
 	<li class="nav-item dropdown"><a class="dropdown-item" href="" data-toggle="dropdown"><i class="fa fa-cog" aria-hidden="true"> Opciones</i></a>

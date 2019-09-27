@@ -21,6 +21,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 import com.websystique.springmvc.converter.RoleToUserProfileConverter;
+import com.websystique.springmvc.converter.RutaToCatalogoMaquinasSapCoverter;
 
 
 @Configuration
@@ -32,7 +33,8 @@ public class AppConfig implements WebMvcConfigurer{
 	
 	@Autowired
 	RoleToUserProfileConverter roleToUserProfileConverter;
-	
+	@Autowired
+	RutaToCatalogoMaquinasSapCoverter rutaToCatalogoMaquinasSapCoverter;
 
 	/**
      * Configure ViewResolvers to deliver preferred views.
@@ -62,6 +64,7 @@ public class AppConfig implements WebMvcConfigurer{
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(roleToUserProfileConverter);
+        registry.addConverter(rutaToCatalogoMaquinasSapCoverter);
     }
 	 
 

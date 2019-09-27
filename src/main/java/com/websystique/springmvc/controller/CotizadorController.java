@@ -1,12 +1,10 @@
 package com.websystique.springmvc.controller;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 import org.json.simple.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -36,9 +35,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.websystique.springmvc.model.ParamsGeneral;
 import com.websystique.springmvc.model.User;
 import com.websystique.springmvc.model.tarjetas.Catalogo_cajas_sap_vw;
 import com.websystique.springmvc.model.tarjetas.Catalogo_direcciones_sap_vw;
@@ -80,7 +81,7 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.data.JsonDataSource;
 import net.sf.jasperreports.engine.util.JRLoader;
 
 @Controller
@@ -134,10 +135,10 @@ public class CotizadorController {
 	DecimalFormat decimal4 = new DecimalFormat("###########0.####");
 	////////////////////////////////////***COTIZADOR***////////////////////////////
 	@RequestMapping(value = {"/vendedor/cotizadorabc" }, method = RequestMethod.GET)
-	public String cotizadotget(ModelMap model, @RequestParam(value = "id", defaultValue = "0", required = false) String id, @RequestParam(value = "iddet", defaultValue = "0", required = false) String iddet, @RequestParam(value = "mensajes", defaultValue = "", required = false) String mensajes) throws UnsupportedEncodingException {
-		String msj = mensajes;
+	public String cotizadotget(ModelMap model, @RequestParam(value = "id", defaultValue = "0", required = false) String id, @RequestParam(value = "iddet", defaultValue = "0", required = false) String iddet) throws UnsupportedEncodingException {
+		String msj = "";
 		try {				
-				List<Catalogo_especialidades_sap_vw> ListaEsp = ces.ListaEsp();
+				List<Catalogo_especialidades_sap_vw> ListaEsp = ces.ListaEsp(1);
 				List<Catalogo_resistencias_sap_vw> ListaResis = new ArrayList<Catalogo_resistencias_sap_vw>();
 				User user = us.findBySSO(AppController.getPrincipal());
 				model.addAttribute("bolsas", cbs.ListaBolsas());
@@ -191,7 +192,7 @@ public class CotizadorController {
 			msj = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
 			logger.error(AppController.getPrincipal() + " - cotizadorabc. - " + msj);
 		}
-		model.addAttribute("mensajes", URLDecoder.decode(msj, StandardCharsets.UTF_8.toString()));
+		model.addAttribute("mensajes",msj);
 		return "/tarjetas/cotizador/cotizador";
 	}
 	
@@ -207,16 +208,15 @@ public class CotizadorController {
 			model.addAttribute("direccionSelect", cdsv.ListaDirCardCodeNumLine(cotizadorDataBean.getCotizador().getCardcode(),cotizadorDataBean.getCotizador().getLinenum_dir_entrega()));
 			model.addAttribute("bolsas", cbs.ListaBolsas());
 			model.addAttribute("listacajas", ccss.ListaCajas());
+			System.out.println(cotizadorDataBean.getCotizador_detalles().getIdcaja_sap());
 			model.addAttribute("listaresisbarca", ListaResis(cotizadorDataBean.getCotizador_detalles().getIdcaja_sap()));
 			model.addAttribute("listaresiscte", css.ListaSellos());
-			model.addAttribute("especialidades", ces.ListaEsp());
+			model.addAttribute("especialidades", ces.ListaEsp(1));
 			model.addAttribute("colores", ccos.ListaColores());
 			cotizadorDataBean.getCotizador().setIdtiporequerimiento(0);
-			
 			java.util.Date date = new java.util.Date();
-						
+			cotizadorDataBean.getCotizador_detalles().setBan(0);
 			cdvalidator.validate(cotizadorDataBean.getCotizador_detalles(), result);
-			
 			/*System.out.println(cotizadorDataBean.getCotizador_detalles().toString());
 			for (ObjectError error : result.getAllErrors()) {
 			       String fieldErrors [] = error.getCodes();
@@ -288,6 +288,7 @@ public class CotizadorController {
 						obj.setIdcotizacion(idN);
 						obj.setIddetalle(idND);
 						obj.setIdespecialidad(ListaEsp.get(i).getIdespecialidad());
+						obj.setCm(ListaEsp.get(i).getCm());
 						ecs.Guardar(obj);
 					}
 				}
@@ -326,14 +327,15 @@ public class CotizadorController {
 			//model.replace("cotizadordatabean", cotdataB);
 
 			logger.info(AppController.getPrincipal() + " - cotizadotpost.");
-			model.addAttribute("mensajes", URLEncoder.encode(msj, StandardCharsets.UTF_8.toString()));
+			model.addAttribute("mensajes", msj);
+			return "/tarjetas/cotizador/cotizador";
 		}
 		catch(Exception e)
 		{
 			model.addAttribute("mensajes", e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage());
 			logger.info(AppController.getPrincipal() + " - cotizadotpost. " + e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage());
+			return "/tarjetas/cotizador/cotizador";
 		}
-		return "redirect:/cotizador/vendedor/cotizadorabc?id="+idN+"&iddet="+idND;
 	}
 	
 	@RequestMapping(value = {"/vendedor/buscardirecciones"}, method = RequestMethod.GET)
@@ -463,6 +465,7 @@ public class CotizadorController {
 				String costoscap = jsonObjectParams.get("costoscapturados").getAsString();
 				String ajustescap = jsonObjectParams.get("ajustes").getAsString();
 				String esquemascap = jsonObjectParams.get("esquemas").getAsString();
+				String esquemascm = jsonObjectParams.get("cm").getAsString();
 				
 				Double TotCostoEsp = 0.0;
 				if(ids.length() > 1)
@@ -471,13 +474,14 @@ public class CotizadorController {
 					String[] costoscaparr = costoscap.split("\\|");
 					String[] ajustescaparr = ajustescap.split("\\|");
 					String[] esquemascaparr = esquemascap.split("\\|");
+					String[] cmcaparr = esquemascm.split("\\|");
 					
 					for(int i = 0; i < idsarr.length; i++)
 					{
 						JsonObject objEsp = new JsonObject();
 						//Catalogo_especialidades_sap_vw Esp = ces.BuscaxId(Integer.valueOf(idsarr[i]));
 						String Costo = calcular_especialidades((ajustescaparr[i].trim().length() > 0 ? Double.valueOf(ajustescaparr[i].trim()) : 0.0 ),(esquemascaparr[i].trim().length() > 0 ? Integer.valueOf(esquemascaparr[i].trim()) : 0 ),AreaUni,LargoVar,AnchoVar,jsonObjectParams.get("pzasxtar").getAsInt(),
-																jsonObjectParams.get("fondo").getAsDouble(),objCaja.getDesami(),costoscaparr[i], jsonObjectParams.get("precioobj").getAsDouble());
+																jsonObjectParams.get("fondo").getAsDouble(),objCaja.getDesami(),costoscaparr[i], jsonObjectParams.get("precioobj").getAsDouble(), (cmcaparr[i].trim().length() > 0 ? Double.valueOf(cmcaparr[i].trim()) : 0.0 ), objCaja.getGrupo());
 						objEsp.addProperty("id", idsarr[i]);
 						objEsp.addProperty("costo", Costo);
 						arr.add(objEsp);
@@ -560,7 +564,7 @@ public class CotizadorController {
 	}
 	
 	public String calcular_especialidades(Double ajuste,Integer esquema,Double area_uni, Double largopliego, Double anchopliego,
-										  Integer pzasxtar,Double fondo,Double desami, String costoscap, Double precio_obj)
+										  Integer pzasxtar,Double fondo,Double desami, String costoscap, Double precio_obj, Double cm, Integer grupo)
 	   throws Exception {
 		
 		Double costo = 0.0;
@@ -587,7 +591,12 @@ public class CotizadorController {
 						else
 						{
 							if(esquema == 4)//pegado-grapado
-								costo = ((fondo + desami) * ajuste) * 1000.00;
+							{
+								if(grupo == 3)//suajes
+									costo = (cm * ajuste) * 1000.00;
+								else//las demas
+									costo = ((fondo + desami) * ajuste) * 1000.00;
+							}
 							else
 							{
 								if(esquema == 8)//Captura
@@ -624,6 +633,7 @@ public class CotizadorController {
 			
 				if((c.getUsuario_envia_ventas() == null && c.getFecha_envia_ventas() == null) || (c.getUsuario_rech_ventas() != null && c.getFecha_rech_ventas() != null))
 				{
+					
 					if(cd.getComision_directo() > cd.getDescuento_vendedor() )
 					{
 						c.setUsuario_envia_ventas(user.getId());
@@ -661,6 +671,8 @@ public class CotizadorController {
 				c.setFecha_rech_prog(null);
 			}
 			
+			c.setUsuario_rech_diseniador(null);
+			c.setFecha_rech_diseniador(null);
 			cs.Actualizar(c);
 			logger.info(AppController.getPrincipal() + " - enviaragerenteventasprog.");
 			return "OK";
@@ -716,13 +728,33 @@ public class CotizadorController {
 	}
 	
 	@RequestMapping(value = {"/programacion/autorizacion_cotizacion_prog" }, method = RequestMethod.GET)
-	public String autorizacion_cotizacion_prog(ModelMap model) {
-		
+	public String autorizacion_cotizacion_prog(ModelMap model) {		
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
-		model.addAttribute("listaDet",cs.ListaCotizacionesJasper(0, true));
+		model.addAttribute("listaDet",ListaCotAut());
 		logger.info(AppController.getPrincipal() + " - autorizacion_cotizacion_prog.");
 		
 		return "/tarjetas/cotizador/autorizacion_cotizacion_prog";
+	}
+	
+	private Object[] ListaCotAut()
+	{
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		Params.add(new ParamsGeneral(1,"fecha_envia_a_prog","NE"));
+		Params.add(new ParamsGeneral(1,"usuario_envia_a_prog","NE"));
+		Params.add(new ParamsGeneral(1,"fecha_aut_prog","EQ"));
+		Params.add(new ParamsGeneral(1,"usuario_aut_prog","EQ"));
+		Params.add(new ParamsGeneral(1,"fecha_rech_prog","EQ"));
+		Params.add(new ParamsGeneral(1,"usuario_rech_prog","EQ"));
+		Params.add(new ParamsGeneral(1,"usuario_cancel","EQ"));
+		Params.add(new ParamsGeneral(1,"fecha_cancel","EQ"));
+		List<Cotizador> ListaCot = cs.ListasCotAut(Params);
+		List<JSONObject> ListaCotJson = new ArrayList<JSONObject>();
+		ListaCot.forEach(a -> {				
+			ListaCotJson.add(DataSourceJasperCot(a.getId()));
+		});
+		GsonBuilder builder = new GsonBuilder();
+		Gson gson = builder.serializeNulls().create();
+		return gson.fromJson(ListaCotJson.toString(), Object[].class);
 	}
 	
 	@RequestMapping(value = {"/ventas/autorizacion_cotizacion_vtas_desicion" }, method = RequestMethod.POST)
@@ -744,7 +776,15 @@ public class CotizadorController {
 				asunto = "Cotización autorizada";
 			}
 			else
-			{
+			{			
+				c.setUsuario_envia_ventas(null);
+				c.setFecha_envia_ventas(null);
+				c.setUsuario_envia_a_prog(null);
+				c.setFecha_envia_a_prog(null);
+				c.setObservaciones_prog(null);
+				c.setFecha_aut_prog(null);
+				c.setUsuario_aut_prog(null);
+				
 				c.setUsuario_rech_ventas(user.getId());
 				c.setFecha_rech_ventas(date);
 				c.setObservaciones_ventas(coment);
@@ -827,16 +867,18 @@ public class CotizadorController {
 	////////////////////////////////////IMPRIMIR JASPER/////////////////////////////
 	@RequestMapping(value = "/ventas/imprimircotizador", method = RequestMethod.GET)
     @ResponseBody
-    public void getRpt1(HttpServletResponse response,HttpServletRequest request,ModelMap model,@RequestParam("id") String id) throws JRException, IOException {
+    public void getRpt1(HttpServletResponse response,HttpServletRequest request,ModelMap model,@RequestParam("id") Integer id) throws JRException, IOException {
 		String msj = "";
 		try
 		{
-			InputStream jasperStream = this.getClass().getResourceAsStream("/jasperreports/cotizador/Cotizador.jasper");
+			InputStream jasperStream = this.getClass().getResourceAsStream("/jasperreports/cotizador/Cotizador2.jasper");
 			Map<String,Object> params = new HashMap<>();
 			
 			JasperReport jasperReport = (JasperReport) JRLoader.loadObject(jasperStream);
-			JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(cs.ListaCotizacionesJasper(Integer.valueOf(id),false));
-			params.put("dataSource", dataSource);
+			//JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(cs.ListaCotizacionesJasper(Integer.valueOf(id),false));
+			//params.put("dataSource", dataSource);
+			ByteArrayInputStream jsonDataStream = new ByteArrayInputStream(DataSourceJasperCot(id).toString().getBytes("UTF-8"));
+			JsonDataSource dataSource = new JsonDataSource(jsonDataStream);
 			params.put("Imagen",request.getServletContext().getRealPath("/"));
 			
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, dataSource);
@@ -855,7 +897,59 @@ public class CotizadorController {
 		}
 	} 
 		
-
+	private JSONObject DataSourceJasperCot(Integer id)
+	{
+		
+		GsonBuilder builder = new GsonBuilder();
+		Gson gson = builder.serializeNulls().create();
+		Cotizador cot = new Cotizador();
+		cot = cs.BuscarxId(id);
+		JSONObject JsonCot = new JSONObject(gson.toJson(cot));
+		JsonCot.put("cliente", ccavs.cat_cte_sap(cot.getCardcode()).getCardname());
+		Catalogo_direcciones_sap_vw dir = new Catalogo_direcciones_sap_vw();
+		dir = cdsv.DirCardCodeNumLine(cot.getCardcode(), cot.getLinenum_dir_entrega()); 
+		JsonCot.put("lab",dir.getDireccion()+ " " +dir.getCiudad()+ " "+dir.getEstado());
+		User user = new User();
+		user = us.findById(cot.getUsuario_aut_ventas() == null ? 0 : cot.getUsuario_aut_ventas());
+		if(user != null)
+			JsonCot.put("autorizador", user.getFirstName() + " " + user.getLastName());
+		user = null;
+		user = us.findById(cot.getUsuario_insert());
+		if(user != null)
+			JsonCot.put("representante", user.getFirstName() + " " + user.getLastName());		
+		List<JSONObject> ListaJsonDet = new ArrayList<JSONObject>();	
+		cds.BuscarxCotId(id).forEach(a ->{
+			JSONObject JsonCotDet = new JSONObject(gson.toJson(a));
+			List<JSONObject> ListaJsonEsp = new ArrayList<JSONObject>();
+			ecs.ListaEspDet(id, a.getIddetalle()).forEach(b ->{
+				JSONObject JsonEsp = new JSONObject();
+				JsonEsp.put("count", b.getCount());
+				JsonEsp.put("iddetalle", b.getIddetalle());
+				JsonEsp.put("idcotizacion", b.getIdcotizacion());
+				JsonEsp.put("especialidad", ces.BuscaxId(b.getIdespecialidad()).getName());
+				JsonEsp.put("costo", b.getCosto());
+				JsonEsp.put("ajuste", b.getAjuste());
+				JsonEsp.put("esquema", b.getEsquema());
+				JsonEsp.put("cm", b.getCm());
+				ListaJsonEsp.add(JsonEsp);
+			}); 
+			JsonCotDet.put("ListaEsp", ListaJsonEsp);
+			JsonCotDet.put("estilo_caja", ccss.BuscarxId(a.getIdcaja_sap()).getNombrecorto());
+			Catalogo_resistencias_sap_vw objResis = new Catalogo_resistencias_sap_vw();
+			objResis = crss.BuscarxId(a.getIdresistencia_barca());
+			JsonCotDet.put("resistencia", objResis.getResistencia());
+			JsonCotDet.put("flauta", objResis.getCorrugado());
+			JsonCotDet.put("papel", objResis.getColor());
+			JsonCotDet.put("SUBREPORT_DIR", "/jasperreports/cotizador/");
+			ListaJsonDet.add(JsonCotDet);
+		});	
+		
+		JsonCot.put("ListaDetalles", ListaJsonDet);
+		JsonCot.put("SUBREPORT_DIR", "/jasperreports/cotizador/");
+		
+		return JsonCot;
+	}
+	
 	@RequestMapping(value = {"/ingenieria/requerimientoabc" }, method = RequestMethod.GET)
 	public String requerimientoabcget(ModelMap model) {
 		String msj = "";
@@ -873,6 +967,7 @@ public class CotizadorController {
 		model.addAttribute("mensajes", msj);
 		return "/tarjetas/cotizador/requerimientoabc";
 	}
+	@SuppressWarnings("null")
 	@RequestMapping(value = "/ingenieria/convertiratarjeta", method = RequestMethod.POST)
     public @ResponseBody String convertiratarjeta(ModelMap model, @RequestParam("idcot") String idcot, @RequestParam("coment") String coment, @RequestParam("ban") String ban) throws JRException, IOException {
 		String msj = "";
@@ -893,34 +988,119 @@ public class CotizadorController {
 				String emailMsj = "";
 				String asunto = "";
 				if(Integer.valueOf(ban) == 1)
-				{
-					
-					c.setUsuario_diseniador(user.getId());
-					c.setFecha_asign_diseniador(date);
-					c.setObservaciones_diseniador(coment);
-					cs.Actualizar(c);
-					
-					List<Cotizador_detalles>  ListaDetalles = cds.BuscarxCotId(Integer.valueOf(idcot));
-					
+				{					
+					List<Cotizador_detalles>  ListaDetalles = cds.BuscarxCotId(Integer.valueOf(idcot));					
 					
 					if(ListaDetalles.size() > 0)
 					{
+						List<Tarjeta_fabricacion> ListaTar = new ArrayList<Tarjeta_fabricacion>();
 						for(int i = 0; i < ListaDetalles.size(); i++)
 						{
-							// TODO Auto-generated method stub
 							Tarjeta_fabricacion Tarjeta = new Tarjeta_fabricacion();
 							Tarjeta.setIdcotizacion(ListaDetalles.get(i).getIdcotizacion());
 							Tarjeta.setIddetalle(ListaDetalles.get(i).getIddetalle());
 							Catalogo_cajas_sap_vw objCaja = ccss.BuscarxId(ListaDetalles.get(i).getIdcaja_sap());
 							StringTokenizer stPalabras = new StringTokenizer(objCaja.getNombrelargo());
 							Tarjeta.setDescripcion_factura(stPalabras.nextToken() + " de cartón corrugado. Símbolo: " + ListaDetalles.get(i).getSimbolo());
-							Tarjeta.setFolio_tarjeta(ListaDetalles.get(i).getIddetalle() == 1 ? ListaDetalles.get(i).getIdcotizacion().toString() : ListaDetalles.get(i).getIdcotizacion().toString() +"-"+ (char)(63+ListaDetalles.get(i).getIddetalle()));
-							msj= "\n"+msj+"Tarjetas creada: "+Tarjeta.getFolio_tarjeta()+"\n";
-							tfs.Guardar(Tarjeta);
+							Tarjeta.setFolio_tarjeta(ListaDetalles.get(i).getIddetalle() == 1 ? ListaDetalles.get(i).getIdcotizacion().toString() : ListaDetalles.get(i).getIdcotizacion().toString() +"-"+ (char)(63+ListaDetalles.get(i).getIddetalle()));					
+							
+							Tarjeta.setIddiseniador(user.getId());
+							Tarjeta.setFecha_asig_diseniador(date);
+							Tarjeta.setCardcode(c.getCardcode());
+							
+							if(objCaja.getGrupo() != null || objCaja.getGrupo() > 0)//Caja tiene asignado un Grupo???
+							{
+								//GRAPADO/PEGADO
+								if(ecs.ListaEspDet(ListaDetalles.get(i).getIdcotizacion(), ListaDetalles.get(i).getIddetalle()).stream()
+								.filter(a -> a.getIdespecialidad() == 20 || a.getIdespecialidad() == 8).count() > 0 )
+								{
+									if(objCaja.getGrupo() == 3)
+									{
+										Double cm = 0.0;
+										cm =ecs.EspDet(ListaDetalles.get(i).getIdcotizacion(), ListaDetalles.get(i).getIddetalle(), 8).getCm();
+										if(cm != null || cm == 0)
+											cm =ecs.EspDet(ListaDetalles.get(i).getIdcotizacion(), ListaDetalles.get(i).getIddetalle(), 20).getCm();
+										Tarjeta.setPegado_grapado(cm); //Suaje: Pendiente, se va agregar un campo en Cotizador para el vendedor capture el valor
+									}
+									else
+									{
+										if(objCaja.getGrupo() == 1 || objCaja.getGrupo() == 2 )
+											Tarjeta.setPegado_grapado(ListaDetalles.get(i).getFondo());
+									}
+								}
+								
+								DecimalFormat format = new DecimalFormat("##########0.0");
+								Double deci = 0.0;
+								//RAYADO 1
+								Double rayado1 = 0.0;
+								if(objCaja.getGrupo() == 1)
+									rayado1 = ListaDetalles.get(i).getAncho() / 2 + (objCaja.getCorrugado() == "S" ? 3 : 5);
+								
+								if(objCaja.getGrupo() == 2)
+									rayado1 = ListaDetalles.get(i).getFondo() + (objCaja.getCorrugado() == "S" ? 4 : 8);
+	
+								rayado1 = Double.valueOf(format.format(rayado1));
+								deci = rayado1 - rayado1.intValue();
+								if(deci >= 0.5)
+									rayado1 = rayado1 + (1 - deci);
+								
+								//RAYADO 2
+								Double rayado2 = 0.0;
+								if(objCaja.getGrupo() == 1)
+									rayado2 = ListaDetalles.get(i).getFondo() + (objCaja.getCorrugado() == "S" ? 7 : 15);
+								if(objCaja.getGrupo() == 2)
+									rayado2 = ListaDetalles.get(i).getAncho() / 2 + (objCaja.getCorrugado() == "S" ? 3 : 5);
+								
+								rayado2 = Double.valueOf(format.format(rayado2));
+								deci = rayado2 - rayado2.intValue();
+								if(deci >= 0.5)
+									rayado2 = rayado2 + (1 - deci);
+								
+								//RAYADO 3
+								Double rayado3 = 0.0;
+								if(objCaja.getGrupo() == 1)
+									rayado3 = objCaja.getCorrugado() == "S" ? ListaDetalles.get(i).getAncho() / 2 + 3 : ListaDetalles.get(i).getFondo() + 15;
+								
+								rayado3 = Double.valueOf(format.format(rayado3));
+								deci = rayado3 - rayado3.intValue();
+								if(deci >= 0.5)
+									rayado3 = rayado3 + (1 - deci);
+								
+								Tarjeta.setRayado1(rayado1);
+								Tarjeta.setRayado2(rayado2);
+								Tarjeta.setRayado3(rayado3);
+								
+								msj= "\n"+msj+"OK Tarjetas creada: "+Tarjeta.getFolio_tarjeta()+"\n";
+								
+								if( ((objCaja.getGrupo() == 1 || objCaja.getGrupo() == 2) && (rayado1 > 0 && rayado2 > 0 && rayado3 > 0)) || (objCaja.getGrupo() != 1 && objCaja.getGrupo() != 2) )
+									ListaTar.add(Tarjeta);
+								else
+								{
+									msj = "Los rayados dan Cero (0). Favor de verificar los datos de la Cotización.";
+									ListaTar.clear();
+									break;
+								}
+							}
+							else
+							{
+								msj = "Debe asignar un Grupo a la caja: "+objCaja.getNombrelargo();
+								ListaTar.clear();
+								break;
+							}
+						}
+						
+						ListaTar.stream().forEach(a -> tfs.Guardar(a));
+						
+						if(ListaTar.size() > 0) {
+							c.setUsuario_diseniador(user.getId());
+							c.setFecha_asign_diseniador(date);
+							c.setObservaciones_diseniador(coment);
+							cs.Actualizar(c);
+							emailMsj="Cotización: ("+c.getId()+") convertida a Tarjeta de Fabricación por el usuario: "+user.getFirstName()+ " " +user.getLastName()+ " (" + user.getSsoId() + ") \r\n\n Contacto: "+user.getEmail()+" \r\n\n Motivo: "+coment ;
+							asunto = "Cotización convertida a Tarjeta de Fabricación";
 						}
 					}
-					emailMsj="Cotización: ("+c.getId()+") convertida a Tarjeta de Fabricación por el usuario: "+user.getFirstName()+ " " +user.getLastName()+ " (" + user.getSsoId() + ") \r\n\n Contacto: "+user.getEmail()+" \r\n\n Motivo: "+coment ;
-					asunto = "Cotización convertida a Tarjeta de Fabricación";
+
 					logger.info(AppController.getPrincipal() + " - convertiratarjeta.Convertir a tarjeta");
 				}
 				else
@@ -944,12 +1124,16 @@ public class CotizadorController {
 						c.setObservaciones_prog(null);
 						c.setUsuario_envia_a_prog(null);
 						c.setFecha_envia_a_prog(null);
+						c.setUsuario_aut_prog(null);
+						c.setFecha_aut_prog(null);
 						
 						c.setUsuario_aut_ventas(null);
 						c.setFecha_aut_ventas(null);
 						c.setUsuario_envia_ventas(null);
 						c.setFecha_envia_ventas(null);
 						c.setObservaciones_ventas(null);
+						c.setUsuario_envia_ventas(null);
+						c.setFecha_envia_ventas(null);
 						
 						c.setUsuario_rech_diseniador(user.getId());
 						c.setFecha_rech_diseniador(date);
@@ -964,13 +1148,15 @@ public class CotizadorController {
 				}
 				
 				////ENVÍO DE EMAIL
-				SendMailGmail Email = new SendMailGmail();
-				User userInsertCot = us.findById(c.getUsuario_insert());
-				Email.sendMail(userInsertCot.getEmail(), emailMsj, asunto);
+				if(!emailMsj.equals("")) {
+					SendMailGmail Email = new SendMailGmail();
+					User userInsertCot = us.findById(c.getUsuario_insert());
+					Email.sendMail(userInsertCot.getEmail(), emailMsj, asunto);
+				}
 				/////
 				
 			}
-			return "OK "+msj;
+			return msj;
 		}
 		catch(Exception e)
 		{
@@ -993,26 +1179,28 @@ public class CotizadorController {
 	{
 		Catalogo_cajas_sap_vw objCaja = ccss.BuscarxId(Integer.valueOf(idcaja));//Datos de la caja seleccionada.
 		List<Catalogo_resistencias_sap_vw> ListaResis = new ArrayList<Catalogo_resistencias_sap_vw>();
-		if(objCaja.getCorrugado() != null)
-		{
-			if(objCaja.getCorrugado().equals("D"))
+		if(idcaja > 0) {
+			if(objCaja.getCorrugado() != null)
 			{
-				ListaResis = crss.ListaResis("BC");
-			}
-			else
-			{
-				if(objCaja.getCorrugado().equals("SD"))
+				if(objCaja.getCorrugado().equals("D"))
 				{
-					ListaResis = crss.ListaResis();
+					ListaResis = crss.ListaResis("BC");
 				}
 				else
 				{
-					if(objCaja.getCorrugado().equals("S"))
+					if(objCaja.getCorrugado().equals("SD"))
 					{
-						ListaResis = Stream.of(crss.ListaResis("B"),crss.ListaResis("C")).flatMap(Collection::stream).collect(Collectors.toList());
+						ListaResis = crss.ListaResis();
 					}
+					else
+					{
+						if(objCaja.getCorrugado().equals("S"))
+						{
+							ListaResis = Stream.of(crss.ListaResis("B"),crss.ListaResis("C")).flatMap(Collection::stream).collect(Collectors.toList());
+						}
+					}
+					
 				}
-				
 			}
 		}
 		return ListaResis;

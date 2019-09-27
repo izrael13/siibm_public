@@ -16,6 +16,9 @@ function FAut(id)
 	{
 		if(id > 0)
 		{
+			$("#mensajes" ).text("Procesando petición. Porfavor espere");
+			$("#mensajes").removeClass().addClass("alert alert-info");
+			
 			var http = new XMLHttpRequest();
 			var url = '<c:url value="/cotizador/programacion/autorizacion_cotizacion_prog_desicion"/>';
 			var params = 'idcot='+id+'&coment='+$("#TComent"+id).val()+'&ban='+1;
@@ -51,11 +54,11 @@ function FAut(id)
 			    		alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
 			    		window.location.replace('<c:url value="/cotizador/programacion/autorizacion_cotizacion_prog"/>');
 			    	}
-			    	else
+			    	/*else
 			    	{
 				    	$("#mensajes" ).text("Procesando petición");
 						$("#mensajes").removeClass().addClass("alert alert-info");
-			    	}
+			    	}*/
 			    }
 			    
 			}
@@ -71,6 +74,9 @@ function FReach(id)
 	{
 		if(id > 0)
 		{
+			$("#mensajes" ).text("Procesando petición. Porfavor espere");
+			$("#mensajes").removeClass().addClass("alert alert-info");
+			
 			var http = new XMLHttpRequest();
 			var url = '<c:url value="/cotizador/programacion/autorizacion_cotizacion_prog_desicion"/>';
 			var params = 'idcot='+id+'&coment='+$("#TComent"+id).val()+'&ban='+0;
@@ -106,11 +112,11 @@ function FReach(id)
 			    		alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
 			    		window.location.replace('<c:url value="/cotizador/programacion/autorizacion_cotizacion_prog"/>');
 			    	}
-			    	else
+			    	/*else
 			    	{
 				    	$("#mensajes" ).text("Procesando petición");
 						$("#mensajes").removeClass().addClass("alert alert-info");
-			    	}
+			    	}*/
 			    }
 			    
 			}
@@ -131,31 +137,47 @@ function FReach(id)
 		<thead>
 			<tr>
 				<th>Folio</th>
-				<th>Largo</th>
-				<th>Ancho</th>
-				<th>Color</th>
-				<th>Flauta</th>
-				<th>Medidas pliego</th>
-				<th>Especialidades</th>
+				<th colspan="6">Detalles</th>
 				<th>Comentarios</th>
 				<th>Autorizar</th>
 				<th>Rechazar</th>
 			</tr>
 		</thead>
 		<tbody>
-		<c:forEach var="item" items="${listaDet}">
+		<c:forEach var="item" items="${listaDet}" varStatus="counter">
 			<tr>
-				<td>${item[5]}</td>
-				<td>${item[6]}</td>
-				<td>${item[7]}</td>
-				<td>${item[18]}</td>
-				<td>${item[17]}</td>
-				<td>${item[9]}</td>
-				<td>${item[65]} ${item[66]} ${item[67]} ${item[68]} ${item[69]} ${item[70]} ${item[71]} ${item[72]} ${item[73]} ${item[74]} ${item[75]} ${item[76]} ${item[77]} ${item[78]} ${item[79]} 
-				${item[80]} ${item[81]} ${item[82]} ${item[83]} ${item[84]} ${item[85]} ${item[86]} ${item[87]} ${item[88]} ${item[89]} ${item[90]} ${item[91]} ${item[92]}</td>
-				<td><input id="TComent${item[5]}" type="text" size="50" onkeypress="return SinCaracteresEspeciales(event)" maxlength="100" class="border border-primary"/></td>
-				<td><a href="javascript:FAut(${item[5]})"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></a></td>
-				<td><a href="javascript:FReach(${item[5]})"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i></a></td>
+				<td>${item['id']}</td>
+					<td colspan="6">
+					<table class="container-fluid table-hover text-center">
+					<tr>
+					<th>Largo</th>
+					<th>Ancho</th>
+					<th>Color</th>
+					<th>Flauta</th>
+					<th>Medidas pliego</th>
+					<th>Especialidades</th>
+					</tr>
+					<c:forEach var="det" items="${item['ListaDetalles']}" varStatus="counter">
+					<tr>
+						<td>${det['largo']}</td>
+						<td>${det['ancho']}</td>
+						<td>${det['papel']}</td>
+						<td>${det['flauta']}</td>
+						<td>${det['medida_lamina']}</td>
+						<td>
+							<table class="container-fluid text-center">
+								<c:forEach var="esp" items="${det['ListaEsp']}" varStatus="counter">
+									<tr><td>${esp['especialidad']}</td></tr>
+								</c:forEach>
+							</table>
+						</td>
+					</tr>
+					</c:forEach>
+					</table>
+					</td>	
+				<td><input id="TComent${item['id']}" type="text" size="50" onkeypress="return SinCaracteresEspeciales(event)" maxlength="100" class="border border-primary"/></td>
+				<td><a href="javascript:FAut(${item['id']})"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></a></td>
+				<td><a href="javascript:FReach(${item['id']})"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i></a></td>
 			</tr>
 		</c:forEach>
 		</tbody>

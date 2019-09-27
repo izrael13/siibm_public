@@ -2,7 +2,6 @@ package com.websystique.springmvc.dao.tarjetas.fabricacion;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -11,31 +10,27 @@ import org.springframework.stereotype.Repository;
 import com.websystique.springmvc.dao.AbstractDao;
 import com.websystique.springmvc.model.ParamsGeneral;
 import com.websystique.springmvc.model.tarjetas.fabricacion.Tarjeta_fabricacion;
-import com.websystique.springmvc.model.tarjetas.fabricacion.Tarjeta_fabricacion_Busqueda;
 
 @Repository("tarjeta_fabricacionDAO")
 public class Tarjeta_fabricacionDAOImpl extends AbstractDao<Integer,Tarjeta_fabricacion> implements Tarjeta_fabricacionDAO{
 
 	@Override
-	public Tarjeta_fabricacion BuscarxFolio(String Folio) {
-		// TODO Auto-generated method stub
-		//Map<String,String> mRes =  new HashMap<String, String>();
-		//mRes.put("folio_tarjeta", Folio);
+	public Tarjeta_fabricacion BuscarxFolio(String Folio, Integer IdDis) {
 		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
 		Params.add( new ParamsGeneral(1,"folio_tarjeta",Folio,"EQ"));
+		Params.add( new ParamsGeneral(1,"iddiseniador",IdDis,"EQ"));
 		Tarjeta_fabricacion Tarjeta = (Tarjeta_fabricacion) criteriaGeneralObj(Params);
 		return Tarjeta;
 	}
 
 	@Override
-	public List<Tarjeta_fabricacion> BuscarXIdCot(Integer IdCot) {
-		// TODO Auto-generated method stub
-		//Map<String,Integer> mRes =  new HashMap<String, Integer>();
-		//mRes.put("idcotizacion", IdCot);		
+	public List<Tarjeta_fabricacion> BuscarXIdCot(Integer IdCot, Integer IdDis) {	
 		Map<String,String> mOrd =  new HashMap<String, String>();
 		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
 		
 		Params.add( new ParamsGeneral(1,"idcotizacion",IdCot,"EQ"));
+		if(IdDis > 0)
+			Params.add( new ParamsGeneral(1,"iddiseniador",IdDis,"EQ"));
 		
 		mOrd.put("1", "folio_tarjeta");
 		
@@ -46,66 +41,74 @@ public class Tarjeta_fabricacionDAOImpl extends AbstractDao<Integer,Tarjeta_fabr
 
 	@Override
 	public void Guardar(Tarjeta_fabricacion Tarjeta) {
-		// TODO Auto-generated method stub
 		persist(Tarjeta);
 	}
 
 	@Override
 	public void Actualizar(Tarjeta_fabricacion Tarjeta) {
-		// TODO Auto-generated method stub
 		update(Tarjeta);
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
-	public List<Tarjeta_fabricacion_Busqueda> TarjetaBusqueda(Integer IdCot, String Folio) {
+	public List<Tarjeta_fabricacion> TarjetaBusqueda(Integer IdCot, String Folio, String cardcode, Integer IdDis) {
 		// TODO Auto-generated method stub
 		Map<Integer,Integer> paramsInt = new HashMap<Integer, Integer>();
 		Map<Integer,String> paramStr = new HashMap<Integer, String>();
 		int posicion = 0;
 		
-		String query  ="select ROW_NUMBER() OVER(ORDER BY A.FOLIO_TARJETA ASC) AS count, A.IDCOTIZACION,A.FOLIO_TARJETA,B.SIMBOLO\r\n" + 
+		String query  ="select A.* \r\n" + 
 				"from TARJETA_FABRICACION A\r\n" + 
-				"inner join COTIZADOR_DETALLES B on A.IDCOTIZACION = B.IDCOTIZACION ";
+				"inner join COTIZADOR_DETALLES B on A.IDCOTIZACION = B.IDCOTIZACION \r\n" +
+				"inner join COTIZADOR C on A.IDCOTIZACION = C.ID ";
 		if(!Folio.trim().equals(""))
 		{
 			posicion ++;
 			query = query + " where A.FOLIO_TARJETA = ?"+posicion;
 			paramStr.put(posicion, Folio);
+			
+			posicion ++;
+			query = query + " AND A.IDDISENIADOR = ?"+posicion;
+			paramsInt.put(posicion, IdDis);
 		}
 		else
 		{
-			posicion ++;
-			query = query + " where A.IDCOTIZACION =  ?"+posicion;
-			paramsInt.put(posicion, IdCot);
-		}
-		List<Tarjeta_fabricacion_Busqueda> Lista = new ArrayList<Tarjeta_fabricacion_Busqueda>();
-		List<Object> result = criteriaQueryStr(query,paramsInt,paramStr);
-		
-		Iterator itr = result.iterator();
-		
-		while(itr.hasNext()){
-			   Object[] obj = (Object[]) itr.next();
-			   Tarjeta_fabricacion_Busqueda tf = new Tarjeta_fabricacion_Busqueda();
-			   tf.setCount(Integer.valueOf(String.valueOf(obj[0])));
-			   tf.setIdcotizacion(Integer.valueOf(String.valueOf(obj[1])));
-			   tf.setFolio_tarjeta(String.valueOf(obj[2]));
-			   tf.setSimbolo(String.valueOf(obj[3]));
-			   
-			   Lista.add(tf); 
+			if(IdCot > 0 )
+			{
+				posicion ++;
+				query = query + " where A.IDCOTIZACION =  ?"+posicion;
+				paramsInt.put(posicion, IdCot);
+				
+				posicion ++;
+				query = query + " AND A.IDDISENIADOR = ?"+posicion;
+				paramsInt.put(posicion, IdDis);
 			}
+			else
+			{
+				if(!cardcode.equals(""))
+				{
+					posicion ++;
+					query = query + " where C.CARDCODE =  ?"+posicion;
+					paramStr.put(posicion, cardcode);
+					
+					posicion ++;
+					query = query + " AND A.IDDISENIADOR = ?"+posicion;
+					paramsInt.put(posicion, IdDis);
+				}
+			}
+		}
+
+		List<Tarjeta_fabricacion> result = criteriaQueryNamedStr(query,paramsInt,paramStr);
 		
-		return Lista;
+		return result;
 	}
 
 	@Override
 	public void Borrar(Tarjeta_fabricacion Tarjeta) {
-		// TODO Auto-generated method stub
 		delete(Tarjeta);
 	}
 
 	@Override
-	public List<Tarjeta_fabricacion> BuscarXAut(String usuario_aut_ant, String fecha_aut_ant, String usuario_aut_act, String fecha_aut_act) {
+	public List<Tarjeta_fabricacion> BuscarXAut(String usuario_aut_ant, String fecha_aut_ant, String usuario_aut_act, String fecha_aut_act, String cardcode) {
 		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
 		Map<String,String> mOrd =  new HashMap<String, String>();
 		Params.add( new ParamsGeneral(1,usuario_aut_ant,"NE"));
@@ -114,10 +117,114 @@ public class Tarjeta_fabricacionDAOImpl extends AbstractDao<Integer,Tarjeta_fabr
 		Params.add( new ParamsGeneral(4,fecha_aut_act,"EQ"));
 		Params.add( new ParamsGeneral(5,"usuario_cancela","EQ"));
 		Params.add( new ParamsGeneral(6,"fecha_cancela","EQ"));
+		
+		if(!cardcode.equals(""))
+			Params.add( new ParamsGeneral(7,"cardcode",cardcode,"EQ"));
+		
 		mOrd.put("1", "folio_tarjeta");
 		List<Tarjeta_fabricacion> Lista = criteriaGeneralList(Params, mOrd);
 		return Lista;
 	}
-	
 
+	@Override
+	public List<Object> BuscarEsp(Integer idcot, Integer Iddet) {
+		Map<Integer,Integer> paramsInt = new HashMap<Integer, Integer>();
+		Map<Integer,String> paramStr = new HashMap<Integer, String>();
+		
+		String query  ="select b.name, a.costo,a.ajuste, b.code, a.cm \r\n" + 
+				"from especialidades_cotizacion a\r\n" + 
+				"inner join catalogo_especialidades_sap b on a.idespecialidad = b.code\r\n" + 
+				"where a.idcotizacion = ?1 and a.iddetalle = ?2";
+		paramsInt.put(1, idcot);
+		paramsInt.put(2, Iddet);
+		List<Object> result = criteriaQueryStr(query,paramsInt,paramStr);
+		
+		return result;
+
+	}
+
+	@Override
+	public List<Tarjeta_fabricacion> ListaSeguimiento(String Folio, Integer IdCot, Integer Status, String CardCode) {
+		Map<Integer,Integer> paramsInt = new HashMap<Integer, Integer>();
+		Map<Integer,String> paramStr = new HashMap<Integer, String>();
+		Integer posicion = 0;
+
+		String query = "select * from TARJETA_FABRICACION a \r\n" + 
+				"where a.FOLIO_TARJETA != '' ";
+		if(!Folio.equals(""))
+		{
+			posicion++;
+			query = query + " and a.FOLIO_TARJETA = ?"+posicion;
+			paramStr.put(posicion, Folio);		
+		}
+		
+		if(IdCot > 0)
+		{
+			posicion++;
+			query = query + " and a.IDCOTIZACION = ?"+posicion;
+			paramsInt.put(posicion, IdCot);
+		}
+		
+		if(!CardCode.equals(""))
+		{
+			posicion++;
+			query = query + " and a.CARDCODE = ?"+posicion;
+			paramStr.put(posicion, CardCode);		
+		}
+		
+		if(Status == 1)//rechazadas
+		{
+			query = query + " and (a.FECHA_RECH_CALIDAD is not null or \r\n" + 
+								"a.FECHA_RECH_PRODUCCION is not null or\r\n" + 
+								"a.FECHA_RECH_ING is not null or\r\n" + 
+								"a.FECHA_RECH_CLIENTE is not null ) and a.FECHA_CANCELA is null";
+		}
+		
+		if(Status == 2)//canceladas
+		{
+			query = query + " and a.FECHA_CANCELA is not null ";
+		}
+		
+		if(Status == 3)//Diseño
+		{
+			query = query + " and a.FECHA_AUT_DISENIADOR is null and a.FECHA_CANCELA is null ";
+		}
+		
+		if(Status == 4)//Calidad
+		{
+			query = query + " and a.FECHA_AUT_DISENIADOR is not null  and a.FECHA_CANCELA is null ";
+		}
+		
+		if(Status == 5)//Produccion
+		{
+			query = query + " and a.FECHA_AUT_CALIDAD is not null  and a.FECHA_CANCELA is null ";
+		}
+		
+		if(Status == 6)//Ingenieria
+		{
+			query = query + " and a.FECHA_AUT_PRODUCCION is not null  and a.FECHA_CANCELA is null ";
+		}
+		
+		if(Status == 7)//Cliente
+		{
+			query = query + " and a.FECHA_AUT_ING is not null  and a.FECHA_CANCELA is null ";
+		}
+		
+		if(Status == 8)//aut cliente
+		{
+			query = query + " and a.FECHA_AUT_CLIENTE is not null  and a.FECHA_CANCELA is null ";
+		}
+		List<Tarjeta_fabricacion> Lista = criteriaQueryNamedStr(query,paramsInt,paramStr);
+		return Lista;
+	}
+
+	@Override
+	public Tarjeta_fabricacion BuscarxFolio(String Folio) {
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		Params.add( new ParamsGeneral(1,"folio_tarjeta",Folio,"EQ"));
+		Tarjeta_fabricacion Tarjeta = (Tarjeta_fabricacion) criteriaGeneralObj(Params);
+		return Tarjeta;
+	}
+	
+	
 }

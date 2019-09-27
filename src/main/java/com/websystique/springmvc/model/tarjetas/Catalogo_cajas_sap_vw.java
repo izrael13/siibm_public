@@ -32,4 +32,5 @@ public class Catalogo_cajas_sap_vw implements Serializable{/**
 	private Integer dospartes;
 	private String tipocajabarca;
 	private String corrugado;
+	private Integer grupo;
 }

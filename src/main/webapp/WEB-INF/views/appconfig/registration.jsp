@@ -25,9 +25,9 @@
 	<%@include file="authheader2.jsp"%>
 </head>
 <body>
- 	<div class="generic-container">
+ 	<div class="container">
 		<div class="well lead">Registro de usuarios</div>
-	 	<form:form method="POST" modelAttribute="user" class="form-horizontal">
+	 	<form:form method="POST" modelAttribute="user">
 			<form:input type="hidden" path="id" id="id"/>
 			
 			<div>
@@ -101,10 +101,10 @@
 			</div>
 	
 			<div>
-				<div class="form-group col-md-12">
-					<label class="col-md-3 control-lable" for="userProfiles">Roles</label>
-					<div class="col-md-7">
-						<form:select path="userProfiles" items="${roles}" multiple="true" itemValue="id" itemLabel="type" class="form-control input-sm" />
+				<div class="col-md-12">
+					<label class="col-md-3" for="userProfiles">Roles</label>
+					<div class="col">
+						<form:checkboxes path="userProfiles" items="${roles}" class="border border-primary" itemValue="id" itemLabel="type" delimiter="</br>"/>
 						<div class="has-error">
 							<form:errors path="userProfiles" class="help-inline"/>
 						</div>
@@ -114,7 +114,7 @@
 			
 			<div>
 				<div class="form-group col-md-12">
-					<label class="col-md-3 control-lable" for="userProfiles">Relación Vendedor SAP</label>
+					<label class="col-md-3 control-lable" for="cvevendedor_sap">Relación Vendedor SAP</label>
 					<div class="col-md-7">
 						<form:select path="cvevendedor_sap" class="form-control input-sm">
 							<form:option value="0"> - - -</form:option>
@@ -122,6 +122,21 @@
 						</form:select>
 						<div class="has-error">
 							<form:errors path="cvevendedor_sap" class="help-inline"/>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div>
+				<div class="form-group col-md-12">
+					<label class="col-md-3 control-lable" for="cardcode_sap">Relación Cliente SAP</label>
+					<div class="col-md-7">
+						<form:select path="cardcode_sap" class="form-control input-sm">
+							<form:option value=""> - - -</form:option>
+							<form:options items="${clientes}" itemValue="cardcode" itemLabel="cardname"></form:options>
+						</form:select>
+						<div class="has-error">
+							<form:errors path="cardcode_sap" class="help-inline"/>
 						</div>
 					</div>
 				</div>

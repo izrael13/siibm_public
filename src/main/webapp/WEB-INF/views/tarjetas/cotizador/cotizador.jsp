@@ -19,6 +19,7 @@ $(document).ready(function() {
 		{
 			
 			if( ('${cotizadordatabean.cotizador.usuario_rech_prog}' == '' && '${cotizadordatabean.cotizador.fecha_rech_prog}' == '') ||
+				('${cotizadordatabean.cotizador.usuario_rech_ventas}' == ''  && '${cotizadordatabean.cotizador.fecha_rech_ventas}' == '') ||
 			    ('${cotizadordatabean.cotizador.usuario_rech_diseniador}' == '' && '${cotizadordatabean.cotizador.fecha_rech_diseniador}' == '') ||
 			    ('${cotizadordatabean.cotizador.usuario_cancel}' > 0  && '${cotizadordatabean.cotizador.fecha_cancel}' != '')
 			  )
@@ -114,6 +115,7 @@ $(document).ready(function() {
 				$("#CCajaSeca").bind("click", preventDef, false);
 				$("#CCertFum").bind("click", preventDef, false);
 				$("#CEPP").bind("click", preventDef, false);
+				$("#CAGranel").bind("click", preventDef, false);
 				$("#CImpFech").bind("click", preventDef, false);
 				$("#CImpPed").bind("click", preventDef, false);
 				$("#CTarxUni").bind("click", preventDef, false);
@@ -124,10 +126,14 @@ $(document).ready(function() {
 				$("#TPzasAtado").attr("readonly","readonly");
 				$("#TAtaCama").attr("readonly","readonly");
 			}
+			else
+				FEmbarques(0);
 			
 		}
+		else
+			FEmbarques(0);
 		
-		if(('${cotizadordatabean.cotizador.usuario_cancel}' == ''  && '${cotizadordatabean.cotizador.fecha_cancel}' == '') && 
+		/*if(('${cotizadordatabean.cotizador.usuario_cancel}' == ''  && '${cotizadordatabean.cotizador.fecha_cancel}' == '') && 
 		   ('${cotizadordatabean.cotizador.usuario_rech_ventas}' > 0  && '${cotizadordatabean.cotizador.fecha_rech_ventas}' != ''))
 		{
 			$("#TPreciObj").attr("readonly",false);
@@ -135,7 +141,7 @@ $(document).ready(function() {
 			$("#BEnvVtas").prop('disabled',false);
 			$("#BGrabar").prop('disabled',false);
 			//$("#BCancel").prop('disabled',false);
-		}
+		} */
 		if('${cotizadordatabean.cotizador.usuario_diseniador}' != ''  && '${cotizadordatabean.cotizador.fecha_asign_diseniador}' != '')
 			$("#BCancel").prop('disabled',true);
 	} 
@@ -249,13 +255,15 @@ function FBuscar()
 	}
 	
 	var isDisabled = $("#BGrabar").prop('disabled');
+	var isReadOnly = $("#TId").prop('readonly');
+
 	$( "#TId" ).prop( "readonly", false );
-	$( "#BGrabar" ).prop( "disabled", true );
-	if(($( "#TId" ).val() > 0 || $( "#SClientes" ).val() != "0") && isDisabled == true)
+	if(($( "#TId" ).val() > 0 || $( "#SClientes" ).val() != "0") && isDisabled == true && isReadOnly == false)
 	{
 		popupwindow('<c:url value="/cotizador/vendedor/cotizadorbusqueda" />?id='+$( "#TId" ).val()+'&cardcode='+$( "#SClientes" ).val(),'Detalle de viaje',800,1000);
 	}
 
+		$( "#BGrabar" ).prop( "disabled", true );
 		$( "#TId").removeClass().addClass("border border-danger");
 		$( "#SClientes").removeClass().addClass("border border-danger");
 		$( "#TId" ).focus();
@@ -322,7 +330,7 @@ function FBuscarResisId()
 
 function CalcularDatos()
 {
-	SumarEsp();
+	SumarEsp($("#SCajas").val());
 
 	var Parameters = new Object();
 	Parameters.ancho = ($("#TAncho").val() === "" ? 0 : $("#TAncho").val());
@@ -346,6 +354,7 @@ function CalcularDatos()
 	Parameters.costopapelresis = ($("#TCostoPapelResis").val() === "" ? 0 : $("#TCostoPapelResis").val());
 	Parameters.ajustes = ajustes;
 	Parameters.esquemas = esquemas;
+	Parameters.cm = cm;
 	
 	var mystring = JSON.stringify(Parameters);
 	
@@ -443,14 +452,13 @@ function FEnviarVtaProg()
 		var url = '<c:url value="/cotizador/vendedor/enviaragerenteventasprog"/>';
 		var params = 'idcot='+idcot;
 		
+		$("#DivMensaje").text("Procesando petición. Por favor espere...");
+    	$("#DivMensaje").removeClass().addClass("alert alert-danger");
+		
 		http.open('POST', url, true);
-	
-		//Send the proper header information along with the request
 		http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 	
 		http.onreadystatechange = function() {//Call a function when the state changes.
-			$("#DivMensaje").text("Procesando petición. Por favor espere...");
-	    	$("#DivMensaje").removeClass().addClass("alert alert-danger");
 		    if(http.readyState == 4 && http.status == 200) 
 		    {
 		    	if (http.responseText.search(/Login page/i) != -1) {
@@ -492,14 +500,13 @@ function FCancelar()
 		var url = '<c:url value="/cotizador/vendedor/cancelarcotizacion"/>';
 		var params = 'idcot='+idcot;
 		
+		$("#DivMensaje").text("Procesando petición. Por favor espere...");
+    	$("#DivMensaje").removeClass().addClass("alert alert-danger");
+		
 		http.open('POST', url, true);
-	
-		//Send the proper header information along with the request
 		http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 	
 		http.onreadystatechange = function() {//Call a function when the state changes.
-			$("#DivMensaje").text("Procesando petición. Por favor espere...");
-	    	$("#DivMensaje").removeClass().addClass("alert alert-danger");
 		    if(http.readyState == 4 && http.status == 200) 
 		    {
 		    	if (http.responseText.search(/Login page/i) != -1) {
@@ -947,13 +954,6 @@ function BuscarResistencias()
 											<form:errors path="cotizador_detalles.ref_para_comision" class="badge badge-danger small"/>
 										</div>
 									</div>
-									<div class="col col-lg-1">Pzas tarima</div>
-									<div class="col col-lg-1">
-										<form:input id="TPzasxTar" onKeyUp="CalcularDatos()" size="10" maxlength="8" type="text" path="cotizador_detalles.piezasxtarima" onkeypress="return Enteros(event);" class="border border-primary"/>
-										<div class="has-error">
-											<form:errors path="cotizador_detalles.piezasxtarima" class="badge badge-danger small"/>
-										</div>
-									</div>
 									<div class="col col-lg-1">Pzas x juego</div>
 									<div class="col col-lg-1">
 										<form:input onKeyUp="CalcularDatos()" id="TPzasxjgo" size="10" value="${empty cotizadordatabean.cotizador_detalles.iddetalle ? 1 : cotizadordatabean.cotizador_detalles.iddetalle == 1 ? 1: ''}"
@@ -968,6 +968,13 @@ function BuscarResistencias()
 										<form:input onKeyUp="CalcularDatos()" id="TCantPedMes" size="10" maxlength="8" type="text" path="cotizador_detalles.cantidad_pedido_mes" onkeypress="return Enteros(event);" class="border border-primary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.cantidad_pedido_mes" class="badge badge-danger small"/>
+										</div>
+									</div>
+									<div class="col col-lg-1">Num ranuras</div>
+									<div class="col col-lg-1">
+										<form:input id="TNumRanuras" size="10" maxlength="8" type="text" path="cotizador_detalles.num_raturas" onkeypress="return Enteros(event);" class="border border-primary"/>
+										<div class="has-error">
+											<form:errors path="cotizador_detalles.num_raturas" class="badge badge-danger small"/>
 										</div>
 									</div>
 								</div>
@@ -1077,8 +1084,7 @@ function BuscarResistencias()
 										Cancelar/Sustituir: <form:checkbox id="CCancSust" path="cotizador_detalles.cancelar_sustituir"/>
 										TF: <form:input id="TTF" size="10" maxlength="8" type="text" path="cotizador_detalles.tf_cs" onkeypress="return SinCaracteresEspeciales(event);" class="border border-primary"/>
 									</div>
-									<div class="col col-lg-1">Num ranuras</div>
-									<div class="col col-lg-1"><form:input id="TNumRanuras" size="10" maxlength="8" type="text" path="cotizador_detalles.num_raturas" onkeypress="return Enteros(event);" class="border border-primary"/></div>
+									<button id="BCodBarras" type="button" data-toggle="modal" data-target="#CodigoBarras" class="float-right btn btn-outline-primary btn-sm"><i class="fa fa-barcode" aria-hidden="true"> Código de barras</i></button>									
 								</div>
 							</div>
 						</div>	
@@ -1098,41 +1104,68 @@ function BuscarResistencias()
 						<div class="row small">
 							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
 								<div class="row border border-right">
-									<div class="col col-lg-12">
-										Emplayado: <form:checkbox id="CEmplayado" path="cotizador.emplayado"/> 
-										Vueltas: <form:input id="TVueltasEmp" size="10" maxlength="8" type="text" path="cotizador.vueltas_emplaye" onkeypress="return filterFloat(event,this);" class="border border-primary"/>
-										Factura: <form:checkbox id="CFactura" path="cotizador.factura"/>
-										Certif calidad: <form:checkbox id="CCertCal" path="cotizador.certif_calidad"/>
-										Imprimir OC: <form:checkbox id="CImpOC" path="cotizador.imprimir_oc"/>
-										Protecciones: <form:checkbox id="CProtecciones" path="cotizador.protecciones"/>
-										Caja seca: <form:checkbox id="CCajaSeca" path="cotizador.caja_seca"/>
-										Certif fumigación: <form:checkbox id="CCertFum" path="cotizador.certif_fumig"/>
-										EPP transportista: <form:checkbox id="CEPP" path="cotizador.epp_transportista"/>
-										Imprimir fechador: <form:checkbox id="CImpFech" path="cotizador.imprimir_fechador"/>
-										Imprimir pedido: <form:checkbox id="CImpPed" path="cotizador.imprimir_pedido"/>
-										TarimaXunitizado: <form:checkbox id="CTarxUni" path="cotizador.tarimaxunitizado"/> 
-										<button id="BCodBarras" type="button" data-toggle="modal" data-target="#CodigoBarras" class="float-right btn btn-outline-primary btn-sm"><i class="fa fa-barcode" aria-hidden="true"> Código de barras</i></button>
-									</div>
-									<div class="col col-lg-1">Altura pallet</div>
-									<div class="col col-lg-1"><form:input id="TAltPallet" size="10" maxlength="8" type="text" path="cotizador_detalles.altura_pallet" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
-									<div class="col col-lg-1">Camas pallet</div>
-									<div class="col col-lg-1"><form:input id="TCamasPallet" size="10" maxlength="8" type="text" path="cotizador_detalles.camas_pallet" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
-									<div class="col col-lg-1">Flejes pallet</div>
-									<div class="col col-lg-1"><form:input id="TFlejesPallet" size="10" maxlength="8" type="text" path="cotizador_detalles.flejes_pallet" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
-									
-									<div class="col col-lg-1">Flejes atado</div>
-									<div class="col col-lg-1"><form:input id="TFlejesAtado" size="10" maxlength="8" type="text" path="cotizador_detalles.flejes_atado" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
-									<div class="col col-lg-1">Pzas atado</div>
-									<div class="col col-lg-1"><form:input id="TPzasAtado" size="10" maxlength="8" type="text" path="cotizador_detalles.pzas_atado" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
-									<div class="col col-lg-1">Atados cama</div>
-									<div class="col col-lg-1"><form:input id="TAtaCama" size="10" maxlength="8" type="text" path="cotizador_detalles.atados_cama" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
-									
+									<div class="col col-lg-2">Emplayado: <form:checkbox id="CEmplayado" path="cotizador.emplayado"/></div> 
+									<div class="col col-lg-2">Vueltas: <form:input id="TVueltasEmp" size="5" maxlength="8" type="text" path="cotizador.vueltas_emplaye" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
+									<div class="col col-lg-1">Factura: <form:checkbox id="CFactura" path="cotizador.factura"/></div>
+									<div class="col col-lg-2">Certif calidad: <form:checkbox id="CCertCal" path="cotizador.certif_calidad"/></div>
+									<div class="col col-lg-1">Imp OC: <form:checkbox id="CImpOC" path="cotizador.imprimir_oc"/></div>
+									<div class="col col-lg-2">Protecciones: <form:checkbox id="CProtecciones" path="cotizador.protecciones"/></div>
+									<div class="col col-lg-2">Imp fechador: <form:checkbox id="CImpFech" path="cotizador.imprimir_fechador"/></div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
+			<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
+				 <div class="row ">
+					 <div class="col-12">
+						<div class="row small">
+							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
+								<div class="row border border-right">
+									<div class="col col-lg-1">Caja seca: <form:checkbox id="CCajaSeca" path="cotizador.caja_seca"/></div>					
+									<div class="col col-lg-2">Imprimir pedido: <form:checkbox id="CImpPed" path="cotizador.imprimir_pedido"/></div>
+									<div class="col col-lg-2">TarimaXunitizado: <form:checkbox id="CTarxUni" path="cotizador.tarimaxunitizado"/></div>
+									<div class="col col-lg-2">Certif fumigación: <form:checkbox id="CCertFum" path="cotizador.certif_fumig"/></div>
+									<div class="col col-lg-2">EPP transportista: <form:checkbox id="CEPP" path="cotizador.epp_transportista"/></div>
+									<div class="col col-lg-1">A granel: <form:checkbox id="CAGranel"  path="cotizador.agranel" onchange="FEmbarques(1)"/></div>
+									<div class="col col-lg-1">Altura pallet</div>
+									<div class="col col-lg-1"><form:input id="TAltPallet" size="10" maxlength="8" type="text" path="cotizador_detalles.altura_pallet" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
+				 <div class="row ">
+					 <div class="col-12">
+						<div class="row small">
+							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
+								<div class="row border border-right">
+									<div class="col col-lg-1">Pzas tarima</div>
+									<div class="col col-lg-1">
+										<form:input id="TPzasxTar" onKeyUp="CalcularDatos()" size="10" maxlength="8" type="text" path="cotizador_detalles.piezasxtarima" onkeypress="return Enteros(event);" class="border border-primary"/>
+										<div class="has-error">
+											<form:errors path="cotizador_detalles.piezasxtarima" class="badge badge-danger small"/>
+										</div>
+									</div>
+									<div class="col col-lg-1">Flejes atado</div>
+									<div class="col col-lg-1"><form:input id="TFlejesAtado" size="10" maxlength="8" type="text" path="cotizador_detalles.flejes_atado" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
+									<div class="col col-lg-1">Pzas atado</div>
+									<div class="col col-lg-1"><form:input id="TPzasAtado" size="10" maxlength="8" type="text" path="cotizador_detalles.pzas_atado" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
+									<div class="col col-lg-1">Atados cama</div>
+									<div class="col col-lg-1"><form:input id="TAtaCama" size="10" maxlength="8" type="text" path="cotizador_detalles.atados_cama" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
+									<div class="col col-lg-1">Camas pallet</div>
+									<div class="col col-lg-1"><form:input id="TCamasPallet" size="10" maxlength="8" type="text" path="cotizador_detalles.camas_pallet" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
+									<div class="col col-lg-1">Flejes pallet</div>
+									<div class="col col-lg-1"><form:input id="TFlejesPallet" size="10" maxlength="8" type="text" path="cotizador_detalles.flejes_pallet" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>			
 			<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
 				 <div class="row ">
 					 <div class="badge badge-success col-12">
@@ -1160,6 +1193,12 @@ function BuscarResistencias()
      	path="cotizador_detalles.especialidades_cotizacion[${status.index}].idcotizacion" value="${cotizadordatabean.cotizador.id}"  class="border border-primary"/>
      	<form:input type="hidden" id="TIdDet${item.code}" 
      	path="cotizador_detalles.especialidades_cotizacion[${status.index}].iddetalle" value="${cotizadordatabean.cotizador_detalles.iddetalle}"  class="border border-primary"/>
+     	
+     	<form:input type="${!empty cotizadordatabean.cotizador_detalles.especialidades_cotizacion[status.index].cm ? 'text' : 'hidden'}"
+     	onkeypress="return filterFloat(event,this);"
+     	onKeyUp="CalcularDatos()" 
+     	id="TCM${item.code}" size="10" maxlength="8" placeholder="CM"
+     	path="cotizador_detalles.especialidades_cotizacion[${status.index}].cm" value="${cotizadordatabean.cotizador_detalles.especialidades_cotizacion[status.index].cm}"  class="border border-primary"/>
      	
 								     	<c:choose>
 								     		<c:when test="${item.name == 'Bolsa'}">

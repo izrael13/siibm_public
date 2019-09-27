@@ -16,8 +16,6 @@ public class Catalogo_coloresDAOImpl  extends AbstractDao<Integer,Catalogo_color
 
 	@Override
 	public List<Catalogo_colores> ListaColores() {
-		// FIXME Auto-generated method stub
-		//Map<String,String> mRes =  new HashMap<String, String>();
 		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
 		Map<String,String> mOrd =  new HashMap<String, String>();
 		
@@ -25,6 +23,13 @@ public class Catalogo_coloresDAOImpl  extends AbstractDao<Integer,Catalogo_color
 		
 		List<Catalogo_colores> ListaColores = criteriaGeneralList(Params, mOrd);
 		return ListaColores;
+	}
+
+	@Override
+	public Catalogo_colores BuscarxId(Integer id) {
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		Params.add(new ParamsGeneral(1,"id",id == null ? 0 : id,"EQ"));
+		return (Catalogo_colores) criteriaGeneralObj(Params);
 	}
 
 }

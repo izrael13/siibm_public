@@ -98,5 +98,6 @@ public class Cotizador implements Serializable{/**
 	private String se_entrego;
 	private Integer tolerancia_pedido;
 	private String disenio;
+	private Boolean agranel;
 	
 }

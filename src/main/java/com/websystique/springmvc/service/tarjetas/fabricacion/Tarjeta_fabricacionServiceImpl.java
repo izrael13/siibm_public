@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.websystique.springmvc.dao.tarjetas.fabricacion.Tarjeta_fabricacionDAO;
 import com.websystique.springmvc.model.tarjetas.fabricacion.Tarjeta_fabricacion;
-import com.websystique.springmvc.model.tarjetas.fabricacion.Tarjeta_fabricacion_Busqueda;
 
 @Service("tarjeta_fabricacionService")
 @Transactional
@@ -18,15 +17,15 @@ public class Tarjeta_fabricacionServiceImpl implements Tarjeta_fabricacionServic
 	Tarjeta_fabricacionDAO dao;
 	
 	@Override
-	public Tarjeta_fabricacion BuscarxFolio(String Folio) {
+	public Tarjeta_fabricacion BuscarxFolio(String Folio, Integer IdDis) {
 		// TODO Auto-generated method stub
-		return dao.BuscarxFolio(Folio);
+		return dao.BuscarxFolio(Folio,IdDis);
 	}
 
 	@Override
-	public List<Tarjeta_fabricacion> BuscarXIdCot(Integer IdCot) {
+	public List<Tarjeta_fabricacion> BuscarXIdCot(Integer IdCot, Integer IdDis) {
 		// TODO Auto-generated method stub
-		return dao.BuscarXIdCot(IdCot);
+		return dao.BuscarXIdCot(IdCot,IdDis);
 	}
 
 	@Override
@@ -42,9 +41,9 @@ public class Tarjeta_fabricacionServiceImpl implements Tarjeta_fabricacionServic
 	}
 
 	@Override
-	public List<Tarjeta_fabricacion_Busqueda> TarjetaBusqueda(Integer IdCot, String Folio) {
+	public List<Tarjeta_fabricacion> TarjetaBusqueda(Integer IdCot, String Folio, String cardcode, Integer IdDis) {
 		// TODO Auto-generated method stub
-		return dao.TarjetaBusqueda(IdCot, Folio);
+		return dao.TarjetaBusqueda(IdCot, Folio, cardcode, IdDis);
 	}
 
 	@Override
@@ -54,9 +53,27 @@ public class Tarjeta_fabricacionServiceImpl implements Tarjeta_fabricacionServic
 	}
 
 	@Override
-	public List<Tarjeta_fabricacion> BuscarXAut(String usuario_aut, String fecha_aut, String usuario_aut_act, String fecha_aut_act) {
+	public List<Tarjeta_fabricacion> BuscarXAut(String usuario_aut, String fecha_aut, String usuario_aut_act, String fecha_aut_act, String cardcode) {
 		// TODO Auto-generated method stub
-		return dao.BuscarXAut(usuario_aut, fecha_aut,usuario_aut_act,fecha_aut_act);
+		return dao.BuscarXAut(usuario_aut, fecha_aut,usuario_aut_act,fecha_aut_act, cardcode);
+	}
+
+	@Override
+	public List<Object> BuscarEsp(Integer idcot, Integer Iddet) {
+		// TODO Auto-generated method stub
+		return dao.BuscarEsp(idcot, Iddet);
+	}
+
+	@Override
+	public List<Tarjeta_fabricacion> ListaSeguimiento(String Folio, Integer IdCot, Integer Status, String CardCode) {
+		// TODO Auto-generated method stub
+		return dao.ListaSeguimiento(Folio, IdCot, Status, CardCode);
+	}
+
+	@Override
+	public Tarjeta_fabricacion BuscarxFolio(String Folio) {
+		// TODO Auto-generated method stub
+		return dao.BuscarxFolio(Folio);
 	}
 
 }

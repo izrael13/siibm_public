@@ -36,8 +36,25 @@ public class Tarjeta_fabricacionValidator implements Validator{
 				errors.rejectValue("tarjeta_fabricacion.folio_tarjeta", "Required");
 			
 			if(tarjeta.getNum_partes() == null || tarjeta.getNum_partes() == 0)
-				errors.rejectValue("tarjeta_fabricacion.folio_tarjeta", "Required");
+				errors.rejectValue("tarjeta_fabricacion.num_partes", "Required");
 			
+			if(tarjeta.getCatalogo_maquinas_sap_vw().size() == 0)
+				errors.rejectValue("tarjeta_fabricacion.catalogo_maquinas_sap_vw", "NotEmpty");
+			
+			if(tarjeta.getPzasxlargo() == null || tarjeta.getPzasxlargo() == 0)
+				errors.rejectValue("tarjeta_fabricacion.pzasxlargo", "NotEmpty");
+			
+			if(tarjeta.getPzasxancho() == null || tarjeta.getPzasxancho() == 0)
+				errors.rejectValue("tarjeta_fabricacion.pzasxancho", "NotEmpty");
+			
+			if(tarjeta.getMedidas_internas() == null || tarjeta.getMedidas_internas() == "")
+				errors.rejectValue("tarjeta_fabricacion.medidas_internas", "NotEmpty");
+			
+			if(tarjeta.getSuaje() == null || tarjeta.getSuaje() == 0)
+				errors.rejectValue("tarjeta_fabricacion.suaje", "NotEmpty");
+			
+			if(tarjeta.getGrabado() == null || tarjeta.getGrabado() == 0)
+				errors.rejectValue("tarjeta_fabricacion.grabado", "NotEmpty");
 			
 		}
 	}

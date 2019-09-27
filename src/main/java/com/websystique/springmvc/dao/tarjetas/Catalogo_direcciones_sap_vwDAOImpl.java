@@ -58,4 +58,14 @@ public class Catalogo_direcciones_sap_vwDAOImpl extends AbstractDao<Integer,Cata
 		return ListaDir;
 	}
 
+	@Override
+	public Catalogo_direcciones_sap_vw DirCardCodeNumLine(String CardCode, Integer NumLine) {
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		Params.add(new ParamsGeneral(1,"cardcode",CardCode,"EQ"));
+		Params.add(new ParamsGeneral(1,"linenum",NumLine,"EQ"));
+		
+		Catalogo_direcciones_sap_vw Dir =  (Catalogo_direcciones_sap_vw) criteriaGeneralObj(Params);
+		return Dir;
+	}
+
 }

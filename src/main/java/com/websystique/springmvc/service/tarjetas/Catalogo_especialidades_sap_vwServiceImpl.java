@@ -17,9 +17,9 @@ public class Catalogo_especialidades_sap_vwServiceImpl implements Catalogo_espec
 	Catalogo_especialidades_sap_vwDAO dao;
 	
 	@Override
-	public List<Catalogo_especialidades_sap_vw> ListaEsp() {
+	public List<Catalogo_especialidades_sap_vw> ListaEsp(Integer vigente) {
 		// FIXME Auto-generated method stub
-		return dao.ListaEsp();
+		return dao.ListaEsp(vigente);
 	}
 
 	@Override

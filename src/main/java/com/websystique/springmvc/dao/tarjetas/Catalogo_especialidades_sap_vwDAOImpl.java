@@ -15,10 +15,12 @@ import com.websystique.springmvc.model.tarjetas.Catalogo_especialidades_sap_vw;
 public class Catalogo_especialidades_sap_vwDAOImpl extends AbstractDao<Integer,Catalogo_especialidades_sap_vw> implements Catalogo_especialidades_sap_vwDAO{
 
 	@Override
-	public List<Catalogo_especialidades_sap_vw> ListaEsp() {
+	public List<Catalogo_especialidades_sap_vw> ListaEsp(Integer vigente) {
 		// FIXME Auto-generated method stub
 		//Map<String,String> mRes =  new HashMap<String, String>();
 		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		Params.add(new ParamsGeneral(1,"vigente",vigente,"EQ"));
+		
 		Map<String,String> mOrd =  new HashMap<String, String>();
 		
 		mOrd.put("1", "name");

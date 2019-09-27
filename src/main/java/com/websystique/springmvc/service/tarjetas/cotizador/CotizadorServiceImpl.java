@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.websystique.springmvc.dao.tarjetas.cotizador.CotizadorDAO;
+import com.websystique.springmvc.model.ParamsGeneral;
 import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador;
 import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador_busqueda;
 
@@ -61,9 +62,9 @@ public class CotizadorServiceImpl implements CotizadorService{
 	}
 
 	@Override
-	public List<Object> ListaCotizacionesJasper(Integer id,Boolean autProg) {
-		// FIXME Auto-generated method stub
-		return dao.ListaCotizacionesJasper(id, autProg);
+	public List<Cotizador> ListasCotAut(List<ParamsGeneral> params) {
+		// TODO Auto-generated method stub
+		return dao.ListasCotAut(params);
 	}
 
 }

@@ -16,6 +16,8 @@ function FAut(id)
 	{
 		if(id > 0)
 		{
+			$("#mensajes" ).text("Procesando petición");
+			$("#mensajes").removeClass().addClass("alert alert-info");
 			var http = new XMLHttpRequest();
 			var url = '<c:url value="/cotizador/ventas/autorizacion_cotizacion_vtas_desicion"/>';
 			var params = 'idcot='+id+'&coment='+$("#TComent"+id).val()+'&ban='+1;
@@ -51,11 +53,11 @@ function FAut(id)
 			    		alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
 			    		window.location.replace('<c:url value="/cotizador/ventas/autorizacion_cotizacion_vtas"/>');
 			    	}
-			    	else
+			    	/*else
 			    	{
 				    	$("#mensajes" ).text("Procesando petición");
 						$("#mensajes").removeClass().addClass("alert alert-info");
-			    	}
+			    	}*/
 			    }
 			    
 			}
@@ -71,6 +73,8 @@ function FReach(id)
 	{
 		if(id > 0)
 		{
+			$("#mensajes" ).text("Procesando petición");
+			$("#mensajes").removeClass().addClass("alert alert-info");
 			var http = new XMLHttpRequest();
 			var url = '<c:url value="/cotizador/ventas/autorizacion_cotizacion_vtas_desicion"/>';
 			var params = 'idcot='+id+'&coment='+$("#TComent"+id).val()+'&ban='+0;
@@ -106,11 +110,11 @@ function FReach(id)
 			    		alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
 			    		window.location.replace('<c:url value="/cotizador/ventas/autorizacion_cotizacion_vtas"/>');
 			    	}
-			    	else
+			    	/*else
 			    	{
 				    	$("#mensajes" ).text("Procesando petición");
 						$("#mensajes").removeClass().addClass("alert alert-info");
-			    	}
+			    	} */
 			    }
 			    
 			}

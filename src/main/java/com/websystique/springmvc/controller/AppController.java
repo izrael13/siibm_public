@@ -47,6 +47,7 @@ import com.websystique.springmvc.service.Solicitudes_reset_passService;
 import com.websystique.springmvc.service.UserProfileService;
 import com.websystique.springmvc.service.UserService;
 import com.websystique.springmvc.service.tarjetas.Catalogo_vendedores_sap_vwService;
+import com.websystique.springmvc.service.tarjetas.Catalogo_clientes_sap_vwService;
 import com.websystique.springmvc.utilities.JsonFunctions;
 import com.websystique.springmvc.utilities.SendMailGmail;
 
@@ -79,6 +80,9 @@ public class AppController {
 	
 	@Autowired
 	Catalogo_vendedores_sap_vwService cvss;
+	
+	@Autowired
+	Catalogo_clientes_sap_vwService ccss;
 	
 	@Autowired
 	MenusService mss;
@@ -115,6 +119,7 @@ public class AppController {
 		model.addAttribute("user", user);
 		model.addAttribute("edit", false);
 		model.addAttribute("vendedores",cvss.ListaVendedores());
+		model.addAttribute("clientes",ccss.ListaCtes());
 		model.addAttribute("loggedinuser", getPrincipal());
 		logger.info(getPrincipal() + " - newuser GET.");
 		}
@@ -170,6 +175,7 @@ public class AppController {
 	public String editUser(@PathVariable String ssoId, ModelMap model) {
 		try {
 		model.addAttribute("vendedores",cvss.ListaVendedores());
+		model.addAttribute("clientes",ccss.ListaCtes());
 		User user = userService.findBySSO(ssoId);
 		model.addAttribute("user", user);
 		model.addAttribute("edit", true);

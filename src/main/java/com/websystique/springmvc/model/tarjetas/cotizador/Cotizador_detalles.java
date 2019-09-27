@@ -149,5 +149,8 @@ public class Cotizador_detalles implements Serializable{
 	
 	@Transient
 	private List<Codigo_barras_cotizador> codigo_barra_cotizador = new ArrayList<Codigo_barras_cotizador>();
+	
+	@Transient
+	private Integer ban;
 
 }

@@ -287,6 +287,21 @@ public abstract class AbstractDao<PK extends Serializable, T> {
 		return Lista;
 	}
 	
+	@SuppressWarnings("unchecked")
+	protected List<T> criteriaQueryNamedStr(String query,Map<Integer,Integer> paramsInt, Map<Integer,String> paramStr)
+	{
+		Query queryQ = getSession().createNativeQuery(query, persistentClass);
+		
+		if(paramsInt.size() > 0)
+			paramsInt.forEach((k,v) -> queryQ.setParameter(k, v));
+		
+		if(paramStr.size() > 0)
+			paramStr.forEach((k,v) -> queryQ.setParameter(k, v));
+		
+		List<T> Lista = queryQ.getResultList();
+		return Lista;
+	}
+	
 	@SuppressWarnings({"unchecked","rawtypes"})
 	protected List<T> criteriaGeneralList(List<ParamsGeneral> paramsGeneral, Map<String,String> ord)
 	{
@@ -442,8 +457,14 @@ public abstract class AbstractDao<PK extends Serializable, T> {
 		cq.select(root).where(listPred.toArray(new Predicate[]{}));
 		
 		List<Order> orderList = new ArrayList();
-		if(ord.size() > 0)
-			ord.forEach((k,v) -> orderList.add(builder.asc(root.get(v))));
+		if(ord.size() > 0) { //k (id) < 100 : Ordenamiento ascendente. Sino ordenamiento descendente
+			ord.forEach(	
+							(k,v) -> {
+								if(Integer.parseInt(k) < 100) {
+									orderList.add(builder.asc(root.get(v)));}
+								else {orderList.add(builder.desc(root.get(v)));}
+							});
+		}
 		cq.orderBy(orderList.toArray(new Order[]{}));
 		
 		List<T> result = getSession().createQuery(cq).getResultList();

@@ -16,6 +16,8 @@ function FBuscar()
 	var bancte = $("#CBanCte").prop("checked") == true ? 1 : 0; 
 	var aniomes = $("#aniomes").val();
 	var tabla = "";
+	var totalpron = 0.0;
+	var totaltkg = 0.0;
 	$("#DLista").text("");
 	$( "#mensajes" ).text("").removeClass();
 	$.ajax({
@@ -34,7 +36,6 @@ function FBuscar()
         		tabla = tabla + '<th>Vendedor</th>';
         		tabla = tabla + '<th>Pronóstico</th>';
         		tabla = tabla + '<th>TKG</th>';
-        		tabla = tabla + '<th>TM2</th>';
         		tabla = tabla + '<th>Diferencia</th>';
         		tabla = tabla + '<th>Porcentaje</th>';
         		tabla = tabla + '<th>Fecha</th>';
@@ -46,14 +47,20 @@ function FBuscar()
 	        		tabla = tabla + '<tr>';
 	        		tabla = tabla + '<td align="left">'+value.cliente+'</td>';
 	        		tabla = tabla + '<td align="left">'+value.vendedor+'</td>';
-	        		tabla = tabla + '<td align="right">'+value.pron+'</td>';
-	        		tabla = tabla + '<td align="right">'+value.tkg+'</td>';
-	        		tabla = tabla + '<td align="right">'+value.tm2+'</td>';
-	        		tabla = tabla + '<td align="right">'+value.diferencia+'</td>';
-	        		tabla = tabla + '<td align="right">'+value.porc+'</td>';
+	        		tabla = tabla + '<td align="right">'+value.pron.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]+'</td>';
+	        		tabla = tabla + '<td align="right">'+value.tkg.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]+'</td>';
+	        		tabla = tabla + '<td align="right">'+value.diferencia.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]+'</td>';
+	        		tabla = tabla + '<td align="right">'+value.porc.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]+'</td>';
 	        		tabla = tabla + '<td align="left">'+value.fecha+'</td>';
 	        		tabla = tabla + '</tr>';
+	        		totalpron = totalpron + value.pron;
+	        		totaltkg = totaltkg + value.tkg;
 	        	});
+	        	tabla = tabla + '<tr>';
+	        	tabla = tabla + '<td colspan="2" align="right">Total: </td>';
+	        	tabla = tabla + '<td align="right">'+totalpron.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]+'</td>';
+	        	tabla = tabla + '<td align="right">'+totaltkg.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]+'</td>';
+	        	tabla = tabla + '</tr>';
 	        	tabla = tabla + '</tbody> ';
 	        	tabla = tabla + '</table>';
 	        	document.getElementById("DLista").innerHTML = tabla;
