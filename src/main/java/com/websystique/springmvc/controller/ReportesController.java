@@ -1,9 +1,14 @@
 package com.websystique.springmvc.controller;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -12,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -44,10 +48,12 @@ import com.websystique.springmvc.model.reportes.Golpes_maquina_mes;
 import com.websystique.springmvc.model.reportes.Golpes_pendientes_fab;
 import com.websystique.springmvc.model.reportes.Golpeskilosmaquinas;
 import com.websystique.springmvc.model.reportes.Media_pedidos_cte;
+
 import com.websystique.springmvc.model.reportes.Reporte_consumo_papel;
 import com.websystique.springmvc.model.reportes.Reportes_consumo_papel_utl_sem;
 import com.websystique.springmvc.model.reportes.Todos_pedidos;
 import com.websystique.springmvc.service.UserService;
+import com.websystique.springmvc.model.reportes.Pedido;
 import com.websystique.springmvc.service.reportes.Amortiza_herramentalesService;
 import com.websystique.springmvc.service.reportes.Cobranza_acumService;
 import com.websystique.springmvc.service.reportes.Cobranza_detalleService;
@@ -65,6 +71,7 @@ import com.websystique.springmvc.service.reportes.Media_pedidos_cteService;
 import com.websystique.springmvc.service.reportes.Meses_anioService;
 import com.websystique.springmvc.service.reportes.Paros_concepto_diaService;
 import com.websystique.springmvc.service.reportes.Paros_maquina_diaService;
+
 import com.websystique.springmvc.service.reportes.Peso_diaService;
 import com.websystique.springmvc.service.reportes.Reporte_consumo_papelService;
 import com.websystique.springmvc.service.reportes.Reportes_consumo_papel_acum_mesService;
@@ -74,6 +81,7 @@ import com.websystique.springmvc.service.reportes.Todos_pedidosService;
 import com.websystique.springmvc.service.reportes.Viajes_mes_ciudadService;
 import com.websystique.springmvc.service.tarjetas.Catalogo_clientes_sap_vwService;
 import com.websystique.springmvc.service.tarjetas.Catalogo_vendedores_sap_vwService;
+import com.websystique.springmvc.service.reportes.PedidoService;
 
 //import net.sf.jasperreports.engine.JRDataSource;
 //import net.sf.jasperreports.engine.JREmptyDataSource;
@@ -85,12 +93,6 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.util.JRLoader;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.HashMap;
-
 @Controller
 @RequestMapping("/reportes")
 public class ReportesController {
@@ -98,7 +100,9 @@ public class ReportesController {
 	private Logger logger = Logger.getLogger(ReportesController.class);
 	
 	@Autowired
-	Reporte_consumo_papelService rep;	
+	PedidoService pedidoService;
+	@Autowired
+	Reporte_consumo_papelService rep;
 	@Autowired
 	Semanas_anioService semanioService;	
 	@Autowired
@@ -153,6 +157,25 @@ public class ReportesController {
 	Embarque_diario_detalleService emds;
 	
 	Calendar calendar = Calendar.getInstance();
+	
+	
+	@RequestMapping(value = {"/produccion/PedidosConRetraso_" }, method = RequestMethod.GET)
+	public String PedidoConretraso(ModelMap model) {
+		try {	  
+		   model.addAttribute("loggedinuser", AppController.getPrincipal());
+		 
+          List<Pedido> pedidosAtra = pedidoService.findAll();
+		  model.addAttribute("pedidosAtra", pedidosAtra);
+		 
+		  logger.info(AppController.getPrincipal() + " - PedidosConRetraso_.");
+					
+				}
+			catch(Exception e) {
+				logger.error(AppController.getPrincipal() + " - PedidosConRetraso_. - " + e.getMessage());
+				}
+				return "/reportes/pedidos_con_retraso";
+				}	                 
+	
 	
 	@RequestMapping(value = {"/papel/consumo_papel_mes" }, method = RequestMethod.GET)
 	public String consumo_papel_mes(ModelMap model) {
