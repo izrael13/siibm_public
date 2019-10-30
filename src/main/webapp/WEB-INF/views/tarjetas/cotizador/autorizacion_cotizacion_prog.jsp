@@ -145,8 +145,9 @@ function FReach(id)
 		</thead>
 		<tbody>
 		<c:forEach var="item" items="${listaDet}" varStatus="counter">
+		<fmt:parseNumber var = "i" integerOnly = "true" type = "number" value = "${item['id']}" />
 			<tr>
-				<td>${item['id']}</td>
+				<td>${i}</td>
 					<td colspan="6">
 					<table class="container-fluid table-hover text-center">
 					<tr>
@@ -175,9 +176,9 @@ function FReach(id)
 					</c:forEach>
 					</table>
 					</td>	
-				<td><input id="TComent${item['id']}" type="text" size="50" onkeypress="return SinCaracteresEspeciales(event)" maxlength="100" class="border border-primary"/></td>
-				<td><a href="javascript:FAut(${item['id']})"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></a></td>
-				<td><a href="javascript:FReach(${item['id']})"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i></a></td>
+				<td><input id="TComent${i}" type="text" size="50" onkeypress="return SinCaracteresEspeciales(event)" maxlength="100" class="border border-primary"/></td>
+				<td><a href="javascript:FAut(${i})"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></a></td>
+				<td><a href="javascript:FReach(${i})"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i></a></td>
 			</tr>
 		</c:forEach>
 		</tbody>

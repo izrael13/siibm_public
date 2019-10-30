@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,7 +18,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,6 +39,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.websystique.springmvc.model.ParamsGeneral;
 import com.websystique.springmvc.model.User;
 import com.websystique.springmvc.model.costos.controlpesomerma.Catalogo_taras;
 import com.websystique.springmvc.model.costos.controlpesomerma.Control_peso_merma;
@@ -73,7 +77,7 @@ public class Control_peso_mermaController {
 			model.addAttribute("loggedinuser", AppController.getPrincipal());
 			model.addAttribute("ListaTaras", cts.ListaTaras());
 			model.addAttribute("control_peso_merma", new Control_peso_merma());
-			model.addAttribute("ListaControlPeso", ListaPesosMerma(""));
+			model.addAttribute("ListaControlPeso", ListaPesosMerma());
 			
 			logger.info(AppController.getPrincipal() + " - controlmermaabc.");
 		}
@@ -88,36 +92,48 @@ public class Control_peso_mermaController {
 	public @ResponseBody String buscarciudadxestado(HttpServletRequest req, HttpServletResponse res)
 	   throws Exception {
 		 
-		Path origenPath = Paths.get("Z:\\Peso.txt");
-        Path destinoPath = Paths.get("Z:\\PESO_MERMA.txt");
-        Files.copy(origenPath, destinoPath, StandardCopyOption.REPLACE_EXISTING);
-        
-		Integer id_tara =Integer.parseInt(req.getParameter("id_tara"));
-		Double peso_real = 0.0;
-		BufferedReader reader;
-		reader = new BufferedReader(new FileReader("Z:\\PESO_MERMA.txt"));
-		String line = reader.lines().reduce((first, second) -> second).orElse("");
-		String ult_peso = "";
-		for(int i = 0; i < line.length(); i++) {
+		try
+		{
+			Path origenPath = Paths.get("\\\\192.169.1.194\\Bascula\\Peso.txt");
+	        Path destinoPath = Paths.get("\\\\192.169.1.194\\Bascula\\PESO_MERMA.txt");
+	        Files.copy(origenPath, destinoPath, StandardCopyOption.REPLACE_EXISTING);
+	        
+			Integer id_tara =Integer.parseInt(req.getParameter("id_tara"));
+			Double peso_real = 0.0;
+			BufferedReader reader;
+			reader = new BufferedReader(new FileReader("\\\\192.169.1.194\\Bascula\\PESO_MERMA.txt"));
+			String line = reader.lines().reduce((first, second) -> second).orElse("");
+			String ult_peso = "";
+			for(int i = 0; i < line.length(); i++) {
+				
+				if(line.charAt(i) == '.' || String.valueOf(line.charAt(i)).matches("[0-9]"))
+					ult_peso = ult_peso + line.charAt(i);
+			}
 			
-			if(line.charAt(i) == '.' || String.valueOf(line.charAt(i)).matches("[0-9]"))
-				ult_peso = ult_peso + line.charAt(i);
+			Double pesototal = ult_peso.length() > 0 ? Double.valueOf(ult_peso) : 0.0;
+			reader.close();
+			
+			if(id_tara > 0) {
+				Catalogo_taras objTara = cts.BuscarxId(id_tara);
+				peso_real = pesototal -  objTara.getPesokg();
+			}
+			
+			DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols(Locale.getDefault());
+			formatSymbols.setDecimalSeparator('.');
+			DecimalFormat decimal2 = new DecimalFormat("###########0.##", formatSymbols);
+			
+			JsonObject object = new JsonObject();
+			object.addProperty("peso_real", decimal2.format(peso_real));
+			object.addProperty("pesototal", pesototal);
+			
+			return object.toString();
 		}
-		
-		Double pesototal = ult_peso.length() > 0 ? Double.valueOf(ult_peso) : 0.0;
-		reader.close();
-		
-		if(id_tara > 0) {
-			Catalogo_taras objTara = cts.BuscarxId(id_tara);
-			peso_real = pesototal -  objTara.getPesokg();
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			logger.error(AppController.getPrincipal() + " - calcularpeso. - " + e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage());
+			return e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
 		}
-		DecimalFormat decimal2 = new DecimalFormat("###########0.##");
-		
-		JsonObject object = new JsonObject();
-		object.addProperty("peso_real", decimal2.format(peso_real));
-		object.addProperty("pesototal", pesototal);
-		
-		return object.toString();
 	
 	}
 	
@@ -141,7 +157,7 @@ public class Control_peso_mermaController {
 			control_peso_merma.setPesokg_tara(cts.BuscarxId(control_peso_merma.getIdtara()).getPesokg());
 			cpms.Guardar(control_peso_merma);
 			model.addAttribute("control_peso_merma", control_peso_merma);
-			model.addAttribute("ListaControlPeso", ListaPesosMerma(""));
+			model.addAttribute("ListaControlPeso", ListaPesosMerma());
 			return "/costos/controlpesomerma/controlmermaabc";
 			
 		}
@@ -152,21 +168,18 @@ public class Control_peso_mermaController {
 		}
 	}
 	
-	private Object[] ListaPesosMerma(String fecha) throws ParseException
+	private Object[] ListaPesosMerma() throws ParseException
 	{
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat( "yyyy-MM-dd");
-		/*Date dateB = null;
-		if(fecha.length() > 0)
-			dateB = simpleDateFormat.parse(fecha); */
 		
 		String dateS = simpleDateFormat.format(new Date());
 		Date dateA = simpleDateFormat.parse(dateS);
 		
-		//System.out.println(dateB);
-		//System.out.println(dateA);
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		Params.add(new ParamsGeneral(1,"fecha_registro", dateA, "GTE"));
 		
 		List<JsonObject> ListaJson = new ArrayList<JsonObject>();
-		List<Control_peso_merma> Lista = cpms.ListaControlPeso(dateA);
+		List<Control_peso_merma> Lista = cpms.ListaControlPeso(Params);
 		if(Lista.size() > 0) {
 			Lista.forEach(a -> {
 				JsonObject object = new JsonObject();
@@ -183,27 +196,6 @@ public class Control_peso_mermaController {
 				ListaJson.add(object);
 			});
 		}
-		
-		/*Lista.clear();
-		if(dateB != dateA) {
-			Lista = cpms.ListaControlPeso(dateB);
-			if(Lista.size() > 0) {
-				Lista.forEach(a -> {
-					JsonObject object = new JsonObject();
-					object.addProperty("id", a.getId());
-					object.addProperty("pedido", a.getPedido());
-					User user = us.findById(a.getUsuario_empacador());
-					object.addProperty("usuario_empacador", user.getFirstName() + " " + user.getLastName());
-					object.addProperty("idtara", cts.BuscarxId( a.getIdtara()).getDescripcion());
-					object.addProperty("pesokg_tara", a.getPesokg_tara());
-					object.addProperty("pesokg_total", a.getPesokg_total());
-					object.addProperty("pesokg_real", a.getPesokg_real());
-					object.addProperty("fecha_registro", a.getFecha_registro().toString());
-					object.addProperty("comentarios", a.getComentarios());
-					ListaJson.add(object);
-				});
-			}
-		} */
 		
 		Gson gson = new Gson();
 		return gson.fromJson(gson.toJson(ListaJson), Object[].class);
@@ -228,6 +220,7 @@ public class Control_peso_mermaController {
 			params.put("pesokg_tara", objMerma.getPesokg_tara());
 			params.put("pesokg_total", objMerma.getPesokg_total());
 			params.put("pesokg_real", objMerma.getPesokg_real());
+			params.put("comentarios", objMerma.getComentarios());
 			Collection<Control_peso_merma> coll = new ArrayList<Control_peso_merma>();
 			coll.add(objMerma);
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, new JRBeanCollectionDataSource(coll ,false));
@@ -244,6 +237,77 @@ public class Control_peso_mermaController {
 			msj = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
 			logger.info(AppController.getPrincipal() + " - imprimirrep :"+ msj);
 		}
-	} 
+	}
+	
+	@RequestMapping(value = {"/controlpesomerma/historialcontrolmermaabc" }, method = RequestMethod.GET)
+	public String historialcontrolmermaabc(ModelMap model,
+			@RequestParam(value = "pedido", defaultValue = "", required = false) String pedido,
+			@RequestParam(value = "idEmp", defaultValue = "0", required = false) Integer idEmp,
+			@RequestParam(value = "idTara", defaultValue = "0", required = false) Integer idTara,
+			@RequestParam(value = "fecha", defaultValue = "", required = false) String fecha) {
+		try 
+		{
+			model.addAttribute("loggedinuser", AppController.getPrincipal());
+			model.addAttribute("ListaTaras", cts.ListaTaras());
+			model.addAttribute("ListaControlPeso", BuscaPesosMerma(pedido,idEmp,idTara,fecha));
+			
+			List<User> users = null;		
+			users = us.findAllUsers().stream()
+			.filter(a -> a.getUserProfiles().stream()
+					.filter(b -> b.getType().equals("EMPACADOR")).count() > 0).collect(Collectors.toList());
+			
+			model.addAttribute("ListaEmp", users);
+			
+			logger.info(AppController.getPrincipal() + " - historialcontrolmermaabc.");
+		}
+		catch(Exception e)
+		{
+			logger.error(AppController.getPrincipal() + " - historialcontrolmermaabc. - " + e.getMessage());
+		}
+		return "/costos/controlpesomerma/historialcontrolmermaabc";
+	}
+	
+	private Object[] BuscaPesosMerma(String pedido,Integer idEmp, Integer idTara, String fecha) throws ParseException
+	{
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		
+		if(fecha.length() > 0) {
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat( "yyyy-MM-dd");
+			Date dateA = simpleDateFormat.parse(fecha);
+			Params.add(new ParamsGeneral(1,"fecha_registro", dateA, "GTE"));
+		}
+		
+		if(pedido.length() > 0)
+			Params.add(new ParamsGeneral(1,"pedido", pedido, "EQ"));
+		
+		if(idEmp > 0)
+			Params.add(new ParamsGeneral(1,"usuario_empacador", idEmp, "EQ"));
+		
+		if(idTara > 0)
+			Params.add(new ParamsGeneral(1,"idtara", idTara, "EQ"));
+			
+		List<JsonObject> ListaJson = new ArrayList<JsonObject>();
+		if(Params.size() > 0) {
+			List<Control_peso_merma> Lista = cpms.ListaControlPeso(Params);
+		if(Lista.size() > 0) {
+			Lista.forEach(a -> {
+				JsonObject object = new JsonObject();
+				object.addProperty("id", a.getId());
+				object.addProperty("pedido", a.getPedido());
+				User user = us.findById(a.getUsuario_empacador());
+				object.addProperty("usuario_empacador", user.getFirstName() + " " + user.getLastName());
+				object.addProperty("idtara", cts.BuscarxId( a.getIdtara()).getDescripcion());
+				object.addProperty("pesokg_tara", a.getPesokg_tara());
+				object.addProperty("pesokg_total", a.getPesokg_total());
+				object.addProperty("pesokg_real", a.getPesokg_real());
+				object.addProperty("fecha_registro", a.getFecha_registro().toString());
+				object.addProperty("comentarios", a.getComentarios());
+				ListaJson.add(object);
+			});
+		}
+		}
+		Gson gson = new Gson();
+		return gson.fromJson(gson.toJson(ListaJson), Object[].class);
+	}
 	
 }

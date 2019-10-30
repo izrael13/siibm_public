@@ -108,20 +108,8 @@ public class Tarjeta_fabricacionDAOImpl extends AbstractDao<Integer,Tarjeta_fabr
 	}
 
 	@Override
-	public List<Tarjeta_fabricacion> BuscarXAut(String usuario_aut_ant, String fecha_aut_ant, String usuario_aut_act, String fecha_aut_act, String cardcode) {
-		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+	public List<Tarjeta_fabricacion> BuscarXAut(List<ParamsGeneral> Params) {
 		Map<String,String> mOrd =  new HashMap<String, String>();
-		Params.add( new ParamsGeneral(1,usuario_aut_ant,"NE"));
-		Params.add( new ParamsGeneral(2,fecha_aut_ant,"NE"));
-		Params.add( new ParamsGeneral(3,usuario_aut_act,"EQ"));
-		Params.add( new ParamsGeneral(4,fecha_aut_act,"EQ"));
-		Params.add( new ParamsGeneral(5,"usuario_cancela","EQ"));
-		Params.add( new ParamsGeneral(6,"fecha_cancela","EQ"));
-		
-		if(!cardcode.equals(""))
-			Params.add( new ParamsGeneral(7,"cardcode",cardcode,"EQ"));
-		
-		mOrd.put("1", "folio_tarjeta");
 		List<Tarjeta_fabricacion> Lista = criteriaGeneralList(Params, mOrd);
 		return Lista;
 	}

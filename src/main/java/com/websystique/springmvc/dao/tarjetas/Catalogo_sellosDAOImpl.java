@@ -33,4 +33,16 @@ public class Catalogo_sellosDAOImpl extends AbstractDao<Integer,Catalogo_sellos>
 		return getByKey(id);
 	}
 
+	@Override
+	public void Guardar(Catalogo_sellos sello) {
+		// TODO Auto-generated method stub
+		persist(sello);
+	}
+
+	@Override
+	public void Actualizar(Catalogo_sellos sello) {
+		// TODO Auto-generated method stub
+		update(sello);
+	}
+
 }

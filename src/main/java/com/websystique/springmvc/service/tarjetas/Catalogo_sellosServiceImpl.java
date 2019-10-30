@@ -28,4 +28,16 @@ public class Catalogo_sellosServiceImpl implements Catalogo_sellosService{
 		return dao.BuscarxId(id);
 	}
 
+	@Override
+	public void Guardar(Catalogo_sellos sello) {
+		// TODO Auto-generated method stub
+		dao.Guardar(sello);
+	}
+
+	@Override
+	public void Actualizar(Catalogo_sellos sello) {
+		// TODO Auto-generated method stub
+		dao.Actualizar(sello);
+	}
+
 }

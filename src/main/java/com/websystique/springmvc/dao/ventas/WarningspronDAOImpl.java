@@ -30,14 +30,14 @@ public class WarningspronDAOImpl extends AbstractDao<Integer,Pronosticoscte> imp
 	
 	@Override
 	public ArrayList map() {
-		ArrayList map = (ArrayList) getSession().createNativeQuery("select ROW_NUMBER() OVER(ORDER BY CVE_CLIENTE) n,CVE_CLIENTE from PRONOSTICOS_TEMP where PRONOSTICO > 0 and CVE_CLIENTE != '' group by CVE_CLIENTE having count(0) > 1").getResultList();
+		ArrayList map = null;//(ArrayList) getSession().createNativeQuery("select ROW_NUMBER() OVER(ORDER BY CVE_CLIENTE) n,CVE_CLIENTE from PRONOSTICOS_TEMP where PRONOSTICO > 0 and CVE_CLIENTE != '' group by CVE_CLIENTE having count(0) > 1").getResultList();
 		return map;
 	}
 
 	@Override
 	public void truncateTable() {
 		// FIXME Auto-generated method stub
-		getSession().createSQLQuery("truncate table PRONOSTICOS_TEMP").executeUpdate();
+		//getSession().createSQLQuery("truncate table PRONOSTICOS_TEMP").executeUpdate();
 	}
 
 	@Override

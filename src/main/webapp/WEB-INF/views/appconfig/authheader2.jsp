@@ -137,6 +137,7 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 	   		<li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-inbox" aria-hidden="true"></i> Control merma</a>
 			    <ul class="dropdown-menu">
 			    		<li><a class="dropdown-item" href = "<c:url value='/costos/controlpesomerma/controlmermaabc' />"><i class="fa fa-balance-scale" aria-hidden="true"></i> Control de peso</a></li>
+			    		<li><a class="dropdown-item" href = "<c:url value='/costos/controlpesomerma/historialcontrolmermaabc' />"><i class="fa fa-balance-scale" aria-hidden="true"></i> Historial control de peso</a></li>
 			    </ul>
 			 </li>
 	   </ul>
@@ -159,44 +160,65 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 			 <li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-dot-circle-o" aria-hidden="true"></i> Cotizador/Requerimiento</a>
 			    <ul class="dropdown-menu">
 			    	<sec:authorize access="hasRole('ADMIN') or hasRole('VENDEDOR')">
-			    		<li><a class="dropdown-item" href = "<c:url value='/cotizador/vendedor/cotizadorabc'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro Cotizaciones/Requerimientos</a></li>
+			    		<li><a class="dropdown-item" href = "<c:url value='/cotizador/vendedor/cotizadorabc'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro Cotizaciones/Requerimientos/Muestras</a></li>
+			    		<li><a class="dropdown-item" href = "<c:url value='/cotizador/vendedor/arrastresabc'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro Arrastres</a></li>
 			    	</sec:authorize>
 			    	<sec:authorize access="hasRole('ADMIN') or hasRole('VENTAS')">
-			    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/ventas/autorizacion_cotizacion_vtas'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de cotizaciones Ventas</a></li>
+			    		<li><a class="dropdown-item" href = "<c:url value='/cotizador/ventas/autorizacion_cotizacion_vtas'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de cotizaciones Ventas</a></li>
 			    	</sec:authorize>
 			    	<sec:authorize access="hasRole('ADMIN') or hasRole('PROGRAMACION')">
-			    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/programacion/autorizacion_cotizacion_prog'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de requerimientos Programación</a></li>
+			    		<li><a class="dropdown-item" href = "<c:url value='/cotizador/programacion/autorizacion_cotizacion_prog'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de requerimientos Programación</a></li>
 			    	</sec:authorize>
 			    	<sec:authorize access="hasRole('ADMIN') or hasRole('INGENIERIA')">
-			    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/ingenieria/requerimientoabc'/>"><i class="fa fa-check-circle-o" aria-hidden="true"></i> Imprimir/Asignar diseñador requerimientos</a></li>
+			    		<li><a class="dropdown-item" href = "<c:url value='/cotizador/ingenieria/requerimientoabc'/>"><i class="fa fa-check-circle-o" aria-hidden="true"></i> Imprimir/Asignar diseñador requerimientos</a></li>
+			    		<li><a class="dropdown-item" href = "<c:url value='/cotizador/ingenieria/seguimiento_arrastres_muestras'/>"><i class="fa fa-check-circle-o" aria-hidden="true"></i> Seguimiento arrastres/muestras</a></li>
+			    	</sec:authorize>
+			    	<sec:authorize access="hasRole('ADMIN') or hasRole('ARRASTRE')">
+				    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/arrastres/asignar_arrastres'/>"><i class="fa fa-check-circle-o" aria-hidden="true"></i> Asignar arrastres</a></li>
+				    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/arrastres/liberar_arrastres'/>"><i class="fa fa-lightbulb-o" aria-hidden="true"></i> Liberar arrastres</a></li>
+			    	</sec:authorize>
+			    	<sec:authorize access="hasRole('ADMIN') or hasRole('MUESTRISTA')">
+				    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/muestras/asignar_muestras'/>"><i class="fa fa-check-circle-o" aria-hidden="true"></i> Asignar muestras</a></li>
+				    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/muestras/liberar_muestras'/>"><i class="fa fa-lightbulb-o" aria-hidden="true"></i> Liberar muestras</a></li>
 			    	</sec:authorize>
 			    </ul>
 			 </li>
 			 <li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-file-code-o" aria-hidden="true"></i> Tarjetas de fabricación</a>
 			 	<ul class="dropdown-menu">
 			 		<sec:authorize access="hasRole('ADMIN') or hasRole('INGENIERIA')">
-			 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/ingenieria/tarjeta_fabricacion'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro tarjetas</a></li>
+			 			<li><a class="dropdown-item" href = "<c:url value='/tarjeta/ingenieria/tarjeta_fabricacion'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro tarjetas</a></li>
 			 		</sec:authorize>
 			 		<sec:authorize access="hasRole('ADMIN') or hasRole('CALIDAD')">
-			 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/calidad/tarjeta_aut_calidad'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Calidad</a></li>
+			 			<li><a class="dropdown-item" href = "<c:url value='/tarjeta/calidad/tarjeta_aut_calidad'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Calidad</a></li>
 			 		</sec:authorize>
 			 		<sec:authorize access="hasRole('ADMIN') or hasRole('PRODUCCION')">
-			 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/produccion/tarjeta_aut_produccion'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Producción</a></li>
+			 			<li><a class="dropdown-item" href = "<c:url value='/tarjeta/produccion/tarjeta_aut_produccion'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Producción</a></li>
 			 		</sec:authorize>
 			 		<sec:authorize access="hasRole('ADMIN') or hasRole('INGENIERIA')">
-			 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/ingenieria/tarjeta_aut_ingenieria'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Ingeniería</a></li>
-			 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/ingenieria/tarjetas_seguimiento'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Tarjetas Seguimiento</a></li>
+				 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/ingenieria/tarjeta_aut_ingenieria'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Ingeniería</a></li>
+				 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/ingenieria/tarjetas_seguimiento'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Tarjetas Seguimiento</a></li>
 			 		</sec:authorize>
 			 		<sec:authorize access="hasRole('ADMIN') or hasRole('CLIENTE')">
-			 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/cliente/tarjeta_aut_cliente'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Cliente</a></li>
+			 			<li><a class="dropdown-item" href = "<c:url value='/tarjeta/cliente/tarjeta_aut_cliente'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Cliente</a></li>
 			 		</sec:authorize>
 			 	</ul>
 			 </li>
-			 <li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-inbox" aria-hidden="true"></i> Herramentales</a>
+			 <sec:authorize access="hasRole('ADMIN') or hasRole('INGENIERIA')">
+			 <li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-inbox" aria-hidden="true"></i> Catálogos</a>
 			    <ul class="dropdown-menu">
-			    		<li><a class="dropdown-item" href = "<c:url value='/herramentales/ingenieria/herramentalesabc'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro de herramentales</a></li>
+			    	<li><a class="dropdown-item" href = "<c:url value='/herramentales/ingenieria/herramentalesabc'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Herramentales</a></li>
+			    	<li><a class="dropdown-item" href = "<c:url value='/colores/ingenieria/coloresabc'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Colores</a></li>
+			    	<li><a class="dropdown-item" href = "<c:url value='/sellos/ingenieria/sellosabc'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Sellos</a></li>
 			    </ul>
 			 </li>
+			 </sec:authorize>
+			 <sec:authorize access="hasRole('ADMIN') or hasRole('PROGRAMACION')">
+			 <li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-file-powerpoint-o" aria-hidden="true"></i> Programas</a>
+			    <ul class="dropdown-menu">
+			    		<li><a class="dropdown-item" href = "<c:url value='/programas/programacion/programacionabc'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro de programas</a></li>
+			    </ul>
+			 </li>
+			 </sec:authorize>
 		</ul>		
 	</li>
 	

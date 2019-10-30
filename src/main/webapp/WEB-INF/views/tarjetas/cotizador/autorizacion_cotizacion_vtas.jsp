@@ -141,19 +141,7 @@ function FImprimir(id)
 			<tr>
 				<th>Folio</th>
 				<th>Cliente</th>
-				<th>Símbolo</th>
-				<th>Caja</th>
-				<th>%Comisión</th>
-				<th>$ Objetivo</th>
-				<th>$ sugerido</th>
-				<th>$ neto</th>
-				<th>Desc vendedor</th>
-				<th>CPCC</th>
-				<th>CPSC</th>
-				
-				<th>Resistencia</th>
-				<th>Sello</th>
-				
+				<th colspan="10">Detalles</th>				
 				<th>Comentarios</th>
 				<th>Imprimir</th>
 				<th>Autorizar</th>
@@ -161,27 +149,48 @@ function FImprimir(id)
 			</tr>
 		</thead>
 		<tbody>
-		<c:forEach var="item" items="${listaDet}">
+		<c:forEach var="item" items="${listaDet}" varStatus="counter">
+		<fmt:parseNumber var = "i" integerOnly = "true" type = "number" value = "${item['id']}" />
 			<tr>
-				<td>${item.id}</td>
-				<td>${item.cardname}</td>
-				<td>${item.simbolo}</td>
-				<td>${item.nombrecorto}</td>
-				<td>${item.comision_directo}</td>
-				<td>${item.precio_objetivo}</td>
-				<td>${item.precio_sugerido}</td>
-				<td>${item.precio_neto}</td>
-				<td>${item.descuento_vendedor}</td>
-				<td>${item.cpcc}</td>
-				<td>${item.ref_para_com}</td>
-				
-				<td>${item.resistencia} ${item.corrugado} ${item.color}</td>
-				<td>${item.sellos}</td>
-				
-				<td><input id="TComent${item.id}" type="text" size="50" onkeypress="return SinCaracteresEspeciales(event)" maxlength="100" class="border border-primary"/></td>
-				<td><a href="javascript:FImprimir(${item.id})"><i class="fa fa-print" aria-hidden="true"></i></a></td>
-				<td><a href="javascript:FAut(${item.id})"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></a></td>
-				<td><a href="javascript:FReach(${item.id})"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i></a></td>
+				<td>${i}</td>
+				<td>${item['cliente']}</td>
+					<td colspan="10">
+
+					<table class="container-fluid table-hover text-center">
+					<tr>
+						<th>Símbolo</th>
+						<th>Caja</th>
+						<th>%Comisión</th>
+						<th>$ Objetivo</th>
+						<th>$ sugerido</th>
+						<th>$ neto</th>
+						<th>Desc vendedor</th>
+						<th>CPCC</th>
+						<th>CPSC</th>						
+						<th>Resistencia</th>
+						<th>Sello</th>
+					</tr>
+					<c:forEach var="det" items="${item['ListaDetalles']}" varStatus="counter">
+					<tr>
+						<td>${det['simbolo']}</td>
+						<td>${det['estilo_caja']}</td>
+						<td>${det['porcentaje_comision']}</td>
+						<td>${det['precio_objetivo']}</td>
+						<td>${det['precio_sugerido']}</td>
+						<td>${det['precio_neto']}</td>
+						<td>${det['descuento_vendedor']}</td>
+						<td>${det['cpcc']}</td>
+						<td>${det['ref_para_comision']}</td>
+						<td>${det['resistencia']}</td>
+						<td>${det['resis_cte']}</td>
+					</tr>
+					</c:forEach>
+					</table>
+					</td>	
+				<td><input id="TComent${i}" type="text" size="50" onkeypress="return SinCaracteresEspeciales(event)" maxlength="100" class="border border-primary"/></td>
+				<td><a href="javascript:FImprimir(${i})"><i class="fa fa-print" aria-hidden="true"></i></a></td>
+				<td><a href="javascript:FAut(${i})"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></a></td>
+				<td><a href="javascript:FReach(${i})"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i></a></td>
 			</tr>
 		</c:forEach>
 		</tbody>

@@ -32,4 +32,16 @@ public class Catalogo_coloresDAOImpl  extends AbstractDao<Integer,Catalogo_color
 		return (Catalogo_colores) criteriaGeneralObj(Params);
 	}
 
+	@Override
+	public void Guardar(Catalogo_colores color) {
+		// TODO Auto-generated method stub
+		persist(color);
+	}
+
+	@Override
+	public void Actualizar(Catalogo_colores color) {
+		// TODO Auto-generated method stub
+		update(color);
+	}
+
 }

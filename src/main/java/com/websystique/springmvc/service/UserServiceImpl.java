@@ -4,6 +4,7 @@ import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.List;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -92,7 +93,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public List<Object> findMatcher(String sso) {
+	public List<JSONObject> findMatcher(String sso) {
 		// FIXME Auto-generated method stub
 		return dao.findMatcher(sso);
 	}

@@ -1,7 +1,6 @@
 package com.websystique.springmvc.dao.costos.controlpesomerma;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,10 +36,8 @@ public class Control_peso_mermaDAOImpl extends AbstractDao<Integer, Control_peso
 	}
 
 	@Override
-	public List<Control_peso_merma> ListaControlPeso(Date fecha) {
-		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+	public List<Control_peso_merma> ListaControlPeso(List<ParamsGeneral> Params) {
 		Map<String,String> mOrd =  new HashMap<String, String>();
-		Params.add(new ParamsGeneral(1,"fecha_registro", fecha, "GTE"));
 		mOrd.put("100", "fecha_registro");
 		
 		List<Control_peso_merma> ListaControl = criteriaGeneralList(Params, mOrd);

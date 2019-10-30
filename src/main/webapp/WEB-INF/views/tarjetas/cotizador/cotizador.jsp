@@ -15,133 +15,25 @@ $(document).ready(function() {
 	{
 		if(('${cotizadordatabean.cotizador.usuario_envia_ventas}' > 0 && '${cotizadordatabean.cotizador.fecha_envia_ventas}' != '') || 
 		   ('${cotizadordatabean.cotizador.usuario_envia_a_prog}' > 0 && '${cotizadordatabean.cotizador.fecha_envia_a_prog}' != '')||
-		   ('${cotizadordatabean.cotizador.usuario_cancel}' > 0  && '${cotizadordatabean.cotizador.fecha_cancel}' != ''))
+		   ('${cotizadordatabean.cotizador.usuario_cancel}' > 0  && '${cotizadordatabean.cotizador.fecha_cancel}' != '') ||
+		   ('${cotizadordatabean.cotizador.usuario_envia_arrmues}' > 0  && '${cotizadordatabean.cotizador.fecha_envia_arrmues}' != ''))
 		{
 			
 			if( ('${cotizadordatabean.cotizador.usuario_rech_prog}' == '' && '${cotizadordatabean.cotizador.fecha_rech_prog}' == '') ||
 				('${cotizadordatabean.cotizador.usuario_rech_ventas}' == ''  && '${cotizadordatabean.cotizador.fecha_rech_ventas}' == '') ||
 			    ('${cotizadordatabean.cotizador.usuario_rech_diseniador}' == '' && '${cotizadordatabean.cotizador.fecha_rech_diseniador}' == '') ||
-			    ('${cotizadordatabean.cotizador.usuario_cancel}' > 0  && '${cotizadordatabean.cotizador.fecha_cancel}' != '')
+			    ('${cotizadordatabean.cotizador.usuario_cancel}' > 0  && '${cotizadordatabean.cotizador.fecha_cancel}' != '') ||
+			    ('${cotizadordatabean.cotizador.usuario_rech_arrastre}' > 0  && '${cotizadordatabean.cotizador.fecha_rech_arrastre}' != '')
 			  )
 			{
-				$("#SClientes option:not(:selected)").prop("disabled", true);
-				$("#direcciones option:not(:selected)").prop("disabled", true);
-				$("#SCajas option:not(:selected)").prop("disabled", true);
-				$("#SResisBarca option:not(:selected)").prop("disabled", true);
-				
-				//$("#BCancel").prop('disabled',true);
-				$("#BGrabar").prop('disabled',true);
-				$("#BEnvVtas").prop('disabled',true);
-				
-				$("#TSimbolo").attr("readonly","readonly");				
-				$("#TLargo").attr("readonly","readonly");
-				$("#TAncho").attr("readonly","readonly");
-				$("#TFondo").attr("readonly","readonly");
-				$("#SResisCte option:not(:selected)").prop("disabled", true);
-				$("#SCierre option:not(:selected)").prop("disabled", true);
-				$("#SCierreDet option:not(:selected)").prop("disabled", true);
-				$("#TPzasxjgo").attr("readonly","readonly");
-				$("#TObs").attr("readonly","readonly");
-				$("#TEspSup").attr("readonly","readonly");
-				$("#TEspInf").attr("readonly","readonly");
-				$("#TCantPedMes").attr("readonly","readonly");
-				$("#SScore option:not(:selected)").prop("disabled", true);
-				$("#SNumTintas option:not(:selected)").prop("disabled", true);			
-			
-				$("#TPreciObj").attr("readonly","readonly");
-				$("#TPzasxTar").attr("readonly","readonly");
-				
-				////////////****ESPECIALIDADES****///////////////////
-				var nodes = document.getElementById("DEsp").getElementsByTagName('*');
-				for(var i = 0; i < nodes.length; i++)
-				{				
-					if(nodes[i].type == 'select-one')
-						$("#"+nodes[i].id+" option:not(:selected)").prop("disabled", true);
-					else
-					{
-						if(nodes[i].type == 'checkbox')
-						{
-							if(nodes[i].id != "")
-								{
-									nodes[i].addEventListener("click", preventDef, false);
-									nodes[i].onchange = "";
-								}
-						}
-						else
-						{
-							if(nodes[i].id != "")
-								$("#"+nodes[i].id).prop("readonly", true);
-						}						
-				    		
-					}
-				}
-				////////////****FIN ESPECIALIDADES****///////////////
-				////////////****CODIGO DE BARRAS****/////////////////
-				var nodescb = document.getElementById("TBodyCodBarras").getElementsByTagName('*');
-				for(var i = 0; i < nodescb.length; i++)
-				{
-					if(nodescb[i].id != "")
-					{
-						if(nodescb[i].type == 'text')
-							$("#"+nodescb[i].id).prop("readonly", true);
-					}
-				}
-				$("#BAddFila").prop("disabled",true);
-				$("#BDelFila").prop("disabled",true);
-				////////////****FIN CODIGO DE BARRAS****//////////////
-				
-				$("#SEntrego option:not(:selected)").prop("disabled", true);
-				$("#SColor1 option:not(:selected)").prop("disabled", true);
-				$("#SColor2 option:not(:selected)").prop("disabled", true);
-				$("#SColor3 option:not(:selected)").prop("disabled", true);
-				$("#SColor4 option:not(:selected)").prop("disabled", true);
-				$("#SColor5 option:not(:selected)").prop("disabled", true);
-				$("#SColor6 option:not(:selected)").prop("disabled", true);
-				$("#SColor7 option:not(:selected)").prop("disabled", true);
-				$("#TNumRanuras").attr("readonly","readonly");
-				$("#TFechaOC").attr("readonly","readonly");
-				$("#CCejaDesp").bind("click", preventDef, false);
-				$("#STolerancia option:not(:selected)").prop("disabled", true);
-				$("#SDisenio option:not(:selected)").prop("disabled", true);
-				$("#CCancSust").bind("click", preventDef, false);
-				$("#TTF").attr("readonly","readonly");
-	
-				$("#CEmplayado").bind("click", preventDef, false);
-				$("#TVueltasEmp").attr("readonly","readonly");
-				$("#CFactura").bind("click", preventDef, false);
-				$("#CCertCal").bind("click", preventDef, false);
-				$("#CImpOC").bind("click", preventDef, false);
-				$("#CProtecciones").bind("click", preventDef, false);
-				$("#CCajaSeca").bind("click", preventDef, false);
-				$("#CCertFum").bind("click", preventDef, false);
-				$("#CEPP").bind("click", preventDef, false);
-				$("#CAGranel").bind("click", preventDef, false);
-				$("#CImpFech").bind("click", preventDef, false);
-				$("#CImpPed").bind("click", preventDef, false);
-				$("#CTarxUni").bind("click", preventDef, false);
-				$("#TAltPallet").attr("readonly","readonly");
-				$("#TCamasPallet").attr("readonly","readonly");
-				$("#TFlejesPallet").attr("readonly","readonly");
-				$("#TFlejesAtado").attr("readonly","readonly");
-				$("#TPzasAtado").attr("readonly","readonly");
-				$("#TAtaCama").attr("readonly","readonly");
+				FDisableElemens();
 			}
 			else
 				FEmbarques(0);
-			
 		}
 		else
 			FEmbarques(0);
 		
-		/*if(('${cotizadordatabean.cotizador.usuario_cancel}' == ''  && '${cotizadordatabean.cotizador.fecha_cancel}' == '') && 
-		   ('${cotizadordatabean.cotizador.usuario_rech_ventas}' > 0  && '${cotizadordatabean.cotizador.fecha_rech_ventas}' != ''))
-		{
-			$("#TPreciObj").attr("readonly",false);
-			$("#TPzasxTar").attr("readonly",false);
-			$("#BEnvVtas").prop('disabled',false);
-			$("#BGrabar").prop('disabled',false);
-			//$("#BCancel").prop('disabled',false);
-		} */
 		if('${cotizadordatabean.cotizador.usuario_diseniador}' != ''  && '${cotizadordatabean.cotizador.fecha_asign_diseniador}' != '')
 			$("#BCancel").prop('disabled',true);
 	} 
@@ -152,11 +44,7 @@ function FBuscarDirecciones()
 	var cardcode = document.getElementById("SClientes").value;
 	var opciones = "";
 	$.ajax({
-		//dataType: 'text',
 		url: '<c:url value="/cotizador/vendedor/buscardirecciones"/>?cardcode='+cardcode,
-		//contentType : 'application/json',
-		//cache: false,    
-		//data: cve_estado,
 		beforeSend: function(xhr) {
 							  $("#imgload").show();
 							  $("#TFlete").val(0);
@@ -164,15 +52,14 @@ function FBuscarDirecciones()
 				        	  $("#DTelefono").text("");
 				        	  $("#DEmail").text("");
 							  $("#direcciones" ).empty();
-							  $("#mensajes" ).text("");
-							  $("#mensajes").removeClass();
+							  $("#mensajes" ).text("").removeClass();
 					        },	
         success : function(data) {
         		if (data.search(/Login page/i) != -1) {
         			window.location.replace('<c:url value="/login?expired"/>');
 				    return true;
 				  }
-	        	opciones = opciones + "<option value='"+0+ "'> - - - </option>";
+	        	opciones = opciones + "<option value='-1'> - - - </option>";
 	        	$.each(jQuery.parseJSON(data),function(index, value){
 	        		opciones = opciones + "<option value='"+value.linenum + "'>"+value.address +" - "+value.direccion + "</option>";
 	        	});
@@ -182,8 +69,7 @@ function FBuscarDirecciones()
         },
         error: function(xhr, status, error) {
         	  $( "#direcciones" ).empty();
-			  $( "#mensajes" ).text("Error: " + xhr.responseText + " Codigo" +  error);
-			  $( "#mensajes").removeClass().addClass("alert alert-danger");
+			  $( "#mensajes" ).text("Error: " + xhr.responseText + " Codigo" +  error).removeClass().addClass("alert alert-danger");
 			  $( "#imgload").hide();
 		  }
 	 });
@@ -194,11 +80,7 @@ function FBuscarInfoDir()
 	var linenum = document.getElementById("direcciones").value;
 	
 	$.ajax({
-		//dataType: 'text',
 		url: '<c:url value="/cotizador/vendedor/buscarinfodir"/>?cardcode='+cardcode+'&linenum='+linenum,
-		//contentType : 'application/json',
-		//cache: false,    
-		//data: cve_estado,
 		beforeSend: function(xhr) {
 							  $("#imgload").show();
 							  $("#TFlete").val(0);
@@ -217,8 +99,7 @@ function FBuscarInfoDir()
         		$("#TFlete").val(value.flete);
         		if(value.flete == 0)
         		{
-        			$("#mensajes" ).text("Este destino no tiene valor de flete.");
-        			$("#mensajes").removeClass().addClass("alert alert-danger");
+        			$("#mensajes" ).text("Este destino no tiene valor de flete.").removeClass().addClass("alert alert-danger");
         		}
         		else
         			CalcularDatos();
@@ -236,8 +117,7 @@ function FBuscarInfoDir()
         	  $("#DContacto").text("");
         	  $("#DTelefono").text("");
         	  $("#DEmail").text("");
-			  $( "#mensajes" ).text("Error: " + xhr.responseText + " Codigo" +  error);
-			  $( "#mensajes").removeClass().addClass("alert alert-danger");
+			  $( "#mensajes" ).text("Error: " + xhr.responseText + " Codigo" +  error).removeClass().addClass("alert alert-danger");
 			  $( "#imgload").hide();
 		  }
 	 });
@@ -290,8 +170,7 @@ function FBuscarResisId()
 							  $("#TPesoResis").val(0);
 							  $("#TDescVen").val(0);
 							  $("#TCostoPapelResis").val(0);
-							  $("#mensajes" ).text("");
-							  $("#mensajes").removeClass();
+							  $("#mensajes" ).text("").removeClass();
 					        },	
         success : function(data) {
         	if (data.search(/Login page/i) != -1) {
@@ -321,8 +200,7 @@ function FBuscarResisId()
         	  $("#TDescVen").val(0);
         	  $("#TPesoResis").val(0);
         	  $("#TCostoPapelResis").val(0);
-			  $( "#mensajes" ).text("Error: " + xhr.responseText + " Codigo" +  error);
-			  $( "#mensajes").removeClass().addClass("alert alert-danger");
+			  $( "#mensajes" ).text("Error: " + xhr.responseText + " Codigo" +  error).removeClass().addClass("alert alert-danger");
 			  $( "#imgload").hide();
 		  }
 	 });
@@ -434,8 +312,7 @@ function CalcularDatos()
         	$("#imgload").hide();
         },
         error: function(xhr, status, error) {
-			  $( "#mensajes" ).text("Error: " + xhr.responseText + " Codigo" +  error);
-			  $( "#mensajes").removeClass().addClass("alert alert-danger");
+			  $( "#mensajes" ).text("Error: " + xhr.responseText + " Codigo" +  error).removeClass().addClass("alert alert-danger");
 			  $( "#imgload").hide();
 		  }
 	 });
@@ -452,8 +329,7 @@ function FEnviarVtaProg()
 		var url = '<c:url value="/cotizador/vendedor/enviaragerenteventasprog"/>';
 		var params = 'idcot='+idcot;
 		
-		$("#DivMensaje").text("Procesando petición. Por favor espere...");
-    	$("#DivMensaje").removeClass().addClass("alert alert-danger");
+		$("#DivMensaje").text("Procesando petición. Por favor espere...").removeClass().addClass("alert alert-danger");
 		
 		http.open('POST', url, true);
 		http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -468,7 +344,7 @@ function FEnviarVtaProg()
 	    		else{
 	    			if(http.responseText === 'OK')
 	    			{
-	    				alert("Exitoso envío a autorización de ventas.");
+	    				alert("Exitoso envío a autorización.");
 			    		window.location.replace('<c:url value="/cotizador/vendedor/cotizadorabc"/>?id=0'+'&iddet='+0);
 	    			}
 	    			else
@@ -500,8 +376,7 @@ function FCancelar()
 		var url = '<c:url value="/cotizador/vendedor/cancelarcotizacion"/>';
 		var params = 'idcot='+idcot;
 		
-		$("#DivMensaje").text("Procesando petición. Por favor espere...");
-    	$("#DivMensaje").removeClass().addClass("alert alert-danger");
+		$("#DivMensaje").text("Procesando petición. Por favor espere...").removeClass().addClass("alert alert-danger");
 		
 		http.open('POST', url, true);
 		http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -516,7 +391,7 @@ function FCancelar()
 	    		else{
 	    			if(http.responseText === 'OK')
 	    			{
-	    				alert("COTIZACIÓN CANCELADA!!!!!!");
+	    				alert("CANCELACIÓN EXITOSA!!!!!!");
 			    		window.location.replace('<c:url value="/cotizador/vendedor/cotizadorabc"/>?id=0'+'&iddet='+0);
 	    			}
 	    			else
@@ -549,8 +424,7 @@ function BuscarResistencias()
 	$("#TPesoResis").val(0);
 	$("#TDescVen").val(0);
 	$("#TCostoPapelResis").val(0);
-	$("#mensajes" ).text("");
-	$("#mensajes").removeClass();
+	$("#mensajes" ).text("").removeClass();
 	$("#SResisBarca" ).empty();
 	
 	$.ajax({
@@ -577,15 +451,14 @@ function BuscarResistencias()
         },
 				
 		error: function(xhr, status, error) {
-		  $( "#mensajes" ).text("Error: " + xhr.responseText + " Codigo" +  error);
-		  $( "#mensajes").removeClass().addClass("alert alert-danger");
+		  $( "#mensajes" ).text("Error: " + xhr.responseText + " Codigo" +  error).removeClass().addClass("alert alert-danger");
 		  $( "#imgload").hide();
 		  }
 				
 	 });
 }
 </script>
-<title>Registro cotizaciones</title>
+<title>Registro cotizaciones/Requerimientos/Muestras</title>
 </head>
 	<body>
 	<div class = "container-fluid">
@@ -622,7 +495,7 @@ function BuscarResistencias()
 										</div>
 									</div>
 									<div class="col col-lg-1 font-weight-bold">Flete</div>
-									<div class="col col-lg-">
+									<div class="col col-lg-1">
 										<form:input ondblclick="FBuscarInfoDir()" readonly = "true" size="10" type="text" id= "TFlete" path="cotizador.costo_flete" class="border border-secondary"
 													data-toggle="tooltip" data-placement="top" title="Doble click para actualizar." />
 										<div class="has-error">
@@ -653,8 +526,15 @@ function BuscarResistencias()
 							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
 								<div class="row border border-right">
 									<div class="col col-lg-4">Contacto: <span id="DContacto">${direccionSelect[0].contacto}</span></div>
-									<div class="col col-lg-4">Teléfono: <span id="DTelefono">${direccionSelect[0].telefono}</span></div>
-									<div class="col col-lg-4">Email: <span id="DEmail">${direccionSelect[0].email}</span></div>
+									<div class="col col-lg-3">Teléfono: <span id="DTelefono">${direccionSelect[0].telefono}</span></div>
+									<div class="col col-lg-3">Email: <span id="DEmail">${direccionSelect[0].email}</span></div>
+									<div class="col col-lg-2">
+									<form:select id="STipoReq" path="cotizador.idtiporequerimiento" multiple="false" class="border border-primary">
+										<form:option value="0">Diseño</form:option>
+										<form:option value="1">Muestra simple</form:option>
+										<form:option value="2">Muestra vestida</form:option>
+									</form:select> 
+									</div>
 								</div>
 							</div>
 						</div>
@@ -1128,9 +1008,12 @@ function BuscarResistencias()
 									<div class="col col-lg-2">TarimaXunitizado: <form:checkbox id="CTarxUni" path="cotizador.tarimaxunitizado"/></div>
 									<div class="col col-lg-2">Certif fumigación: <form:checkbox id="CCertFum" path="cotizador.certif_fumig"/></div>
 									<div class="col col-lg-2">EPP transportista: <form:checkbox id="CEPP" path="cotizador.epp_transportista"/></div>
-									<div class="col col-lg-1">A granel: <form:checkbox id="CAGranel"  path="cotizador.agranel" onchange="FEmbarques(1)"/></div>
+									<div class="col col-lg-1">A granel: <form:checkbox id="CAGranel"  path="cotizador_detalles.agranel" onchange="FEmbarques(1)"/></div>
 									<div class="col col-lg-1">Altura pallet</div>
-									<div class="col col-lg-1"><form:input id="TAltPallet" size="10" maxlength="8" type="text" path="cotizador_detalles.altura_pallet" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
+									<div class="col col-lg-1">
+										<form:input id="TAltPallet" size="10" maxlength="8" type="text" 
+										path="cotizador_detalles.altura_pallet" onkeypress="return filterFloat(event,this);" class="border border-primary"/>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -1145,7 +1028,8 @@ function BuscarResistencias()
 								<div class="row border border-right">
 									<div class="col col-lg-1">Pzas tarima</div>
 									<div class="col col-lg-1">
-										<form:input id="TPzasxTar" onKeyUp="CalcularDatos()" size="10" maxlength="8" type="text" path="cotizador_detalles.piezasxtarima" onkeypress="return Enteros(event);" class="border border-primary"/>
+										<form:input id="TPzasxTar" onKeyUp="CalcularDatos()" size="10" maxlength="8" type="text" 
+											path="cotizador_detalles.piezasxtarima" onkeypress="return Enteros(event);" class="border border-primary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.piezasxtarima" class="badge badge-danger small"/>
 										</div>
@@ -1268,7 +1152,7 @@ function BuscarResistencias()
 			<div class="col col-lg-2"><form:button id="BGrabar" class="btn btn-outline-primary btn-sm"><i class="fa fa-floppy-o" aria-hidden="true"> Grabar</i></form:button></div>
 			<div class="col col-lg-2"><a href="javascript:FBuscar()" class="btn btn-outline-primary btn-sm"><i class="fa fa-search" aria-hidden="true"> Buscar</i></a></div>
 			<div class="col col-lg-2"><button type="button" data-toggle="modal" data-target="#LimpiarModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-refresh" aria-hidden="true"> Limpiar</i></button></div>
-			<div class="col col-lg-4"><button id="BEnvVtas" type="button" data-toggle="modal" data-target="#VtaModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-paper-plane-o" aria-hidden="true"> Enviar AUT Ventas y Programación</i></button></div>
+			<div class="col col-lg-4"><button id="BEnvVtas" type="button" data-toggle="modal" data-target="#VtaModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-paper-plane-o" aria-hidden="true"> Enviar para autorización</i></button></div>
 			<div class="col col-lg-2"><button id="BCancel" type="button" data-toggle="modal" data-target="#CancelModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-times-circle-o" aria-hidden="true"> Cancelar</i></button></div>
 		</div>
 		</div>
@@ -1448,10 +1332,10 @@ function BuscarResistencias()
 	  <div class="modal-dialog" role="document">
 	    <div class="modal-content">
 	      <div class="modal-header alert alert-info">
-	        <h5 class="modal-title">Enviar a autorización VENTAS y PROGRAMACIÓN</h5>
+	        <h5 class="modal-title">Enviar a autorización</h5>
 	      </div>
 	      <div class="modal-body alert alert-warning">
-	        ¡¡¡ATENCIÓN!!! ¿Desea enviar esta cotización a autorización?
+	        ¡¡¡ATENCIÓN!!! ¿Desea enviar a autorización?
 	      </div>
 	      <div id="DivMensaje" class="modal-footer">
 	        <button type="button" class="btn btn-primary" onClick="FEnviarVtaProg()">Enviar</button>
@@ -1465,10 +1349,10 @@ function BuscarResistencias()
 	  <div class="modal-dialog" role="document">
 	    <div class="modal-content">
 	      <div class="modal-header alert alert-info">
-	        <h5 class="modal-title">CANCELAR COTIZACIÓN</h5>
+	        <h5 class="modal-title">CANCELAR</h5>
 	      </div>
 	      <div class="modal-body alert alert-danger">
-	        ¡¡¡ATENCIÓN!!! ¿Desea CANCELAR esta cotización?
+	        ¡¡¡ATENCIÓN!!! ¿Desea CANCELAR ESTE REGISTRO?
 	      </div>
 	      <div id="DivMensaje" class="modal-footer">
 	        <button type="button" class="btn btn-primary" onClick="FCancelar()">Cancelar</button>
@@ -1478,7 +1362,7 @@ function BuscarResistencias()
 	  </div>
 	</div>
 	
-		<div class="modal fade" id="CancelModal" tabindex="-1" role="dialog" aria-labelledby="CancelModalLabel" aria-hidden="true">
+	<!-- <div class="modal fade" id="CancelModal" tabindex="-1" role="dialog" aria-labelledby="CancelModalLabel" aria-hidden="true">
 	  <div class="modal-dialog" role="document">
 	    <div class="modal-content">
 	      <div class="modal-header alert alert-info">
@@ -1493,7 +1377,7 @@ function BuscarResistencias()
 	      </div>
 	    </div>
 	  </div>
-	</div>		
+	</div>		-->
 	
 	<!-- FIN REGION DE MODALS  -->
 	

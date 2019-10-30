@@ -2,6 +2,8 @@ package com.websystique.springmvc.dao;
 
 import java.util.List;
 
+import org.json.JSONObject;
+
 import com.websystique.springmvc.model.User;
 
 
@@ -23,7 +25,7 @@ public interface UserDao {
 	
 	User findBySSOnEmail(String sso, String email);
 	
-	List<Object> findMatcher(String sso);
+	List<JSONObject> findMatcher(String sso);
 	
 }
 

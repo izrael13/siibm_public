@@ -1,8 +1,8 @@
 package com.websystique.springmvc.security;
 
-import java.util.Iterator;
 import java.util.List;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -48,18 +48,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
-		List<Object> result = userService.findMatcher("");
-		Iterator<Object> itr = result.iterator();
-		
+		List<JSONObject> result = userService.findMatcher("");
 		http.authorizeRequests()
 		.antMatchers("/login**","/sol_cam_passs_","/resetp","/static/**").permitAll();
-		
-		while(itr.hasNext())
+		for(JSONObject o : result)
 		{
-			Object[] obj = (Object[]) itr.next();
-			http.authorizeRequests().antMatchers(String.valueOf(obj[2]))
-			.access("hasRole('"+(String.valueOf(obj[1]))+"')");
+			http.authorizeRequests().antMatchers(o.get("matcher").toString()).access("hasRole('"+(o.get("profile"))+"')");
+			
+			//System.out.println(o.get("profile").toString());
+			//System.out.println(o.get("matcher").toString());
 		}
+		/*for(int i = 0; i < result.length; i++)
+		{
+			http.authorizeRequests().antMatchers(result[1])
+			.access("hasRole('"+(String.valueOf(result[2]))+"')");
+		}*/
 		/*
 		 *			Object[] obj = (Object[]) itr.next();
 			String[] urlArr = String.valueOf(obj[2]).split("/");

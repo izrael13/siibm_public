@@ -2,6 +2,7 @@ package com.websystique.springmvc.service.tarjetas.fabricacion;
 
 import java.util.List;
 
+import com.websystique.springmvc.model.ParamsGeneral;
 import com.websystique.springmvc.model.tarjetas.fabricacion.Tarjeta_fabricacion;
 
 public interface Tarjeta_fabricacionService {
@@ -12,7 +13,7 @@ public interface Tarjeta_fabricacionService {
 	void Actualizar(Tarjeta_fabricacion Tarjeta);
 	List<Tarjeta_fabricacion> TarjetaBusqueda(Integer IdCot, String Folio, String cardcode, Integer IdDis);
 	void Borrar(Tarjeta_fabricacion Tarjeta);
-	List<Tarjeta_fabricacion> BuscarXAut(String usuario_aut, String fecha_aut, String usuario_aut_act, String fecha_aut_act, String cardcode);
+	List<Tarjeta_fabricacion> BuscarXAut(List<ParamsGeneral> Params);
 	List<Object> BuscarEsp(Integer idcot, Integer Iddet);
 	List<Tarjeta_fabricacion> ListaSeguimiento(String Folio, Integer IdCot, Integer Status, String CardCode);
 }

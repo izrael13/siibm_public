@@ -1,6 +1,5 @@
 package com.websystique.springmvc.service.costos.controlpesomerma;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.websystique.springmvc.dao.costos.controlpesomerma.Control_peso_mermaDAO;
+import com.websystique.springmvc.model.ParamsGeneral;
 import com.websystique.springmvc.model.costos.controlpesomerma.Control_peso_merma;
 
 @Service("control_peso_mermaService")
@@ -35,9 +35,9 @@ public class Control_peso_mermaServiceImpl implements Control_peso_mermaService{
 	}
 
 	@Override
-	public List<Control_peso_merma> ListaControlPeso(Date fecha) {
+	public List<Control_peso_merma> ListaControlPeso(List<ParamsGeneral> Params) {
 		// TODO Auto-generated method stub
-		return dao.ListaControlPeso(fecha);
+		return dao.ListaControlPeso(Params);
 	}
 
 }

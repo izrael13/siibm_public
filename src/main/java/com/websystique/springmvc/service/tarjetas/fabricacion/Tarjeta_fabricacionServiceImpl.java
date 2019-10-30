@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.websystique.springmvc.dao.tarjetas.fabricacion.Tarjeta_fabricacionDAO;
+import com.websystique.springmvc.model.ParamsGeneral;
 import com.websystique.springmvc.model.tarjetas.fabricacion.Tarjeta_fabricacion;
 
 @Service("tarjeta_fabricacionService")
@@ -53,9 +54,9 @@ public class Tarjeta_fabricacionServiceImpl implements Tarjeta_fabricacionServic
 	}
 
 	@Override
-	public List<Tarjeta_fabricacion> BuscarXAut(String usuario_aut, String fecha_aut, String usuario_aut_act, String fecha_aut_act, String cardcode) {
+	public List<Tarjeta_fabricacion> BuscarXAut(List<ParamsGeneral> Params) {
 		// TODO Auto-generated method stub
-		return dao.BuscarXAut(usuario_aut, fecha_aut,usuario_aut_act,fecha_aut_act, cardcode);
+		return dao.BuscarXAut(Params);
 	}
 
 	@Override

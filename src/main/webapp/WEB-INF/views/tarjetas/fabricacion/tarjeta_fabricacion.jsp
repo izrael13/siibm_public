@@ -535,11 +535,12 @@ function FCalcular()
 		</div>
 		<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
 			<div class="row small border border-right">
+				<div class="col col-lg-1">A granel: <form:checkbox disabled="true" path="cotizador_detalles.agranel"/></div>
 				<div class="col col-lg-2">Protecciones: <form:checkbox disabled="true" path="cotizador.protecciones"/></div>
 				<div class="col col-lg-1">Caja seca: <form:checkbox disabled="true" path="cotizador.caja_seca"/></div>
 				<div class="col col-lg-2">Certif fumigación: <form:checkbox disabled="true" path="cotizador.certif_fumig"/></div>
 				<div class="col col-lg-2">EPP transportista: <form:checkbox disabled="true" path="cotizador.epp_transportista"/></div>
-				<div class="col col-lg-2">Imp fechador: <form:checkbox disabled="true" path="cotizador.imprimir_fechador"/></div>
+				<div class="col col-lg-1">Imp fech: <form:checkbox disabled="true" path="cotizador.imprimir_fechador"/></div>
 				<div class="col col-lg-1">Imp ped: <form:checkbox disabled="true" path="cotizador.imprimir_pedido"/></div>
 				<div class="col col-lg-2">TarimaXunitizado: <form:checkbox path="cotizador.tarimaxunitizado"/></div>
 			</div>
@@ -731,12 +732,14 @@ function FCalcular()
 					<div class="col font-weight-bold">Especialidad</div>
 					<div class="col font-weight-bold">Costo</div>
 					<div class="col font-weight-bold">Ajuste</div>
+					<div class="col font-weight-bold">CM</div>
 				</div>
 				<c:forEach var="item" items="${esp}">
 					<div class="row small">
 						<div class="col">${item[0]}</div>
 						<div class="col">${item[1]}</div>
 						<div class="col">${item[2]}</div>
+						<div class="col">${item[4]}</div>
 					</div>
 				</c:forEach>
 					

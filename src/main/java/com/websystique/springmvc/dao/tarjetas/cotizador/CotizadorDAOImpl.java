@@ -2,7 +2,6 @@ package com.websystique.springmvc.dao.tarjetas.cotizador;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.websystique.springmvc.dao.AbstractDao;
 import com.websystique.springmvc.model.ParamsGeneral;
 import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador;
-import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador_busqueda;
+//import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador_busqueda;
 
 @Repository("cotizadorDAO")
 public class CotizadorDAOImpl extends AbstractDao<Integer,Cotizador> implements CotizadorDAO{
@@ -28,16 +27,22 @@ public class CotizadorDAOImpl extends AbstractDao<Integer,Cotizador> implements 
 	
 	@Override
 	public Cotizador BuscarxId(Integer id, Integer userInsert) {
-		// FIXME Auto-generated method stub
-		/*Map<String,Integer> mRes =  new HashMap<String, Integer>();
-		mRes.put("id", id);
-		mRes.put("usuario_insert", userInsert);*/
 		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
 		Params.add(new ParamsGeneral(1,"id",id,"EQ"));
+		Params.add(new ParamsGeneral(1,"idtiporequerimiento",3,"NE"));
 		Params.add(new ParamsGeneral(1,"usuario_insert",userInsert,"EQ"));
 		return (Cotizador) criteriaGeneralObj(Params);
 	}
-
+	
+	@Override
+	public Cotizador BuscarxIdArr(Integer id, Integer userInsert) {
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		Params.add(new ParamsGeneral(1,"id",id,"EQ"));
+		Params.add(new ParamsGeneral(1,"idtiporequerimiento",3,"EQ"));
+		Params.add(new ParamsGeneral(1,"usuario_insert",userInsert,"EQ"));
+		return (Cotizador) criteriaGeneralObj(Params);
+	}
+	
 	@Override
 	public List<Cotizador> BuscarxUser(Integer idUser) {
 		// FIXME Auto-generated method stub
@@ -68,7 +73,7 @@ public class CotizadorDAOImpl extends AbstractDao<Integer,Cotizador> implements 
 		update(cot);
 	}
 
-	@Override
+	/*@Override
 	public List<Cotizador_busqueda> ListaBusquedaxIdCardCode(Integer id, String cardCode,Integer idUser) {
 		// FIXME Auto-generated method stub
 		Map<Integer,Integer> paramsInt = new HashMap<Integer, Integer>();
@@ -121,8 +126,8 @@ public class CotizadorDAOImpl extends AbstractDao<Integer,Cotizador> implements 
 			}
 		
 		return Lista;
-	}
-
+	} */
+/*
 	@Override
 	public List<Cotizador_busqueda> ListaBusquedaxIdCardCodeDet(Integer id, String cardCode, Integer idUser,Integer idDet,Boolean autVtas,Boolean autProgAsigDis) {
 		// FIXME Auto-generated method stub
@@ -214,7 +219,7 @@ public class CotizadorDAOImpl extends AbstractDao<Integer,Cotizador> implements 
 			}
 		
 		return Lista;
-	}
+	}  */
 
 	@Override
 	public List<Cotizador> ListasCotAut(List<ParamsGeneral> params) {

@@ -28,4 +28,16 @@ public class Catalogo_coloresServiceImpl implements Catalogo_coloresService{
 		return dao.BuscarxId(id);
 	}
 
+	@Override
+	public void Guardar(Catalogo_colores color) {
+		// TODO Auto-generated method stub
+		dao.Guardar(color);
+	}
+
+	@Override
+	public void Actualizar(Catalogo_colores color) {
+		// TODO Auto-generated method stub
+		dao.Actualizar(color);
+	}
+
 }

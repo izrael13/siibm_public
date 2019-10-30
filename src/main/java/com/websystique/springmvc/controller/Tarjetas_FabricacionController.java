@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;	
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 //import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,10 +30,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.websystique.springmvc.model.ParamsGeneral;
 import com.websystique.springmvc.model.User;
 import com.websystique.springmvc.model.tarjetas.Catalogo_cajas_sap_vw;
+import com.websystique.springmvc.model.tarjetas.Catalogo_colores;
 import com.websystique.springmvc.model.tarjetas.Catalogo_maquinas_sap_vw;
+import com.websystique.springmvc.model.tarjetas.Catalogo_resistencias_sap_vw;
 import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador;
 import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador_detalles;
 import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador_detallesValidator;
@@ -124,6 +130,8 @@ public class Tarjetas_FabricacionController {
 			model.addAttribute("caja", objCaja);
 			model.addAttribute("resis", crss.BuscarxId(cotdet.getIdresistencia_barca()));
 			model.addAttribute("sello", css.BuscarxId(cotdet.getResistencia_cte()));
+			
+			DataSourceJasperTF(2,1,tf.getFolio_tarjeta());
 			
 		}		
 		
@@ -482,7 +490,14 @@ public class Tarjetas_FabricacionController {
 	public String tarjeta_aut_calidad(ModelMap model) {
 
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
-		model.addAttribute("tarjetas",tfs.BuscarXAut("usuario_aut_diseniador", "fecha_aut_diseniador","usuario_aut_calidad","fecha_aut_calidad",""));
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		Params.add(new ParamsGeneral(1,"usuario_aut_diseniador","NE"));
+		Params.add(new ParamsGeneral(2,"fecha_aut_diseniador","NE"));
+		Params.add(new ParamsGeneral(3,"usuario_aut_calidad","EQ"));
+		Params.add(new ParamsGeneral(4,"fecha_aut_calidad","EQ"));
+		Params.add(new ParamsGeneral(5,"usuario_cancela","EQ"));
+		Params.add(new ParamsGeneral(6,"fecha_cancela","EQ"));
+		model.addAttribute("tarjetas",tfs.BuscarXAut(Params));
 		logger.info(AppController.getPrincipal() + " - tarjeta_aut_calidad.");
 				
 		return "/tarjetas/fabricacion/tarjeta_aut_calidad";
@@ -530,7 +545,14 @@ public class Tarjetas_FabricacionController {
 	public String tarjeta_aut_produccion(ModelMap model) {
 
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
-		model.addAttribute("tarjetas",tfs.BuscarXAut("usuario_aut_calidad", "fecha_aut_calidad","usuario_aut_produccion","fecha_aut_produccion",""));
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		Params.add(new ParamsGeneral(1,"usuario_aut_calidad","NE"));
+		Params.add(new ParamsGeneral(2,"fecha_aut_calidad","NE"));
+		Params.add(new ParamsGeneral(3,"usuario_aut_produccion","EQ"));
+		Params.add(new ParamsGeneral(4,"fecha_aut_produccion","EQ"));
+		Params.add(new ParamsGeneral(5,"usuario_cancela","EQ"));
+		Params.add(new ParamsGeneral(6,"fecha_cancela","EQ"));
+		model.addAttribute("tarjetas",tfs.BuscarXAut(Params));
 		logger.info(AppController.getPrincipal() + " - tarjeta_aut_produccion.");
 				
 		return "/tarjetas/fabricacion/tarjeta_aut_produccion";
@@ -580,7 +602,14 @@ public class Tarjetas_FabricacionController {
 	public String tarjeta_aut_ingenieria(ModelMap model) {
 
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
-		model.addAttribute("tarjetas",tfs.BuscarXAut("usuario_aut_produccion", "fecha_aut_produccion","usuario_aut_ing","fecha_aut_ing",""));
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		Params.add(new ParamsGeneral(1,"usuario_aut_produccion","NE"));
+		Params.add(new ParamsGeneral(2,"fecha_aut_produccion","NE"));
+		Params.add(new ParamsGeneral(3,"usuario_aut_ing","EQ"));
+		Params.add(new ParamsGeneral(4,"fecha_aut_ing","EQ"));
+		Params.add(new ParamsGeneral(5,"usuario_cancela","EQ"));
+		Params.add(new ParamsGeneral(6,"fecha_cancela","EQ"));
+		model.addAttribute("tarjetas",tfs.BuscarXAut(Params));
 		logger.info(AppController.getPrincipal() + " - tarjeta_aut_ingenieria.");
 				
 		return "/tarjetas/fabricacion/tarjeta_aut_ingenieria";
@@ -633,7 +662,15 @@ public class Tarjetas_FabricacionController {
 
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
 		User user = us.findBySSO(AppController.getPrincipal());
-		List<Tarjeta_fabricacion> Lista = tfs.BuscarXAut("usuario_aut_ing", "fecha_aut_ing","usuario_aut_cliente","fecha_aut_cliente",user.getCardcode_sap());
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		Params.add(new ParamsGeneral(1,"usuario_aut_ing","NE"));
+		Params.add(new ParamsGeneral(2,"fecha_aut_ing","NE"));
+		Params.add(new ParamsGeneral(3,"usuario_aut_cliente","EQ"));
+		Params.add(new ParamsGeneral(4,"fecha_aut_cliente","EQ"));
+		Params.add(new ParamsGeneral(5,"usuario_cancela","EQ"));
+		Params.add(new ParamsGeneral(6,"fecha_cancela","EQ"));
+		Params.add(new ParamsGeneral(7,"cardcode",user.getCardcode_sap()));
+		List<Tarjeta_fabricacion> Lista = tfs.BuscarXAut(Params);
 		Lista.stream().forEach(tar -> {
 			if(tfs.BuscarXIdCot(tar.getIdcotizacion(), 0).stream().filter(a -> a.getUsuario_aut_ing() == null && a.getFecha_aut_ing() == null).count() > 0)
 				Lista.remove(tar);
@@ -731,26 +768,112 @@ public class Tarjetas_FabricacionController {
 		logger.info(AppController.getPrincipal() + " - tarjeta_seguimiento_info.");
 		return "/tarjetas/fabricacion/tarjetas_seguimiento_info";
 	}
-
 	
-	/*@RequestMapping(value = {"/ingenieria/archivo" }, method = RequestMethod.POST)
-	@ResponseBody
-	public String archivo(ModelMap model) {
-		BufferedReader reader;
-		try 
-		{
-			JsonObject object = new JsonObject();
-			reader = new BufferedReader(new FileReader("Z:\\PESO_COPIA.txt"));
-			String line = reader.lines().reduce((first, second) -> second).orElse("");
-			System.out.println(line.substring(1).trim());
-			reader.close();
-			object.addProperty("hola", "hola");
-			return object.toString();
-		}
-		catch(Exception e)
-		{
-			return e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
-		}
-	} */
+	@SuppressWarnings("rawtypes")
+	private void DataSourceJasperTF(Integer id, Integer iddet, String folio)
+	{		
+		GsonBuilder builder = new GsonBuilder();
+		Gson gson = builder.serializeNulls().create();
+		User user = new User();
+		Catalogo_colores color = new Catalogo_colores();
+		Cotizador cot = new Cotizador();
+		Cotizador_detalles cotdet = new Cotizador_detalles();
+		Tarjeta_fabricacion tf= new Tarjeta_fabricacion();
+		
+		cot = cs.BuscarxId(id);
+		cotdet = cds.BuscarxIdDet(id, iddet);
+		tf = tfs.BuscarxFolio(folio);
+		tf.setTarjeta_img(tfis.BuscarxIdCotidDert(id, iddet));
+		
+		JSONObject JsonTF = new JSONObject(gson.toJson(tf));		
+		user = us.findById(tf.getUsuario_aut_diseniador() == null ? 0 : tf.getUsuario_aut_diseniador());
+		JsonTF.put("diseniador", tf.getUsuario_aut_diseniador() == null ? "" : user.getFirstName() + " " +user.getLastName());
+		
+		user = us.findById(tf.getUsuario_aut_calidad() == null ? 0 : tf.getUsuario_aut_calidad());
+		JsonTF.put("aut_calidad", tf.getUsuario_aut_calidad() == null ? "" : user.getFirstName() + " " +user.getLastName());
+		
+		user = us.findById(tf.getUsuario_aut_cliente() == null ? 0 : tf.getUsuario_aut_cliente());
+		JsonTF.put("aut_cliente", tf.getUsuario_aut_cliente() == null ? "" : user.getFirstName() + " " +user.getLastName());
+		
+		user = us.findById(tf.getUsuario_aut_ing() == null ? 0 : tf.getUsuario_aut_ing());
+		JsonTF.put("aut_ingenieria", tf.getUsuario_aut_ing() == null ? "" : user.getFirstName() + " " +user.getLastName());
+		
+		user = us.findById(tf.getUsuario_aut_produccion() == null ? 0 :tf.getUsuario_aut_produccion());
+		JsonTF.put("aut_produccion", tf.getUsuario_aut_produccion() == null ? "" : user.getFirstName() + " " +user.getLastName());
+		
+		JsonTF.put("suaje", tf.getSuaje() == null ? "" : chs.BuscarxId(tf.getSuaje()).getNombre());
+		JsonTF.put("grabado", tf.getGrabado() == null ? "" : chs.BuscarxId(tf.getGrabado()).getNombre());
+		
+		JSONObject JsonCot = new JSONObject(gson.toJson(cot));
+		JsonCot.put("cliente", ccavs.cat_cte_sap(cot.getCardcode()).getCardname());
+		
+		JSONObject JsonCotdet = new JSONObject(gson.toJson(cotdet));
+		color = ccos.BuscarxId(cotdet.getColor1() == null ? 0 : cotdet.getColor1());		
+		JsonCotdet.put("color1n", cotdet.getColor1() == null ? "" : color.getColor());
+		JsonCotdet.put("color1c", cotdet.getColor1() == null ? "" : "#"+color.getColor_est().trim());
+		
+		color = ccos.BuscarxId(cotdet.getColor2() == null ? 0 : cotdet.getColor2());		
+		JsonCotdet.put("color2n", cotdet.getColor2() == null ? "" : color.getColor());
+		JsonCotdet.put("color2c", cotdet.getColor2() == null ? "" : "#"+color.getColor_est().trim());
+		
+		color = ccos.BuscarxId(cotdet.getColor3() == null ? 0 : cotdet.getColor3());		
+		JsonCotdet.put("color3n", cotdet.getColor3() == null ? "" : color.getColor());
+		JsonCotdet.put("color3c", cotdet.getColor3() == null ? "" : "#"+color.getColor_est().trim());
+		
+		color = ccos.BuscarxId(cotdet.getColor4() == null ? 0 : cotdet.getColor4());		
+		JsonCotdet.put("color4n", cotdet.getColor4() == null ? "" : color.getColor());
+		JsonCotdet.put("color4c", cotdet.getColor4() == null ? "" : "#"+color.getColor_est().trim());
+		
+		color = ccos.BuscarxId(cotdet.getColor5() == null ? 0 : cotdet.getColor5());		
+		JsonCotdet.put("color5n", cotdet.getColor5() == null ? "" : color.getColor());
+		JsonCotdet.put("color5c", cotdet.getColor5() == null ? "" : "#"+color.getColor_est().trim());
+		
+		color = ccos.BuscarxId(cotdet.getColor6() == null ? 0 : cotdet.getColor6());		
+		JsonCotdet.put("color6n", cotdet.getColor6() == null ? "" : color.getColor());
+		JsonCotdet.put("color6c", cotdet.getColor6() == null ? "" : "#"+color.getColor_est().trim());
+		
+		color = ccos.BuscarxId(cotdet.getColor7() == null ? 0 : cotdet.getColor7());		
+		JsonCotdet.put("color7n", cotdet.getColor7() == null ? "" : color.getColor());
+		JsonCotdet.put("color7c", cotdet.getColor7() == null ? "" : "#"+color.getColor_est().trim());
+		
+		List<JSONObject> ListaJsonEsp = new ArrayList<JSONObject>();
+		ecs.ListaEspDet(id, iddet).forEach(b ->{
+			JSONObject JsonEsp = new JSONObject();
+			JsonEsp.put("count", b.getCount());
+			JsonEsp.put("iddetalle", b.getIddetalle());
+			JsonEsp.put("idcotizacion", b.getIdcotizacion());
+			JsonEsp.put("especialidad", ces.BuscaxId(b.getIdespecialidad()).getName());
+			JsonEsp.put("costo", b.getCosto());
+			JsonEsp.put("ajuste", b.getAjuste());
+			JsonEsp.put("esquema", b.getEsquema());
+			JsonEsp.put("cm", b.getCm());
+			ListaJsonEsp.add(JsonEsp);
+		}); 
+		JsonCotdet.put("especialidades_cotizacion", ListaJsonEsp);
+		
+		JsonCotdet.put("estilo_caja", ccss.BuscarxId(cotdet.getIdcaja_sap()).getNombrecorto());
+		Catalogo_resistencias_sap_vw objResis = new Catalogo_resistencias_sap_vw();
+		objResis = crss.BuscarxId(cotdet.getIdresistencia_barca());
+		JsonCotdet.put("resistencia", objResis.getResistencia());
+		JsonCotdet.put("flauta", objResis.getCorrugado());
+		JsonCotdet.put("papel", objResis.getColor());
+		JsonCotdet.put("SUBREPORT_DIR", "/jasperreports/cotizador/");
+		JsonCotdet.put("resis_cte", css.BuscarxId(cotdet.getResistencia_cte()).getNombre());
+		
+		Iterator itCot = JsonCot.keys();
+		Iterator itCotDet = JsonCotdet.keys();
+		
+		while(itCot.hasNext()) {
+            String key = (String) itCot.next();
+            JsonTF.put(key, JsonCot.get(key));
+        }
+		
+		while(itCotDet.hasNext()) {
+            String key = (String) itCotDet.next();
+            JsonTF.put(key, JsonCotdet.get(key));
+        }
+		
+		 System.out.println(JsonTF);
+	}
 	
 }

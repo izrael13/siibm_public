@@ -5,11 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.Query;
-
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +16,8 @@ import org.springframework.stereotype.Repository;
 
 import com.websystique.springmvc.model.ParamsGeneral;
 import com.websystique.springmvc.model.User;
+import com.websystique.springmvc.service.Profile_matchersService;
+import com.websystique.springmvc.service.UserProfileService;
 
 
 
@@ -26,6 +27,10 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 	static final Logger logger = LoggerFactory.getLogger(UserDaoImpl.class);
 	@Autowired
 	private SessionFactory sessionFactory;
+	@Autowired
+	Profile_matchersService pms;
+	@Autowired
+	UserProfileService ups;
 	
 	protected Session getSession(){
 		return sessionFactory.getCurrentSession();
@@ -99,39 +104,18 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 		return user;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public List<Object> findMatcher(String sso) {
-
-		String sql_query = "select ROW_NUMBER() OVER(ORDER BY TYPE ASC) AS ID, \r\n" + 
-				"TYPE PROFILE_NAME, MATCHER MATCHER_NAME \r\n" + 
-				"from PROFILE_MATCHERS a \r\n" + 
-				"inner join USER_PROFILE b on a.ID_PROFILE = b.ID ";
-		/*
-		 *String sql_query = "select ROW_NUMBER() OVER(ORDER BY TYPE ASC) AS ID,b.type,a.url,a.nivel  \r\n" + 
-				"from menus a\r\n" + 
-				"inner join user_profile b on a.perfil_acceso = b.id;";
-		 * */
-				//"where SSO_ID = '"+sso+"'";
-		Query query = getSession().createNativeQuery(sql_query);
-		//query.setParameter(0, sso);
-		//System.out.println(Results.size());
-		List<Object> result = (List<Object>)query.getResultList();
+	public List<JSONObject> findMatcher(String sso) {
+		List<JSONObject> Lista = new ArrayList<JSONObject>();
+		pms.findall().forEach(a ->{
+			JSONObject JsonObj = new JSONObject();
+			JsonObj.put("matcher", a.getMATCHER());
+			JsonObj.put("profile", ups.findById(a.getID_PROFILE()).getType());
+			Lista.add(JsonObj);
+		});
 		
-		/*Iterator<Object> itr = result.iterator();
-		ms = new MATCHERS_SECURITY();
+		return Lista;
 		
-		//System.out.println(result.size());
-		while(itr.hasNext()){
-						
-		   Object[] obj = (Object[]) itr.next();
-		   ms.setID(Integer.parseInt(String.valueOf(obj[0])));
-		   ms.setPROFILE_NAME(String.valueOf(obj[1]));
-		   ms.setMATCHER_NAME(String.valueOf(obj[2]));
-		   //results.add(ms);
-		}*/
-		//System.out.println(results.size());
-		return result;
 	}
 	
 	

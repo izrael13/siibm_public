@@ -90,14 +90,16 @@ $("input[id='ChEsp']").each(function (){
 
 function FEmbarques(b)
 {
-	var ag = $("#CAGranel").prop('checked');	
-	$("#TFlejesAtado" ).val("").attr("readonly",ag).removeClass().addClass(ag == true ? "border border-secondary" : "border border-primary");
-	$("#TPzasAtado" ).val("").attr("readonly",ag).removeClass().addClass(ag == true ? "border border-secondary" : "border border-primary");
-	$("#TAtaCama" ).val("").attr("readonly",ag).removeClass().addClass(ag == true ? "border border-secondary" : "border border-primary");
-	$("#TPzasxTar" ).val("").attr("readonly",ag).removeClass().addClass(ag == true ? "border border-secondary" : "border border-primary");
-	$("#TAltPallet" ).val("").attr("readonly",ag).removeClass().addClass(ag == true ? "border border-secondary" : "border border-primary");
-	$("#TCamasPallet" ).val("").attr("readonly",ag).removeClass().addClass(ag == true ? "border border-secondary" : "border border-primary");
-	$("#TFlejesPallet" ).val("").attr("readonly",ag).removeClass().addClass(ag == true ? "border border-secondary" : "border border-primary");
+	
+	var ag = $("#CAGranel").prop('checked');
+	//alert(ag);
+	$("#TFlejesAtado" ).val(ag == false ? $("#TFlejesAtado").val() : "").attr("readonly",ag).removeClass().addClass(ag == true ? "border border-secondary" : "border border-primary");
+	$("#TPzasAtado" ).val(ag == false ? $("#TPzasAtado").val() : "").attr("readonly",ag).removeClass().addClass(ag == true ? "border border-secondary" : "border border-primary");
+	$("#TAtaCama" ).val(ag == false ? $("#TAtaCama").val() : "").attr("readonly",ag).removeClass().addClass(ag == true ? "border border-secondary" : "border border-primary");
+	$("#TPzasxTar" ).val(ag == false ? $("#TPzasxTar").val() : "").attr("readonly",ag).removeClass().addClass(ag == true ? "border border-secondary" : "border border-primary");
+	$("#TAltPallet" ).val(ag == false ? $("#TAltPallet").val() : "").attr("readonly",ag).removeClass().addClass(ag == true ? "border border-secondary" : "border border-primary");
+	$("#TCamasPallet" ).val(ag == false ? $("#TCamasPallet").val() : "").attr("readonly",ag).removeClass().addClass(ag == true ? "border border-secondary" : "border border-primary");
+	$("#TFlejesPallet" ).val(ag == false ? $("#TFlejesPallet").val() : "").attr("readonly",ag).removeClass().addClass(ag == true ? "border border-secondary" : "border border-primary");
 	
 	$("input[id='ChEsp']").each(function ()
 	{
@@ -174,4 +176,108 @@ function FDelFila()
 	var table = document.getElementById("TBodyCodBarras");
 	var rowCount = table.rows.length;
 	table.deleteRow(rowCount -1);
+}
+function FDisableElemens()
+{
+	$("#SClientes option:not(:selected)").prop("disabled", true);
+	$("#direcciones option:not(:selected)").prop("disabled", true);
+	$("#SCajas option:not(:selected)").prop("disabled", true);
+	$("#SResisBarca option:not(:selected)").prop("disabled", true);
+	
+	//$("#BCancel").prop('disabled',true);
+	$("#BGrabar").prop('disabled',true);
+	$("#BEnvVtas").prop('disabled',true);
+	
+	$("#TSimbolo").attr("readonly","readonly");				
+	$("#TLargo").attr("readonly","readonly");
+	$("#TAncho").attr("readonly","readonly");
+	$("#TFondo").attr("readonly","readonly");
+	$("#SResisCte option:not(:selected)").prop("disabled", true);
+	$("#SCierre option:not(:selected)").prop("disabled", true);
+	$("#SCierreDet option:not(:selected)").prop("disabled", true);
+	$("#TPzasxjgo").attr("readonly","readonly");
+	$("#TObs").attr("readonly","readonly");
+	$("#TEspSup").attr("readonly","readonly");
+	$("#TEspInf").attr("readonly","readonly");
+	$("#TCantPedMes").attr("readonly","readonly");
+	$("#SScore option:not(:selected)").prop("disabled", true);
+	$("#SNumTintas option:not(:selected)").prop("disabled", true);			
+
+	$("#TPreciObj").attr("readonly","readonly");
+	$("#TPzasxTar").attr("readonly","readonly");
+	
+	////////////****ESPECIALIDADES****///////////////////
+	var nodes = document.getElementById("DEsp").getElementsByTagName('*');
+	for(var i = 0; i < nodes.length; i++)
+	{				
+		if(nodes[i].type == 'select-one')
+			$("#"+nodes[i].id+" option:not(:selected)").prop("disabled", true);
+		else
+		{
+			if(nodes[i].type == 'checkbox')
+			{
+				if(nodes[i].id != "")
+					{
+						nodes[i].addEventListener("click", preventDef, false);
+						nodes[i].onchange = "";
+					}
+			}
+			else
+			{
+				if(nodes[i].id != "")
+					$("#"+nodes[i].id).prop("readonly", true);
+			}						
+	    		
+		}
+	}
+	////////////****FIN ESPECIALIDADES****///////////////
+	////////////****CODIGO DE BARRAS****/////////////////
+	var nodescb = document.getElementById("TBodyCodBarras").getElementsByTagName('*');
+	for(var i = 0; i < nodescb.length; i++)
+	{
+		if(nodescb[i].id != "")
+		{
+			if(nodescb[i].type == 'text')
+				$("#"+nodescb[i].id).prop("readonly", true);
+		}
+	}
+	$("#BAddFila").prop("disabled",true);
+	$("#BDelFila").prop("disabled",true);
+	////////////****FIN CODIGO DE BARRAS****//////////////
+	$("#STipoReq option:not(:selected)").prop("disabled", true);
+	$("#SEntrego option:not(:selected)").prop("disabled", true);
+	$("#SColor1 option:not(:selected)").prop("disabled", true);
+	$("#SColor2 option:not(:selected)").prop("disabled", true);
+	$("#SColor3 option:not(:selected)").prop("disabled", true);
+	$("#SColor4 option:not(:selected)").prop("disabled", true);
+	$("#SColor5 option:not(:selected)").prop("disabled", true);
+	$("#SColor6 option:not(:selected)").prop("disabled", true);
+	$("#SColor7 option:not(:selected)").prop("disabled", true);
+	$("#TNumRanuras").attr("readonly","readonly");
+	$("#TFechaOC").attr("readonly","readonly");
+	$("#CCejaDesp").bind("click", preventDef, false);
+	$("#STolerancia option:not(:selected)").prop("disabled", true);
+	$("#SDisenio option:not(:selected)").prop("disabled", true);
+	$("#CCancSust").bind("click", preventDef, false);
+	$("#TTF").attr("readonly","readonly");
+
+	$("#CEmplayado").bind("click", preventDef, false);
+	$("#TVueltasEmp").attr("readonly","readonly");
+	$("#CFactura").bind("click", preventDef, false);
+	$("#CCertCal").bind("click", preventDef, false);
+	$("#CImpOC").bind("click", preventDef, false);
+	$("#CProtecciones").bind("click", preventDef, false);
+	$("#CCajaSeca").bind("click", preventDef, false);
+	$("#CCertFum").bind("click", preventDef, false);
+	$("#CEPP").bind("click", preventDef, false);
+	$("#CAGranel").bind("click", preventDef, false);
+	$("#CImpFech").bind("click", preventDef, false);
+	$("#CImpPed").bind("click", preventDef, false);
+	$("#CTarxUni").bind("click", preventDef, false);
+	$("#TAltPallet").attr("readonly","readonly");
+	$("#TCamasPallet").attr("readonly","readonly");
+	$("#TFlejesPallet").attr("readonly","readonly");
+	$("#TFlejesAtado").attr("readonly","readonly");
+	$("#TPzasAtado").attr("readonly","readonly");
+	$("#TAtaCama").attr("readonly","readonly");
 }

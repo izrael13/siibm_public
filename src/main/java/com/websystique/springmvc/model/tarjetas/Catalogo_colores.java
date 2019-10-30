@@ -1,13 +1,14 @@
 package com.websystique.springmvc.model.tarjetas;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -23,6 +24,7 @@ public class Catalogo_colores implements Serializable{/**
 	
 	@Id  @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
+	@NotBlank
 	private String color;
 	private Integer id_tipo_color;
 	private String cmyk;
@@ -31,4 +33,5 @@ public class Catalogo_colores implements Serializable{/**
 	private String color_est;
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date fecha_captura;
+	private Integer idusuario_captura;
 }
