@@ -1180,5 +1180,4 @@ public class ReportesController {
 				}
 				return "/reportes/pedidos_con_retraso";
 				}	           
-	
 }
