@@ -29,7 +29,7 @@ function FBuscarId(id,iddet)
 		</thead>
 		<tbody>
 		<c:forEach var="item" items="${lista}" varStatus="counter">
-		<fmt:parseNumber var = "id" integerOnly = "true" type = "number" value = "${item['id']}" />
+		<fmt:parseNumber var = "id" integerOnly = "true" pattern="##############" type = "number" value = "${item['id']}" />
 			<tr>
 				<td><a href="javascript:FBuscarId(${id},0)">${id}</a></td>
 				<td>${item['cliente']}</td>
@@ -45,7 +45,7 @@ function FBuscarId(id,iddet)
 						</thead>
 						<tbody>
 						<c:forEach var="itemd" items="${item['ListaDetalles']}" varStatus="counter">
-						<fmt:parseNumber var = "idcot" integerOnly = "true" type = "number" value = "${itemd['iddetalle']}" />
+						<fmt:parseNumber var = "idcot" integerOnly = "true" pattern="##############" type = "number" value = "${itemd['iddetalle']}" />
 							<tr>
 								<td><a href="javascript:FBuscarId(${id},${idcot})">${idcot}</a></td>
 								<td>${itemd['simbolo']}</td>

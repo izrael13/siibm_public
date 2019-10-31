@@ -18,7 +18,6 @@ public class Desempenio_mensual_vendedorDAOImpl extends AbstractDao<Integer,Dese
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Desempenio_mensual_vendedor> BuscarxAnio(Integer Anio, Integer SlpCode) {
-		// TODO Auto-generated method stub
 		List<Desempenio_mensual_vendedor> results = null;
 		ProcedureCall criteria = createStoredProcedureCriteria("spDesempenio_mensual_vendedor");
 		criteria.registerParameter("pAnio", Integer.class, ParameterMode.IN);
@@ -27,6 +26,31 @@ public class Desempenio_mensual_vendedorDAOImpl extends AbstractDao<Integer,Dese
 		criteria.registerParameter("pSlpCode", Integer.class, ParameterMode.IN);
 		criteria.getParameterRegistration("pSlpCode").bindValue(SlpCode);
 	
+		Output output = criteria.getOutputs().getCurrent();
+		if (output.isResultSet()) {
+			results = ((ResultSetOutput)output).getResultList();
+        }
+		return results;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Object> DesempenioComparativo(String AnioAnt, String AnioAct, Integer CteVen, String Meses) {
+		List<Object> results = null;
+		ProcedureCall criteria = createStoredProcedureCriteriaStr("spDesempenioComparativo");
+		
+		criteria.registerParameter("pAnioAnt", String.class, ParameterMode.IN);
+		criteria.getParameterRegistration("pAnioAnt").bindValue(AnioAnt);
+		
+		criteria.registerParameter("pAnioAct", String.class, ParameterMode.IN);
+		criteria.getParameterRegistration("pAnioAct").bindValue(AnioAct);
+		
+		criteria.registerParameter("pCveVen", Integer.class, ParameterMode.IN);
+		criteria.getParameterRegistration("pCveVen").bindValue(CteVen);
+		
+		criteria.registerParameter("pMeses", String.class, ParameterMode.IN);
+		criteria.getParameterRegistration("pMeses").bindValue(Meses);
+		
 		Output output = criteria.getOutputs().getCurrent();
 		if (output.isResultSet()) {
 			results = ((ResultSetOutput)output).getResultList();

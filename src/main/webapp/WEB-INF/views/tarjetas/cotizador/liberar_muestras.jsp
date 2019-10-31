@@ -82,7 +82,7 @@ function FImprimir(id)
 		</thead>
 		<tbody>
 		<c:forEach var="item" items="${listaDetms}" varStatus="counter">
-		<fmt:parseNumber var = "i" integerOnly = "true" type = "number" value = "${item['id']}" />
+		<fmt:parseNumber var = "i" integerOnly = "true" pattern="##############" type = "number" value = "${item['id']}" />
 			<tr>
 				<td>${i}</td>
 				<td>${item['cliente']}</td>
@@ -111,7 +111,7 @@ function FImprimir(id)
 			</tr>
 		</c:forEach>
 		<c:forEach var="item" items="${listaDetmv}" varStatus="counter">
-		<fmt:parseNumber var = "i" integerOnly = "true" type = "number" value = "${item['id']}" />
+		<fmt:parseNumber var = "i" integerOnly = "true" pattern="##############" type = "number" value = "${item['id']}" />
 			<tr>
 				<td>${i}</td>
 				<td>${item['cliente']}</td>

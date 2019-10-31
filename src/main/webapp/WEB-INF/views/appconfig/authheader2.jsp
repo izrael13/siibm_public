@@ -83,6 +83,7 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/golpes_pend_fab_2' />"><i class="fa fa-file-o" aria-hidden="true"></i> Golpes pendientes de fabricar</a></li>
 		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/todos_pedidos___' />"><i class="fa fa-file-o" aria-hidden="true"></i> Todos pedidos</a></li>
 		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/media_pedidos_cte1' />"><i class="fa fa-file-o" aria-hidden="true"></i> Media pedidos por cliente</a></li>
+		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/ventas/desempenio_comparativo' />"><i class="fa fa-file-o" aria-hidden="true"></i> Desempeño comparativo</a></li>
 			    </ul>
 		  	</li>
 		  	</sec:authorize>

@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.websystique.springmvc.excel.ConsKilosExcel;
 import com.websystique.springmvc.excel.ExcelAmortHerra;
 import com.websystique.springmvc.excel.ExcelDesempenio_mensual_vendedor;
@@ -1148,6 +1149,36 @@ public class ReportesController {
 		}
 		
 		return "/reportes/embarque_diario_detalle";
+	}
+	
+	@RequestMapping(value = {"/ventas/desempenio_comparativo" }, method = RequestMethod.GET)
+	public String desempenio_comparativo(ModelMap model, @RequestParam(value = "meses", defaultValue = "", required = false) String meses,
+														 @RequestParam(value = "anioant", defaultValue = "", required = false) String anioant,
+														 @RequestParam(value = "anioact", defaultValue = "", required = false) String anioact,
+														 @RequestParam(value = "cteven", defaultValue = "", required = false) Integer cteven) {
+		try 
+		{
+			model.addAttribute("loggedinuser", AppController.getPrincipal());
+			logger.info(AppController.getPrincipal() + " - ventas/desempenio_comparativo.");
+			
+			if(anioant != null && anioact != null && cteven != null && meses.length() > 0)
+			{
+				model.addAttribute("selectedValueActAnt", anioant);
+				model.addAttribute("selectedValueAct", anioact);
+				model.addAttribute("selectedValueCteVen", cteven);
+				
+				//GsonBuilder builder = new GsonBuilder();
+				//Gson gson = builder.serializeNulls().create();
+				model.addAttribute("Lista", dms.DesempenioComparativo(anioant, anioact, cteven, meses));
+				
+				//System.out.println(gson.toJson());
+			}
+			
+		}
+		catch(Exception e) {
+			logger.error(AppController.getPrincipal() + " - ventas/desempenio_comparativo. - " + e.getMessage());
+		}
+		return "/reportes/desempenio_comparativo";
 	}
 	
 }

@@ -46,9 +46,9 @@ function Excel()
 			</select>
         </div>
         <div class="col-md-2"><button type="button" class="btn btn-outline-primary" onClick="Excel()">
-				<i class="fa fa-file-excel-o"></i>
-				Excel
-				</button>
+			<i class="fa fa-file-excel-o"></i>
+			Excel
+			</button>
 		</div>
     </div>
     </div>

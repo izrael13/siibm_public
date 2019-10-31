@@ -19,8 +19,13 @@ public class Desempenio_mensual_vendedorServiceImpl implements Desempenio_mensua
 	
 	@Override
 	public List<Desempenio_mensual_vendedor> BuscarxAnio(Integer Anio, Integer SlpCode) {
-		// TODO Auto-generated method stub
 		return dao.BuscarxAnio(Anio, SlpCode);
+	}
+
+
+	@Override
+	public List<Object> DesempenioComparativo(String AnioAnt, String AnioAct, Integer CteVen, String Meses) {
+		return dao.DesempenioComparativo(AnioAnt, AnioAct, CteVen, Meses);
 	}
 
 }
