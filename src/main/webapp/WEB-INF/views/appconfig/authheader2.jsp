@@ -98,6 +98,7 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/vendedores/desempeniomesxprod' />"><i class="fa fa-file-o" aria-hidden="true"></i> Desempeño mensual por producto</a></li>
 		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/vendedores/peso_dia_d__' />"><i class="fa fa-file-o" aria-hidden="true"></i> Embarque diario</a></li>
 		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/vendedores/embarquediariodetalle' />"><i class="fa fa-file-o" aria-hidden="true"></i> Embarque diario detalle</a></li>
+		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/produccion/PedidosConRetraso_' />"><i class="fa fa-file-o" aria-hidden="true"></i> Pedidos con Retraso</a></li>
 		    	</ul>
 		    </li>
 		    </sec:authorize>
