@@ -160,23 +160,6 @@ public class ReportesController {
 	Calendar calendar = Calendar.getInstance();
 	
 	
-	@RequestMapping(value = {"/produccion/PedidosConRetraso_" }, method = RequestMethod.GET)
-	public String PedidoConretraso(ModelMap model) {
-		try {	  
-		   model.addAttribute("loggedinuser", AppController.getPrincipal());
-		 
-          List<Pedido> pedidosAtra = pedidoService.findAll();
-		  model.addAttribute("pedidosAtra", pedidosAtra);
-		 
-		  logger.info(AppController.getPrincipal() + " - PedidosConRetraso_.");
-					
-				}
-			catch(Exception e) {
-				logger.error(AppController.getPrincipal() + " - PedidosConRetraso_. - " + e.getMessage());
-				}
-				return "/reportes/pedidos_con_retraso";
-				}	                 
-	
 	
 	@RequestMapping(value = {"/papel/consumo_papel_mes" }, method = RequestMethod.GET)
 	public String consumo_papel_mes(ModelMap model) {
@@ -1181,4 +1164,20 @@ public class ReportesController {
 		return "/reportes/desempenio_comparativo";
 	}
 	
+	@RequestMapping(value = {"/vendedores/PedidosConRetraso_" }, method = RequestMethod.GET)
+	public String PedidoConretraso(ModelMap model) {
+		try {	  
+		   model.addAttribute("loggedinuser", AppController.getPrincipal());
+		 
+          List<Pedido> pedidosAtra = pedidoService.findAll();
+		  model.addAttribute("pedidosAtra", pedidosAtra);
+		 
+		  logger.info(AppController.getPrincipal() + " - PedidosConRetraso_.");
+					
+				}
+			catch(Exception e) {
+				logger.error(AppController.getPrincipal() + " - PedidosConRetraso_. - " + e.getMessage());
+				}
+				return "/reportes/pedidos_con_retraso";
+				}	           
 }
