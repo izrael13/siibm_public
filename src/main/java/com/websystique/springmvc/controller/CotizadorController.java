@@ -1376,7 +1376,12 @@ public class CotizadorController {
 									}
 								}
 								
-								DecimalFormat format = new DecimalFormat("##########0.0");
+								
+								DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols(Locale.getDefault());
+								formatSymbols.setDecimalSeparator('.');
+								
+								DecimalFormat format = new DecimalFormat("##########0.0#");							
+								
 								Double deci = 0.0;
 								//RAYADO 1
 								Double rayado1 = 0.0;
@@ -1948,5 +1953,15 @@ public class CotizadorController {
 		logger.info(AppController.getPrincipal() + " - seguimiento_arrastres_muestras.");
 		return "/tarjetas/cotizador/seguimiento_arrastres_muestras";
 	}
+	
+	@RequestMapping(value = {"/vendedor/seguimiento_cot" }, method = RequestMethod.GET)
+	public String seguimiento_cot(ModelMap model)
+	{		
+		model.addAttribute("loggedinuser", AppController.getPrincipal());
+		
+		logger.info(AppController.getPrincipal() + " - seguimiento_cot.");
+		return "/tarjetas/cotizador/seguimiento_cot";
+	}
+	
 }
 

@@ -164,6 +164,7 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 			    	<sec:authorize access="hasRole('ADMIN') or hasRole('VENDEDOR')">
 			    		<li><a class="dropdown-item" href = "<c:url value='/cotizador/vendedor/cotizadorabc'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro Cotizaciones/Requerimientos/Muestras</a></li>
 			    		<li><a class="dropdown-item" href = "<c:url value='/cotizador/vendedor/arrastresabc'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro Arrastres</a></li>
+			    		<li><a class="dropdown-item" href = "<c:url value='/cotizador/vendedor/seguimiento_cot'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Seguimiento</a></li>
 			    	</sec:authorize>
 			    	<sec:authorize access="hasRole('ADMIN') or hasRole('VENTAS')">
 			    		<li><a class="dropdown-item" href = "<c:url value='/cotizador/ventas/autorizacion_cotizacion_vtas'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de cotizaciones Ventas</a></li>

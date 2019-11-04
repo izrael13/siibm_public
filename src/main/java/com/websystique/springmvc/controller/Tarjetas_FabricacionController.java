@@ -5,9 +5,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;	
+import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -169,6 +171,8 @@ public class Tarjetas_FabricacionController {
 			@RequestParam("pzasxlargo") Integer pzasxlargo, @RequestParam("pzasxancho") Integer pzasxancho) {
 		try 
 		{
+			DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols(Locale.getDefault());
+			formatSymbols.setDecimalSeparator('.');
 			DecimalFormat decimal4 = new DecimalFormat("###########0.####");
 			
 			JsonObject object = new JsonObject();//Objeto JSon
