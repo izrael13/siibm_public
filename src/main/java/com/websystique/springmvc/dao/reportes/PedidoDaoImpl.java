@@ -20,6 +20,7 @@ import com.websystique.springmvc.model.reportes.PedidoPk;
 @Repository("PedidoDao")
 public class PedidoDaoImpl extends AbstractDao<PedidoPk, Pedido> implements PedidoDao{
 
+	@SuppressWarnings("unchecked")
 	public List<Pedido> findPedido(int pId) {
 		List<Pedido> pedidos = null;
 		
