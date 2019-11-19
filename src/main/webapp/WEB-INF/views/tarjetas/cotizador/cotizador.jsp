@@ -2,7 +2,6 @@
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -42,6 +41,7 @@ $(document).ready(function() {
 function FBuscarDirecciones()
 {
 	var cardcode = document.getElementById("SClientes").value;
+	$("#SClientesFactura").val(cardcode);
 	var opciones = "";
 	$.ajax({
 		url: '<c:url value="/cotizador/vendedor/buscardirecciones"/>?cardcode='+cardcode,
@@ -461,11 +461,15 @@ function BuscarResistencias()
 <title>Registro cotizaciones/Requerimientos/Muestras</title>
 </head>
 	<body>
+	<div align="center">
+		 	<span id="imgload" style='display: none;'><img width="20px" height="20px" src='<c:url value="/static/img/sun_watch.gif"/>' /></span>
+	</div>
+	<div id = "mensajes" class = "${!empty mensajes ? 'alert alert-success' : ''}">${mensajes}</div>
 	<div class = "container-fluid">
 	 <form:form id="form" method="POST" modelAttribute="cotizadordatabean" class="form-horizontal" autocomplete="off">
 		<div class="row">
 			<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
-				 <div class="row ">
+				 <div class="row ">	
 					 <div class="badge badge-primary col-12">
 					 	Datos del cliente
 					 </div>
@@ -522,7 +526,23 @@ function BuscarResistencias()
 									</div>
 									<div class="col col-lg-1"><button type="button" data-toggle="modal" data-target="#AutModal" class="float-right btn btn-outline-primary btn-sm"><i class="fa fa-info-circle" aria-hidden="true"> Info</i></button></div>
 								</div>
-							</div>
+							</div>							
+							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
+								<div class="row border border-right">
+									<div class="col col-lg-2">Cliente factura</div>
+									<div class="col col-lg-10">
+										<form:select id="SClientesFactura" path="cotizador.cardcode_factura" multiple="false" class="border border-primary">
+											<form:option value="0">Seleccione un cliente factura</form:option>
+											<c:forEach var="cte" items="${clientes}">
+												<form:option value="${cte.cardcode}"><c:out value="${cte.cardname}"/></form:option>
+											</c:forEach>
+										</form:select>
+										<div class="has-error">
+											<form:errors path="cotizador.cardcode_factura" class="badge badge-danger small"/>
+										</div>
+									</div>
+								</div>
+							</div>							
 							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
 								<div class="row border border-right">
 									<div class="col col-lg-4">Contacto: <span id="DContacto">${direccionSelect[0].contacto}</span></div>
@@ -931,6 +951,9 @@ function BuscarResistencias()
 												<form:option style="background:#${col.color_est}" value="${col.id}"><c:out value="${col.color}"/> </form:option>
 											</c:forEach>
 										</form:select>
+										<div class="float-right">
+											<button id="BCodBarras" type="button" data-toggle="modal" data-target="#CodigoBarras" class="float-right btn btn-outline-primary btn-sm"><i class="fa fa-barcode" aria-hidden="true"> Código de barras</i></button>
+										</div>
 									</div>
 								</div>
 								<div class="row border border-right">
@@ -955,16 +978,33 @@ function BuscarResistencias()
 											<form:option value="10">10</form:option>
 										</form:select> 
 									</div>
-									<div class="col col-lg-5">Diseño
-										<form:select id="SDisenio" path="cotizador.disenio" multiple="false" class="border border-primary">
-											<form:option value="Nuevo">Nuevo</form:option>
+									<div class="col col-lg-4">Diseño:
+										<form:select id="SDisenio" onChange="FDisenio()" path="cotizador.disenio" multiple="false" class="border border-primary">
 											<form:option value="Con cambios">Con cambios</form:option>
 											<form:option value="Referencia de TF">Referencia de TF</form:option>
+											<form:option value="Nuevo">Nuevo</form:option>
 										</form:select>
-										Cancelar/Sustituir: <form:checkbox id="CCancSust" path="cotizador_detalles.cancelar_sustituir"/>
-										TF: <form:input id="TTF" size="10" maxlength="8" type="text" path="cotizador_detalles.tf_cs" onkeypress="return SinCaracteresEspeciales(event);" class="border border-primary"/>
+										Cancel/Sust: <form:checkbox id="CCancSust" path="cotizador.cancelar_sustituir"/>
+										TF: <form:input id="TTF" size="10" maxlength="8" type="text" path="cotizador.tf_cs" onkeypress="return SinCaracteresEspeciales(event);" class="border border-primary"/>
 									</div>
-									<button id="BCodBarras" type="button" data-toggle="modal" data-target="#CodigoBarras" class="float-right btn btn-outline-primary btn-sm"><i class="fa fa-barcode" aria-hidden="true"> Código de barras</i></button>									
+									<div class="col col-lg-2">
+										Fecha cancelación TF:
+									</div>
+									<div class="col col-lg-2">
+										<div class="input-group date" id="datetimepicker5" data-target-input="nearest">										
+						                    <form:input id="TFechaCancelTF" onkeypress="return false" path="cotizador.fecha_cancel_tf" size="10" data-target="#datetimepicker5" placeholder="yyyy-mm-dd" class="border border-primary"/>
+						                    <div class="input-group-append" data-target="#datetimepicker5" data-toggle="datetimepicker">
+						                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+						                    </div>
+								            <script type="text/javascript">
+									            $(function () {
+									                $('#datetimepicker5').datetimepicker({
+									                    format: 'YYYY-MM-DD'
+									                });
+									            });
+									        </script>
+							            </div>										
+									</div>									
 								</div>
 							</div>
 						</div>	
@@ -1143,10 +1183,6 @@ function BuscarResistencias()
 		 <form:input type="hidden" path="cotizador.observaciones_ventas"/>
 		 <form:input type="hidden" path="cotizador.observaciones_prog"/>
 		 
-		 <div align="center">
-		 	<span id="imgload" style='display: none;'><img width="20px" height="20px" src='<c:url value="/static/img/sun_watch.gif"/>' /></span>
-		 </div>
-		 <div id = "mensajes" class = "${!empty mensajes ? 'alert alert-success' : ''}">${mensajes}</div>
 		<div align="left" class = "container">
 		<div class = "row" align="center">			
 			<div class="col col-lg-2"><form:button id="BGrabar" class="btn btn-outline-primary btn-sm"><i class="fa fa-floppy-o" aria-hidden="true"> Grabar</i></form:button></div>
@@ -1193,196 +1229,10 @@ function BuscarResistencias()
 		      </div>
 		    </div>
 		  </div>
-		</div>	
-		
+		</div>			
 	</form:form>
-	
-
-	<div class="modal fade" id="LimpiarModal" tabindex="-1" role="dialog" aria-labelledby="LimpiarModallLabel" aria-hidden="true">
-	  <div class="modal-dialog" role="document">
-	    <div class="modal-content">
-	      <div class="modal-header alert alert-info">
-	        <h5 class="modal-title" id="exampleModalLabel">Limpiar</h5>
-	      </div>
-	      <div class="modal-footer">
-	        <button type="button" onclick="FLimpar()" class="btn btn-outline-primary" data-dismiss="modal">Limpiar TODO</button>
-	        <button type="button" onclick="FBuscarxId(${empty cotizadordatabean.cotizador.id ? 0 : cotizadordatabean.cotizador.id},0)" class="btn btn-outline-primary" data-dismiss="modal">Limpiar DETALLE</button>
-	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-	      </div>
-	    </div>
-	  </div>
+		<jsp:include page="cotizador_modals.jsp" />
 	</div>
-	
-	<div class="modal fade bd-example-modal-xl" id="AutModal" tabindex="-1" role="dialog" aria-labelledby="AutModalLabel" aria-hidden="true">
-	  <div class="modal-dialog modal-xl">
-	    <div class="modal-content">
-	   	  <div class="modal-header alert alert-info">
-	        <h5 class="modal-title" id="ReqModal">Información adicional</h5>
-	      </div>
-	      <div class="container">
-		  <div class="row">
-		    <div class="col-sm">
-		      Fecha creación:
-		    </div>
-		    <div class="col-sm">
-		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_insert}" pattern="yyyy-MM-dd hh:mm"/>
-		    </div>
-		    <div class="col-sm">
-		      Fecha actualización:
-		    </div>
-		    <div class="col-sm">
-		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_update}" pattern="yyyy-MM-dd hh:mm"/>
-		    </div>
-		  </div>
-		  <div class="row">
-		    <div class="col-sm">
-		      Fecha envío ventas:
-		    </div>
-		    <div class="col-sm">
-		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_envia_ventas}" pattern="yyyy-MM-dd hh:mm"/>
-		    </div>
-		    <div class="col-sm">
-		      Fecha aut ventas:
-		    </div>
-		    <div class="col-sm">
-		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_aut_ventas}" pattern="yyyy-MM-dd hh:mm"/>
-		    </div>
-		  </div>
-		   <div class="row">
-		    <div class="col-sm">
-		      Fecha envío prog:
-		    </div>
-		    <div class="col-sm">
-		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_envia_a_prog}" pattern="yyyy-MM-dd hh:mm"/>
-		    </div>
-		    <div class="col-sm">
-		      Fecha aut prog:
-		    </div>
-		    <div class="col-sm">
-		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_aut_prog}" pattern="yyyy-MM-dd hh:mm"/>
-		    </div>
-		  </div>
-		  <div class="row">
-		    <div class="col-sm">
-		      Fecha rechaza vtas:
-		    </div>
-		    <div class="col-sm">
-		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_rech_ventas}" pattern="yyyy-MM-dd hh:mm"/>
-		    </div>
-		    <div class="col-sm">
-		      Fecha rechaza prog:
-		    </div>
-		    <div class="col-sm">
-		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_rech_prog}" pattern="yyyy-MM-dd hh:mm"/>
-		    </div>
-		  </div>
-		  <div class="row">
-		    <div class="col-sm">
-		      Fecha cancelación:
-		    </div>
-		    <div class="col-sm">
-		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_cancel}" pattern="yyyy-MM-dd hh:mm"/>
-		    </div>
-		    <div class="col-sm">
-		      Comentario ventas:
-		    </div>
-		    <div class="col-sm">
-		      ${cotizadordatabean.cotizador.observaciones_ventas}
-		    </div>
-		  </div>
-		  <div class="row">
-		    <div class="col-sm">
-		      Comentario prog:
-		    </div>
-		    <div class="col-sm">
-		     	${cotizadordatabean.cotizador.observaciones_prog}
-		    </div>
-		    <div class="col-sm">
-		      Fecha rechaza diseñador:
-		    </div>
-		    <div class="col-sm">
-		     	${cotizadordatabean.cotizador.fecha_rech_diseniador}
-		    </div>
-		  </div>
-		  
-		  <div class="row">
-		    <div class="col-sm">
-		      Observaciones diseñador:
-		    </div>
-		    <div class="col-sm">
-		     	${cotizadordatabean.cotizador.observaciones_diseniador}
-		    </div>
-		    <div class="col-sm">
-		      Fecha aut diseñador
-		    </div>
-		    <div class="col-sm">
-		     	${cotizadordatabean.cotizador.fecha_asign_diseniador}
-		    </div>
-		  </div>
-		  
-		  <div class="modal-footer">
-	        	<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-	      </div>
-		</div>
-	    </div>
-	  </div>
-	</div>
-	
-	<div class="modal fade" id="VtaModal" tabindex="-1" role="dialog" aria-labelledby="VtaModalLabel" aria-hidden="true">
-	  <div class="modal-dialog" role="document">
-	    <div class="modal-content">
-	      <div class="modal-header alert alert-info">
-	        <h5 class="modal-title">Enviar a autorización</h5>
-	      </div>
-	      <div class="modal-body alert alert-warning">
-	        ¡¡¡ATENCIÓN!!! ¿Desea enviar a autorización?
-	      </div>
-	      <div id="DivMensaje" class="modal-footer">
-	        <button type="button" class="btn btn-primary" onClick="FEnviarVtaProg()">Enviar</button>
-	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-	      </div>
-	    </div>
-	  </div>
-	</div>
-	
-	<div class="modal fade" id="CancelModal" tabindex="-1" role="dialog" aria-labelledby="CancelModalLabel" aria-hidden="true">
-	  <div class="modal-dialog" role="document">
-	    <div class="modal-content">
-	      <div class="modal-header alert alert-info">
-	        <h5 class="modal-title">CANCELAR</h5>
-	      </div>
-	      <div class="modal-body alert alert-danger">
-	        ¡¡¡ATENCIÓN!!! ¿Desea CANCELAR ESTE REGISTRO?
-	      </div>
-	      <div id="DivMensaje" class="modal-footer">
-	        <button type="button" class="btn btn-primary" onClick="FCancelar()">Cancelar</button>
-	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-	      </div>
-	    </div>
-	  </div>
-	</div>
-	
-	<!-- <div class="modal fade" id="CancelModal" tabindex="-1" role="dialog" aria-labelledby="CancelModalLabel" aria-hidden="true">
-	  <div class="modal-dialog" role="document">
-	    <div class="modal-content">
-	      <div class="modal-header alert alert-info">
-	        <h5 class="modal-title">CANCELAR COTIZACIÓN</h5>
-	      </div>
-	      <div class="modal-body alert alert-danger">
-	        ¡¡¡ATENCIÓN!!! ¿Desea CANCELAR esta cotización?
-	      </div>
-	      <div id="DivMensaje" class="modal-footer">
-	        <button type="button" class="btn btn-primary" onClick="FCancelar()">Cancelar</button>
-	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-	      </div>
-	    </div>
-	  </div>
-	</div>		-->
-	
-	<!-- FIN REGION DE MODALS  -->
-	
-	</div>
-
-	<%@include file="../../appconfig/authfootter.jsp"%>
+	<jsp:include page="../../appconfig/authfootter.jsp" />
 	</body>
 </html>

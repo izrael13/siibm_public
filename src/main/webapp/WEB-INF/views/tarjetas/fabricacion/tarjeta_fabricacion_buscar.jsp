@@ -28,7 +28,7 @@ function FBuscarId(folio)
 		<tbody>
 		<c:forEach var="item" items="${lista}">
 			<tr>
-				<td><a href="javascript:FBuscarId(${item.folio_tarjeta})">${item.folio_tarjeta}</a></td>
+				<td><a href="javascript:FBuscarId('${item.folio_tarjeta}')">${item.folio_tarjeta}</a></td>
 				<td>${item.idcotizacion}</td>
 				<td>${item.descripcion_factura}</td>
 			</tr>

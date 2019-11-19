@@ -117,11 +117,14 @@ function FImprimir(id)
 		<span class="badge badge-secondary">Imprimir/Asignar diseñador requerimientos</span>
 	</div>
 	<br>
+	<div id = "mensajes" class = "${!empty mensajes ? 'alert alert-success' : ''}">${mensajes}</div>
 	<div align="center" class="container-fluid">
 	<table class="container-fluid table-hover text-center table-bordered small">
 		<thead>
 			<tr>
 				<th>Folio</th>
+				<th>Cliente</th>
+				<th>Vendedor</th>
 				<th colspan="6">Detalles</th>
 				<th>Comentarios</th>
 				<th>Grabar comentario</th>
@@ -136,6 +139,8 @@ function FImprimir(id)
 		<fmt:parseNumber var = "i" integerOnly = "true" pattern="##############" type = "number" value = "${item['id']}" />
 			<tr>
 				<td>${i}</td>
+				<td>${item['cliente']}</td>
+				<td>${item['representante']}</td>
 					<td colspan="6">
 					<table class="container-fluid table-hover text-center">
 					<tr>
@@ -175,7 +180,6 @@ function FImprimir(id)
 		</tbody>
 	</table>
 	</div>
-	<div id = "mensajes" class = "${!empty mensajes ? 'alert alert-success' : ''}">${mensajes}</div>
 	<%@include file="../../appconfig/authfootter.jsp"%>
 </body>
 </html>

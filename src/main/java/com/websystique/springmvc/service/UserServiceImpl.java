@@ -97,5 +97,11 @@ public class UserServiceImpl implements UserService{
 		// FIXME Auto-generated method stub
 		return dao.findMatcher(sso);
 	}
+
+	@Override
+	public List<User> findCveVenUsers(Integer cveven) {
+		// TODO Auto-generated method stub
+		return dao.findCveVenUsers(cveven);
+	}
 	
 }

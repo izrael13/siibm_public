@@ -93,8 +93,8 @@ function FEmbarques(b)
 	
 	var ag = $("#CAGranel").prop('checked');
 	//alert(ag);
-	$("#TFlejesAtado" ).val(ag == false ? $("#TFlejesAtado").val() : "").attr("readonly",ag).removeClass().addClass(ag == true ? "border border-secondary" : "border border-primary");
-	$("#TPzasAtado" ).val(ag == false ? $("#TPzasAtado").val() : "").attr("readonly",ag).removeClass().addClass(ag == true ? "border border-secondary" : "border border-primary");
+	//$("#TFlejesAtado" ).val(ag == false ? $("#TFlejesAtado").val() : "").attr("readonly",ag).removeClass().addClass(ag == true ? "border border-secondary" : "border border-primary");
+	//$("#TPzasAtado" ).val(ag == false ? $("#TPzasAtado").val() : "").attr("readonly",ag).removeClass().addClass(ag == true ? "border border-secondary" : "border border-primary");
 	$("#TAtaCama" ).val(ag == false ? $("#TAtaCama").val() : "").attr("readonly",ag).removeClass().addClass(ag == true ? "border border-secondary" : "border border-primary");
 	$("#TPzasxTar" ).val(ag == false ? $("#TPzasxTar").val() : "").attr("readonly",ag).removeClass().addClass(ag == true ? "border border-secondary" : "border border-primary");
 	$("#TAltPallet" ).val(ag == false ? $("#TAltPallet").val() : "").attr("readonly",ag).removeClass().addClass(ag == true ? "border border-secondary" : "border border-primary");
@@ -280,4 +280,18 @@ function FDisableElemens()
 	$("#TFlejesAtado").attr("readonly","readonly");
 	$("#TPzasAtado").attr("readonly","readonly");
 	$("#TAtaCama").attr("readonly","readonly");
+}
+
+function FDisenio()
+{
+	if($("#SDisenio").val() == "Nuevo")
+	{
+		$("#CCancSust").prop('checked', true);
+		$("#TFechaCancelTF").attr("required","required");
+	}
+	else
+	{
+		$("#CCancSust").prop('checked', false);
+		$("#TFechaCancelTF").attr("required",false);
+	}
 }

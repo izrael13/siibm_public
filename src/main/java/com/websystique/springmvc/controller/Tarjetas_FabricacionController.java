@@ -7,7 +7,6 @@ import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -37,9 +36,7 @@ import com.google.gson.JsonObject;
 import com.websystique.springmvc.model.ParamsGeneral;
 import com.websystique.springmvc.model.User;
 import com.websystique.springmvc.model.tarjetas.Catalogo_cajas_sap_vw;
-import com.websystique.springmvc.model.tarjetas.Catalogo_colores;
 import com.websystique.springmvc.model.tarjetas.Catalogo_maquinas_sap_vw;
-import com.websystique.springmvc.model.tarjetas.Catalogo_resistencias_sap_vw;
 import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador;
 import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador_detalles;
 import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador_detallesValidator;
@@ -58,6 +55,7 @@ import com.websystique.springmvc.service.tarjetas.Catalogo_resistencias_sap_vwSe
 import com.websystique.springmvc.service.tarjetas.Catalogo_sellosService;
 import com.websystique.springmvc.service.tarjetas.Codigo_barras_cotizadorService;
 import com.websystique.springmvc.service.tarjetas.Especialidades_cotizacionService;
+import com.websystique.springmvc.service.tarjetas.commons.CotizadorTarjetasService;
 import com.websystique.springmvc.service.tarjetas.cotizador.CotizadorService;
 import com.websystique.springmvc.service.tarjetas.cotizador.Cotizador_detallesService;
 import com.websystique.springmvc.service.tarjetas.fabricacion.Tarjeta_fabricacionService;
@@ -103,15 +101,19 @@ public class Tarjetas_FabricacionController {
 	Catalogo_sellosService css;
 	@Autowired
 	Catalogo_maquinas_sap_vwService cms;
+	@Autowired
+	CotizadorTarjetasService ctsc;
 	
 	@RequestMapping(value = {"/ingenieria/tarjeta_fabricacion" }, method = RequestMethod.GET)
-	public String tarjeta_fabricacion(ModelMap model, @RequestParam(value = "folio", defaultValue = "", required = false) String folio) {
+	public String tarjeta_fabricacion(ModelMap model, @RequestParam(value = "folio", defaultValue = "", required = false) String folio) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		
 		Tarjeta_fabricacion tf = new Tarjeta_fabricacion();
 		Cotizador cot = new Cotizador();
 		Cotizador_detalles cotdet = new Cotizador_detalles();
 		Catalogo_cajas_sap_vw objCaja = new Catalogo_cajas_sap_vw();
-		List<Object> ListaEsp = new ArrayList<Object>();
+		GsonBuilder builder = new GsonBuilder();
+		Gson gson = builder.serializeNulls().create();
+		List<JSONObject> ListaEsp = new ArrayList<JSONObject>();
 		
 		TarjetaDataBean tdb = new TarjetaDataBean();
 		
@@ -133,7 +135,7 @@ public class Tarjetas_FabricacionController {
 			model.addAttribute("resis", crss.BuscarxId(cotdet.getIdresistencia_barca()));
 			model.addAttribute("sello", css.BuscarxId(cotdet.getResistencia_cte()));
 			
-			DataSourceJasperTF(2,1,tf.getFolio_tarjeta());
+			ctsc.DataSourceJasperTF(cot.getId(), cotdet.getIddetalle(), 1);
 			
 		}		
 		
@@ -142,8 +144,8 @@ public class Tarjetas_FabricacionController {
 		model.addAttribute("clientes", ccavs.ListaCtes());
 		model.addAttribute("grabados", chs.BuscarxTipo(2));
 		model.addAttribute("suajes", chs.BuscarxTipo(1));
-		ListaEsp = tfs.BuscarEsp(tf.getIdcotizacion(), tf.getIddetalle());
-		model.addAttribute("esp", ListaEsp);
+		ListaEsp = ctsc.addEspecialidades(tf.getIdcotizacion(), tf.getIddetalle());
+		model.addAttribute("esp", gson.fromJson(ListaEsp.toString(),Object[].class));
 		model.addAttribute("colores", ccos.ListaColores());		
 		model.addAttribute("maquinas", BuscarMaquinas(ListaEsp,objCaja.getGrupo(),cotdet.getNum_tintas(),cotdet.getCierre(),tf.getFolio_tarjeta()));
 		
@@ -173,7 +175,7 @@ public class Tarjetas_FabricacionController {
 		{
 			DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols(Locale.getDefault());
 			formatSymbols.setDecimalSeparator('.');
-			DecimalFormat decimal4 = new DecimalFormat("###########0.####");
+			DecimalFormat decimal4 = new DecimalFormat("###########0.####", formatSymbols);
 			
 			JsonObject object = new JsonObject();//Objeto JSon
 			Cotizador_detalles cotdet = cds.BuscarxIdDet(idcotizacion, iddetalle);
@@ -196,7 +198,6 @@ public class Tarjetas_FabricacionController {
 				LargoPliego = (npartes == 1 ?  (cotdet.getLargo() * pzasxlargo) + 2 : (cotdet.getLargo_pliego() * pzasxlargo) / 2);
 				AnchoPliego = cotdet.getAncho() * pzasxancho + 2;
 				
-				medPliego =  LargoPliego.toString() + " X " +  AnchoPliego.toString();
 			}	
 			else
 			{
@@ -206,8 +207,8 @@ public class Tarjetas_FabricacionController {
 				LargoPliego = (npartes == 1 ? cotdet.getLargo_pliego() * pzasxlargo : (cotdet.getLargo_pliego() * pzasxlargo) / 2 ); 
 				AnchoPliego = cotdet.getAncho_pliego() * pzasxancho;
 				
-				medPliego =  LargoPliego.toString() + " x " +  AnchoPliego.toString();
 			}
+			medPliego =  decimal4.format(LargoPliego) + " X " +  decimal4.format(AnchoPliego);
 			object.addProperty("area_total", decimal4.format(area_total));
 			object.addProperty("med_pliego", medPliego);
 			
@@ -223,16 +224,18 @@ public class Tarjetas_FabricacionController {
 	public String tarjeta_fabricacionpost(@ModelAttribute("tdb") TarjetaDataBean tdb, BindingResult result, ModelMap model) {
 		try 
 		{
+			GsonBuilder builder = new GsonBuilder();
+			Gson gson = builder.serializeNulls().create();
 			Catalogo_cajas_sap_vw objCaja = new Catalogo_cajas_sap_vw();
-			List<Object> ListaEsp = new ArrayList<Object>();
+			List<JSONObject> ListaEsp = new ArrayList<JSONObject>();
 			tdb.getTarjeta_fabricacion().setBan(1);
 			model.addAttribute("loggedinuser", AppController.getPrincipal());
 			tdb.getTarjeta_fabricacion().setTarjeta_img(tfis.BuscarxIdCotidDert(tdb.getTarjeta_fabricacion().getIdcotizacion(), tdb.getTarjeta_fabricacion().getIddetalle()));
 			model.addAttribute("clientes", ccavs.ListaCtes());
 			model.addAttribute("grabados", chs.BuscarxTipo(2));
 			model.addAttribute("suajes", chs.BuscarxTipo(1));
-			ListaEsp = tfs.BuscarEsp(tdb.getTarjeta_fabricacion().getIdcotizacion(), tdb.getTarjeta_fabricacion().getIddetalle());
-			model.addAttribute("esp", ListaEsp);
+			ListaEsp = ctsc.addEspecialidades(tdb.getTarjeta_fabricacion().getIdcotizacion(), tdb.getTarjeta_fabricacion().getIddetalle());
+			model.addAttribute("esp", gson.fromJson(ListaEsp.toString(),Object[].class));
 			model.addAttribute("colores", ccos.ListaColores());
 			
 			Cotizador cot = new Cotizador();
@@ -247,7 +250,8 @@ public class Tarjetas_FabricacionController {
 			cotdet.setFlejes_atado(tdb.getCotizador_detalles().getFlejes_atado());
 			cotdet.setPzas_atado(tdb.getCotizador_detalles().getPzas_atado());
 			cotdet.setAtados_cama(tdb.getCotizador_detalles().getAtados_cama());
-
+			cotdet.setIdtiporequerimiento(0);
+			
 			if(tdb.getCotizador_detalles().getPiezasxtarima() < cotdet.getPiezasxtarima()) {
 				cotdet.setBan(1);
 			}
@@ -287,20 +291,24 @@ public class Tarjetas_FabricacionController {
 		catch(Exception e)
 		{
 			//model.addAttribute("mensajes", e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage());
-			logger.info(AppController.getPrincipal() + " - cotizadotpost. " + e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage());
+			//e.printStackTrace();
+			logger.info(AppController.getPrincipal() + " - tarjeta_fabricacionpost. " + e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage());
 			return "/tarjetas/fabricacion/tarjeta_fabricacion";
 		}
 		
 	}
 	
-	private List<Catalogo_maquinas_sap_vw> BuscarMaquinas(List<Object>ListaEsp, Integer Grupo, Integer NumTintas, String cierre, String Folio)
+	private List<Catalogo_maquinas_sap_vw> BuscarMaquinas(List<JSONObject> ListaEsp, Integer Grupo, Integer NumTintas, String cierre, String Folio) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
 	{
 		List<Catalogo_maquinas_sap_vw> Lista = new ArrayList<Catalogo_maquinas_sap_vw>();
 		if(Folio != null)
 		{
+			
 			Lista = cms.ListaMaquinas(0);
 			Lista.addAll(cms.ListaMaquinas(Grupo,NumTintas));
-			Long bgra = ListaEsp.stream().filter(a -> Integer.valueOf(String.valueOf(((Object[])a)[3])) == 8).count();
+			
+			Long bgra = ListaEsp.stream().filter(a -> Integer.valueOf(a.get("iddespecialidad").toString())  == 8).count();
+
 			if(cierre.equals("grapada") && bgra.intValue() == 0)
 				Lista.addAll(cms.ListaMaquinas(true));
 		}
@@ -517,7 +525,7 @@ public class Tarjetas_FabricacionController {
 			Tarjeta_fabricacion tf = new Tarjeta_fabricacion();
 			java.util.Date date = new java.util.Date();
 			User user = us.findBySSO(AppController.getPrincipal());
-			tf = tfs.BuscarxFolio(folio, user.getId());
+			tf = tfs.BuscarxFolio(folio);
 			
 			if(ban == 1) {
 				tf.setUsuario_aut_calidad(user.getId());
@@ -572,7 +580,7 @@ public class Tarjetas_FabricacionController {
 			Tarjeta_fabricacion tf = new Tarjeta_fabricacion();
 			java.util.Date date = new java.util.Date();
 			User user = us.findBySSO(AppController.getPrincipal());
-			tf = tfs.BuscarxFolio(folio, user.getId());
+			tf = tfs.BuscarxFolio(folio);
 			
 			if(ban == 1) {
 				tf.setUsuario_aut_produccion(user.getId());
@@ -629,7 +637,7 @@ public class Tarjetas_FabricacionController {
 			Tarjeta_fabricacion tf = new Tarjeta_fabricacion();
 			java.util.Date date = new java.util.Date();
 			User user = us.findBySSO(AppController.getPrincipal());
-			tf = tfs.BuscarxFolio(folio, user.getId());
+			tf = tfs.BuscarxFolio(folio);
 			
 			if(ban == 1) {
 				tf.setUsuario_aut_ing(user.getId());
@@ -695,7 +703,7 @@ public class Tarjetas_FabricacionController {
 			Tarjeta_fabricacion tf = new Tarjeta_fabricacion();
 			java.util.Date date = new java.util.Date();
 			User user = us.findBySSO(AppController.getPrincipal());
-			tf = tfs.BuscarxFolio(folio, user.getId());
+			tf = tfs.BuscarxFolio(folio);
 			
 			if(ban == 1) {
 				tf.setUsuario_aut_cliente(user.getId());
@@ -737,147 +745,43 @@ public class Tarjetas_FabricacionController {
 
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
 		model.addAttribute("clientes", ccavs.ListaCtes());
-		model.addAttribute("lista", tfs.ListaSeguimiento(folio,idCot,status,cardcode));
+		if(!folio.equals("") || idCot > 0 || status > 0 || !cardcode.equals(""))
+		{
+			GsonBuilder builder = new GsonBuilder();
+			Gson gson = builder.serializeNulls().create();
+			List<JSONObject> lista = new ArrayList<JSONObject>();
+			tfs.ListaSeguimiento(folio,idCot,status,cardcode).forEach(a -> {
+				lista.add(ctsc.DataSourceJasperTF(a.getIdcotizacion(), a.getIddetalle(), 1));
+			});
+			model.addAttribute("lista", gson.fromJson(lista.toString(),Object[].class));
+		}
 		logger.info(AppController.getPrincipal() + " - tarjetas_seguimiento.");
 				
 		return "/tarjetas/fabricacion/tarjetas_seguimiento";
 	}
 	
 	@RequestMapping(value = {"/ingenieria/tarjeta_seguimiento_info" }, method = RequestMethod.GET)
-	public String tarjeta_seguimiento_info(ModelMap model, @RequestParam(value = "folio", required = true) String folio) {
+	public String tarjeta_seguimiento_info(ModelMap model, 
+										   @RequestParam(value = "id", required = true) Integer id,
+										   @RequestParam(value = "iddet", required = true) Integer iddet) {
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
-		Tarjeta_fabricacion tf = new Tarjeta_fabricacion();
-		Cotizador_detalles cotdet = new Cotizador_detalles();
-		tf = tfs.BuscarxFolio(folio);
-		cotdet = cds.BuscarxIdDet(tf.getIdcotizacion(), tf.getIddetalle());
-		tf.setTarjeta_img(tfis.BuscarxIdCotidDert(tf.getIdcotizacion(), tf.getIddetalle()));
-		model.addAttribute("tarjeta", tf);
-		model.addAttribute("cotizacion", cs.BuscarxId(tf.getIdcotizacion()));
-		model.addAttribute("detalle", cotdet);
-		model.addAttribute("cliente", ccavs.cat_cte_sap(tf.getCardcode()));
-		model.addAttribute("resistencia", AppController.getPrincipal());
-		model.addAttribute("caja", ccss.BuscarxId(cotdet.getIdcaja_sap()));
-		model.addAttribute("cod_barras", cbsc.BuscarXCotDet(tf.getIdcotizacion(), tf.getIddetalle()));
-		model.addAttribute("especialidades", tfs.BuscarEsp(tf.getIdcotizacion(), tf.getIddetalle()));
-		
-		model.addAttribute("color1", ccos.BuscarxId(cotdet.getColor1()));
-		model.addAttribute("color2", ccos.BuscarxId(cotdet.getColor2()));
-		model.addAttribute("color3", ccos.BuscarxId(cotdet.getColor3()));
-		model.addAttribute("color4", ccos.BuscarxId(cotdet.getColor4()));
-		model.addAttribute("color5", ccos.BuscarxId(cotdet.getColor5()));
-		model.addAttribute("color6", ccos.BuscarxId(cotdet.getColor6()));
-		model.addAttribute("color7", ccos.BuscarxId(cotdet.getColor7()));
-		//model.addAttribute("ruta", AppController.getPrincipal());
-		
-		logger.info(AppController.getPrincipal() + " - tarjeta_seguimiento_info.");
+		try
+		{
+			GsonBuilder builder = new GsonBuilder();
+			Gson gson = builder.serializeNulls().create();
+			
+			model.addAttribute("tar", gson.fromJson(ctsc.DataSourceJasperTF(id, iddet, 0).toString(),Object.class));
+			model.addAttribute("cot", gson.fromJson(ctsc.DataSourceJasperCot(id,0).toString(),Object.class));
+			model.addAttribute("cotdet", gson.fromJson(ctsc.addSpecificDetalle(id,iddet).toString(), Object.class));
+			
+			logger.info(AppController.getPrincipal() + " - tarjeta_seguimiento_info.");
+		}
+		catch(Exception e)
+		{
+			model.addAttribute("mensajes", e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage());
+			logger.info(AppController.getPrincipal() + " - tarjeta_seguimiento_info. " + e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage());
+		}
 		return "/tarjetas/fabricacion/tarjetas_seguimiento_info";
-	}
-	
-	@SuppressWarnings("rawtypes")
-	private void DataSourceJasperTF(Integer id, Integer iddet, String folio)
-	{		
-		GsonBuilder builder = new GsonBuilder();
-		Gson gson = builder.serializeNulls().create();
-		User user = new User();
-		Catalogo_colores color = new Catalogo_colores();
-		Cotizador cot = new Cotizador();
-		Cotizador_detalles cotdet = new Cotizador_detalles();
-		Tarjeta_fabricacion tf= new Tarjeta_fabricacion();
-		
-		cot = cs.BuscarxId(id);
-		cotdet = cds.BuscarxIdDet(id, iddet);
-		tf = tfs.BuscarxFolio(folio);
-		tf.setTarjeta_img(tfis.BuscarxIdCotidDert(id, iddet));
-		
-		JSONObject JsonTF = new JSONObject(gson.toJson(tf));		
-		user = us.findById(tf.getUsuario_aut_diseniador() == null ? 0 : tf.getUsuario_aut_diseniador());
-		JsonTF.put("diseniador", tf.getUsuario_aut_diseniador() == null ? "" : user.getFirstName() + " " +user.getLastName());
-		
-		user = us.findById(tf.getUsuario_aut_calidad() == null ? 0 : tf.getUsuario_aut_calidad());
-		JsonTF.put("aut_calidad", tf.getUsuario_aut_calidad() == null ? "" : user.getFirstName() + " " +user.getLastName());
-		
-		user = us.findById(tf.getUsuario_aut_cliente() == null ? 0 : tf.getUsuario_aut_cliente());
-		JsonTF.put("aut_cliente", tf.getUsuario_aut_cliente() == null ? "" : user.getFirstName() + " " +user.getLastName());
-		
-		user = us.findById(tf.getUsuario_aut_ing() == null ? 0 : tf.getUsuario_aut_ing());
-		JsonTF.put("aut_ingenieria", tf.getUsuario_aut_ing() == null ? "" : user.getFirstName() + " " +user.getLastName());
-		
-		user = us.findById(tf.getUsuario_aut_produccion() == null ? 0 :tf.getUsuario_aut_produccion());
-		JsonTF.put("aut_produccion", tf.getUsuario_aut_produccion() == null ? "" : user.getFirstName() + " " +user.getLastName());
-		
-		JsonTF.put("suaje", tf.getSuaje() == null ? "" : chs.BuscarxId(tf.getSuaje()).getNombre());
-		JsonTF.put("grabado", tf.getGrabado() == null ? "" : chs.BuscarxId(tf.getGrabado()).getNombre());
-		
-		JSONObject JsonCot = new JSONObject(gson.toJson(cot));
-		JsonCot.put("cliente", ccavs.cat_cte_sap(cot.getCardcode()).getCardname());
-		
-		JSONObject JsonCotdet = new JSONObject(gson.toJson(cotdet));
-		color = ccos.BuscarxId(cotdet.getColor1() == null ? 0 : cotdet.getColor1());		
-		JsonCotdet.put("color1n", cotdet.getColor1() == null ? "" : color.getColor());
-		JsonCotdet.put("color1c", cotdet.getColor1() == null ? "" : "#"+color.getColor_est().trim());
-		
-		color = ccos.BuscarxId(cotdet.getColor2() == null ? 0 : cotdet.getColor2());		
-		JsonCotdet.put("color2n", cotdet.getColor2() == null ? "" : color.getColor());
-		JsonCotdet.put("color2c", cotdet.getColor2() == null ? "" : "#"+color.getColor_est().trim());
-		
-		color = ccos.BuscarxId(cotdet.getColor3() == null ? 0 : cotdet.getColor3());		
-		JsonCotdet.put("color3n", cotdet.getColor3() == null ? "" : color.getColor());
-		JsonCotdet.put("color3c", cotdet.getColor3() == null ? "" : "#"+color.getColor_est().trim());
-		
-		color = ccos.BuscarxId(cotdet.getColor4() == null ? 0 : cotdet.getColor4());		
-		JsonCotdet.put("color4n", cotdet.getColor4() == null ? "" : color.getColor());
-		JsonCotdet.put("color4c", cotdet.getColor4() == null ? "" : "#"+color.getColor_est().trim());
-		
-		color = ccos.BuscarxId(cotdet.getColor5() == null ? 0 : cotdet.getColor5());		
-		JsonCotdet.put("color5n", cotdet.getColor5() == null ? "" : color.getColor());
-		JsonCotdet.put("color5c", cotdet.getColor5() == null ? "" : "#"+color.getColor_est().trim());
-		
-		color = ccos.BuscarxId(cotdet.getColor6() == null ? 0 : cotdet.getColor6());		
-		JsonCotdet.put("color6n", cotdet.getColor6() == null ? "" : color.getColor());
-		JsonCotdet.put("color6c", cotdet.getColor6() == null ? "" : "#"+color.getColor_est().trim());
-		
-		color = ccos.BuscarxId(cotdet.getColor7() == null ? 0 : cotdet.getColor7());		
-		JsonCotdet.put("color7n", cotdet.getColor7() == null ? "" : color.getColor());
-		JsonCotdet.put("color7c", cotdet.getColor7() == null ? "" : "#"+color.getColor_est().trim());
-		
-		List<JSONObject> ListaJsonEsp = new ArrayList<JSONObject>();
-		ecs.ListaEspDet(id, iddet).forEach(b ->{
-			JSONObject JsonEsp = new JSONObject();
-			JsonEsp.put("count", b.getCount());
-			JsonEsp.put("iddetalle", b.getIddetalle());
-			JsonEsp.put("idcotizacion", b.getIdcotizacion());
-			JsonEsp.put("especialidad", ces.BuscaxId(b.getIdespecialidad()).getName());
-			JsonEsp.put("costo", b.getCosto());
-			JsonEsp.put("ajuste", b.getAjuste());
-			JsonEsp.put("esquema", b.getEsquema());
-			JsonEsp.put("cm", b.getCm());
-			ListaJsonEsp.add(JsonEsp);
-		}); 
-		JsonCotdet.put("especialidades_cotizacion", ListaJsonEsp);
-		
-		JsonCotdet.put("estilo_caja", ccss.BuscarxId(cotdet.getIdcaja_sap()).getNombrecorto());
-		Catalogo_resistencias_sap_vw objResis = new Catalogo_resistencias_sap_vw();
-		objResis = crss.BuscarxId(cotdet.getIdresistencia_barca());
-		JsonCotdet.put("resistencia", objResis.getResistencia());
-		JsonCotdet.put("flauta", objResis.getCorrugado());
-		JsonCotdet.put("papel", objResis.getColor());
-		JsonCotdet.put("SUBREPORT_DIR", "/jasperreports/cotizador/");
-		JsonCotdet.put("resis_cte", css.BuscarxId(cotdet.getResistencia_cte()).getNombre());
-		
-		Iterator itCot = JsonCot.keys();
-		Iterator itCotDet = JsonCotdet.keys();
-		
-		while(itCot.hasNext()) {
-            String key = (String) itCot.next();
-            JsonTF.put(key, JsonCot.get(key));
-        }
-		
-		while(itCotDet.hasNext()) {
-            String key = (String) itCotDet.next();
-            JsonTF.put(key, JsonCotdet.get(key));
-        }
-		
-		 System.out.println(JsonTF);
 	}
 	
 }

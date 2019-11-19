@@ -20,9 +20,10 @@ function FBuscar()
 {
 	window.location.replace('<c:url value="/tarjeta/ingenieria/tarjetas_seguimiento"/>?FolioTF='+$('#TFolioTF').val()+'&Cot='+$( "#TIdCot" ).val()+'&Status='+$( "#SStatus" ).val()+'&CardCode='+$( "#SClientes" ).val());
 }
-function FBuscarTF(folio)
+function FBuscarTF(id,iddet)
 {
-	popupwindow('<c:url value="/tarjeta/ingenieria/tarjeta_seguimiento_info" />?folio='+folio,'Tarjeta seguimiento info',800,1200);
+	var redirectWindow = window.open('<c:url value="/tarjeta/ingenieria/tarjeta_seguimiento_info"/>?id='+id+'&iddet='+iddet,'Tarjeta seguimiento info');
+	redirectWindow.replace();
 }
 </script>
 </head>
@@ -83,17 +84,21 @@ function FBuscarTF(folio)
 			<tr>
 				<td>Folio</td>
 				<td>Cotización</td>
+				<td>Cliente</td>
+				<td>Vendedor</td>
 				<td>Símbolo</td>
-				<td>Fecha</td>
 			</tr>
 		</thead>
 		<tbody>
 		<c:forEach var="item" items="${lista}">
 			<tr>
-				<td><a href="javascript:FBuscarTF(${item.folio_tarjeta})">${item.folio_tarjeta}</a></td>
-				<td>${item.idcotizacion}</td>
+				<fmt:parseNumber var = "i" integerOnly = "true" pattern="##############" type = "number" value = "${item.idcotizacion}" />
+				<fmt:parseNumber var = "ii" integerOnly = "true" pattern="##############" type = "number" value = "${item.iddetalle}" />
+				<td><a href="javascript:FBuscarTF(${i},${ii})">${item.folio_tarjeta}</a></td>
+				<td>${i}</td>
+				<td>${item.cliente}</td>
+				<td>${item.representante}</td>
 				<td>${item.descripcion_factura}</td>
-				<td>${item.fecha_rech_calidad}${item.fecha_rech_produccion}${item.fecha_rech_ing}${item.fecha_rech_cliente}</td>
 			</tr>
 		</c:forEach>
 		</tbody>

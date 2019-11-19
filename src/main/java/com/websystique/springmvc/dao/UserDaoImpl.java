@@ -117,6 +117,15 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 		return Lista;
 		
 	}
+
+	@Override
+	public List<User> findCveVenUsers(Integer cveven) {
+		Map<String,String> mOrd =  new HashMap<String, String>();
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		Params.add(new ParamsGeneral(1,"cvevendedor_sap",cveven,"EQ"));
+		List<User> users = criteriaGeneralList(Params, mOrd);
+		return users;
+	}
 	
 	
 }

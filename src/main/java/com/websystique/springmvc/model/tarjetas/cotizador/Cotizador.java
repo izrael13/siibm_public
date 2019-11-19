@@ -111,4 +111,10 @@ public class Cotizador implements Serializable{/**
 	private Integer usuario_libera_arrastre;
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date fecha_libera_arrastre;
+	@NotBlank @Size(min=2)
+	private String cardcode_factura;
+	private Boolean cancelar_sustituir;
+	private String tf_cs;
+	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+	private Date fecha_cancel_tf;
 }

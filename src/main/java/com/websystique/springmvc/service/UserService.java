@@ -30,4 +30,6 @@ public interface UserService {
 	User findBySSOnEmail(String sso, String email);
 	
 	List<JSONObject> findMatcher(String sso);
+	
+	List<User> findCveVenUsers(Integer cveven);
 }

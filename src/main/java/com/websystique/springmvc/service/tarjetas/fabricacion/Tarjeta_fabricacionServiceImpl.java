@@ -59,11 +59,11 @@ public class Tarjeta_fabricacionServiceImpl implements Tarjeta_fabricacionServic
 		return dao.BuscarXAut(Params);
 	}
 
-	@Override
+	/*@Override
 	public List<Object> BuscarEsp(Integer idcot, Integer Iddet) {
 		// TODO Auto-generated method stub
 		return dao.BuscarEsp(idcot, Iddet);
-	}
+	} */
 
 	@Override
 	public List<Tarjeta_fabricacion> ListaSeguimiento(String Folio, Integer IdCot, Integer Status, String CardCode) {
@@ -75,6 +75,12 @@ public class Tarjeta_fabricacionServiceImpl implements Tarjeta_fabricacionServic
 	public Tarjeta_fabricacion BuscarxFolio(String Folio) {
 		// TODO Auto-generated method stub
 		return dao.BuscarxFolio(Folio);
+	}
+
+	@Override
+	public Tarjeta_fabricacion BuscarxCot_Cotdet(Integer idcot, Integer iddet) {
+		// TODO Auto-generated method stub
+		return dao.BuscarxCot_Cotdet(idcot, iddet);
 	}
 
 }

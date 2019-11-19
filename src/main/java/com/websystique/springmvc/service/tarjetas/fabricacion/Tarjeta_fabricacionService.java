@@ -14,6 +14,7 @@ public interface Tarjeta_fabricacionService {
 	List<Tarjeta_fabricacion> TarjetaBusqueda(Integer IdCot, String Folio, String cardcode, Integer IdDis);
 	void Borrar(Tarjeta_fabricacion Tarjeta);
 	List<Tarjeta_fabricacion> BuscarXAut(List<ParamsGeneral> Params);
-	List<Object> BuscarEsp(Integer idcot, Integer Iddet);
+	//List<Object> BuscarEsp(Integer idcot, Integer Iddet);
 	List<Tarjeta_fabricacion> ListaSeguimiento(String Folio, Integer IdCot, Integer Status, String CardCode);
+	Tarjeta_fabricacion BuscarxCot_Cotdet(Integer idcot, Integer iddet);
 }

@@ -58,7 +58,7 @@ public class Tarjeta_fabricacionDAOImpl extends AbstractDao<Integer,Tarjeta_fabr
 		
 		String query  ="select A.* \r\n" + 
 				"from TARJETA_FABRICACION A\r\n" + 
-				"inner join COTIZADOR_DETALLES B on A.IDCOTIZACION = B.IDCOTIZACION \r\n" +
+				//"inner join COTIZADOR_DETALLES B on A.IDCOTIZACION = B.IDCOTIZACION \r\n" +
 				"inner join COTIZADOR C on A.IDCOTIZACION = C.ID ";
 		if(!Folio.trim().equals(""))
 		{
@@ -96,9 +96,7 @@ public class Tarjeta_fabricacionDAOImpl extends AbstractDao<Integer,Tarjeta_fabr
 				}
 			}
 		}
-
 		List<Tarjeta_fabricacion> result = criteriaQueryNamedStr(query,paramsInt,paramStr);
-		
 		return result;
 	}
 
@@ -114,12 +112,12 @@ public class Tarjeta_fabricacionDAOImpl extends AbstractDao<Integer,Tarjeta_fabr
 		return Lista;
 	}
 
-	@Override
+	/*@Override
 	public List<Object> BuscarEsp(Integer idcot, Integer Iddet) {
 		Map<Integer,Integer> paramsInt = new HashMap<Integer, Integer>();
 		Map<Integer,String> paramStr = new HashMap<Integer, String>();
 		
-		String query  ="select b.name, a.costo,a.ajuste, b.code, a.cm \r\n" + 
+		String query  ="select b.name, a.costo,a.ajuste, b.code, a.cm, b.ruta \r\n" + 
 				"from especialidades_cotizacion a\r\n" + 
 				"inner join catalogo_especialidades_sap b on a.idespecialidad = b.code\r\n" + 
 				"where a.idcotizacion = ?1 and a.iddetalle = ?2";
@@ -129,7 +127,7 @@ public class Tarjeta_fabricacionDAOImpl extends AbstractDao<Integer,Tarjeta_fabr
 		
 		return result;
 
-	}
+	} */
 
 	@Override
 	public List<Tarjeta_fabricacion> ListaSeguimiento(String Folio, Integer IdCot, Integer Status, String CardCode) {
@@ -180,22 +178,22 @@ public class Tarjeta_fabricacionDAOImpl extends AbstractDao<Integer,Tarjeta_fabr
 		
 		if(Status == 4)//Calidad
 		{
-			query = query + " and a.FECHA_AUT_DISENIADOR is not null  and a.FECHA_CANCELA is null ";
+			query = query + " and a.FECHA_AUT_DISENIADOR is not null and a.FECHA_AUT_CALIDAD is null  and a.FECHA_CANCELA is null ";
 		}
 		
 		if(Status == 5)//Produccion
 		{
-			query = query + " and a.FECHA_AUT_CALIDAD is not null  and a.FECHA_CANCELA is null ";
+			query = query + " and a.FECHA_AUT_CALIDAD is not null and a.FECHA_AUT_PRODUCCION is null  and a.FECHA_CANCELA is null ";
 		}
 		
 		if(Status == 6)//Ingenieria
 		{
-			query = query + " and a.FECHA_AUT_PRODUCCION is not null  and a.FECHA_CANCELA is null ";
+			query = query + " and a.FECHA_AUT_PRODUCCION is not null and a.FECHA_AUT_ING is null  and a.FECHA_CANCELA is null ";
 		}
 		
 		if(Status == 7)//Cliente
 		{
-			query = query + " and a.FECHA_AUT_ING is not null  and a.FECHA_CANCELA is null ";
+			query = query + " and a.FECHA_AUT_ING is not null and a.FECHA_AUT_CLIENTE is null  and a.FECHA_CANCELA is null ";
 		}
 		
 		if(Status == 8)//aut cliente
@@ -213,6 +211,14 @@ public class Tarjeta_fabricacionDAOImpl extends AbstractDao<Integer,Tarjeta_fabr
 		Tarjeta_fabricacion Tarjeta = (Tarjeta_fabricacion) criteriaGeneralObj(Params);
 		return Tarjeta;
 	}
-	
+
+	@Override
+	public Tarjeta_fabricacion BuscarxCot_Cotdet(Integer idcot, Integer iddet) {
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		Params.add( new ParamsGeneral(1,"idcotizacion",idcot,"EQ"));
+		Params.add( new ParamsGeneral(1,"iddetalle",iddet,"EQ"));
+		Tarjeta_fabricacion Tarjeta = (Tarjeta_fabricacion) criteriaGeneralObj(Params);
+		return Tarjeta;
+	}
 	
 }

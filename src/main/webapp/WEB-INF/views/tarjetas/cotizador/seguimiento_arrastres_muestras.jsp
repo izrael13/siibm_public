@@ -28,6 +28,7 @@ function FBuscar()
 	<div align="center">
 		<span class="badge badge-secondary">Seguimiento de arrastres/muestras</span>
 	</div>
+	<div id = "mensajes" class = "${!empty mensajes ? 'alert alert-success' : ''}">${mensajes}</div>
 	<div class="col-sm">
 		<div class="badge badge-info col-12">Búsqueda</div>
 		<div class="row small">		
@@ -124,7 +125,6 @@ function FBuscar()
 		</tbody>
 	</table>
 	</div>
-	<div id = "mensajes" class = "${!empty mensajes ? 'alert alert-success' : ''}">${mensajes}</div>
 	<%@include file="../../appconfig/authfootter.jsp"%>
 </body>
 </html>

@@ -27,5 +27,6 @@ public interface UserDao {
 	
 	List<JSONObject> findMatcher(String sso);
 	
+	List<User> findCveVenUsers(Integer cveven);
 }
 

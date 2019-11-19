@@ -132,6 +132,7 @@ function FReach(id)
 		<span class="badge badge-secondary">Autorización de cotizaciones por Programación</span>
 	</div>
 	<br>
+	<div id = "mensajes" class = "${!empty mensajes ? 'alert alert-success' : ''}">${mensajes}</div>
 	<div align="center" class="container-fluid small">
 	<table class="container-fluid table-hover text-center table-bordered">
 		<thead>
@@ -184,7 +185,6 @@ function FReach(id)
 		</tbody>
 	</table>
 	</div>
-	<div id = "mensajes" class = "${!empty mensajes ? 'alert alert-success' : ''}">${mensajes}</div>
 	<%@include file="../../appconfig/authfootter.jsp"%>
 </body>
 </html>

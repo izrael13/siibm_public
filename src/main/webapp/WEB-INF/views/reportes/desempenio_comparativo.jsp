@@ -248,7 +248,7 @@ function FBuscar()
     			</c:if>
     			<c:if test="${status.index > 0}">
     				<c:if test="${selectedValueCteVen == 1}">
-    					<td>${item[0]}</td>
+    					<td>${item[0] == 'zzzz' ? 'Total' : item[0]}</td>
     					<td>${item[1]}</td>
     					<td>${item[2]}</td>
     					<c:if test="${not empty item[3]}">
@@ -319,8 +319,8 @@ function FBuscar()
     					</c:if>
     				</c:if>
     				<c:if test="${selectedValueCteVen == 2}">
-    					<td>${item[0]}</td>
-    					<td>${item[1]}</td>
+    					<td>${item[0] == 'zzzz' ? 'Total' : item[0]}</td>
+    					<td>${item[1] == 'zzzz' ? '' : item[1]}</td>
     					<td>${item[2]}</td>
     					<td>${item[3]}</td>
     					<c:if test="${not empty item[4]}">
@@ -394,8 +394,7 @@ function FBuscar()
     		</tr>
     	</c:forEach>
     	</tbody>
-    </table>
-    
+    </table>    
     </div>
 	<br>
 <%@include file="../appconfig/authfootter.jsp"%>

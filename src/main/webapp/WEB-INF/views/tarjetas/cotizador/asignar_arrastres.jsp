@@ -89,6 +89,7 @@ function FImprimir(id)
 		<span class="badge badge-secondary">Asignar arrastres</span>
 	</div>
 	<br>
+	<div id = "mensajes" class = "${!empty mensajes ? 'alert alert-success' : ''}">${mensajes}</div>
 	<div align="center" class="container-fluid">
 	<table class="container-fluid table-hover text-center table-bordered small">
 		<thead>
@@ -134,7 +135,6 @@ function FImprimir(id)
 		</tbody>
 	</table>
 	</div>
-	<div id = "mensajes" class = "${!empty mensajes ? 'alert alert-success' : ''}">${mensajes}</div>
 	<%@include file="../../appconfig/authfootter.jsp"%>
 </body>
 </html>

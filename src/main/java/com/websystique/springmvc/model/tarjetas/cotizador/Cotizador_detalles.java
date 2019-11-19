@@ -127,8 +127,6 @@ public class Cotizador_detalles implements Serializable{
 	private Boolean ceja_desplegada;
 	private Integer num_raturas;
 	
-	private Boolean cancelar_sustituir;
-	private String tf_cs;
 	private Integer color1;
 	private Integer color2;
 	private Integer color3;

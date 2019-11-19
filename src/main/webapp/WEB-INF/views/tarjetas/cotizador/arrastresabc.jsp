@@ -243,6 +243,10 @@ function FEnviar()
 	<div align="center">
 		<span class="badge badge-secondary">Arrastres</span>
 	</div>
+	<div align="center">
+		 	<span id="imgload" style='display: none;'><img width="20px" height="20px" src='<c:url value="/static/img/sun_watch.gif"/>' /></span>
+	</div>
+	<div id = "mensajes" class = "${!empty mensajes ? 'alert alert-success' : ''}">${mensajes}</div>
 	<div class = "container-fluid">
 	 <form:form id="form" method="POST" modelAttribute="cotizadordatabean" class="form-horizontal" autocomplete="off">
 		<div class="row">
@@ -410,10 +414,6 @@ function FEnviar()
 			</div>
 		</div>
 		</div>
-		<div align="center">
-		 	<span id="imgload" style='display: none;'><img width="20px" height="20px" src='<c:url value="/static/img/sun_watch.gif"/>' /></span>
-		 </div>
-		 <div id = "mensajes" class = "${!empty mensajes ? 'alert alert-success' : ''}">${mensajes}</div>
 		<div align="left" class = "container">
 		<div class = "row" align="center">			
 			<div class="col col-lg-2"><form:button id="BGrabar" class="btn btn-outline-primary btn-sm"><i class="fa fa-floppy-o" aria-hidden="true"> Grabar</i></form:button></div>

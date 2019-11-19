@@ -135,12 +135,14 @@ function FImprimir(id)
 		<span class="badge badge-secondary">Autorización de cotizaciones por Gerente de Ventas</span>
 	</div>
 	<br>
+	<div id = "mensajes" class = "${!empty mensajes ? 'alert alert-success' : ''}">${mensajes}</div>
 	<div align="center" class="container-fluid">
 	<table class="container-fluid table-hover text-center table-bordered small">
 		<thead>
 			<tr>
 				<th>Folio</th>
 				<th>Cliente</th>
+				<th>Vendedor</th>
 				<th colspan="10">Detalles</th>				
 				<th>Comentarios</th>
 				<th>Imprimir</th>
@@ -154,6 +156,7 @@ function FImprimir(id)
 			<tr>
 				<td>${i}</td>
 				<td>${item['cliente']}</td>
+				<td>${item['representante']}</td>
 					<td colspan="10">
 
 					<table class="container-fluid table-hover text-center">
@@ -196,7 +199,6 @@ function FImprimir(id)
 		</tbody>
 	</table>
 	</div>
-	<div id = "mensajes" class = "${!empty mensajes ? 'alert alert-success' : ''}">${mensajes}</div>
 	<%@include file="../../appconfig/authfootter.jsp"%>
 </body>
 </html>

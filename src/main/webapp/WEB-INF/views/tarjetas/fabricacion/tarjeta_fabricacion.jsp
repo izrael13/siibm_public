@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1" %>
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -9,26 +9,68 @@
 <head>
 <%@ include file="../../appconfig/authheader2.jsp" %>
 <title>Tarjetas de Fabricación</title>
-<script>
+<script defer="defer">
 $(document).ready(function() {
 
-	if(('${tdb.tarjeta_fabricacion.idcotizacion}' == "") || ('${tdb.tarjeta_fabricacion.fecha_aut_diseniador}' != "" && '${tdb.tarjeta_fabricacion.usuario_aut_diseniador}' > 0)
+	if(('${tdb.tarjeta_fabricacion.idcotizacion}' == "") 
+		|| ('${tdb.tarjeta_fabricacion.fecha_aut_diseniador}' != "" && '${tdb.tarjeta_fabricacion.usuario_aut_diseniador}' > 0)
 		|| ('${tdb.tarjeta_fabricacion.fecha_cancela}' != "" && '${tdb.tarjeta_fabricacion.usuario_cancela}' > 0))
 	{
-
-			$("#BCancelar").prop("disabled", true );
-			$("#BEnvAut").prop("disabled", true );
-			$("#BGrabar").prop("disabled", true );
-			$("#file").prop("disabled", true );
-			$("#CCama").prop("disabled", true );
-			var lista=document.getElementsByName("ABorrarImg");
-			for(var i=0; i<lista.length; i++)
+		$("#BCancelar").prop("disabled", true );
+		$("#BEnvAut").prop("disabled", true );
+		$("#BGrabar").prop("disabled", true );
+		$("#file").prop("disabled", true );
+		$("#CCama").prop("disabled", true );
+		var lista=document.getElementsByName("ABorrarImg");
+		for(var i=0; i<lista.length; i++)
+		{
+			$("#"+lista[i].id).prop("disabled", true );		
+		}
+		$("#TPzasxLargo").attr("readonly","readonly");
+		$("#TPzasxAncho").attr("readonly","readonly");
+		$("#TMedInt").attr("readonly","readonly");
+		$("#TRayado4").attr("readonly","readonly");
+		$("#TRayado5").attr("readonly","readonly");
+		$("#TRayado6").attr("readonly","readonly");
+		$("#TCom").attr("readonly","readonly");
+		$("#TComTF").attr("readonly","readonly");
+		$("#TComDis").attr("readonly","readonly");
+		$("#TAltPallet").attr("readonly","readonly");
+		$("#TCamasPallet").attr("readonly","readonly");
+		$("#TFlejesPallet").attr("readonly","readonly");
+		$("#TFlejesAtado").attr("readonly","readonly");
+		$("#TPzasAtado").attr("readonly","readonly");
+		$("#TAtaCama").attr("readonly","readonly");
+		$("#TPzasxTar").attr("readonly","readonly");
+		$("#SNPartes option:not(:selected)").prop("disabled", true);
+		$("#SGrabado option:not(:selected)").prop("disabled", true);
+		$("#SSuaje option:not(:selected)").prop("disabled", true);
+		$("#CTxUnit").bind("click", preventDef, false);
+		
+		var nodes = document.getElementById("CSRutaDiv").getElementsByTagName('*');
+		for(var i = 0; i < nodes.length; i++)
+		{
+			if(nodes[i].type == 'checkbox')
 			{
-				$("#"+lista[i].id).prop("disabled", true );		
+				if(nodes[i].id != "")
+				{
+					nodes[i].addEventListener("click", preventDef, false);
+					nodes[i].onchange = "";
+				}
 			}
+		}
+		
+		if('${tdb.tarjeta_fabricacion.fecha_aut_cliente}' != "" && '${tdb.tarjeta_fabricacion.usuario_aut_cliente}' > 0 ||
+		   '${tdb.tarjeta_fabricacion.fecha_aut_cliente}' != "" && '${tdb.tarjeta_fabricacion.usuario_aut_cliente}' > 0)
+		{
+			
+		}
+		
 	}
 });
-
+function preventDef(event) {
+	event.preventDefault();
+}
 function FBuscar()
 {
 	if($( "#TFolioTF" ).val() =="")
@@ -364,7 +406,7 @@ function FCalcular()
 		<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
 			 <div class="row ">
 				 <div class="badge badge-primary col-12">
-				 	Datos de la tarjeta (Ingeniería / Diseñador)
+				 	Datos de la tarjeta Ingeniería / Diseñador
 				 </div>
 			 </div>
 		 </div>
@@ -422,11 +464,11 @@ function FCalcular()
 					<div class="has-error"><form:errors path="tarjeta_fabricacion.medida_pliego" class="badge badge-danger small"/></div>
 				</div>
 				<div class="col-sm-2">Medidas internas:
-					<form:input class="border border-primary" size="9" maxlength="20" onkeypress="return SinCaracteresEspeciales(event)" type="text" path="tarjeta_fabricacion.medidas_internas"/>
+					<form:input id="TMedInt" class="border border-primary" size="9" maxlength="20" onkeypress="return SinCaracteresEspeciales(event)" type="text" path="tarjeta_fabricacion.medidas_internas"/>
 					<div class="has-error"><form:errors path="tarjeta_fabricacion.medidas_internas" class="badge badge-danger small"/></div>
 				</div>
 				<div class="col-sm-2">Grabado:
-					<form:select path="tarjeta_fabricacion.grabado" multiple="false" class="border border-primary">
+					<form:select id="SGrabado" path="tarjeta_fabricacion.grabado" multiple="false" class="border border-primary">
 						<form:option value="0"> - </form:option>
 						<c:forEach var="gr" items="${grabados}">
 							<form:option value="${gr.id}"><c:out value="${gr.nombre}-${gr.costo}"/></form:option>
@@ -435,7 +477,7 @@ function FCalcular()
 					<div class="has-error"><form:errors path="tarjeta_fabricacion.grabado" class="badge badge-danger small"/></div>
 				</div>
 				<div class="col-sm-2">Suaje:
-					<form:select path="tarjeta_fabricacion.suaje" multiple="false" class="border border-primary">
+					<form:select id="SSuaje" path="tarjeta_fabricacion.suaje" multiple="false" class="border border-primary">
 						<form:option value="0"> - </form:option>
 						<c:forEach var="sj" items="${suajes}">
 							<form:option value="${sj.id}"><c:out value="${sj.nombre}-${sj.costo}"/></form:option>
@@ -460,13 +502,13 @@ function FCalcular()
 					<form:input class="border border-secondary" size="9" maxlength="8" readonly="true" type="text" path="tarjeta_fabricacion.rayado3"/>
 				</div>
 				<div class="col-sm-2">Rayado 4:
-					<form:input onkeypress="return filterFloat(event,this);" class="border border-primary" size="9" maxlength="8" type="text" path="tarjeta_fabricacion.rayado4"/>
+					<form:input id="TRayado4" onkeypress="return filterFloat(event,this);" class="border border-primary" size="9" maxlength="8" type="text" path="tarjeta_fabricacion.rayado4"/>
 				</div>
 				<div class="col-sm-2">Rayado 5:
-					<form:input onkeypress="return filterFloat(event,this);" class="border border-primary" size="9" maxlength="8" type="text" path="tarjeta_fabricacion.rayado5"/>
+					<form:input id="TRayado5" onkeypress="return filterFloat(event,this);" class="border border-primary" size="9" maxlength="8" type="text" path="tarjeta_fabricacion.rayado5"/>
 				</div>
 				<div class="col-sm-2">Rayado 6:
-					<form:input onkeypress="return filterFloat(event,this);" class="border border-primary" size="9" maxlength="8" type="text" path="tarjeta_fabricacion.rayado6"/>
+					<form:input id="TRayado6" onkeypress="return filterFloat(event,this);" class="border border-primary" size="9" maxlength="8" type="text" path="tarjeta_fabricacion.rayado6"/>
 				</div>
 			</div>
 		</div>
@@ -476,24 +518,23 @@ function FCalcular()
 					<form:input id="TAreaTotal" class="border border-secondary" size="9" maxlength="8" readonly="true" type="text" path="tarjeta_fabricacion.area_total"/>
 				</div>
 				<div class="col-sm-3">Observaciones TF:
-					<form:input class="border border-primary" type="text" onkeypress="return SinCaracteresEspeciales(event)" maxlength="100" path="tarjeta_fabricacion.observaciones_tf"/>
+					<form:input id="TComTF" class="border border-primary" type="text" onkeypress="return SinCaracteresEspeciales(event)" maxlength="100" path="tarjeta_fabricacion.observaciones_tf"/>
 				</div>
 				<div class="col-sm-3">Observaciones:
-					<form:input class="border border-primary" type="text" onkeypress="return SinCaracteresEspeciales(event)" maxlength="100" path="tarjeta_fabricacion.observaciones"/>
+					<form:input id="TCom" class="border border-primary" type="text" onkeypress="return SinCaracteresEspeciales(event)" maxlength="100" path="tarjeta_fabricacion.observaciones"/>
 				</div>
 				<div class="col-sm-3">Observaciones diseñador:
 					<form:input id="TComDis" class="border border-primary" type="text" onkeypress="return SinCaracteresEspeciales(event)" maxlength="100" path="tarjeta_fabricacion.observaciones_disenador"/>
 				</div>
 			</div>
-		</div>
-		
-			<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
-				 <div class="row ">
-					 <div class="badge badge-secondary col-12">
-					 	Embarques/Inocuidad
-					 </div>
-				 </div>
+		</div>		
+		<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
+			<div class="row ">
+			 <div class="badge badge-secondary col-12">
+			 	Embarques/Inocuidad
 			 </div>
+			</div>
+		 </div>
 		 <div class="col-12"><!-- mx-auto  para centrar en pantalla -->
 			<div class="row small border border-right">
 				<div class="col col-lg-2">Altura pallet:
@@ -542,7 +583,7 @@ function FCalcular()
 				<div class="col col-lg-2">EPP transportista: <form:checkbox disabled="true" path="cotizador.epp_transportista"/></div>
 				<div class="col col-lg-1">Imp fech: <form:checkbox disabled="true" path="cotizador.imprimir_fechador"/></div>
 				<div class="col col-lg-1">Imp ped: <form:checkbox disabled="true" path="cotizador.imprimir_pedido"/></div>
-				<div class="col col-lg-2">TarimaXunitizado: <form:checkbox path="cotizador.tarimaxunitizado"/></div>
+				<div class="col col-lg-2">TarimaXunitizado: <form:checkbox id="CTxUnit" path="cotizador.tarimaxunitizado"/></div>
 			</div>
 		</div>
 		<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
@@ -556,16 +597,16 @@ function FCalcular()
 			<div class="row small">
 				<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
 					<div class="row border border-right">
-						<div class="col col-lg-12">
-							<form:checkboxes items="${maquinas}" itemLabel="name" itemValue="code" path="tarjeta_fabricacion.catalogo_maquinas_sap_vw" delimiter="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"/>							
+						<div id="CSRutaDiv" class="col col-lg-12">
+							<form:checkboxes id="CSRuta" items="${maquinas}" itemLabel="name" itemValue="code" path="tarjeta_fabricacion.catalogo_maquinas_sap_vw" delimiter="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"/>							
 							<div class="has-error">
 								<form:errors path="tarjeta_fabricacion.catalogo_maquinas_sap_vw" class="badge badge-danger small"/>
 							</div>
-							<!-- <c:forEach var="item" items="${esp}">
-								<c:if test="${item[3] == 17 || item[3] == 20 || item[3] == 8 || item[3] == 35}">
-										<input type="checkbox" disabled checked/>${item[0]} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<c:forEach var="item" items="${esp}">
+								<c:if test="${item.ruta == 1}">
+										<input type="checkbox" disabled checked/>${item.especialidad} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 								</c:if>
-							</c:forEach> -->
+							</c:forEach>
 						</div> 
 					</div>
 				</div>
@@ -725,8 +766,7 @@ function FCalcular()
 			    <div class="col-sm">
 			      Fecha últ autorización: ${tdb.cotizador.fecha_aut_prog le tdb.cotizador.fecha_aut_ventas ? tdb.cotizador.fecha_aut_ventas : tdb.cotizador.fecha_aut_prog}			    
 			    </div>
-			  </div>
-			  
+			  </div>			  
 			  <div class="badge badge-info col-12">Especialidades</div>
 				<div class="row small">
 					<div class="col font-weight-bold">Especialidad</div>
@@ -736,14 +776,12 @@ function FCalcular()
 				</div>
 				<c:forEach var="item" items="${esp}">
 					<div class="row small">
-						<div class="col">${item[0]}</div>
-						<div class="col">${item[1]}</div>
-						<div class="col">${item[2]}</div>
-						<div class="col">${item[4]}</div>
+						<div class="col">${item.especialidad}</div>
+						<div class="col">${item.costo}</div>
+						<div class="col">${item.ajuste}</div>
+						<div class="col">${item.cm}</div>
 					</div>
-				</c:forEach>
-					
-			    
+				</c:forEach>			    
 			    <div class="badge badge-info col-12">Código de barras</div>
 				<div class="row small">
 					<div class="col font-weight-bold">Código</div>
