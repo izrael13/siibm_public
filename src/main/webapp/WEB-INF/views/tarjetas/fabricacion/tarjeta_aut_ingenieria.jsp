@@ -17,7 +17,7 @@ function FAut(folio)
 		if(folio != "")
 		{
 			var http = new XMLHttpRequest();
-			var url = '<c:url value="/tarjeta/ingenieria/tarjeta_aut_ingenieria_desicion"/>';
+			var url = '<c:url value="/tarjeta/ingenieria_gerencia/tarjeta_aut_ingenieria_desicion"/>';
 			var params = 'folio='+folio+'&coment='+$("#TComent"+folio).val()+'&ban='+1;
 			
 			http.open('POST', url, true);
@@ -36,12 +36,12 @@ function FAut(folio)
 		    			if(http.responseText === 'OK')
 		    			{
 		    				alert("Autorización existosa.");
-				    		window.location.replace('<c:url value="/tarjeta/ingenieria/tarjeta_aut_ingenieria"/>');
+				    		window.location.replace('<c:url value="/tarjeta/ingenieria_gerencia/tarjeta_aut_ingenieria"/>');
 		    			}
 		    			else
 		    			{
 		    				alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
-				    		window.location.replace('<c:url value="/tarjeta/ingenieria/tarjeta_aut_ingenieria"/>');
+				    		window.location.replace('<c:url value="/tarjeta/ingenieria_gerencia/tarjeta_aut_ingenieria"/>');
 		    			}
 		    		}
 			    }
@@ -49,7 +49,7 @@ function FAut(folio)
 			    {
 			    	if(http.readyState == 4 && http.status != 200){
 			    		alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
-			    		window.location.replace('<c:url value="/tarjeta/ingenieria/tarjeta_aut_ingenieria"/>');
+			    		window.location.replace('<c:url value="/tarjeta/ingenieria_gerencia/tarjeta_aut_ingenieria"/>');
 			    	}
 			    	else
 			    	{
@@ -73,7 +73,7 @@ function FReach(folio)
 		if(folio != "")
 		{
 			var http = new XMLHttpRequest();
-			var url = '<c:url value="/tarjeta/ingenieria/tarjeta_aut_ingenieria_desicion"/>';
+			var url = '<c:url value="/tarjeta/ingenieria_gerencia/tarjeta_aut_ingenieria_desicion"/>';
 			var params = 'folio='+folio+'&coment='+$("#TComent"+folio).val()+'&ban='+0;
 			
 			http.open('POST', url, true);
@@ -92,12 +92,12 @@ function FReach(folio)
 		    			if(http.responseText === 'OK')
 		    			{
 		    				alert("Rechazo enviado.");
-				    		window.location.replace('<c:url value="/tarjeta/ingenieria/tarjeta_aut_ingenieria"/>');
+				    		window.location.replace('<c:url value="/tarjeta/ingenieria_gerencia/tarjeta_aut_ingenieria"/>');
 		    			}
 		    			else
 		    			{
 		    				alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
-				    		window.location.replace('<c:url value="/tarjeta/ingenieria/tarjeta_aut_ingenieria"/>');
+				    		window.location.replace('<c:url value="/tarjeta/ingenieria_gerencia/tarjeta_aut_ingenieria"/>');
 		    			}
 		    		}
 			    }
@@ -105,7 +105,7 @@ function FReach(folio)
 			    {
 			    	if(http.readyState == 4 && http.status != 200){
 			    		alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
-			    		window.location.replace('<c:url value="/tarjeta/ingenieria/tarjeta_aut_ingenieria"/>');
+			    		window.location.replace('<c:url value="/tarjeta/ingenieria_gerencia/tarjeta_aut_ingenieria"/>');
 			    	}
 			    	else
 			    	{

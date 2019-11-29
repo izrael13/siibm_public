@@ -83,4 +83,10 @@ public class Tarjeta_fabricacionServiceImpl implements Tarjeta_fabricacionServic
 		return dao.BuscarxCot_Cotdet(idcot, iddet);
 	}
 
+	@Override
+	public Tarjeta_fabricacion BuscarTFPG(List<ParamsGeneral> Params) {
+		// TODO Auto-generated method stub
+		return dao.BuscarTFPG(Params);
+	}
+
 }

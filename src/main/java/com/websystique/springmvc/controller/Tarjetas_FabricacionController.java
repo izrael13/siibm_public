@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.rmi.RemoteException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 //import javax.validation.Valid;
 
+import org.apache.axis.message.MessageElement;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.tempuri.WSTarjetasSoapProxy;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -61,6 +64,9 @@ import com.websystique.springmvc.service.tarjetas.cotizador.Cotizador_detallesSe
 import com.websystique.springmvc.service.tarjetas.fabricacion.Tarjeta_fabricacionService;
 import com.websystique.springmvc.service.tarjetas.fabricacion.Tarjetas_fabricacion_imagenesService;
 import com.websystique.springmvc.utilities.SendMailGmail;
+
+import _1._0._0._127.SAP.DIServerSoapProxy;
+import _1._0._0._127.SAP.ExecuteSQLResponseExecuteSQLResult;
 
 @Controller
 @RequestMapping("/tarjeta")
@@ -119,35 +125,42 @@ public class Tarjetas_FabricacionController {
 		
 		if(!folio.trim().equals(""))
 		{
-			User user = us.findBySSO(AppController.getPrincipal());
-			tf = tfs.BuscarxFolio(folio,user.getId());
-			tf.setTarjeta_img(tfis.BuscarxIdCotidDert(tf.getIdcotizacion(), tf.getIddetalle()));
-			
-			cot = cs.BuscarxId(tf.getIdcotizacion());
-			cotdet = cds.BuscarxIdDet(tf.getIdcotizacion(), tf.getIddetalle());
-			cotdet.setCodigo_barra_cotizador(cbsc.BuscarXCotDet(Integer.valueOf(cotdet.getIdcotizacion()), Integer.valueOf(cotdet.getIddetalle())));
-			tdb.setTarjeta_fabricacion(tf);
-			tdb.setCotizador(cot);
-			tdb.setCotizador_detalles(cotdet);
-
-			objCaja = ccss.BuscarxId(cotdet.getIdcaja_sap());
-			model.addAttribute("caja", objCaja);
-			model.addAttribute("resis", crss.BuscarxId(cotdet.getIdresistencia_barca()));
-			model.addAttribute("sello", css.BuscarxId(cotdet.getResistencia_cte()));
-			
-			ctsc.DataSourceJasperTF(cot.getId(), cotdet.getIddetalle(), 1);
-			
+			/*List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+			Params.add(new ParamsGeneral(1,"folio_tarjeta",folio,"EQ"));
+			Params.add(new ParamsGeneral(2,"fecha_aut_cliente","NE"));			
+			Params.add(new ParamsGeneral(3,"usuario_aut_cliente","NE"));
+			tf = tfs.BuscarTFPG(Params);
+			*/
+			tf = tfs.BuscarxFolio(folio);
+			if(tf != null)
+			{
+				tf.setTarjeta_img(tfis.BuscarxIdCotidDert(tf.getIdcotizacion(), tf.getIddetalle()));
+				
+				cot = cs.BuscarxId(tf.getIdcotizacion());
+				cotdet = cds.BuscarxIdDet(tf.getIdcotizacion(), tf.getIddetalle());
+				cotdet.setCodigo_barra_cotizador(cbsc.BuscarXCotDet(Integer.valueOf(cotdet.getIdcotizacion()), Integer.valueOf(cotdet.getIddetalle())));
+				tdb.setTarjeta_fabricacion(tf);
+				tdb.setCotizador(cot);
+				tdb.setCotizador_detalles(cotdet);
+	
+				objCaja = ccss.BuscarxId(cotdet.getIdcaja_sap());
+				model.addAttribute("caja", objCaja);
+				model.addAttribute("resis", crss.BuscarxId(cotdet.getIdresistencia_barca()));
+				model.addAttribute("sello", css.BuscarxId(cotdet.getResistencia_cte()));
+				model.addAttribute("cliente_factura", cot.getCardcode_factura() != null ? ccavs.cat_cte_sap(cot.getCardcode_factura()).getCardname() : "");
+				model.addAttribute("cliente", cot.getCardcode() != null ? ccavs.cat_cte_sap(cot.getCardcode()).getCardname() : "");
+				ListaEsp = ctsc.addEspecialidades(tf.getIdcotizacion(), tf.getIddetalle());
+				model.addAttribute("esp", gson.fromJson(ListaEsp.toString(),Object[].class));
+				//ctsc.DataSourceJasperTF(cot.getId(), cotdet.getIddetalle(), 1);
+			}
 		}		
 		
-		model.addAttribute("loggedinuser", AppController.getPrincipal());
 		model.addAttribute("tdb", tdb);
-		model.addAttribute("clientes", ccavs.ListaCtes());
 		model.addAttribute("grabados", chs.BuscarxTipo(2));
-		model.addAttribute("suajes", chs.BuscarxTipo(1));
-		ListaEsp = ctsc.addEspecialidades(tf.getIdcotizacion(), tf.getIddetalle());
-		model.addAttribute("esp", gson.fromJson(ListaEsp.toString(),Object[].class));
+		model.addAttribute("suajes", chs.BuscarxTipo(1));		
 		model.addAttribute("colores", ccos.ListaColores());		
-		model.addAttribute("maquinas", BuscarMaquinas(ListaEsp,objCaja.getGrupo(),cotdet.getNum_tintas(),cotdet.getCierre(),tf.getFolio_tarjeta()));
+		model.addAttribute("loggedinuser", AppController.getPrincipal());
+		model.addAttribute("maquinas", tf != null ? BuscarMaquinas(ListaEsp,objCaja.getGrupo(),cotdet.getNum_tintas(),cotdet.getCierre(),tf.getFolio_tarjeta()) : new ArrayList<Catalogo_maquinas_sap_vw>());
 		
 		logger.info(AppController.getPrincipal() + " - tarjeta_fabricacion.");
 				
@@ -171,6 +184,12 @@ public class Tarjetas_FabricacionController {
 	public String calculardatos(ModelMap model, @RequestParam("idcotizacion") Integer idcotizacion,@RequestParam("iddetalle") Integer iddetalle, 
 			@RequestParam("folio_tarjeta") String folio_tarjeta, @RequestParam("npartes") Integer npartes,
 			@RequestParam("pzasxlargo") Integer pzasxlargo, @RequestParam("pzasxancho") Integer pzasxancho) {
+		
+		return CalcularDatos(idcotizacion,iddetalle,folio_tarjeta,npartes,pzasxlargo,pzasxancho);
+	}
+	
+	private String CalcularDatos(Integer idcotizacion, Integer iddetalle, String folio_tarjeta,Integer npartes,Integer pzasxlargo,Integer pzasxancho)
+	{
 		try 
 		{
 			DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols(Locale.getDefault());
@@ -320,6 +339,12 @@ public class Tarjetas_FabricacionController {
 	public ResponseEntity<?> subir_imagen_tarjeta(@RequestParam("file")  MultipartFile[] file, @RequestParam("folio_tarjeta") String folio_tarjeta,
 			@RequestParam("idcotizacion") Integer idcotizacion,@RequestParam("iddetalle") Integer iddetalle, @RequestParam("cama") Boolean cama,
 			ModelMap model,HttpServletResponse response,HttpServletRequest request) {
+			
+			return SubirImagen(file, request,idcotizacion,iddetalle,cama);
+	}
+	
+	private ResponseEntity<Object> SubirImagen( MultipartFile[] file,HttpServletRequest request,Integer idcotizacion,Integer iddetalle,Boolean cama)
+	{
 		String mensaje = "";
 		try 
 		{
@@ -327,22 +352,23 @@ public class Tarjetas_FabricacionController {
 			String fileName = img.getOriginalFilename();
 		    String folderPath = request.getServletContext().getRealPath("/")+"static\\img_tarjetas\\";
 		    String filePath = folderPath + fileName;
-
+		    User user = us.findBySSO(AppController.getPrincipal());
 		    byte[] bytes = img.getBytes();
 		    Path path = Paths.get(filePath);
             Files.write(path, bytes);
-            
+            java.util.Date date = new java.util.Date();
             List<Tarjetas_fabricacion_imagenes> ListimgTar = tfis.BuscarxIdCotidDert(idcotizacion, iddetalle);
 
             if(cama)
             {            	
             	ListimgTar.stream().filter(a -> a.getCama() == true).forEach((p) -> {
             		p.setCama(false);
+            		p.setUsuario_insert(user.getId());
+            		p.setFecha_insert(date);
             		tfis.Actualizar(p);
             	});
             }
             
-            java.util.Date date = new java.util.Date();
             if(ListimgTar.stream().filter(a -> a.getNombre().equals(fileName)).count() == 0)
             {
 	            
@@ -351,6 +377,7 @@ public class Tarjetas_FabricacionController {
 	            imgTar.setIddetalle(iddetalle);
 	            imgTar.setNombre(fileName);
 	            imgTar.setPath(folderPath);
+	            imgTar.setUsuario_insert(user.getId());
 	            imgTar.setFecha_insert(date);
 	            imgTar.setCama(cama);
 	            
@@ -362,6 +389,7 @@ public class Tarjetas_FabricacionController {
             		{
             			p.setCama(cama);
             			p.setFecha_insert(date);
+            			p.setUsuario_insert(user.getId());
             			tfis.Actualizar(p);
             		}
             		
@@ -376,7 +404,6 @@ public class Tarjetas_FabricacionController {
 		catch(Exception e)
 		{
 			mensaje = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
-			model.addAttribute("mensajes", mensaje);
 			logger.info(AppController.getPrincipal() + " - subir_imagen_tarjeta. " + mensaje);
 			return new ResponseEntity<Object>(mensaje, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -386,6 +413,11 @@ public class Tarjetas_FabricacionController {
 	@ResponseBody
 	public ResponseEntity<?> borrar_imagen_tarjeta(ModelMap model,
 			@RequestParam("idcotizacion") Integer idcotizacion,@RequestParam("iddetalle") Integer iddetalle, @RequestParam("nombre") String nombre) {
+			return BorrarImagen(idcotizacion,iddetalle,nombre);
+	}
+	
+	private ResponseEntity<Object> BorrarImagen(Integer idcotizacion, Integer iddetalle, String nombre)
+	{
 		String mensaje = "";
 		try 
 		{
@@ -399,11 +431,9 @@ public class Tarjetas_FabricacionController {
 		catch(Exception e)
 		{
 			mensaje = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
-			model.addAttribute("mensajes", mensaje);
 			logger.info(AppController.getPrincipal() + " - borrar_imagen_tarjeta. " + mensaje);
 			return new ResponseEntity<Object>(mensaje, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-	
 	}
 	
 	@RequestMapping(value = {"/ingenieria/enviar_tarjeta_aut" }, method = RequestMethod.POST)
@@ -610,7 +640,7 @@ public class Tarjetas_FabricacionController {
 	
 	}	
 	
-	@RequestMapping(value = {"/ingenieria/tarjeta_aut_ingenieria" }, method = RequestMethod.GET)
+	@RequestMapping(value = {"/ingenieria_gerencia/tarjeta_aut_ingenieria" }, method = RequestMethod.GET)
 	public String tarjeta_aut_ingenieria(ModelMap model) {
 
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
@@ -627,7 +657,7 @@ public class Tarjetas_FabricacionController {
 		return "/tarjetas/fabricacion/tarjeta_aut_ingenieria";
 	}
 	
-	@RequestMapping(value = {"/ingenieria/tarjeta_aut_ingenieria_desicion" }, method = RequestMethod.POST)
+	@RequestMapping(value = {"/ingenieria_gerencia/tarjeta_aut_ingenieria_desicion" }, method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> tarjeta_aut_ingenieria(ModelMap model,
 			@RequestParam("folio") String folio,@RequestParam("coment") String coment, @RequestParam("ban") Integer ban) {
@@ -782,6 +812,223 @@ public class Tarjetas_FabricacionController {
 			logger.info(AppController.getPrincipal() + " - tarjeta_seguimiento_info. " + e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage());
 		}
 		return "/tarjetas/fabricacion/tarjetas_seguimiento_info";
+	}
+	
+	@RequestMapping(value = {"/ingenieria_gerencia/tarjeta_cambiosgi" }, method = RequestMethod.GET)
+	public String tarjeta_cambiosgi(ModelMap model, @RequestParam(value = "folio", defaultValue = "", required = false) String folio) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		
+		Tarjeta_fabricacion tf = new Tarjeta_fabricacion();
+		Cotizador cot = new Cotizador();
+		Cotizador_detalles cotdet = new Cotizador_detalles();
+		Catalogo_cajas_sap_vw objCaja = new Catalogo_cajas_sap_vw();
+		GsonBuilder builder = new GsonBuilder();
+		Gson gson = builder.serializeNulls().create();
+		List<JSONObject> ListaEsp = new ArrayList<JSONObject>();
+		
+		TarjetaDataBean tdb = new TarjetaDataBean();
+		
+		if(!folio.trim().equals(""))
+		{
+			/*List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+			Params.add(new ParamsGeneral(1,"folio_tarjeta",folio,"EQ"));
+			Params.add(new ParamsGeneral(2,"fecha_aut_cliente","NE"));			
+			Params.add(new ParamsGeneral(3,"usuario_aut_cliente","NE"));
+			tf = tfs.BuscarTFPG(Params);
+			*/
+			tf = tfs.BuscarxFolio(folio);
+			if(tf != null)
+			{
+				tf.setTarjeta_img(tfis.BuscarxIdCotidDert(tf.getIdcotizacion(), tf.getIddetalle()));
+				
+				cot = cs.BuscarxId(tf.getIdcotizacion());
+				cotdet = cds.BuscarxIdDet(tf.getIdcotizacion(), tf.getIddetalle());
+				cotdet.setCodigo_barra_cotizador(cbsc.BuscarXCotDet(Integer.valueOf(cotdet.getIdcotizacion()), Integer.valueOf(cotdet.getIddetalle())));
+				tdb.setTarjeta_fabricacion(tf);
+				tdb.setCotizador(cot);
+				tdb.setCotizador_detalles(cotdet);
+	
+				objCaja = ccss.BuscarxId(cotdet.getIdcaja_sap());
+				model.addAttribute("caja", objCaja);
+				model.addAttribute("resis", crss.BuscarxId(cotdet.getIdresistencia_barca()));
+				model.addAttribute("sello", css.BuscarxId(cotdet.getResistencia_cte()));
+				model.addAttribute("cliente_factura", cot.getCardcode_factura() != null ? ccavs.cat_cte_sap(cot.getCardcode_factura()).getCardname() : "");
+				model.addAttribute("cliente", cot.getCardcode() != null ? ccavs.cat_cte_sap(cot.getCardcode()).getCardname() : "");
+				ListaEsp = ctsc.addEspecialidades(tf.getIdcotizacion(), tf.getIddetalle());
+				model.addAttribute("esp", gson.fromJson(ListaEsp.toString(),Object[].class));
+				//ctsc.DataSourceJasperTF(cot.getId(), cotdet.getIddetalle(), 1);
+			}
+		}		
+		
+		model.addAttribute("tdb", tdb);
+		model.addAttribute("grabados", chs.BuscarxTipo(2));
+		model.addAttribute("suajes", chs.BuscarxTipo(1));		
+		model.addAttribute("colores", ccos.ListaColores());		
+		model.addAttribute("loggedinuser", AppController.getPrincipal());
+		model.addAttribute("maquinas", tf != null ? BuscarMaquinas(ListaEsp,objCaja.getGrupo(),cotdet.getNum_tintas(),cotdet.getCierre(),tf.getFolio_tarjeta()) : new ArrayList<Catalogo_maquinas_sap_vw>());
+		logger.info(AppController.getPrincipal() + " - tarjeta_cambiosgi.");
+				
+		return "/tarjetas/fabricacion/tarjeta_fabricacion_cambiosgi";
+	}
+	
+	@RequestMapping(value = {"/ingenieria_gerencia/calculardatosgi" }, method = RequestMethod.POST)
+	@ResponseBody
+	public String calculardatosgi(ModelMap model, @RequestParam("idcotizacion") Integer idcotizacion,@RequestParam("iddetalle") Integer iddetalle, 
+			@RequestParam("folio_tarjeta") String folio_tarjeta, @RequestParam("npartes") Integer npartes,
+			@RequestParam("pzasxlargo") Integer pzasxlargo, @RequestParam("pzasxancho") Integer pzasxancho) {
+		
+		return CalcularDatos(idcotizacion,iddetalle,folio_tarjeta,npartes,pzasxlargo,pzasxancho);
+	}
+	
+	@RequestMapping(value = {"/ingenieria_gerencia/tarjeta_cambiosgi" }, method = RequestMethod.POST)
+	public String tarjeta_cambiosgipost(@ModelAttribute("tdb") TarjetaDataBean tdb, BindingResult result, ModelMap model) {
+		try 
+		{
+			logger.info(AppController.getPrincipal() + " - tarjeta_cambiosgipost.");
+			GsonBuilder builder = new GsonBuilder();
+			Gson gson = builder.serializeNulls().create();
+			Catalogo_cajas_sap_vw objCaja = new Catalogo_cajas_sap_vw();
+			List<JSONObject> ListaEsp = new ArrayList<JSONObject>();
+			tdb.getTarjeta_fabricacion().setBan(1);
+			model.addAttribute("loggedinuser", AppController.getPrincipal());
+			tdb.getTarjeta_fabricacion().setTarjeta_img(tfis.BuscarxIdCotidDert(tdb.getTarjeta_fabricacion().getIdcotizacion(), tdb.getTarjeta_fabricacion().getIddetalle()));
+			model.addAttribute("clientes", ccavs.ListaCtes());
+			model.addAttribute("grabados", chs.BuscarxTipo(2));
+			model.addAttribute("suajes", chs.BuscarxTipo(1));
+			model.addAttribute("colores", ccos.ListaColores());
+			Cotizador cot = new Cotizador();
+			Cotizador_detalles cotdet = new Cotizador_detalles();
+			if(tdb.getTarjeta_fabricacion().getFolio_tarjeta() != "")
+			{
+				ListaEsp = ctsc.addEspecialidades(tdb.getTarjeta_fabricacion().getIdcotizacion(), tdb.getTarjeta_fabricacion().getIddetalle());
+				model.addAttribute("esp", gson.fromJson(ListaEsp.toString(),Object[].class));
+				cot = cs.BuscarxId(tdb.getTarjeta_fabricacion().getIdcotizacion());
+				cotdet = cds.BuscarxIdDet(tdb.getTarjeta_fabricacion().getIdcotizacion(), tdb.getTarjeta_fabricacion().getIddetalle());
+				objCaja = ccss.BuscarxId(cotdet.getIdcaja_sap());
+				model.addAttribute("caja", objCaja);
+				model.addAttribute("resis", crss.BuscarxId(cotdet.getIdresistencia_barca()));
+				model.addAttribute("sello", css.BuscarxId(cotdet.getResistencia_cte()));
+				model.addAttribute("cliente_factura", cot.getCardcode_factura() != null ? ccavs.cat_cte_sap(cot.getCardcode_factura()).getCardname() : "");
+				model.addAttribute("cliente", cot.getCardcode() != null ? ccavs.cat_cte_sap(cot.getCardcode()).getCardname() : "");
+			}
+			model.addAttribute("maquinas", tdb.getTarjeta_fabricacion().getFolio_tarjeta() != "" ? BuscarMaquinas(ListaEsp,objCaja.getGrupo(),cotdet.getNum_tintas(),cotdet.getCierre(),tdb.getTarjeta_fabricacion().getFolio_tarjeta()) : new ArrayList<Catalogo_maquinas_sap_vw>());
+			cot.setTarimaxunitizado(tdb.getCotizador().getTarimaxunitizado());
+			cotdet.setAltura_pallet(tdb.getCotizador_detalles().getAltura_pallet());
+			cotdet.setCamas_pallet(tdb.getCotizador_detalles().getCamas_pallet());
+			cotdet.setFlejes_pallet(tdb.getCotizador_detalles().getFlejes_pallet());
+			cotdet.setFlejes_atado(tdb.getCotizador_detalles().getFlejes_atado());
+			cotdet.setPzas_atado(tdb.getCotizador_detalles().getPzas_atado());
+			cotdet.setAtados_cama(tdb.getCotizador_detalles().getAtados_cama());
+			cotdet.setIdtiporequerimiento(0);
+			
+			if( tdb.getCotizador_detalles().getPiezasxtarima() != null && (tdb.getCotizador_detalles().getPiezasxtarima() < cotdet.getPiezasxtarima())) {
+				cotdet.setBan(1);
+			}
+			cotdet.setPiezasxtarima(tdb.getCotizador_detalles().getPiezasxtarima());
+			tdb.setCotizador(cot);
+			tdb.setCotizador_detalles(cotdet);
+
+			model.addAttribute("tdb", tdb);
+						
+			tfv.validate(tdb.getTarjeta_fabricacion(), result);
+			cdv.validate(cotdet, result);
+			
+			if (result.hasErrors())
+			{
+				return "/tarjetas/fabricacion/tarjeta_fabricacion_cambiosgi";
+			}
+			
+			tfs.Actualizar(tdb.getTarjeta_fabricacion());
+			cs.Actualizar(cot);
+			cds.Actualizar(cotdet);
+			
+			model.addAttribute("mensajes", "Tarjeta actualizada correctamente.");
+			return "/tarjetas/fabricacion/tarjeta_fabricacion_cambiosgi";
+		}
+		catch(Exception e)
+		{
+			logger.info(AppController.getPrincipal() + " - tarjeta_cambiosgipost. " + e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage());
+			return "/tarjetas/fabricacion/tarjeta_fabricacion_cambiosgi";
+		}
+		
+	}
+	
+	@RequestMapping(value = {"/ingenieria_gerencia/subir_imagen_tarjetagi" }, method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<?> subir_imagen_tarjetagi(@RequestParam("file")  MultipartFile[] file, @RequestParam("folio_tarjeta") String folio_tarjeta,
+			@RequestParam("idcotizacion") Integer idcotizacion,@RequestParam("iddetalle") Integer iddetalle, @RequestParam("cama") Boolean cama,
+			ModelMap model,HttpServletResponse response,HttpServletRequest request) {
+			
+			return SubirImagen(file, request,idcotizacion,iddetalle,cama);
+	}
+	
+	@RequestMapping(value = {"/ingenieria_gerencia/borrar_imagen_tarjetagi" }, method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<?> borrar_imagen_tarjetagi(ModelMap model,
+			@RequestParam("idcotizacion") Integer idcotizacion,@RequestParam("iddetalle") Integer iddetalle, @RequestParam("nombre") String nombre) {
+			return BorrarImagen(idcotizacion,iddetalle,nombre);
+	}
+	@RequestMapping(value = {"/ingenieria_gerencia/cancelar_reactivarTFXCTE" }, method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<?> cancelar_reactivarTFXCTE(ModelMap model,
+			@RequestParam("idcotizacion") Integer idcotizacion,@RequestParam("iddetalle") Integer iddetalle, 
+			@RequestParam("folio_tarjeta") String folio_tarjeta, @RequestParam("coment") String coment) throws RemoteException {
+		String mensaje = "";
+		User user = us.findBySSO(AppController.getPrincipal());
+		java.util.Date date = new java.util.Date();
+		DIServerSoapProxy DISERVER = new DIServerSoapProxy();
+		String idsession = "";
+		try 
+		{
+			Tarjeta_fabricacion a = tfs.BuscarxFolio(folio_tarjeta);
+			//WSTarjetasSoapProxy WSTF = new WSTarjetasSoapProxy();
+			
+			idsession = DISERVER.login("192.169.1.50", "BARCAPRUEBAS", "dst_MSSQL2008", "sa", 
+					"Admin#2009", "ingenie", "4444", "ln_Spanish_La", "WIN-I1A2FG7OBS9", "");
+			System.out.println(idsession);
+			ExecuteSQLResponseExecuteSQLResult ExeQueryRes = DISERVER.executeSQL(idsession, "select Count(ItemCode) from oitm where U_TF = '22707xxxx' and ItmsGrpCod = 105");
+			for(MessageElement x : ExeQueryRes.get_any())
+			{
+				System.out.println(x.getElementsByTagName("oitm").item(0).getFirstChild().getFirstChild().getFirstChild());
+				//System.out.println(x.getElementsByTagName("oitm").item(0).getFirstChild().getLastChild().getLastChild());
+			}
+			
+
+			
+			//System.out.println(WSTF.grabarSimbolo());
+			//DISERVER.va
+			//if(){ //Si se actualizó de forma correcta en SAPse actualiza en barcasii
+			
+			if(a.getFecha_cancelxcte() == null && a.getUsuario_cancelxcte() == null)
+			{
+				a.setUsuario_cancelxcte(user.getId());
+				a.setFecha_cancelxcte(date);
+				a.setObservaciones(coment);
+			}
+			else
+			{
+				a.setUsuario_cancelxcte(null);
+				a.setFecha_cancelxcte(null);
+				a.setObservaciones(coment);
+			}
+			
+			tfs.Actualizar(a);
+			//}
+			logger.info(AppController.getPrincipal() + " - cancelar_reactivarTFXCTE. " + mensaje);
+			return new ResponseEntity<Object>("OK", HttpStatus.OK);
+		}
+		catch(Exception e)
+		{
+			mensaje = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
+			model.addAttribute("mensajes", mensaje);
+			logger.info(AppController.getPrincipal() + " - cancelar_reactivarTFXCTE. " + mensaje);
+			return new ResponseEntity<Object>(mensaje, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		finally
+		{
+			String logout = DISERVER.logout(idsession);
+			System.out.println(logout);
+		}
+	
 	}
 	
 }

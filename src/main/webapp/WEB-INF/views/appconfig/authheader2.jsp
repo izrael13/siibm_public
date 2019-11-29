@@ -190,6 +190,7 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 			 	<ul class="dropdown-menu">
 			 		<sec:authorize access="hasRole('ADMIN') or hasRole('INGENIERIA')">
 			 			<li><a class="dropdown-item" href = "<c:url value='/tarjeta/ingenieria/tarjeta_fabricacion'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro tarjetas</a></li>
+			 			<li><a class="dropdown-item" href = "<c:url value='/tarjeta/ingenieria/tarjetas_seguimiento'/>"><i class="fa fa-angle-right" aria-hidden="true"></i> Seguimiento de tarjetas</a></li>
 			 		</sec:authorize>
 			 		<sec:authorize access="hasRole('ADMIN') or hasRole('CALIDAD')">
 			 			<li><a class="dropdown-item" href = "<c:url value='/tarjeta/calidad/tarjeta_aut_calidad'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Calidad</a></li>
@@ -197,9 +198,9 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 			 		<sec:authorize access="hasRole('ADMIN') or hasRole('PRODUCCION')">
 			 			<li><a class="dropdown-item" href = "<c:url value='/tarjeta/produccion/tarjeta_aut_produccion'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Producción</a></li>
 			 		</sec:authorize>
-			 		<sec:authorize access="hasRole('ADMIN') or hasRole('INGENIERIA')">
-				 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/ingenieria/tarjeta_aut_ingenieria'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Ingeniería</a></li>
-				 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/ingenieria/tarjetas_seguimiento'/>"><i class="fa fa-angle-right" aria-hidden="true"></i> Seguimiento de tarjetas</a></li>
+			 		<sec:authorize access="hasRole('ADMIN') or hasRole('INGENIERIA_GERENCIA')">
+				 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/ingenieria_gerencia/tarjeta_aut_ingenieria'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Ingeniería</a></li>
+				 		<li><a class="dropdown-item" href = "<c:url value='/tarjeta/ingenieria_gerencia/tarjeta_cambiosgi'/>"><i class="fa fa-repeat" aria-hidden="true"></i> Cambios tarjetas Gerente Ingeniería</a></li>
 			 		</sec:authorize>
 			 		<sec:authorize access="hasRole('ADMIN') or hasRole('CLIENTE')">
 			 			<li><a class="dropdown-item" href = "<c:url value='/tarjeta/cliente/tarjeta_aut_cliente'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de tarjetas Cliente</a></li>

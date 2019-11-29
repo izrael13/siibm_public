@@ -220,5 +220,11 @@ public class Tarjeta_fabricacionDAOImpl extends AbstractDao<Integer,Tarjeta_fabr
 		Tarjeta_fabricacion Tarjeta = (Tarjeta_fabricacion) criteriaGeneralObj(Params);
 		return Tarjeta;
 	}
+
+	@Override
+	public Tarjeta_fabricacion BuscarTFPG(List<ParamsGeneral> Params) {
+		Tarjeta_fabricacion TF = (Tarjeta_fabricacion) criteriaGeneralObj(Params);
+		return TF;
+	}
 	
 }

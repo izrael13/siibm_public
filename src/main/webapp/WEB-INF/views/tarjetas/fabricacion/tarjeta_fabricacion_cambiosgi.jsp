@@ -8,100 +8,92 @@
 <html>
 <head>
 <%@ include file="../../appconfig/authheader2.jsp" %>
-<title>Tarjetas de Fabricación</title>
-<script defer="defer">
+<title>Tarjetas de Fabricación Cambios de Gerencia</title>
+<script>
 $(document).ready(function() {
-
-	if(('${tdb.tarjeta_fabricacion.idcotizacion}' == "") 
-		|| ('${tdb.tarjeta_fabricacion.fecha_aut_diseniador}' != "" && '${tdb.tarjeta_fabricacion.usuario_aut_diseniador}' > 0)
-		|| ('${tdb.tarjeta_fabricacion.fecha_cancela}' != "" && '${tdb.tarjeta_fabricacion.usuario_cancela}' > 0))
+	$("#SGrabado option:not(:selected)").prop("disabled", true);
+	$("#SSuaje option:not(:selected)").prop("disabled", true);
+	
+	var nodes = document.getElementById("CSRutaDiv").getElementsByTagName('*');
+	for(var i = 0; i < nodes.length; i++)
 	{
-		$("#BCancelar").prop("disabled", true );
-		$("#BEnvAut").prop("disabled", true );
-		$("#BGrabar").prop("disabled", true );
-		$("#file").prop("disabled", true );
-		$("#CCama").prop("disabled", true );
-		var lista=document.getElementsByName("ABorrarImg");
-		for(var i=0; i<lista.length; i++)
+		if(nodes[i].type == 'checkbox')
 		{
-			$("#"+lista[i].id).prop("disabled", true );		
-		}
-		$("#TPzasxLargo").attr("readonly","readonly");
-		$("#TPzasxAncho").attr("readonly","readonly");
-		$("#TMedInt").attr("readonly","readonly");
-		$("#TRayado4").attr("readonly","readonly");
-		$("#TRayado5").attr("readonly","readonly");
-		$("#TRayado6").attr("readonly","readonly");
-		$("#TCom").attr("readonly","readonly");
-		$("#TComTF").attr("readonly","readonly");
-		$("#TComDis").attr("readonly","readonly");
-		$("#TAltPallet").attr("readonly","readonly");
-		$("#TCamasPallet").attr("readonly","readonly");
-		$("#TFlejesPallet").attr("readonly","readonly");
-		$("#TFlejesAtado").attr("readonly","readonly");
-		$("#TPzasAtado").attr("readonly","readonly");
-		$("#TAtaCama").attr("readonly","readonly");
-		$("#TPzasxTar").attr("readonly","readonly");
-		$("#SNPartes option:not(:selected)").prop("disabled", true);
-		$("#SGrabado option:not(:selected)").prop("disabled", true);
-		$("#SSuaje option:not(:selected)").prop("disabled", true);
-		$("#CTxUnit").bind("click", preventDef, false);
-		
-		var nodes = document.getElementById("CSRutaDiv").getElementsByTagName('*');
-		for(var i = 0; i < nodes.length; i++)
-		{
-			if(nodes[i].type == 'checkbox')
+			if(nodes[i].id != "")
 			{
-				if(nodes[i].id != "")
-				{
-					nodes[i].addEventListener("click", preventDef, false);
-					nodes[i].onchange = "";
-				}
+				nodes[i].addEventListener("click", preventDef, false);
+				nodes[i].onchange = "";
 			}
 		}
-		
 	}
 });
 function preventDef(event) {
-	event.preventDefault();
-}
-function FBuscar()
-{
-	if($( "#TFolioTF" ).val() =="")
-		$( "#TFolioTF" ).val("");
-	
-	if($( "#TIdCot" ).val() =="")	
-		$( "#TIdCot" ).val("0");
-	
-	var isDisabled = $("#BGrabar").prop('disabled');
-	
-	$( "#TIdCot" ).prop( "readonly", false );
-	$( "#TFolioTF" ).prop( "readonly", false );
-	$( "#SClientes" ).prop( "disabled", false );
-	
-	$('#SClientes').selectize({
-	    create: true,
-	    sortField: 'text'
-	});
-	
-	$( "#BGrabar" ).prop( "disabled", true );
-	
-	if($( "#TIdCot" ).val() > 0 || $( "#TFolioTF" ).val() != "" || $( "#SClientes" ).val() != "")
-		popupwindow('<c:url value="/tarjeta/ingenieria/tarjeta_fabricacion_buscar" />?idcot='+$( "#TIdCot" ).val()+'&foliotf='+$( "#TFolioTF" ).val()+'&cardcode='+$( "#SClientes" ).val(),'Búsqueda de tarjetas',800,1000);
-
-		$( "#TIdCot").removeClass().addClass("border border-danger");
-		$( "#TFolioTF").removeClass().addClass("border border-danger");
-		$( "#SClientes").removeClass().addClass("border border-danger");
-		$( "#TFolioTF" ).focus();
-	
-}
-function FBuscarxFolio(folio)
-{
-	window.location.replace('<c:url value="/tarjeta/ingenieria/tarjeta_fabricacion" />?folio='+folio);
+event.preventDefault();
 }
 function FLimpiar()
 {
-	window.location.replace('<c:url value="/tarjeta/ingenieria/tarjeta_fabricacion" />');
+	window.location.replace('<c:url value="/tarjeta/ingenieria_gerencia/tarjeta_cambiosgi" />');
+}
+function FBuscar()
+{
+	$( "#TFolioTF" ).prop( "readonly", false ).removeClass().addClass("border border-danger").focus();
+	$( "#BGrabar" ).prop( "disabled", true );
+	var FolioTF = $("#TFolioTF").val();
+	if(FolioTF != "")
+		window.location.replace('<c:url value="/tarjeta/ingenieria_gerencia/tarjeta_cambiosgi" />?folio='+FolioTF);
+}
+function FCalcular()
+{
+	var data = new FormData();
+	
+	data.append('idcotizacion', $("#TIdCot").val());
+	data.append('iddetalle', $("#TIdDet").val());
+	data.append('folio_tarjeta', $("#TFolioTF").val());
+	data.append('npartes', $("#SNPartes").val());	
+	data.append('pzasxlargo', $("#TPzasxLargo").val() == "" ? 0 : $("#TPzasxLargo").val());
+	data.append('pzasxancho', $("#TPzasxAncho").val() == "" ? 0 : $("#TPzasxAncho").val());
+		
+	$("#mensajes" ).text("Calculando, por favor espere.");
+	$("#mensajes").removeClass().addClass("alert alert-info");
+	
+	$.ajax({
+	    url: '<c:url value="/tarjeta/ingenieria_gerencia/calculardatosgi"/>',
+	    data: data,
+	    type : 'POST',
+        enctype: 'multipart/form-data',
+        processData: false,
+        contentType: false,
+        before: function() {	
+  	    },
+	    success: function(r) {	    	
+	    	if (r.search(/Login page/i) != -1) {
+    			window.location.replace('<c:url value="/login?expired"/>');
+			    return true;
+			  }	    		
+	    	$("#mensajes" ).text("").removeClass();
+			
+	    	try
+        	{
+	  			var obj = JSON.parse(r);
+//	  			alert(obj);
+	        	if(obj != null)
+	        	{
+	        		//$("#TMedLamina").val(obj.medlamina);
+	        		$("#TAreaTotal").val(obj.area_total);
+	        		$("#TMedPliego").val(obj.med_pliego);
+	        	}
+        	}
+        	catch(err) {
+        		  document.getElementById("mensajes").innerHTML = "";
+        	}
+	    	
+	    },
+	    error: function(xhr, status, error) {
+	    	var err = xhr.responseText;	    	
+	    	$("#mensajes" ).text("Error: "+err.Message+" - "+error).removeClass().addClass("alert alert-danger");
+	    }
+	  });
+	
 }
 function GeneraCarousel(r)
 {
@@ -143,7 +135,7 @@ function FAddImagen()
 	$("#mensajes").removeClass().addClass("alert alert-info");
 	
 	$.ajax({
-	    url: '<c:url value="/tarjeta/ingenieria/subir_imagen_tarjeta"/>',
+	    url: '<c:url value="/tarjeta/ingenieria_gerencia/subir_imagen_tarjetagi"/>',
 	    data: data,
 	    type : 'POST',
         enctype: 'multipart/form-data',
@@ -188,7 +180,7 @@ function FBorrarImg(idcot,iddet,nombre)
 		$("#mensajes").removeClass().addClass("alert alert-info");
 		
 		$.ajax({
-		    url: '<c:url value="/tarjeta/ingenieria/borrar_imagen_tarjeta"/>',
+		    url: '<c:url value="/tarjeta/ingenieria_gerencia/borrar_imagen_tarjetagi"/>',
 		    data: data,
 		    type : 'POST',
 	        enctype: 'multipart/form-data',
@@ -220,46 +212,6 @@ function FBorrarImg(idcot,iddet,nombre)
 	}
 
 }
-
-function FEnviarAut()
-{
-	var data = new FormData();
-	
-	data.append('idcotizacion', $( "#TIdCot" ).val());
-	data.append('iddetalle', $( "#TIdDet" ).val());
-	data.append('folio_tarjeta', $( "#TFolioTF" ).val());
-	
-	$("#mensajes" ).text("Enviando tarjeta.");
-	$("#mensajes").removeClass().addClass("alert alert-info");
-	
-	$.ajax({
-	    url: '<c:url value="/tarjeta/ingenieria/enviar_tarjeta_aut"/>',
-	    data: data,
-	    type : 'POST',
-        enctype: 'multipart/form-data',
-        processData: false,
-        contentType: false,
-        before: function() {
-
-  	    },
-	    success: function(r) {
-	    	
-	    	if (r.search(/Login page/i) != -1) {
-    			window.location.replace('<c:url value="/login?expired"/>');
-			    return true;
-			  }    	
-	    	$("#mensajes" ).text("Tarjeta enviada OK");
-			$("#mensajes").removeClass().addClass("alert alert-success");
-			window.location.replace('<c:url value="/tarjeta/ingenieria/tarjeta_fabricacion" />');
-	    },
-	    error: function(xhr, status, error) {
-	    	var err = xhr.responseText;
-	    	
-	    	$("#mensajes" ).text("Error: "+err.Message+" - "+error);
-			$("#mensajes").removeClass().addClass("alert alert-danger");
-	    }
-	  }); 
-}
 function FCancelar()
 {
 	var data = new FormData();
@@ -267,13 +219,13 @@ function FCancelar()
 	data.append('idcotizacion', $( "#TIdCot" ).val());
 	data.append('iddetalle', $( "#TIdDet" ).val());
 	data.append('folio_tarjeta', $( "#TFolioTF" ).val());
-	data.append('coment_diseniador', $( "#TComDis" ).val());
+	data.append('coment', $( "#TCom" ).val());
 	
 	$("#mensajes" ).text("Cancelando tarjetas.");
 	$("#mensajes").removeClass().addClass("alert alert-info");
 	
 	$.ajax({
-	    url: '<c:url value="/tarjeta/ingenieria/cancelar_tarjetas"/>',
+	    url: '<c:url value="/tarjeta/ingenieria_gerencia/cancelar_reactivarTFXCTE"/>',
 	    data: data,
 	    type : 'POST',
         enctype: 'multipart/form-data',
@@ -289,7 +241,7 @@ function FCancelar()
 			  }	    		
 	    	$("#mensajes" ).text("Tarjetas canceladas OK");
 			$("#mensajes").removeClass().addClass("alert alert-success");
-			window.location.replace('<c:url value="/tarjeta/ingenieria/tarjeta_fabricacion" />');
+			window.location.replace('<c:url value="/tarjeta/ingenieria_gerencia/tarjeta_cambiosgi" />');
 	    },
 	    error: function(xhr, status, error) {
 	    	var err = xhr.responseText;	    	
@@ -298,62 +250,6 @@ function FCancelar()
 	    }
 	  }); 
 }
-
-function FCalcular()
-{
-	var data = new FormData();
-	
-	data.append('idcotizacion', $("#TIdCot").val());
-	data.append('iddetalle', $("#TIdDet").val());
-	data.append('folio_tarjeta', $("#TFolioTF").val());
-	data.append('npartes', $("#SNPartes").val());	
-	data.append('pzasxlargo', $("#TPzasxLargo").val() == "" ? 0 : $("#TPzasxLargo").val());
-	data.append('pzasxancho', $("#TPzasxAncho").val() == "" ? 0 : $("#TPzasxAncho").val());
-		
-	$("#mensajes" ).text("Calculando, por favor espere.");
-	$("#mensajes").removeClass().addClass("alert alert-info");
-	
-	$.ajax({
-	    url: '<c:url value="/tarjeta/ingenieria/calculardatos"/>',
-	    data: data,
-	    type : 'POST',
-        enctype: 'multipart/form-data',
-        processData: false,
-        contentType: false,
-        before: function() {	
-
-  	    },
-	    success: function(r) {	    	
-	    	if (r.search(/Login page/i) != -1) {
-    			window.location.replace('<c:url value="/login?expired"/>');
-			    return true;
-			  }	    		
-	    	$("#mensajes" ).text("").removeClass();
-			
-	    	try
-        	{
-	  			var obj = JSON.parse(r);
-//	  			alert(obj);
-	        	if(obj != null)
-	        	{
-	        		//$("#TMedLamina").val(obj.medlamina);
-	        		$("#TAreaTotal").val(obj.area_total);
-	        		$("#TMedPliego").val(obj.med_pliego);
-	        	}
-        	}
-        	catch(err) {
-        		  document.getElementById("mensajes").innerHTML = "";
-        	}
-	    	
-	    },
-	    error: function(xhr, status, error) {
-	    	var err = xhr.responseText;	    	
-	    	$("#mensajes" ).text("Error: "+err.Message+" - "+error).removeClass().addClass("alert alert-danger");
-	    }
-	  });
-	
-}
-
 </script>
 </head>
 <body>
@@ -393,13 +289,7 @@ function FCalcular()
 		</div>			
 		<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
 			<div class="row small border border-right">
-				<div class="col-sm-8">Cliente:
-					<form:select disabled="true" id="SClientes" path="cotizador.cardcode" multiple="false" class="border border-secondary">
-						<form:option value=""></form:option>
-						<c:forEach var="cte" items="${clientes}">
-							<form:option value="${cte.cardcode}"><c:out value="${cte.cardname}"/></form:option>
-						</c:forEach>
-					</form:select>
+				<div class="col-sm-8">Cliente:${cliente}
 				</div>
 				<div class="col-sm-2">Número de partes:
 					<form:select onchange="FCalcular()" id="SNPartes" path="tarjeta_fabricacion.num_partes" multiple="false" class="border border-primary">
@@ -425,11 +315,11 @@ function FCalcular()
 					<div class="has-error"><form:errors path="tarjeta_fabricacion.medida_pliego" class="badge badge-danger small"/></div>
 				</div>
 				<div class="col-sm-2">Medidas internas:
-					<form:input id="TMedInt" class="border border-primary" size="9" maxlength="20" onkeypress="return SinCaracteresEspeciales(event)" type="text" path="tarjeta_fabricacion.medidas_internas"/>
+					<form:input id="TMedInt" readonly="true" class="border border-secondary" size="9" maxlength="20" onkeypress="return SinCaracteresEspeciales(event)" type="text" path="tarjeta_fabricacion.medidas_internas"/>
 					<div class="has-error"><form:errors path="tarjeta_fabricacion.medidas_internas" class="badge badge-danger small"/></div>
 				</div>
 				<div class="col-sm-2">Grabado:
-					<form:select id="SGrabado" path="tarjeta_fabricacion.grabado" multiple="false" class="border border-primary">
+					<form:select id="SGrabado" path="tarjeta_fabricacion.grabado" multiple="false" class="border border-secondary">
 						<form:option value="0"> - </form:option>
 						<c:forEach var="gr" items="${grabados}">
 							<form:option value="${gr.id}"><c:out value="${gr.nombre}-${gr.costo}"/></form:option>
@@ -438,7 +328,7 @@ function FCalcular()
 					<div class="has-error"><form:errors path="tarjeta_fabricacion.grabado" class="badge badge-danger small"/></div>
 				</div>
 				<div class="col-sm-2">Suaje:
-					<form:select id="SSuaje" path="tarjeta_fabricacion.suaje" multiple="false" class="border border-primary">
+					<form:select id="SSuaje" path="tarjeta_fabricacion.suaje" multiple="false" class="border border-secondary">
 						<form:option value="0"> - </form:option>
 						<c:forEach var="sj" items="${suajes}">
 							<form:option value="${sj.id}"><c:out value="${sj.nombre}-${sj.costo}"/></form:option>
@@ -463,13 +353,13 @@ function FCalcular()
 					<form:input class="border border-secondary" size="9" maxlength="8" readonly="true" type="text" path="tarjeta_fabricacion.rayado3"/>
 				</div>
 				<div class="col-sm-2">Rayado 4:
-					<form:input id="TRayado4" onkeypress="return filterFloat(event,this);" class="border border-primary" size="9" maxlength="8" type="text" path="tarjeta_fabricacion.rayado4"/>
+					<form:input id="TRayado4" class="border border-secondary" size="9" readonly="true" maxlength="8" type="text" path="tarjeta_fabricacion.rayado4"/>
 				</div>
 				<div class="col-sm-2">Rayado 5:
-					<form:input id="TRayado5" onkeypress="return filterFloat(event,this);" class="border border-primary" size="9" maxlength="8" type="text" path="tarjeta_fabricacion.rayado5"/>
+					<form:input id="TRayado5" class="border border-secondary" size="9" readonly="true" maxlength="8" type="text" path="tarjeta_fabricacion.rayado5"/>
 				</div>
 				<div class="col-sm-2">Rayado 6:
-					<form:input id="TRayado6" onkeypress="return filterFloat(event,this);" class="border border-primary" size="9" maxlength="8" type="text" path="tarjeta_fabricacion.rayado6"/>
+					<form:input id="TRayado6" class="border border-secondary" size="9" readonly="true" maxlength="8" type="text" path="tarjeta_fabricacion.rayado6"/>
 				</div>
 			</div>
 		</div>
@@ -523,13 +413,13 @@ function FCalcular()
 			<div class="row small border border-right">
 				<div class="col col-lg-1">Pzas tarima</div>
 				<div class="col col-lg-1">
-					<form:input id="TPzasxTar" onKeyUp="CalcularDatos()" size="10" maxlength="8" type="text" path="cotizador_detalles.piezasxtarima" onkeypress="return Enteros(event);" class="border border-primary"/>
+					<form:input readonly="true" id="TPzasxTar" onKeyUp="CalcularDatos()" size="10" maxlength="8" type="text" path="cotizador_detalles.piezasxtarima" onkeypress="return Enteros(event);" class="border border-secondary"/>
 					<div class="has-error">
 						<form:errors path="cotizador_detalles.piezasxtarima" class="badge badge-danger small"/>
 					</div>
 				</div>
 				<div class="col col-lg-2">Emplayado: <form:checkbox disabled="true" path="cotizador.emplayado"/></div>
-				<div class="col col-lg-2">Vueltas: <form:input disabled="true" size="10" maxlength="8" type="text" path="cotizador.vueltas_emplaye" class="border border-secondaty"/></div>
+				<div class="col col-lg-2">Vueltas: <form:input disabled="true" size="10" maxlength="8" type="text" path="cotizador.vueltas_emplaye" class="border border-secondary"/></div>
 				<div class="col col-lg-2">Factura: <form:checkbox disabled="true" path="cotizador.factura"/></div>
 				<div class="col col-lg-2">Certif calidad: <form:checkbox disabled="true" path="cotizador.certif_calidad"/></div>
 				<div class="col col-lg-2">Imprimir OC: <form:checkbox disabled="true" path="cotizador.imprimir_oc"/> </div>
@@ -581,15 +471,14 @@ function FCalcular()
 				<div class="col col-lg-1"><a href="javascript:FBuscar()" class="btn btn-outline-primary btn-sm"><i class="fa fa-search" aria-hidden="true"> Buscar</i></a></div>
 				<div class="col col-lg-1"><a href="javascript:FLimpiar()" class="btn btn-outline-primary btn-sm"><i class="fa fa-refresh" aria-hidden="true"> Limpiar</i></a></div>
 				<div class="col col-lg-2"><button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target=".bd-example-modal-xl"><i class="fa fa-picture-o" aria-hidden="true"> Imágenes</i></button></div>
-				<div class="col col-lg-3"><button id="BEnvAut" type="button" data-toggle="modal" data-target="#EnvModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-paper-plane-o" aria-hidden="true"> Enviar para autorizaciones</i></button></div>
-				<div class="col col-lg-2"><button id="BCancelar" type="button" data-toggle="modal" data-target="#CancelModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-times-circle-o" aria-hidden="true"> Cancelar tarjeta</i></button></div>
+				<div class="col col-lg-2"><button id="BCancelar" type="button" data-toggle="modal" data-target="#CancelModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-times-circle-o" aria-hidden="true"> ${empty tdb.tarjeta_fabricacion.fecha_cancelxcte ? 'Cancelar' : 'Reactivar'} tarjeta x cliente</i></button></div>
 			</div>
 		</div>
 		
 		<div class = "container-fluid">
 			<div id = "mensajes" class = "${!empty mensajes ? 'alert alert-success' : ''}">${mensajes}</div>
 		</div>
-		
+
 		<div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
 		  <div class="modal-dialog modal-lg">
 		    <div class="modal-content">
@@ -631,34 +520,17 @@ function FCalcular()
 		  </div>
 		</div>
 		
-		<div class="modal fade" id="EnvModal" tabindex="-1" role="dialog" aria-labelledby="VtaModalLabel" aria-hidden="true">
-		  <div class="modal-dialog" role="document">
-		    <div class="modal-content">
-		      <div class="modal-header alert alert-info">
-		        <h5 class="modal-title">Enviar para autorizaciones</h5>
-		      </div>
-		      <div class="modal-body alert alert-warning">
-		        ¡¡¡ATENCIÓN!!! ¿Desea enviar esta tarjeta a autorización?
-		      </div>
-		      <div id="DivMensaje" class="modal-footer">
-		        <button type="button" class="btn btn-primary" onClick="FEnviarAut()">Enviar</button>
-		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-		      </div>
-		    </div>
-		  </div>
-		</div>
-		
 		<div class="modal fade" id="CancelModal" tabindex="-1" role="dialog" aria-labelledby="CancelModalLabel" aria-hidden="true">
 		  <div class="modal-dialog" role="document">
 		    <div class="modal-content">
 		      <div class="modal-header alert alert-info">
-		        <h5 class="modal-title">CANCELAR TARJETA</h5>
+		        <h5 class="modal-title">${empty tdb.tarjeta_fabricacion.fecha_cancelxcte ? 'Cancelar' : 'Reactivar'} TARJETA X CLIENTE</h5>
 		      </div>
 		      <div class="modal-body alert alert-danger">
-		        ¡¡¡ATENCIÓN!!! ¿Desea CANCELAR esta tarjeta? IMPORTANTE!!!! ---> También se cancelará la Cotización y las otras Tarjetas relacionadas!!!
+		        ¡¡¡ATENCIÓN!!! ¿Desea ${empty tdb.tarjeta_fabricacion.fecha_cancelxcte ? 'Cancelar' : 'Reactivar'} esta tarjeta? IMPORTANTE!!!! ---> También tendrá efecto en SAP!!!
 		      </div>
 		      <div id="DivMensaje" class="modal-footer">
-		        <button type="button" class="btn btn-primary" onClick="FCancelar()">Cancelar</button>
+		        <button type="button" class="btn btn-primary" onClick="FCancelar()">${empty tdb.tarjeta_fabricacion.fecha_cancelxcte ? 'Cancelar' : 'Reactivar'}</button>
 		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
 		      </div>
 		    </div>
