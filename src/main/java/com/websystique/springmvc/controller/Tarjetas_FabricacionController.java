@@ -112,7 +112,9 @@ public class Tarjetas_FabricacionController {
 	
 	@RequestMapping(value = {"/ingenieria/tarjeta_fabricacion" }, method = RequestMethod.GET)
 	public String tarjeta_fabricacion(ModelMap model, @RequestParam(value = "folio", defaultValue = "", required = false) String folio) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-		
+		model.addAttribute("loggedinuser", AppController.getPrincipal());
+		logger.info(AppController.getPrincipal() + " - tarjeta_fabricacion.");
+		User user = us.findBySSO(AppController.getPrincipal());
 		Tarjeta_fabricacion tf = new Tarjeta_fabricacion();
 		Cotizador cot = new Cotizador();
 		Cotizador_detalles cotdet = new Cotizador_detalles();
@@ -125,15 +127,9 @@ public class Tarjetas_FabricacionController {
 		
 		if(!folio.trim().equals(""))
 		{
-			/*List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
-			Params.add(new ParamsGeneral(1,"folio_tarjeta",folio,"EQ"));
-			Params.add(new ParamsGeneral(2,"fecha_aut_cliente","NE"));			
-			Params.add(new ParamsGeneral(3,"usuario_aut_cliente","NE"));
-			tf = tfs.BuscarTFPG(Params);
-			*/
-			tf = tfs.BuscarxFolio(folio);
+			tf = tfs.BuscarxFolio(folio, user.getId());
 			if(tf != null)
-			{
+			{	
 				tf.setTarjeta_img(tfis.BuscarxIdCotidDert(tf.getIdcotizacion(), tf.getIddetalle()));
 				
 				cot = cs.BuscarxId(tf.getIdcotizacion());
@@ -148,21 +144,18 @@ public class Tarjetas_FabricacionController {
 				model.addAttribute("resis", crss.BuscarxId(cotdet.getIdresistencia_barca()));
 				model.addAttribute("sello", css.BuscarxId(cotdet.getResistencia_cte()));
 				model.addAttribute("cliente_factura", cot.getCardcode_factura() != null ? ccavs.cat_cte_sap(cot.getCardcode_factura()).getCardname() : "");
-				model.addAttribute("cliente", cot.getCardcode() != null ? ccavs.cat_cte_sap(cot.getCardcode()).getCardname() : "");
 				ListaEsp = ctsc.addEspecialidades(tf.getIdcotizacion(), tf.getIddetalle());
 				model.addAttribute("esp", gson.fromJson(ListaEsp.toString(),Object[].class));
-				//ctsc.DataSourceJasperTF(cot.getId(), cotdet.getIddetalle(), 1);
+				ctsc.DataSourceJasperTF(cot.getId(), cotdet.getIddetalle(), 1);
 			}
-		}		
+		}
 		
 		model.addAttribute("tdb", tdb);
 		model.addAttribute("grabados", chs.BuscarxTipo(2));
 		model.addAttribute("suajes", chs.BuscarxTipo(1));		
 		model.addAttribute("colores", ccos.ListaColores());		
-		model.addAttribute("loggedinuser", AppController.getPrincipal());
 		model.addAttribute("maquinas", tf != null ? BuscarMaquinas(ListaEsp,objCaja.getGrupo(),cotdet.getNum_tintas(),cotdet.getCierre(),tf.getFolio_tarjeta()) : new ArrayList<Catalogo_maquinas_sap_vw>());
-		
-		logger.info(AppController.getPrincipal() + " - tarjeta_fabricacion.");
+		model.addAttribute("clientes", ccavs.ListaCtes());
 				
 		return "/tarjetas/fabricacion/tarjeta_fabricacion";
 	}
@@ -338,12 +331,12 @@ public class Tarjetas_FabricacionController {
 	@ResponseBody
 	public ResponseEntity<?> subir_imagen_tarjeta(@RequestParam("file")  MultipartFile[] file, @RequestParam("folio_tarjeta") String folio_tarjeta,
 			@RequestParam("idcotizacion") Integer idcotizacion,@RequestParam("iddetalle") Integer iddetalle, @RequestParam("cama") Boolean cama,
-			ModelMap model,HttpServletResponse response,HttpServletRequest request) {
+			@RequestParam("principal") Boolean principal, ModelMap model,HttpServletResponse response,HttpServletRequest request) {
 			
-			return SubirImagen(file, request,idcotizacion,iddetalle,cama);
+			return SubirImagen(file, request,idcotizacion,iddetalle,cama,principal);
 	}
 	
-	private ResponseEntity<Object> SubirImagen( MultipartFile[] file,HttpServletRequest request,Integer idcotizacion,Integer iddetalle,Boolean cama)
+	private ResponseEntity<Object> SubirImagen( MultipartFile[] file,HttpServletRequest request,Integer idcotizacion,Integer iddetalle,Boolean cama, Boolean principal)
 	{
 		String mensaje = "";
 		try 
@@ -369,6 +362,16 @@ public class Tarjetas_FabricacionController {
             	});
             }
             
+            if(principal)
+            {            	
+            	ListimgTar.stream().filter(a -> a.getPrincipal() == true).forEach((p) -> {
+            		p.setPrincipal(false);
+            		p.setUsuario_insert(user.getId());
+            		p.setFecha_insert(date);
+            		tfis.Actualizar(p);
+            	});
+            }
+            
             if(ListimgTar.stream().filter(a -> a.getNombre().equals(fileName)).count() == 0)
             {
 	            
@@ -380,7 +383,7 @@ public class Tarjetas_FabricacionController {
 	            imgTar.setUsuario_insert(user.getId());
 	            imgTar.setFecha_insert(date);
 	            imgTar.setCama(cama);
-	            
+	            imgTar.setPrincipal(principal);
 	            tfis.Guardar(imgTar);
             }
             else
@@ -388,6 +391,7 @@ public class Tarjetas_FabricacionController {
             	ListimgTar.stream().filter(a -> a.getNombre().equals(fileName)).forEach((p) ->
             		{
             			p.setCama(cama);
+            			p.setPrincipal(principal);
             			p.setFecha_insert(date);
             			p.setUsuario_insert(user.getId());
             			tfis.Actualizar(p);
@@ -829,13 +833,13 @@ public class Tarjetas_FabricacionController {
 		
 		if(!folio.trim().equals(""))
 		{
-			/*List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+			List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
 			Params.add(new ParamsGeneral(1,"folio_tarjeta",folio,"EQ"));
 			Params.add(new ParamsGeneral(2,"fecha_aut_cliente","NE"));			
 			Params.add(new ParamsGeneral(3,"usuario_aut_cliente","NE"));
 			tf = tfs.BuscarTFPG(Params);
-			*/
-			tf = tfs.BuscarxFolio(folio);
+			
+			//tf = tfs.BuscarxFolio(folio);
 			if(tf != null)
 			{
 				tf.setTarjeta_img(tfis.BuscarxIdCotidDert(tf.getIdcotizacion(), tf.getIddetalle()));
@@ -956,9 +960,9 @@ public class Tarjetas_FabricacionController {
 	@ResponseBody
 	public ResponseEntity<?> subir_imagen_tarjetagi(@RequestParam("file")  MultipartFile[] file, @RequestParam("folio_tarjeta") String folio_tarjeta,
 			@RequestParam("idcotizacion") Integer idcotizacion,@RequestParam("iddetalle") Integer iddetalle, @RequestParam("cama") Boolean cama,
-			ModelMap model,HttpServletResponse response,HttpServletRequest request) {
+			@RequestParam("principal") Boolean principal, ModelMap model,HttpServletResponse response,HttpServletRequest request) {
 			
-			return SubirImagen(file, request,idcotizacion,iddetalle,cama);
+			return SubirImagen(file, request,idcotizacion,iddetalle,cama,principal);
 	}
 	
 	@RequestMapping(value = {"/ingenieria_gerencia/borrar_imagen_tarjetagi" }, method = RequestMethod.POST)
@@ -975,24 +979,25 @@ public class Tarjetas_FabricacionController {
 		String mensaje = "";
 		User user = us.findBySSO(AppController.getPrincipal());
 		java.util.Date date = new java.util.Date();
-		DIServerSoapProxy DISERVER = new DIServerSoapProxy();
-		String idsession = "";
+		//DIServerSoapProxy DISERVER = new DIServerSoapProxy();
+		//String idsession = "";
 		try 
 		{
 			Tarjeta_fabricacion a = tfs.BuscarxFolio(folio_tarjeta);
 			//WSTarjetasSoapProxy WSTF = new WSTarjetasSoapProxy();
 			
-			idsession = DISERVER.login("192.169.1.50", "BARCAPRUEBAS", "dst_MSSQL2008", "sa", 
+			/*idsession = DISERVER.login("192.169.1.50", "BARCAPRUEBAS", "dst_MSSQL2008", "sa", 
 					"Admin#2009", "ingenie", "4444", "ln_Spanish_La", "WIN-I1A2FG7OBS9", "");
 			System.out.println(idsession);
+			DISERVER.validate(idsession);
 			ExecuteSQLResponseExecuteSQLResult ExeQueryRes = DISERVER.executeSQL(idsession, "select Count(ItemCode) from oitm where U_TF = '22707xxxx' and ItmsGrpCod = 105");
 			for(MessageElement x : ExeQueryRes.get_any())
 			{
 				System.out.println(x.getElementsByTagName("oitm").item(0).getFirstChild().getFirstChild().getFirstChild());
 				//System.out.println(x.getElementsByTagName("oitm").item(0).getFirstChild().getLastChild().getLastChild());
-			}
+			}*/
 			
-
+			//DISERVER.addObject(idsession, BOM, commandID);
 			
 			//System.out.println(WSTF.grabarSimbolo());
 			//DISERVER.va
@@ -1025,8 +1030,8 @@ public class Tarjetas_FabricacionController {
 		}
 		finally
 		{
-			String logout = DISERVER.logout(idsession);
-			System.out.println(logout);
+			//String logout = DISERVER.logout(idsession);
+			//System.out.println(logout);
 		}
 	
 	}

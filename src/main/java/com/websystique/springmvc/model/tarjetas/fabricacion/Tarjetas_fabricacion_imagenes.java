@@ -34,4 +34,5 @@ public class Tarjetas_fabricacion_imagenes implements Serializable {
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date fecha_insert;
 	private Integer usuario_insert;
+	private Boolean principal;
 }

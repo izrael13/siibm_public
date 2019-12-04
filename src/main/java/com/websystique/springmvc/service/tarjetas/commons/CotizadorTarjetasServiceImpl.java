@@ -3,6 +3,7 @@ package com.websystique.springmvc.service.tarjetas.commons;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import com.websystique.springmvc.model.tarjetas.Catalogo_resistencias_sap_vw;
 import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador;
 import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador_detalles;
 import com.websystique.springmvc.model.tarjetas.fabricacion.Tarjeta_fabricacion;
+import com.websystique.springmvc.model.tarjetas.fabricacion.Tarjetas_fabricacion_imagenes;
 import com.websystique.springmvc.service.UserService;
 import com.websystique.springmvc.service.tarjetas.Catalogo_cajas_sap_vwService;
 import com.websystique.springmvc.service.tarjetas.Catalogo_clientes_sap_vwService;
@@ -84,12 +86,10 @@ public class CotizadorTarjetasServiceImpl implements CotizadorTarjetasService{
 		JsonCot.put("lab",dir.getDireccion()+ " " +dir.getCiudad()+ " "+dir.getEstado());
 		User user = new User();
 		user = us.findById(cot.getUsuario_aut_ventas() == null ? 0 : cot.getUsuario_aut_ventas());
-		if(user != null)
-			JsonCot.put("autorizador", user.getFirstName() + " " + user.getLastName());
+		JsonCot.put("autorizador", user != null ? user.getFirstName() + " " + user.getLastName() : "");
 		user = null;
 		user = us.findById(cot.getUsuario_insert());
-		if(user != null)
-			JsonCot.put("representante", user.getFirstName() + " " + user.getLastName());
+		JsonCot.put("representante", user != null ? user.getFirstName() + " " + user.getLastName() : "");
 		user = null;
 		user = us.findById(cot.getUsuario_asigna_arrastre() == null ? 0 : cot.getUsuario_asigna_arrastre());
 			JsonCot.put("arrmuestrista", user == null ? "" : user.getFirstName() + " " + user.getLastName());
@@ -97,11 +97,11 @@ public class CotizadorTarjetasServiceImpl implements CotizadorTarjetasService{
 		user = us.findById(cot.getUsuario_diseniador() == null ? 0 : cot.getUsuario_diseniador());
 			JsonCot.put("diseniador", user == null ? "" : user.getFirstName() + " " + user.getLastName());
 		user = null;
-			user = us.findById(cot.getUsuario_rech_diseniador() == null ? 0 : cot.getUsuario_rech_diseniador());
-				JsonCot.put("diseniador_rech", user == null ? "" : user.getFirstName() + " " + user.getLastName());
+		user = us.findById(cot.getUsuario_rech_diseniador() == null ? 0 : cot.getUsuario_rech_diseniador());
+		JsonCot.put("diseniador_rech", user == null ? "" : user.getFirstName() + " " + user.getLastName());
 		user = null;
 		user = us.findById(cot.getUsuario_cancel() == null ? 0 : cot.getUsuario_cancel());
-			JsonCot.put("usuario_cancel", user == null ? "" : user.getFirstName() + " " + user.getLastName());
+		JsonCot.put("usuario_cancel", user == null ? "" : user.getFirstName() + " " + user.getLastName());
 		
 		if(addDetalles == 1)
 		{
@@ -177,7 +177,7 @@ public class CotizadorTarjetasServiceImpl implements CotizadorTarjetasService{
 		return JsonCotDet;
 	}
 
-	@Override
+	/*@Override
 	public JSONObject DataSourceJasperReq(Integer id) {
 		GsonBuilder builder = new GsonBuilder();
 		Gson gson = builder.serializeNulls().setDateFormat("yyyy-MM-dd HH:mm").create();
@@ -251,9 +251,9 @@ public class CotizadorTarjetasServiceImpl implements CotizadorTarjetasService{
 		JsonCot.put("ListaDetalles", ListaJsonDet);
 		JsonCot.put("SUBREPORT_DIR", "/jasperreports/cotizador/");
 		return JsonCot;
-	}
+	} */
 
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes"})
 	@Override
 	public JSONObject DataSourceJasperTF(Integer id, Integer iddet, Integer addCotCotDet) {
 		GsonBuilder builder = new GsonBuilder();
@@ -264,10 +264,26 @@ public class CotizadorTarjetasServiceImpl implements CotizadorTarjetasService{
 		
 		tf = tfs.BuscarxCot_Cotdet(id, iddet);
 		if(tf != null)
-		{
-			tf.setTarjeta_img(tfis.BuscarxIdCotidDert(id, iddet));
-			
+		{			
 			JsonTF = new JSONObject(gson.toJson(tf));
+			
+			tf.setTarjeta_img(tfis.BuscarxIdCotidDert(id, iddet));
+			for(Tarjetas_fabricacion_imagenes tfi : tf.getTarjeta_img())
+			{
+				if(tfi.getCama()) {
+					JsonTF.put("cama_nombre", tfi.getNombre());
+					JsonTF.put("cama_path", tfi.getPath());
+				}
+				else
+				{
+					if(tfi.getPrincipal())
+					{
+						JsonTF.put("principal_nombre", tfi.getNombre());
+						JsonTF.put("principal_path", tfi.getPath());
+					}
+				}	
+			}
+			JsonTF.put("tarjeta_img", tf.getTarjeta_img().stream().filter(a -> !a.getCama() && !a.getPrincipal()).collect(Collectors.toList()));
 			user = us.findById(tf.getUsuario_aut_diseniador() == null ? 0 : tf.getUsuario_aut_diseniador());
 			JsonTF.put("diseniador", tf.getUsuario_aut_diseniador() == null ? "" : user.getFirstName() + " " +user.getLastName());
 			
@@ -320,7 +336,7 @@ public class CotizadorTarjetasServiceImpl implements CotizadorTarjetasService{
 		        }
 			}
 		}
-
+		System.out.println(JsonTF.toString());
 		return JsonTF;
 	}
 

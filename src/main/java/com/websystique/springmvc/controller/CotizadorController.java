@@ -1325,7 +1325,8 @@ public class CotizadorController {
 			JasperReport jasperReport = (JasperReport) JRLoader.loadObject(jasperStream);
 			//JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(cs.ListaCotizacionesJasper(Integer.valueOf(id),false));
 			//params.put("dataSource", dataSource);
-			ByteArrayInputStream jsonDataStream = new ByteArrayInputStream(stripAccents(ctsc.DataSourceJasperReq(id).toString()).getBytes("UTF-8"));
+			//ByteArrayInputStream jsonDataStream = new ByteArrayInputStream(stripAccents(ctsc.DataSourceJasperReq(id).toString()).getBytes("UTF-8"));
+			ByteArrayInputStream jsonDataStream = new ByteArrayInputStream(stripAccents(ctsc.DataSourceJasperCot(id,1).toString()).getBytes("UTF-8"));
 			JsonDataSource dataSource = new JsonDataSource(jsonDataStream);
 			params.put("Imagen",request.getServletContext().getRealPath("/"));
 			

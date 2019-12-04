@@ -120,6 +120,16 @@ function GeneraCarousel(r)
 	
 	return nuevaFila;
 }
+function FCheckImg(ban)
+{
+	if(ban == 0)
+		if($("#CCama").prop('checked'))
+			$("#CPrincipal").prop('checked',false);
+	
+	if(ban == 1)
+		if($("#CPrincipal").prop('checked'))
+			$("#CCama").prop('checked',false);
+}
 function FAddImagen()
 {
 	var data = new FormData();
@@ -130,12 +140,13 @@ function FAddImagen()
 	data.append('idcotizacion', $( "#TIdCot" ).val());
 	data.append('iddetalle', $( "#TIdDet" ).val());
 	data.append('cama', $("#CCama").prop('checked'));
+	data.append('principal', $("#CPrincipal").prop('checked'));
 	
 	$("#mensajes" ).text("Subiendo imagen.");
 	$("#mensajes").removeClass().addClass("alert alert-info");
 	
 	$.ajax({
-	    url: '<c:url value="/tarjeta/ingenieria_gerencia/subir_imagen_tarjetagi"/>',
+	    url: '<c:url value="/tarjeta/ingenieria/subir_imagen_tarjeta"/>',
 	    data: data,
 	    type : 'POST',
         enctype: 'multipart/form-data',
@@ -494,7 +505,7 @@ function FCancelar()
 							      <img height="400" width="400" src="<c:url value="/static/img_tarjetas/${item.nombre}"/>" alt="${item.nombre}">
 							      <div class="carousel-caption">
 								    <h3>${item.nombre}</h3>
-								    <p class="h2">${item.cama == true ? 'CAMA' : ''}</p>
+								    <p class="h2">${item.cama == true ? 'CAMA' : ''}${item.principal == true ? 'PRINCIPAL' : ''}</p>
 								    <p><button type="button" class="btn btn-outline-primary btn-sm" id="ABorrarImg${status.index}" name="ABorrarImg" onclick="FBorrarImg(${item.idcotizacion},${item.iddetalle},'${item.nombre}')">Borrar</button></p>
 								  </div>
 							    </div>
@@ -512,7 +523,8 @@ function FCancelar()
 					</div>
 				</div>		    	
 		    	<div class="modal-footer">
-		    		<small>Cama: <input id="CCama" class="border border-primary" type="checkbox" />
+		    		<small>Cama: <input onClick="FCheckImg(0)" id="CCama" class="border border-primary" type="checkbox" /> /
+		    			   Principal: <input onClick="FCheckImg(1)" id="CPrincipal" class="border border-primary" type="checkbox" />
 					<input class="btn btn-outline-primary btn-sm" name="file" id="file" type="file" onchange="FAddImagen()" accept="image/*"/></small>
 			        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
 			     </div>
