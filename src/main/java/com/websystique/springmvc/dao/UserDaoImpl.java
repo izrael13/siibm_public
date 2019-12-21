@@ -105,7 +105,7 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 	}
 
 	@Override
-	public List<JSONObject> findMatcher(String sso) {
+	public List<JSONObject> findMatcher() {
 		List<JSONObject> Lista = new ArrayList<JSONObject>();
 		pms.findall().forEach(a ->{
 			JSONObject JsonObj = new JSONObject();

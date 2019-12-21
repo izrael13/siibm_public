@@ -37,7 +37,11 @@ $(document).ready(function() {
 			$("#BCancel").prop('disabled',true);
 	} 
 });
-
+function FValidaLogIn(data)
+{
+	if (data.search(/Login page/i) != -1) 
+		window.location.replace('<c:url value="/login?expired"/>');
+}
 function FBuscarDirecciones()
 {
 	var cardcode = document.getElementById("SClientes").value;
@@ -55,10 +59,7 @@ function FBuscarDirecciones()
 							  $("#mensajes" ).text("").removeClass();
 					        },	
         success : function(data) {
-        		if (data.search(/Login page/i) != -1) {
-        			window.location.replace('<c:url value="/login?expired"/>');
-				    return true;
-				  }
+        		FValidaLogIn(data)
 	        	opciones = opciones + "<option value='-1'> - - - </option>";
 	        	$.each(jQuery.parseJSON(data),function(index, value){
 	        		opciones = opciones + "<option value='"+value.linenum + "'>"+value.address +" - "+value.direccion + "</option>";
@@ -91,10 +92,7 @@ function FBuscarInfoDir()
 							  $("#mensajes").removeClass();
 					        },	
         success : function(data) {
-        	if (data.search(/Login page/i) != -1) {
-    			window.location.replace('<c:url value="/login?expired"/>');
-			    return true;
-			  }
+        	FValidaLogIn(data)
         	$.each(jQuery.parseJSON(data),function(index, value){
         		$("#TFlete").val(value.flete);
         		if(value.flete == 0)
@@ -159,11 +157,7 @@ function FBuscarResisId()
 	var idresis = $("#SResisBarca" ).val();
 	
 	$.ajax({
-		//dataType: 'text',
 		url: '<c:url value="/cotizador/vendedor/buscarinforesistenciabarca"/>?id='+idresis,
-		//contentType : 'application/json',
-		//cache: false,    
-		//data: cve_estado,
 		beforeSend: function(xhr) {
 							  $("#imgload").show();
 							  $("#TPreciom2resis").val(0);
@@ -173,10 +167,7 @@ function FBuscarResisId()
 							  $("#mensajes" ).text("").removeClass();
 					        },	
         success : function(data) {
-        	if (data.search(/Login page/i) != -1) {
-    			window.location.replace('<c:url value="/login?expired"/>');
-			    return true;
-			  }
+        	FValidaLogIn(data)
   			var obj = JSON.parse(data);
         	if(obj != null)
         	{
@@ -237,11 +228,7 @@ function CalcularDatos()
 	var mystring = JSON.stringify(Parameters);
 	
 	$.ajax({
-		//dataType: 'text',
 		url: '<c:url value="/cotizador/vendedor/calculardatos"/>?mystring='+encodeURI(mystring),
-		//contentType : 'application/json',
-		//cache: false,    
-		//data: cve_estado,
 		beforeSend: function(xhr) {
 							  $("#imgload").show();
 							  $("#mensajes" ).text("").removeClass();
@@ -266,10 +253,7 @@ function CalcularDatos()
 				        		$("#TTotEsp").val(0);
 					        },	
         success : function(data) {
-        	if (data.search(/Login page/i) != -1) {
-    			window.location.replace('<c:url value="/login?expired"/>');
-			    return true;
-			  }
+        	FValidaLogIn(data)
         	try
         	{
 	  			var obj = JSON.parse(data);
@@ -300,9 +284,8 @@ function CalcularDatos()
 	        		
 	        		var jsonEsp = JSON.parse(obj.Esp);
 	
-	        		for( var i=0; i<jsonEsp.length; i++ ){
+	        		for( var i=0; i<jsonEsp.length; i++ )
 	        				$("#TCosto"+jsonEsp[i].id).val(jsonEsp[i].costo);
-	        		  }
 	
 	        	}
         	}
@@ -431,11 +414,7 @@ function BuscarResistencias()
 		url: '<c:url value="/cotizador/vendedor/buscarresistenciasbarca"/>?idcaja='+idcaja,
 		
 		success : function(data) {
-			if (data.search(/Login page/i) != -1) {
-    			window.location.replace('<c:url value="/login?expired"/>');
-			    return true;
-			  }
-
+			FValidaLogIn(data)
 			var obj = JSON.parse(data);
 			if(obj != null)
 			{
@@ -448,8 +427,7 @@ function BuscarResistencias()
 			}
 
         	$("#imgload").hide();
-        },
-				
+        },				
 		error: function(xhr, status, error) {
 		  $( "#mensajes" ).text("Error: " + xhr.responseText + " Codigo" +  error).removeClass().addClass("alert alert-danger");
 		  $( "#imgload").hide();
@@ -461,10 +439,19 @@ function BuscarResistencias()
 <title>Registro cotizaciones/Requerimientos/Muestras</title>
 </head>
 	<body>
-	<div align="center">
+	<div style="height: 20px" align="center">
 		 	<span id="imgload" style='display: none;'><img width="20px" height="20px" src='<c:url value="/static/img/sun_watch.gif"/>' /></span>
 	</div>
-	<div id = "mensajes" class = "${!empty mensajes ? 'alert alert-success' : ''}">${mensajes}</div>
+	<c:if test="${error != null}">
+	<div class="alert alert-warning">
+		<p>${error}</p>
+	</div>
+	</c:if>
+	<c:if test="${mensajes != null}">
+		<div class="alert alert-success">
+			<p>${mensajes}</p>
+		</div>
+	</c:if>
 	<div class = "container-fluid">
 	 <form:form id="form" method="POST" modelAttribute="cotizadordatabean" class="form-horizontal" autocomplete="off">
 		<div class="row">
@@ -483,8 +470,7 @@ function BuscarResistencias()
 								<div class="row border border-right">
 									<div class="col col-lg-1">Folio</div>
 									<div class="col col-lg-1">
-										<form:input class="border border-secondary" size="9" maxlength="8" onkeypress="return Enteros(event)" id="TId" readonly="true" type="text" 
-										 value="${empty cotizadordatabean.cotizador.id ? 0 : cotizadordatabean.cotizador.id}" path="cotizador.id"/>
+										<form:input class="border border-secondary" size="9" maxlength="8" onkeypress="return Enteros(event)" id="TId" readonly="true" type="text" path="cotizador.id"/>
 									</div>
 									<div class="col col-lg-1">Cliente</div>
 									<div class="col col-lg-7">
@@ -563,9 +549,7 @@ function BuscarResistencias()
 			 </div>
 			 <div class="col-12"><!-- mx-auto  para centrar en pantalla -->
 				 <div class="row ">
-					 <div class="badge badge-info col-12">
-					 	Detalles de caja
-					 </div>
+					 <div class="badge badge-info col-12"> Detalles de caja </div>
 				 </div>
 			 </div>
 			 <div class="col-12"><!-- mx-auto  para centrar en pantalla -->
@@ -575,10 +559,8 @@ function BuscarResistencias()
 							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
 								<div class="row border border-right">
 									<div class="col col-lg-1">
-										<form:input id="TIdCotDet" class="border border-secondary" size="9" maxlength="8" onkeypress="return Enteros(event)" readonly="true" type="hidden"  
-										 value="${empty cotizadordatabean.cotizador_detalles.idcotizacion ? 0 : cotizadordatabean.cotizador_detalles.idcotizacion}" path="cotizador_detalles.idcotizacion"/>
-										<form:input id="TIdDet" class="border border-secondary" size="9" maxlength="8" onkeypress="return Enteros(event)" readonly="true" type="text" 
-										 value="${empty cotizadordatabean.cotizador_detalles.iddetalle ? 0 : cotizadordatabean.cotizador_detalles.iddetalle}" path="cotizador_detalles.iddetalle"/>
+										<form:input id="TIdCotDet" class="border border-secondary" size="9" maxlength="8" onkeypress="return Enteros(event)" readonly="true" type="text" path="cotizador_detalles.idcotizacion"/>
+										<form:input id="TIdDet" class="border border-secondary" size="9" maxlength="8" onkeypress="return Enteros(event)" readonly="true" type="text" path="cotizador_detalles.iddetalle"/>
 									</div>
 									<div class="col col-lg-1">Símbolo</div>
 									<div class="col col-lg-3">

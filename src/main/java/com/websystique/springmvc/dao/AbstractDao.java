@@ -302,6 +302,17 @@ public abstract class AbstractDao<PK extends Serializable, T> {
 		return Lista;
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	protected Object Max(String atributo)
+	{
+		CriteriaBuilder builder = getSession().getCriteriaBuilder();
+		CriteriaQuery cq = builder.createQuery();
+		Root<T> root = cq.from(persistentClass);
+		cq.select(builder.max(root.get(atributo)));
+		Object result = getSession().createQuery(cq).getSingleResult();
+		return result;
+	}
+	
 	@SuppressWarnings({"unchecked","rawtypes"})
 	protected List<T> criteriaGeneralList(List<ParamsGeneral> paramsGeneral, Map<String,String> ord)
 	{

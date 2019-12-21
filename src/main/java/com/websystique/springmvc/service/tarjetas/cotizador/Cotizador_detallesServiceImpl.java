@@ -46,4 +46,10 @@ public class Cotizador_detallesServiceImpl implements Cotizador_detallesService{
 		return dao.BuscarxIdDet(id, iddet);
 	}
 
+	@Override
+	public Integer Maximo(String atributo) {
+		// TODO Auto-generated method stub
+		return dao.Maximo(atributo);
+	}
+
 }

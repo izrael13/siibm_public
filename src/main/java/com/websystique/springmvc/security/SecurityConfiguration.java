@@ -1,8 +1,8 @@
 package com.websystique.springmvc.security;
 
-import java.util.List;
+//import java.util.List;
 
-import org.json.JSONObject;
+//import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +23,8 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
+import com.websystique.springmvc.model.UserProfile;
+import com.websystique.springmvc.service.Catalogo_enlacesService;
 import com.websystique.springmvc.service.UserService;
 
 @Configuration
@@ -40,6 +42,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	UserService userService;
 	
 	@Autowired
+	Catalogo_enlacesService ces;
+	
+	@Autowired
 	public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(userDetailsService);
 		auth.authenticationProvider(authenticationProvider());
@@ -48,16 +53,33 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
-		List<JSONObject> result = userService.findMatcher("");
+		//List<JSONObject> result = userService.findMatcher();
 		http.authorizeRequests()
 		.antMatchers("/login**","/sol_cam_passs_","/resetp","/static/**").permitAll();
-		for(JSONObject o : result)
+		
+		ces.BuscarTodos().forEach(a ->{
+			String enlace = "";
+			String hasroles = "";
+			for(UserProfile o : a.getUserProfiles())
+			{
+				hasroles = hasroles + (enlace.equals("") ? " hasRole('"+(o.getType())+"') " : " or hasRole('"+(o.getType())+"') ");
+				enlace = a.getDescripcion();
+			}
+			
+			try {
+				http.authorizeRequests().antMatchers(enlace).access(hasroles);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+		
+		/*for(JSONObject o : result)
 		{
 			http.authorizeRequests().antMatchers(o.get("matcher").toString()).access("hasRole('"+(o.get("profile"))+"')");
 			
 			//System.out.println(o.get("profile").toString());
 			//System.out.println(o.get("matcher").toString());
-		}
+		} */
 		/*for(int i = 0; i < result.length; i++)
 		{
 			http.authorizeRequests().antMatchers(result[1])

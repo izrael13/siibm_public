@@ -37,9 +37,8 @@ public class CotizadorServiceImpl implements CotizadorService{
 	}
 
 	@Override
-	public Integer Guardar(Cotizador cot) {
-		// FIXME Auto-generated method stub
-		return dao.Guardar(cot);
+	public void Guardar(Cotizador cot) {
+		dao.Guardar(cot);
 	}
 
 	@Override
@@ -48,18 +47,6 @@ public class CotizadorServiceImpl implements CotizadorService{
 		dao.Actualizar(cot);
 		
 	}
-
-	/*@Override
-	public List<Cotizador_busqueda> ListaBusquedaxIdCardCode(Integer id, String cardCode, Integer idUser) {
-		// FIXME Auto-generated method stub
-		return dao.ListaBusquedaxIdCardCode(id, cardCode, idUser);
-	}*/
-
-	/*@Override
-	public List<Cotizador_busqueda> ListaBusquedaxIdCardCodeDet(Integer id, String cardCode, Integer idUser,Integer IdDet, Boolean autVtas,Boolean autProg) {
-		// FIXME Auto-generated method stub
-		return dao.ListaBusquedaxIdCardCodeDet(id, cardCode, idUser, IdDet, autVtas,autProg);
-	}*/
 
 	@Override
 	public List<Cotizador> ListasCotAut(List<ParamsGeneral> params) {
@@ -71,6 +58,12 @@ public class CotizadorServiceImpl implements CotizadorService{
 	public Cotizador BuscarxIdArr(Integer id, Integer userInsert) {
 		// TODO Auto-generated method stub
 		return dao.BuscarxIdArr(id, userInsert);
+	}
+
+	@Override
+	public Integer Maximo(String atributo) {
+		// TODO Auto-generated method stub
+		return dao.Maximo(atributo);
 	}
 
 }

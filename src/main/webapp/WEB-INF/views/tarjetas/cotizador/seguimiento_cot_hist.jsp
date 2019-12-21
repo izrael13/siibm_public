@@ -26,12 +26,12 @@ function AmpliarImg(scr)
 }
 function FImprimirCot(id)
 {
-	var redirectWindow = window.open('<c:url value="/cotizador/ventas/imprimircotizador"/>?id='+id);
+	var redirectWindow = window.open('<c:url value="/cotizador/vendedor/imprimircotizador"/>?id='+id);
 	redirectWindow.replace;
 }
-function FImprimirReq(id)
+function FImprimirTF(id,iddet)
 {
-	var redirectWindow = window.open('<c:url value="/cotizador/ingenieria/imprimirreq"/>?id='+id);
+	var redirectWindow = window.open('<c:url value="/cotizador/vendedor/imprimirtf"/>?id='+id+'&iddet='+iddet);
 	redirectWindow.replace;
 }
 </script>
@@ -43,6 +43,7 @@ function FImprimirReq(id)
 	</div>
 	<div class="row small">
 		<fmt:parseNumber var = "i" integerOnly = "true" pattern="##############" type = "number" value = "${cot['id']}" />
+		<fmt:parseNumber var = "idet" integerOnly = "true" pattern="##############" type = "number" value = "${cotdet['idcotizacion']}" />
 		<div class="col-1">Folio: ${i}</div>
 		<div class="col-5">Cliente: ${cot['cliente']}</div>
 		<div class="col-6">Dirección: ${cot['lab']}</div>		
@@ -190,13 +191,7 @@ function FImprimirReq(id)
 		<sec:authorize access="hasRole('ADMIN') or hasRole('VENTAS')">
 			<div class="col-2"><a href="javascript:FImprimirCot(${i})"><i class="fa fa-print" aria-hidden="true">Imprimir cotización</i></a></div>
 		</sec:authorize>
-		<sec:authorize access="hasRole('ADMIN') or hasRole('INGENIERIA')">
-			<div class="col-2"><a href="javascript:FImprimirReq(${i})"><i class="fa fa-print" aria-hidden="true">Imprimir requerimiento</i></a></div>
-			<div class="col-2"><a href="javascript:FImprimir(${i})"><i class="fa fa-print" aria-hidden="true">Imprimir tf ing</i></a></div>
-		</sec:authorize>
-		<sec:authorize access="hasRole('ADMIN') or hasRole('VENDEDOR')">
-			<div class="col-2"><a href="javascript:FImprimir(${i})"><i class="fa fa-print" aria-hidden="true">Imprimir tf vendedor</i></a></div>
-		</sec:authorize>
+			<div class="col-2"><a href="javascript:FImprimirTF(${i},${idet})"><i class="fa fa-print" aria-hidden="true">Imprimir TF</i></a></div>
 	</div>
 	<div class="badge badge-info col-12">Especialidades</div>
 	<div class="row small">

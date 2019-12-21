@@ -22,6 +22,15 @@ public class Profile_matchersDAOImpl extends AbstractDao<Integer, Profile_matche
 	}
 
 	@Override
+	public List<Profile_matchers> findall(Integer idProfile) {
+		Map<String,String> mOrd =  new HashMap<String, String>();
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		Params.add(new ParamsGeneral(1,"ID_PROFILE",idProfile,"EQ"));
+		mOrd.put("1", "ID_PROFILE");
+		return (List<Profile_matchers>)criteriaGeneralList(Params, mOrd);
+	}
+	
+	@Override
 	public void save(Profile_matchers pm) {
 		persist(pm);
 	}

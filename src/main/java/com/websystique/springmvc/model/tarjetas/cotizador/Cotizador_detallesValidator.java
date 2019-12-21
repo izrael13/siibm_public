@@ -43,7 +43,7 @@ public class Cotizador_detallesValidator implements Validator{
 					errors.rejectValue("cotizador_detalles.fondo", "Required");
 			}
 			
-			if(cotizador_detalles.getIddetalle() > 1 && (cotizador_detalles.getPiezasxjuego() == null || cotizador_detalles.getPiezasxjuego() == 0))
+			if((cotizador_detalles.getIddetalle() == null ? 0 : cotizador_detalles.getIddetalle()) > 1 && (cotizador_detalles.getPiezasxjuego() == null || cotizador_detalles.getPiezasxjuego() == 0))
 			{
 				errors.rejectValue("cotizador_detalles.piezasxjuego", "NotNull");
 			}

@@ -336,7 +336,7 @@ public class CotizadorTarjetasServiceImpl implements CotizadorTarjetasService{
 		        }
 			}
 		}
-		System.out.println(JsonTF.toString());
+		//System.out.println(JsonTF.toString());
 		return JsonTF;
 	}
 

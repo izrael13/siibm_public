@@ -11,4 +11,5 @@ public interface Cotizador_detallesDAO {
 	Integer Guardar(Cotizador_detalles cot);
 	void Actualizar(Cotizador_detalles cot);
 	Cotizador_detalles BuscarxIdDet(Integer id, Integer iddet);
+	Integer Maximo(String atributo);
 }

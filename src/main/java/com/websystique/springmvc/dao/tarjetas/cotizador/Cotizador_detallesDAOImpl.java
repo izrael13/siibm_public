@@ -15,13 +15,7 @@ import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador_detalles;
 public class Cotizador_detallesDAOImpl  extends AbstractDao<Integer,Cotizador_detalles> implements Cotizador_detallesDAO{
 
 	@Override
-	public Cotizador_detalles BuscarxId(Integer id, Integer iddet, Integer userInsert) {
-		// FIXME Auto-generated method stub
-		/*Map<String,Integer> mRes =  new HashMap<String, Integer>();
-		mRes.put("idcotizacion", id);
-		mRes.put("iddetalle", iddet);
-		mRes.put("usuario_insert", userInsert);*/
-		
+	public Cotizador_detalles BuscarxId(Integer id, Integer iddet, Integer userInsert) {		
 		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
 		Params.add(new ParamsGeneral(1,"idcotizacion",id,"EQ"));
 		Params.add(new ParamsGeneral(1,"iddetalle",iddet,"EQ"));
@@ -32,11 +26,7 @@ public class Cotizador_detallesDAOImpl  extends AbstractDao<Integer,Cotizador_de
 
 	@Override
 	public List<Cotizador_detalles> BuscarxCotId(Integer idCot) {
-		// FIXME Auto-generated method stub
-		//Map<String,Integer> mRes =  new HashMap<String, Integer>();
 		Map<String,String> mOrd =  new HashMap<String, String>();
-		
-		//mRes.put("idcotizacion", idCot);
 		mOrd.put("1", "idcotizacion");
 		
 		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
@@ -49,7 +39,6 @@ public class Cotizador_detallesDAOImpl  extends AbstractDao<Integer,Cotizador_de
 
 	@Override
 	public Integer Guardar(Cotizador_detalles cot) {
-		// FIXME Auto-generated method stub
 		Cotizador_detalles id = save_entityObj(cot);
 		Integer i = id.getIddetalle();
 		return i;
@@ -57,22 +46,21 @@ public class Cotizador_detallesDAOImpl  extends AbstractDao<Integer,Cotizador_de
 
 	@Override
 	public void Actualizar(Cotizador_detalles cot) {
-		// FIXME Auto-generated method stub
 		update(cot);
 	}
 
 	@Override
-	public Cotizador_detalles BuscarxIdDet(Integer id, Integer iddet) {
-		// FIXME Auto-generated method stub
-		/*Map<String,Integer> mRes =  new HashMap<String, Integer>();
-		mRes.put("idcotizacion", id);
-		mRes.put("iddetalle", iddet);*/
-		
+	public Cotizador_detalles BuscarxIdDet(Integer id, Integer iddet) {		
 		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
 		Params.add(new ParamsGeneral(1,"idcotizacion",id,"EQ"));
 		Params.add(new ParamsGeneral(1,"iddetalle",iddet,"EQ"));
 		
 		return (Cotizador_detalles) criteriaGeneralObj(Params);
+	}
+
+	@Override
+	public Integer Maximo(String atributo) {
+		return (Integer) Max(atributo);
 	}
 
 }

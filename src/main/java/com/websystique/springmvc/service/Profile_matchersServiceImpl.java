@@ -40,4 +40,10 @@ public class Profile_matchersServiceImpl implements Profile_matchersService{
 		return dao.findById(id);
 	}
 
+	@Override
+	public List<Profile_matchers> findall(Integer idProfile) {
+		// TODO Auto-generated method stub
+		return dao.findall(idProfile);
+	}
+
 }

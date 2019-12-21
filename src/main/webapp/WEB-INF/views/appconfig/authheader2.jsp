@@ -225,7 +225,20 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 			 </sec:authorize>
 		</ul>		
 	</li>
-	
+	<sec:authorize access="hasRole('MATERIAPRIMA') or hasRole('ADMIN')">
+	<li class="nav-item dropdown"><a class="dropdown-item" href="" data-toggle="dropdown"><i class="fa fa-braille" aria-hidden="true"> Materia prima</i></a>
+	 	<ul class="dropdown-menu dropdown-menu-right">
+	   		<li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-calendar-plus-o" aria-hidden="true"></i> Inventarios</a>
+			    <ul class="dropdown-menu">
+			    	<sec:authorize access="hasRole('MATERIAPRIMA_GERENCIA') or hasRole('ADMIN')">
+			    	<li><a class="dropdown-item" href = "<c:url value='/materia_prima/genrentemp/catalogo_inventarios' />"><i class="fa fa-inbox" aria-hidden="true"></i> Catálogo de inventarios</a></li>
+			    	</sec:authorize>
+			    	<li><a class="dropdown-item" href = "<c:url value='/materia_prima/inventario/conteo' />"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Conteo</a></li>
+			    </ul>
+			 </li>
+	   </ul>
+	 </li>
+	</sec:authorize>
 	<sec:authorize access="hasRole('DIRECCION') or hasRole('ADMIN')">
 	<ul class="navbar-nav">
 		<li class="nav-item dropdown"><a class="dropdown-item" href="" data-toggle="dropdown"><i class="fa fa-square-o" aria-hidden="true"> Dirección</i></a>
@@ -247,6 +260,7 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 				<li class="dropdown-submenu dropdown-menu-right"><a class="dropdown-item" href="<c:url value='/list' />"><i class="fa fa-users" aria-hidden="true"></i> Lista de usuarios (admin)</a></li>
 				<li class="dropdown-submenu dropdown-menu-right"><a class="dropdown-item" href="<c:url value='/perfiles/list' />"><i class="fa fa-user" aria-hidden="true"></i> Perfiles (admin)</a></li>
 				<li class="dropdown-submenu dropdown-menu-right"><a class="dropdown-item" href="<c:url value='/permisos_perfiles/list' />"><i class="fa fa-universal-access" aria-hidden="true"></i> Permisos a perfiles (admin)</a></li>
+				<li class="dropdown-submenu dropdown-menu-right"><a class="dropdown-item" href="<c:url value='/permisos_perfiles/enlaces' />"><i class="fa fa-universal-access" aria-hidden="true"></i> Enlaces (admin)</a></li>
 			 </sec:authorize>
 			 
 			<li class="dropdown-submenu dropdown-menu-right"><a class="dropdown-item" href="<c:url value='/edit_data_user' />"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar datos de usuario</a></li>

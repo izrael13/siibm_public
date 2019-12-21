@@ -1,15 +1,22 @@
 package com.websystique.springmvc.controller;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.rmi.RemoteException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -67,6 +74,13 @@ import com.websystique.springmvc.utilities.SendMailGmail;
 
 import _1._0._0._127.SAP.DIServerSoapProxy;
 import _1._0._0._127.SAP.ExecuteSQLResponseExecuteSQLResult;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JsonDataSource;
+import net.sf.jasperreports.engine.util.JRLoader;
 
 @Controller
 @RequestMapping("/tarjeta")
@@ -146,7 +160,7 @@ public class Tarjetas_FabricacionController {
 				model.addAttribute("cliente_factura", cot.getCardcode_factura() != null ? ccavs.cat_cte_sap(cot.getCardcode_factura()).getCardname() : "");
 				ListaEsp = ctsc.addEspecialidades(tf.getIdcotizacion(), tf.getIddetalle());
 				model.addAttribute("esp", gson.fromJson(ListaEsp.toString(),Object[].class));
-				ctsc.DataSourceJasperTF(cot.getId(), cotdet.getIddetalle(), 1);
+				//ctsc.DataSourceJasperTF(cot.getId(), cotdet.getIddetalle(), 1);
 			}
 		}
 		
@@ -813,7 +827,7 @@ public class Tarjetas_FabricacionController {
 		catch(Exception e)
 		{
 			model.addAttribute("mensajes", e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage());
-			logger.info(AppController.getPrincipal() + " - tarjeta_seguimiento_info. " + e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage());
+			logger.info(AppController.getPrincipal() + " - tarjeta_seguimiento_info. " + e);
 		}
 		return "/tarjetas/fabricacion/tarjetas_seguimiento_info";
 	}
@@ -971,6 +985,46 @@ public class Tarjetas_FabricacionController {
 			@RequestParam("idcotizacion") Integer idcotizacion,@RequestParam("iddetalle") Integer iddetalle, @RequestParam("nombre") String nombre) {
 			return BorrarImagen(idcotizacion,iddetalle,nombre);
 	}
+	
+	private String stripAccents(String s) 
+	{
+	    s = Normalizer.normalize(s, Normalizer.Form.NFD);
+	    s = s.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+	    return s;
+	}
+	
+	@RequestMapping(value = "/ingenieria/imprimirtf", method = RequestMethod.GET)
+    @ResponseBody
+    public void getRpt1(HttpServletResponse response,HttpServletRequest request,ModelMap model,
+    				    @RequestParam("id") Integer id, @RequestParam("id") Integer iddet) throws JRException, IOException {
+		String msj = "";
+		try
+		{
+			InputStream jasperStream = this.getClass().getResourceAsStream("/jasperreports/cotizador/Tarjeta_fabricacion.jasper");
+			Map<String,Object> params = new HashMap<>();
+			
+			JasperReport jasperReport = (JasperReport) JRLoader.loadObject(jasperStream);
+			ByteArrayInputStream jsonDataStream = new ByteArrayInputStream(stripAccents(ctsc.DataSourceJasperTF(id, iddet, 1).toString()).getBytes("UTF-8"));
+			JsonDataSource dataSource = new JsonDataSource(jsonDataStream);
+			params.put("Imagen",request.getServletContext().getRealPath("/"));
+			
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, dataSource);
+			
+			response.setContentType("application/pdf");
+			response.setHeader("Content-disposition", "inline");
+			
+			    final OutputStream outStream = response.getOutputStream();
+			    JasperExportManager.exportReportToPdfStream(jasperPrint, outStream);
+			logger.info(AppController.getPrincipal() + " - imprimirtf :"+ msj);
+		}
+		catch(Exception e)
+		{
+			msj = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
+			logger.info(AppController.getPrincipal() + " - imprimircotizador :"+ e);
+		}
+	} 
+	
+	
 	@RequestMapping(value = {"/ingenieria_gerencia/cancelar_reactivarTFXCTE" }, method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> cancelar_reactivarTFXCTE(ModelMap model,

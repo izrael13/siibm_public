@@ -280,6 +280,7 @@ function FDisableElemens()
 	$("#TFlejesAtado").attr("readonly","readonly");
 	$("#TPzasAtado").attr("readonly","readonly");
 	$("#TAtaCama").attr("readonly","readonly");
+	$("#TFechaCancelTF").attr("readonly","readonly");
 }
 
 function FDisenio()

@@ -25,7 +25,7 @@ public interface UserDao {
 	
 	User findBySSOnEmail(String sso, String email);
 	
-	List<JSONObject> findMatcher(String sso);
+	List<JSONObject> findMatcher();
 	
 	List<User> findCveVenUsers(Integer cveven);
 }

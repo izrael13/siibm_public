@@ -93,9 +93,9 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public List<JSONObject> findMatcher(String sso) {
+	public List<JSONObject> findMatcher() {
 		// FIXME Auto-generated method stub
-		return dao.findMatcher(sso);
+		return dao.findMatcher();
 	}
 
 	@Override

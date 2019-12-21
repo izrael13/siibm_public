@@ -97,60 +97,35 @@ public class CotizadorController {
 	
 	private Logger logger = Logger.getLogger(CotizadorController.class);
 	
-	@Autowired
-	UserService us;
-	@Autowired
-	Catalogo_clientes_sap_vwService ccavs;
-	@Autowired
-	Catalogo_direcciones_sap_vwService cdsv;
-	@Autowired
-	CotizadorService cs;
-	@Autowired
-	Catalogo_cajas_sap_vwService ccss;
-	@Autowired
-	Catalogo_resistencias_sap_vwService crss;
-	@Autowired
-	Catalogo_sellosService css;
-	@Autowired
-	Catalogo_especialidades_sap_vwService ces;
-	@Autowired
-	Cotizador_detallesService cds;
-	@Autowired
-	Cotizador_detallesValidator cdvalidator;
-	@Autowired
-	CotizadorValidator cvalidator;
-	@Autowired
-	Catalogo_vendedores_sap_vwService cvss; 
-	@Autowired
-	Vendedores_especiales_comision_sap_vwService vecs;
-	@Autowired
-	Comision_directo_sap_vwService cdss;
-	@Autowired
-	Comision_comisionista_sap_vwService ccs;
-	@Autowired
-	Especialidades_cotizacionService ecs;
-	@Autowired
-	Catalogo_bolsas_sap_vwService cbs;
-	@Autowired
-	Catalogo_coloresService ccos;
-	@Autowired
-	Codigo_barras_cotizadorService cbsc;
-	@Autowired
-	Tarjeta_fabricacionService tfs;
-	@Autowired
-	Catalogo_herramentalesService chs;
-	@Autowired
-	Tarjetas_fabricacion_imagenesService tfis;
-	@Autowired
-	CotizadorTarjetasService ctsc;
+	@Autowired UserService us;
+	@Autowired Catalogo_clientes_sap_vwService ccavs;
+	@Autowired Catalogo_direcciones_sap_vwService cdsv;
+	@Autowired CotizadorService cs;
+	@Autowired Catalogo_cajas_sap_vwService ccss;
+	@Autowired Catalogo_resistencias_sap_vwService crss;
+	@Autowired Catalogo_sellosService css;
+	@Autowired Catalogo_especialidades_sap_vwService ces;
+	@Autowired Cotizador_detallesService cds;
+	@Autowired Cotizador_detallesValidator cdvalidator;
+	@Autowired CotizadorValidator cvalidator;
+	@Autowired Catalogo_vendedores_sap_vwService cvss; 
+	@Autowired Vendedores_especiales_comision_sap_vwService vecs;
+	@Autowired Comision_directo_sap_vwService cdss;
+	@Autowired Comision_comisionista_sap_vwService ccs;
+	@Autowired Especialidades_cotizacionService ecs;
+	@Autowired Catalogo_bolsas_sap_vwService cbs;
+	@Autowired Catalogo_coloresService ccos;
+	@Autowired Codigo_barras_cotizadorService cbsc;
+	@Autowired Tarjeta_fabricacionService tfs;
+	@Autowired Catalogo_herramentalesService chs;
+	@Autowired Tarjetas_fabricacion_imagenesService tfis;
+	@Autowired CotizadorTarjetasService ctsc;
 	
-	Integer idN = 0;
-	Integer idND = 0;
+	Integer idN = 0,idND = 0;
 	
 	////////////////////////////////////***COTIZADOR***////////////////////////////
 	@RequestMapping(value = {"/vendedor/cotizadorabc" }, method = RequestMethod.GET)
 	public String cotizadotget(ModelMap model, @RequestParam(value = "id", defaultValue = "0", required = false) String id, @RequestParam(value = "iddet", defaultValue = "0", required = false) String iddet) throws UnsupportedEncodingException {
-		String msj = "";
 		try {				
 				List<Catalogo_especialidades_sap_vw> ListaEsp = ces.ListaEsp(1);
 				List<Catalogo_resistencias_sap_vw> ListaResis = new ArrayList<Catalogo_resistencias_sap_vw>();
@@ -203,51 +178,40 @@ public class CotizadorController {
 		}
 		catch(Exception e)
 		{
-			msj = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
-			logger.error(AppController.getPrincipal() + " - cotizadorabc. - " + msj);
+			model.addAttribute("error",e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage());
+			logger.error(AppController.getPrincipal() + " - cotizadorabc. - " + e);
 		}
-		model.addAttribute("mensajes",msj);
 		return "/tarjetas/cotizador/cotizador";
 	}
 	
 	@RequestMapping(value = {"/vendedor/cotizadorabc" }, method = RequestMethod.POST)
 	public String cotizadotpost(@Valid @ModelAttribute("cotizadordatabean") CotizadorDataBean cotizadorDataBean, BindingResult result, ModelMap model) {
-		try {
+		try 
+		{
 			String msj = "";
+			logger.info(AppController.getPrincipal() + " - cotizadotpost.");
 			User user = us.findBySSO(AppController.getPrincipal());
 			model.addAttribute("clientes", ccavs.ListaCtes(user.getCvevendedor_sap()));
-			model.addAttribute("loggedinuser", AppController.getPrincipal());
-			
+			model.addAttribute("loggedinuser", AppController.getPrincipal());			
 			model.addAttribute("direcciones", cdsv.ListaDirCardCode(cotizadorDataBean.getCotizador().getCardcode()));
 			model.addAttribute("direccionSelect", cdsv.ListaDirCardCodeNumLine(cotizadorDataBean.getCotizador().getCardcode(),cotizadorDataBean.getCotizador().getLinenum_dir_entrega()));
 			model.addAttribute("bolsas", cbs.ListaBolsas());
 			model.addAttribute("listacajas", ccss.ListaCajas());
-			//System.out.println(cotizadorDataBean.getCotizador_detalles().getIdcaja_sap());
 			model.addAttribute("listaresisbarca", ListaResis(cotizadorDataBean.getCotizador_detalles().getIdcaja_sap()));
 			model.addAttribute("listaresiscte", css.ListaSellos());
 			model.addAttribute("especialidades", ces.ListaEsp(1));
 			model.addAttribute("colores", ccos.ListaColores());
-			//cotizadorDataBean.getCotizador().setIdtiporequerimiento(0);
+
 			java.util.Date date = new java.util.Date();
-			
-			//System.out.println(cotizadorDataBean.getCotizador_detalles().toString());
-			//System.out.println(cotizadorDataBean.getCotizador().toString());
 			
 			cotizadorDataBean.getCotizador_detalles().setBan(null);
 			cotizadorDataBean.getCotizador_detalles().setIdtiporequerimiento(cotizadorDataBean.getCotizador().getIdtiporequerimiento());
 			
 			cvalidator.validate(cotizadorDataBean.getCotizador(), result);
 			cdvalidator.validate(cotizadorDataBean.getCotizador_detalles(), result);
-			/*System.out.println(cotizadorDataBean.getCotizador_detalles().toString());
-			for (ObjectError error : result.getAllErrors()) {
-			       String fieldErrors [] = error.getCodes();
-			       System.out.println(fieldErrors[0]);
-			   }*/
 			  
 			if (result.hasErrors() )
-			{
 				return "/tarjetas/cotizador/cotizador";
-			}
 			
 			cotizadorDataBean.getCotizador().setFecha_update(date);
 			cotizadorDataBean.getCotizador().setUsuario_update(user.getId());
@@ -255,11 +219,16 @@ public class CotizadorController {
 			cotizadorDataBean.getCotizador_detalles().setUsuario_update(user.getId());
 			idN = 0;
 			idND = 0;
-			if(cotizadorDataBean.getCotizador().getId() == 0)
+
+			if((cotizadorDataBean.getCotizador().getId() == null ? 0 : cotizadorDataBean.getCotizador().getId()) == 0)
 			{
-				cotizadorDataBean.getCotizador().setFecha_insert(date);			
+				cotizadorDataBean.getCotizador().setFecha_insert(date);
 				cotizadorDataBean.getCotizador().setUsuario_insert(user.getId());
-				idN = cs.Guardar(cotizadorDataBean.getCotizador());
+				idN = cs.Maximo("id");
+				idN = (idN == null ? 1 : ++idN);
+				cotizadorDataBean.getCotizador().setId(idN);
+				cs.Guardar(cotizadorDataBean.getCotizador());
+				//idN = cs.Guardar(cotizadorDataBean.getCotizador());
 				cotizadorDataBean.getCotizador().setId(idN);
 				msj= "COTIZACIÓN: "+idN+" GRABADA SATISFACTORIAMENTE";
 			}
@@ -270,8 +239,8 @@ public class CotizadorController {
 				msj= "COTIZACIÓN: "+idN+" ACTUALIZADA SATISFACTORIAMENTE";
 			}
 			
-			if(cotizadorDataBean.getCotizador_detalles().getIddetalle() == 0)
-			{				
+			if((cotizadorDataBean.getCotizador_detalles().getIddetalle() == null ? 0 : cotizadorDataBean.getCotizador_detalles().getIddetalle()) == 0)
+			{
 				cotizadorDataBean.getCotizador_detalles().setIdcotizacion(idN);
 				cotizadorDataBean.getCotizador_detalles().setIddetalle(cds.BuscarxCotId(idN).size() + 1);
 				cotizadorDataBean.getCotizador_detalles().setFecha_insert(date);			
@@ -337,26 +306,15 @@ public class CotizadorController {
 				}
 				
 			} 
-			
-			/*CotizadorDataBean cotdataB = new CotizadorDataBean();
-			cotdataB.setCotizador(cs.BuscarxId(idN, user.getId()));
-			cotdataB.setCotizador_detalles(cds.BuscarxId(idN, idND, user.getId()));
-			System.out.println(cotdataB.getCotizador().getId());
-			System.out.println(cotdataB.getCotizador_detalles().getIddetalle()); */
-			
-			//model.addAttribute("cotizadordatabean", cotizadorDataBean);
-			//model.replace("cotizadordatabean", cotdataB);
 
-			logger.info(AppController.getPrincipal() + " - cotizadotpost.");
 			model.addAttribute("mensajes", msj);
-			return "/tarjetas/cotizador/cotizador";
 		}
 		catch(Exception e)
 		{
-			model.addAttribute("mensajes", e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage());
-			logger.info(AppController.getPrincipal() + " - cotizadotpost. " + e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage());
-			return "/tarjetas/cotizador/cotizador";
+			model.addAttribute("error",e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage());
+			logger.error(AppController.getPrincipal() + " - cotizadorabc. - " + e);
 		}
+		return "/tarjetas/cotizador/cotizador";
 	}
 	
 	@RequestMapping(value = {"/vendedor/buscardirecciones"}, method = RequestMethod.GET)
@@ -383,9 +341,9 @@ public class CotizadorController {
 	
 	@RequestMapping(value = {"/vendedor/cotizadorbusqueda" }, method = RequestMethod.GET)
 	public String cotizadorbusqueda(ModelMap model,@RequestParam("id") Integer id,@RequestParam("cardcode") String cardcode) {
-		String msj = "";
 		try
 		{
+			logger.info(AppController.getPrincipal() + " - cotizadorbusqueda. ");
 			List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
 			List<JSONObject> ListaCot = new ArrayList<JSONObject>();
 			User user = us.findBySSO(AppController.getPrincipal());
@@ -410,11 +368,10 @@ public class CotizadorController {
 		}
 		catch(Exception e)
 		{
-			msj = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
-			model.addAttribute("mensajes", msj);			
+			model.addAttribute("error",e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage());
+			logger.error(AppController.getPrincipal() + " - cotizadorbusqueda. - " + e);			
 		}
 		
-		logger.info(AppController.getPrincipal() + " - cotizadorbusqueda. "+msj);
 		return "/tarjetas/cotizador/cotizador_busqueda";
 
 	}
@@ -1089,211 +1046,6 @@ public class CotizadorController {
 		}
 	} 
 		
-	/*private JSONObject DataSourceJasperCot(Integer id, Integer addDetalles)//addDetalle: 1: Sí, 0: No
-	{	
-		GsonBuilder builder = new GsonBuilder();
-		Gson gson = builder.serializeNulls().create();
-		Cotizador cot = new Cotizador();
-		cot = cs.BuscarxId(id);
-		JSONObject JsonCot = new JSONObject(gson.toJson(cot));
-		JsonCot.put("cliente", ccavs.cat_cte_sap(cot.getCardcode()).getCardname());
-		Catalogo_direcciones_sap_vw dir = new Catalogo_direcciones_sap_vw();
-		dir = cdsv.DirCardCodeNumLine(cot.getCardcode(), cot.getLinenum_dir_entrega()); 
-		JsonCot.put("lab",dir.getDireccion()+ " " +dir.getCiudad()+ " "+dir.getEstado());
-		User user = new User();
-		user = us.findById(cot.getUsuario_aut_ventas() == null ? 0 : cot.getUsuario_aut_ventas());
-		if(user != null)
-			JsonCot.put("autorizador", user.getFirstName() + " " + user.getLastName());
-		user = null;
-		user = us.findById(cot.getUsuario_insert());
-		if(user != null)
-			JsonCot.put("representante", user.getFirstName() + " " + user.getLastName());
-		user = null;
-		user = us.findById(cot.getUsuario_asigna_arrastre() == null ? 0 : cot.getUsuario_asigna_arrastre());
-			JsonCot.put("arrmuestrista", user == null ? "" : user.getFirstName() + " " + user.getLastName());
-		user = null;
-		user = us.findById(cot.getUsuario_diseniador() == null ? 0 : cot.getUsuario_diseniador());
-			JsonCot.put("diseniador", user == null ? "" : user.getFirstName() + " " + user.getLastName());
-		user = null;
-			user = us.findById(cot.getUsuario_rech_diseniador() == null ? 0 : cot.getUsuario_rech_diseniador());
-				JsonCot.put("diseniador_rech", user == null ? "" : user.getFirstName() + " " + user.getLastName());
-		user = null;
-		user = us.findById(cot.getUsuario_cancel() == null ? 0 : cot.getUsuario_cancel());
-			JsonCot.put("usuario_cancel", user == null ? "" : user.getFirstName() + " " + user.getLastName());
-		
-		if(addDetalles == 1)
-		{
-			List<JSONObject> ListaJsonDet = new ArrayList<JSONObject>();
-			cds.BuscarxCotId(id).forEach(a ->{
-				ListaJsonDet.add(addSpecificDetalle(id,a.getIddetalle()));
-			});
-			
-			JsonCot.put("ListaDetalles", ListaJsonDet);
-		}
-		
-		JsonCot.put("SUBREPORT_DIR", "/jasperreports/cotizador/");
-		
-		return JsonCot;
-	}
-	
-	private JSONObject addSpecificDetalle(Integer id, Integer iddet)
-	{
-		GsonBuilder builder = new GsonBuilder();
-		Gson gson = builder.serializeNulls().create();
-		Cotizador_detalles a = new Cotizador_detalles(); 
-		a = cds.BuscarxIdDet(id, iddet);
-		a.setCodigo_barra_cotizador(cbsc.BuscarXCotDet(id, iddet));
-		
-			JSONObject JsonCotDet = new JSONObject(gson.toJson(a));
-			List<JSONObject> ListaJsonEsp = new ArrayList<JSONObject>();
-			
-			ecs.ListaEspDet(id, a.getIddetalle()).forEach(b ->{
-				JSONObject JsonEsp = new JSONObject();
-				JsonEsp.put("count", b.getCount());
-				JsonEsp.put("iddetalle", b.getIddetalle());
-				JsonEsp.put("idcotizacion", b.getIdcotizacion());
-				JsonEsp.put("especialidad", ces.BuscaxId(b.getIdespecialidad()).getName());
-				JsonEsp.put("costo", b.getCosto());
-				JsonEsp.put("ajuste", b.getAjuste());
-				JsonEsp.put("esquema", b.getEsquema());
-				JsonEsp.put("cm", b.getCm());
-				ListaJsonEsp.add(JsonEsp);
-			}); 
-
-			JsonCotDet.put("ListaEsp", ListaJsonEsp);
-
-			JsonCotDet.put("estilo_caja", a.getIdcaja_sap() == null ? "" : ccss.BuscarxId(a.getIdcaja_sap()).getNombrecorto());
-
-			Catalogo_resistencias_sap_vw objResis = new Catalogo_resistencias_sap_vw();
-			objResis = a.getIdresistencia_barca() == null ? null : crss.BuscarxId(a.getIdresistencia_barca());
-
-			JsonCotDet.put("resistencia", objResis == null ? "" : objResis.getResistencia());
-
-			JsonCotDet.put("flauta", objResis == null ? "" : objResis.getCorrugado());
-
-			JsonCotDet.put("papel", objResis == null ? "" : objResis.getColor());
-
-			JsonCotDet.put("SUBREPORT_DIR", "/jasperreports/cotizador/");
-			JsonCotDet.put("resis_cte", a.getResistencia_cte() == null ? "" : css.BuscarxId(a.getResistencia_cte()).getNombre());
-			
-			Catalogo_colores color = new Catalogo_colores();
-			color = ccos.BuscarxId(a.getColor1() == null ? 0 : a.getColor1());		
-			JsonCotDet.put("color1n", a.getColor1() == null ? "" : color.getColor());
-			JsonCotDet.put("color1c", a.getColor1() == null ? "" : "#"+color.getColor_est().trim());
-			
-			color = ccos.BuscarxId(a.getColor2() == null ? 0 : a.getColor2());		
-			JsonCotDet.put("color2n", a.getColor2() == null ? "" : color.getColor());
-			JsonCotDet.put("color2c", a.getColor2() == null ? "" : "#"+color.getColor_est().trim());
-			
-			color = ccos.BuscarxId(a.getColor3() == null ? 0 : a.getColor3());		
-			JsonCotDet.put("color3n", a.getColor3() == null ? "" : color.getColor());
-			JsonCotDet.put("color3c", a.getColor3() == null ? "" : "#"+color.getColor_est().trim());
-			
-			color = ccos.BuscarxId(a.getColor4() == null ? 0 : a.getColor4());		
-			JsonCotDet.put("color4n", a.getColor4() == null ? "" : color.getColor());
-			JsonCotDet.put("color4c", a.getColor4() == null ? "" : "#"+color.getColor_est().trim());
-			
-			color = ccos.BuscarxId(a.getColor5() == null ? 0 : a.getColor5());		
-			JsonCotDet.put("color5n", a.getColor5() == null ? "" : color.getColor());
-			JsonCotDet.put("color5c", a.getColor5() == null ? "" : "#"+color.getColor_est().trim());
-			
-			color = ccos.BuscarxId(a.getColor6() == null ? 0 : a.getColor6());		
-			JsonCotDet.put("color6n", a.getColor6() == null ? "" : color.getColor());
-			JsonCotDet.put("color6c", a.getColor6() == null ? "" : "#"+color.getColor_est().trim());
-			
-			color = ccos.BuscarxId(a.getColor7() == null ? 0 : a.getColor7());		
-			JsonCotDet.put("color7n", a.getColor7() == null ? "" : color.getColor());
-			JsonCotDet.put("color7c", a.getColor7() == null ? "" : "#"+color.getColor_est().trim());
-					
-		return JsonCotDet;
-	} */
-	
-	/*private JSONObject DataSourceJasperReq(Integer id)
-	{
-		
-		GsonBuilder builder = new GsonBuilder();
-		Gson gson = builder.serializeNulls().create();
-		Cotizador cot = new Cotizador();
-		cot = cs.BuscarxId(id);
-		JSONObject JsonCot = new JSONObject(gson.toJson(cot));
-		JsonCot.put("cliente", ccavs.cat_cte_sap(cot.getCardcode()).getCardname());
-		Catalogo_direcciones_sap_vw dir = new Catalogo_direcciones_sap_vw();
-		dir = cdsv.DirCardCodeNumLine(cot.getCardcode(), cot.getLinenum_dir_entrega()); 
-		JsonCot.put("lab",dir.getDireccion()+ " " +dir.getCiudad()+ " "+dir.getEstado());
-		JsonCot.put("contacto",dir.getContacto());
-		JsonCot.put("correo",dir.getEmail());
-		JsonCot.put("telefono",dir.getTelefono());
-		User user = new User();
-		user = us.findById(cot.getUsuario_aut_ventas() == null ? 0 : cot.getUsuario_aut_ventas());
-		if(user != null)
-			JsonCot.put("autorizador", user.getFirstName() + " " + user.getLastName());
-		user = null;
-		user = us.findById(cot.getUsuario_insert());
-		if(user != null)
-			JsonCot.put("representante", user.getFirstName() + " " + user.getLastName());		
-		List<JSONObject> ListaJsonDet = new ArrayList<JSONObject>();	
-		cds.BuscarxCotId(id).forEach(a ->{
-			a.setCodigo_barra_cotizador(cbsc.BuscarXCotDet(a.getIdcotizacion(), a.getIddetalle()));
-			JSONObject JsonCotDet = new JSONObject(gson.toJson(a));
-			List<JSONObject> ListaJsonEsp = new ArrayList<JSONObject>();
-			ecs.ListaEspDet(id, a.getIddetalle()).forEach(b ->{
-				JSONObject JsonEsp = new JSONObject();
-				JsonEsp.put("count", b.getCount());
-				JsonEsp.put("iddetalle", b.getIddetalle());
-				JsonEsp.put("idcotizacion", b.getIdcotizacion());
-				JsonEsp.put("especialidad", ces.BuscaxId(b.getIdespecialidad()).getName());
-				JsonEsp.put("costo", b.getCosto());
-				JsonEsp.put("ajuste", b.getAjuste());
-				JsonEsp.put("esquema", b.getEsquema());
-				JsonEsp.put("cm", b.getCm());
-				ListaJsonEsp.add(JsonEsp);
-			}); 
-			JsonCotDet.put("ListaEsp", ListaJsonEsp);
-			JsonCotDet.put("estilo_caja", ccss.BuscarxId(a.getIdcaja_sap()).getNombrecorto());
-			Catalogo_resistencias_sap_vw objResis = new Catalogo_resistencias_sap_vw();
-			objResis = crss.BuscarxId(a.getIdresistencia_barca());
-			JsonCotDet.put("resistencia", objResis.getResistencia());
-			JsonCotDet.put("flauta", objResis.getCorrugado());
-			JsonCotDet.put("papel", objResis.getColor());
-			JsonCotDet.put("SUBREPORT_DIR", "/jasperreports/cotizador/");
-			JsonCotDet.put("resis_cte", css.BuscarxId(a.getResistencia_cte()).getNombre());
-			
-			Catalogo_colores color = new Catalogo_colores();
-			color = ccos.BuscarxId(a.getColor1() == null ? 0 : a.getColor1());		
-			JsonCotDet.put("color1n", a.getColor1() == null ? "" : color.getColor());
-			JsonCotDet.put("color1c", a.getColor1() == null ? "" : "#"+color.getColor_est().trim());
-			
-			color = ccos.BuscarxId(a.getColor2() == null ? 0 : a.getColor2());		
-			JsonCotDet.put("color2n", a.getColor2() == null ? "" : color.getColor());
-			JsonCotDet.put("color2c", a.getColor2() == null ? "" : "#"+color.getColor_est().trim());
-			
-			color = ccos.BuscarxId(a.getColor3() == null ? 0 : a.getColor3());		
-			JsonCotDet.put("color3n", a.getColor3() == null ? "" : color.getColor());
-			JsonCotDet.put("color3c", a.getColor3() == null ? "" : "#"+color.getColor_est().trim());
-			
-			color = ccos.BuscarxId(a.getColor4() == null ? 0 : a.getColor4());		
-			JsonCotDet.put("color4n", a.getColor4() == null ? "" : color.getColor());
-			JsonCotDet.put("color4c", a.getColor4() == null ? "" : "#"+color.getColor_est().trim());
-			
-			color = ccos.BuscarxId(a.getColor5() == null ? 0 : a.getColor5());		
-			JsonCotDet.put("color5n", a.getColor5() == null ? "" : color.getColor());
-			JsonCotDet.put("color5c", a.getColor5() == null ? "" : "#"+color.getColor_est().trim());
-			
-			color = ccos.BuscarxId(a.getColor6() == null ? 0 : a.getColor6());		
-			JsonCotDet.put("color6n", a.getColor6() == null ? "" : color.getColor());
-			JsonCotDet.put("color6c", a.getColor6() == null ? "" : "#"+color.getColor_est().trim());
-			
-			color = ccos.BuscarxId(a.getColor7() == null ? 0 : a.getColor7());		
-			JsonCotDet.put("color7n", a.getColor7() == null ? "" : color.getColor());
-			JsonCotDet.put("color7c", a.getColor7() == null ? "" : "#"+color.getColor_est().trim());
-			
-			ListaJsonDet.add(JsonCotDet);
-		});	
-		
-		JsonCot.put("ListaDetalles", ListaJsonDet);
-		JsonCot.put("SUBREPORT_DIR", "/jasperreports/cotizador/");
-		return JsonCot;
-	}*/
 	
 	@RequestMapping(value = {"/ingenieria/requerimientoabc" }, method = RequestMethod.GET)
 	public String requerimientoabcget(ModelMap model) {
@@ -1658,14 +1410,16 @@ public class CotizadorController {
 			cotizadorDataBean.getCotizador_detalles().setFecha_update(date);
 			cotizadorDataBean.getCotizador_detalles().setUsuario_update(user.getId());
 			
-			if(cotizadorDataBean.getCotizador().getId() == 0)
+			if(cotizadorDataBean.getCotizador().getId() == null)
 			{
 				cotizadorDataBean.getCotizador().setFecha_insert(date);
 				cotizadorDataBean.getCotizador().setUsuario_insert(user.getId());
 				cotizadorDataBean.getCotizador_detalles().setFecha_insert(date);
 				cotizadorDataBean.getCotizador_detalles().setUsuario_insert(user.getId());
-				idN = cs.Guardar(cotizadorDataBean.getCotizador());
-				
+				idN = cs.Maximo("id");
+				cotizadorDataBean.getCotizador().setId((idN == null ? 1 : idN++));
+				cs.Guardar(cotizadorDataBean.getCotizador());
+				//idN = cs.Guardar(cotizadorDataBean.getCotizador());
 				cotizadorDataBean.getCotizador_detalles().setIdcotizacion(idN);
 				cotizadorDataBean.getCotizador_detalles().setIddetalle(cds.BuscarxCotId(idN).size() + 1);
 				
@@ -1685,7 +1439,8 @@ public class CotizadorController {
 		}
 		catch(Exception e)
 		{
-			model.addAttribute("mensajes", e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage());
+			model.addAttribute("error",e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage());
+			logger.error(AppController.getPrincipal() + " - arrastresabc. - " + e);
 			return "/tarjetas/cotizador/arrastresabc";
 		}
 	}
@@ -1708,7 +1463,7 @@ public class CotizadorController {
 		catch(Exception e)
 		{
 			msj = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
-			logger.info(AppController.getPrincipal() + " - cancelararrastre :"+ msj);
+			logger.info(AppController.getPrincipal() + " - cancelararrastre :"+ e);
 			return msj;
 		}
 		
@@ -2114,13 +1869,10 @@ public class CotizadorController {
 			Gson gson = builder.serializeNulls().create();
 			
 			if(user.getUserProfiles().stream().filter(b -> b.getType().equals("VENTAS")).count() == 0)
-			{
 				Cot = cs.BuscarxId(id, user.getId());
-			}
+			
 			else
-			{
 				Cot = cs.BuscarxId(id);
-			}
 			
 			if(Cot != null)
 			{
@@ -2137,6 +1889,37 @@ public class CotizadorController {
 		}
 		return "/tarjetas/cotizador/seguimiento_cot_hist";
 	}
+	
+	@RequestMapping(value = "/vendedor/imprimirtf", method = RequestMethod.GET)
+    @ResponseBody
+    public void imprimirtf(HttpServletResponse response,HttpServletRequest request,ModelMap model,
+    				    @RequestParam("id") Integer id, @RequestParam("id") Integer iddet) throws JRException, IOException {
+		String msj = "";
+		try
+		{
+			InputStream jasperStream = this.getClass().getResourceAsStream("/jasperreports/cotizador/Tarjeta_fabricacionCTE.jasper");
+			Map<String,Object> params = new HashMap<>();
+			
+			JasperReport jasperReport = (JasperReport) JRLoader.loadObject(jasperStream);
+			ByteArrayInputStream jsonDataStream = new ByteArrayInputStream(stripAccents(ctsc.DataSourceJasperTF(id, iddet, 1).toString()).getBytes("UTF-8"));
+			JsonDataSource dataSource = new JsonDataSource(jsonDataStream);
+			params.put("Imagen",request.getServletContext().getRealPath("/"));
+			
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, dataSource);
+			
+			response.setContentType("application/pdf");
+			response.setHeader("Content-disposition", "inline");
+			
+			    final OutputStream outStream = response.getOutputStream();
+			    JasperExportManager.exportReportToPdfStream(jasperPrint, outStream);
+			logger.info(AppController.getPrincipal() + " - imprimirtf :"+ msj);
+		}
+		catch(Exception e)
+		{
+			msj = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
+			logger.info(AppController.getPrincipal() + " - imprimircotizador :"+ e);
+		}
+	} 
 	
 }
 

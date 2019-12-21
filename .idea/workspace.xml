@@ -1,11 +1,315 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4dceb03f-2b73-45cc-a760-12136aee2da4" name="Default Changelist" comment="">
+    <list default="true" id="11a0ce13-e514-4404-af06-47fefc6c16c9" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/main.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/tarjetas/fabricacion/tarjeta_fabricacion.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/tarjetas/fabricacion/tarjeta_fabricacion.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/tarjetas/fabricacion/tarjeta_fabricacion_cambiosgi.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/tarjetas/fabricacion/tarjeta_fabricacion_cambiosgi.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/configuration/AppConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/configuration/AppInitializer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/configuration/HibernateConfiguration.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/controller/AppController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/controller/CotizadorController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/controller/PerfilesController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/controller/Profile_matchersController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/controller/Prospectos_ventasController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/controller/ReportesController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/controller/VentasController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/controller/Viajes_embarquesController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/converter/RoleToUserProfileConverter.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/AbstractDao.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/Catalogo_estadosDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/Catalogo_estadosDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/Catalogo_municipiosDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/Catalogo_municipiosDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/HibernateTokenRepositoryImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/MenusDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/MenusDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/Profile_matchersDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/Profile_matchersDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/Solicitudes_reset_passDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/Solicitudes_reset_passDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/UserDao.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/UserDaoImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/UserProfileDao.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/UserProfileDaoImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Amortiza_herramentalesDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Amortiza_herramentalesDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Cobranza_acumDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Cobranza_acumDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Cobranza_detalleDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Cobranza_detalleDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/ConsumoKilosDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/ConsumoKilosDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Flautas_prom_semDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Flautas_prom_semDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Golpes_maquina_mesDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Golpes_maquina_mesDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Golpes_pendientes_fabDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Golpes_pendientes_fabDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/GolpeskilosmaquinasDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/GolpeskilosmaquinasDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Inventario_almacenDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Inventario_almacenDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Media_pedidos_cteDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Media_pedidos_cteDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Meses_anioDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Meses_anioDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Paros_concepto_diaDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Paros_concepto_diaDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Paros_maquina_diaDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Paros_maquina_diaDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Peso_diaDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Peso_diaDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Reporte_consumo_papelDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Reporte_consumo_papelDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Reportes_consumo_papel_acum_mesDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Reportes_consumo_papel_acum_mesDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Reportes_consumo_papel_utl_semDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Reportes_consumo_papel_utl_semDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Semanas_anioDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Semanas_anioDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Todos_pedidosDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Todos_pedidosDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Viajes_mes_ciudadDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/reportes/Viajes_mes_ciudadDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Catalogo_bolsas_sap_vwDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Catalogo_bolsas_sap_vwDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Catalogo_cajas_sap_vwDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Catalogo_cajas_sap_vwDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Catalogo_clientes_sap_vwDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Catalogo_clientes_sap_vwDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Catalogo_coloresDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Catalogo_coloresDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Catalogo_direcciones_sap_vwDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Catalogo_direcciones_sap_vwDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Catalogo_especialidades_sap_vwDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Catalogo_especialidades_sap_vwDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Catalogo_giros_sap_vwDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Catalogo_giros_sap_vwDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Catalogo_resistencias_sap_vwDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Catalogo_resistencias_sap_vwImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Catalogo_sellosDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Catalogo_sellosDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Catalogo_vendedores_sap_vwDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Catalogo_vendedores_sap_vwDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Codigo_barras_cotizadorDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Codigo_barras_cotizadorDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Comision_comisionista_sap_vwDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Comision_comisionista_sap_vwDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Comision_directo_sap_vwDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Comision_directo_sap_vwDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Especialidades_cotizacionDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Especialidades_cotizacionDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Vendedores_especiales_comision_sap_vwDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/Vendedores_especiales_comision_sap_vwDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/cotizador/CotizadorDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/cotizador/CotizadorDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/cotizador/Cotizador_detallesDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/cotizador/Cotizador_detallesDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/prospectos/Prospectos_ventasDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/prospectos/Prospectos_ventasDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/prospectos/Prospectos_ventas_detalleDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/tarjetas/prospectos/Prospectos_ventas_detalleDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/ventas/PronosticoscteDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/ventas/PronosticoscteDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/ventas/WarningspronDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/ventas/WarningspronDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/viajes/Viajes_detalleDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/viajes/Viajes_detalleDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/viajes/Viajes_embarquesDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/dao/viajes/Viajes_embarquesDAOImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/excel/ConsKilosExcel.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/excel/ExcelAmortHerra.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/excel/ExcelGolpesPend.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/excel/ExcelGolpesPend2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/excel/ExcelTodosPedidos.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/excel/ExcelView.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/excel/ExcelViewGolpesKilosMes.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/excel/ExcelViewGolpesMaqMes.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/excel/ExcelViewResolver.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/excel/ExcelViewUltSem.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/excel/MediaPedidosCte.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/Catalogo_estados.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/Catalogo_municipios.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/Menus.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/Meses_anio.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/PersistentLogin.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/Profile_matchers.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/Semanas_anio.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/Solicitudes_reset_pass.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/User.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/UserProfile.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/UserProfileType_.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/classespk/Codigo_barras_cotizadorPK.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/classespk/Cotizador_detallesPK.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/classespk/Reporte_consumo_papelPK.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/classespk/Reportes_consumo_papel_utl_semPK.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/classespk/semanas_anioPK.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/reportes/Amortiza_herramentales.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/reportes/Cobranza_acum.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/reportes/Cobranza_detalle.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/reportes/ConsumoKilos.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/reportes/Flautas_prom_sem.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/reportes/Golpes_maquina_mes.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/reportes/Golpes_pendientes_fab.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/reportes/Golpeskilosmaquinas.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/reportes/Inventario_almacen.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/reportes/Media_pedidos_cte.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/reportes/Paros_concepto_dia.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/reportes/Paros_maquina_dia.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/reportes/Peso_dia.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/reportes/Reporte_consumo_papel.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/reportes/Reportes_consumo_papel_acum_mes.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/reportes/Reportes_consumo_papel_utl_sem.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/reportes/Todos_pedidos.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/reportes/Viajes_mes_ciudad.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/tarjetas/Catalogo_bolsas_sap_vw.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/tarjetas/Catalogo_cajas_sap_vw.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/tarjetas/Catalogo_clientes_sap_vw.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/tarjetas/Catalogo_colores.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/tarjetas/Catalogo_direcciones_sap_vw.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/tarjetas/Catalogo_especialidades_sap_vw.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/tarjetas/Catalogo_giros_sap_vw.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/tarjetas/Catalogo_resistencias_sap_vw.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/tarjetas/Catalogo_sellos.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/tarjetas/Catalogo_vendedores_sap_vw.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/tarjetas/Codigo_barras_cotizador.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/tarjetas/Comision_comisionista_sap_vw.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/tarjetas/Comision_directo_sap_vw.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/tarjetas/Especialidades_cotizacion.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/tarjetas/Vendedores_especiales_comision_sap_vw.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/tarjetas/cotizador/Cotizador.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/tarjetas/cotizador/CotizadorDataBean.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/tarjetas/cotizador/Cotizador_busqueda.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/tarjetas/cotizador/Cotizador_detalles.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/tarjetas/cotizador/Cotizador_detallesValidator.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/tarjetas/prospectos/ProspectosDataBean.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/tarjetas/prospectos/Prospectos_ventas.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/tarjetas/prospectos/Prospectos_ventas_busqueda.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/tarjetas/prospectos/Prospectos_ventas_detalle.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/ventas/Pronosticoscte.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/viajes/Viajes_detalle.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/model/viajes/Viajes_embarques.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/security/CustomFilter$DefaultThrowableAnalyzer$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/security/CustomFilter$DefaultThrowableAnalyzer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/security/CustomFilter.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/security/CustomUserDetailsService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/security/SecurityConfiguration.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/security/SecurityWebApplicationInitializer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/Catalogo_estadosService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/Catalogo_estadosServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/Catalogo_municipiosService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/Catalogo_municipiosServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/MenusService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/MenusServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/Profile_matchersService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/Profile_matchersServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/Solicitudes_reset_passService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/Solicitudes_reset_passServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/UserProfileService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/UserProfileServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/UserService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/UserServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Amortiza_herramentalesService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Amortiza_herramentalesServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Cobranza_acumService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Cobranza_acumServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Cobranza_detalleService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Cobranza_detalleServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/ConsumoKilosService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/ConsumoKilosServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Flautas_prom_semService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Flautas_prom_semServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Golpes_maquina_mesService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Golpes_maquina_mesServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Golpes_pendientes_fabService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Golpes_pendientes_fabServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/GolpeskilosmaquinasService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/GolpeskilosmaquinasServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Inventario_almacenService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Inventario_almacenServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Media_pedidos_cteService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Media_pedidos_cteServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Meses_anioService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Meses_anioServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Paros_concepto_diaService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Paros_concepto_diaServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Paros_maquina_diaService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Paros_maquina_diaServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Peso_diaService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Peso_diaServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Reporte_consumo_papelService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Reporte_consumo_papelServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Reportes_consumo_papel_acum_mesService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Reportes_consumo_papel_acum_mesServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Reportes_consumo_papel_utl_semService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Reportes_consumo_papel_utl_semServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Semanas_anioService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Semanas_anioServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Todos_pedidosService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Todos_pedidosServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Viajes_mes_ciudadService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/reportes/Viajes_mes_ciudadServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Catalogo_bolsas_sap_vwService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Catalogo_bolsas_sap_vwServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Catalogo_cajas_sap_vwService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Catalogo_cajas_sap_vwServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Catalogo_clientes_sap_vwService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Catalogo_clientes_sap_vwServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Catalogo_coloresService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Catalogo_coloresServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Catalogo_direcciones_sap_vwService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Catalogo_direcciones_sap_vwServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Catalogo_especialidades_sap_vwService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Catalogo_especialidades_sap_vwServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Catalogo_giros_sap_vwService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Catalogo_giros_sap_vwServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Catalogo_resistencias_sap_vwService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Catalogo_resistencias_sap_vwServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Catalogo_sellosService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Catalogo_sellosServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Catalogo_vendedores_sap_vwService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Catalogo_vendedores_sap_vwServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Codigo_barras_cotizadorService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Codigo_barras_cotizadorServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Comision_comisionista_sap_vwService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Comision_comisionista_sap_vwServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Comision_directo_sap_vwService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Comision_directo_sap_vwServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Especialidades_cotizacionService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Especialidades_cotizacionServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Vendedores_especiales_comision_sap_vwService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/Vendedores_especiales_comision_sap_vwServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/cotizador/CotizadorService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/cotizador/CotizadorServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/cotizador/Cotizador_detallesService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/cotizador/Cotizador_detallesServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/prospectos/Prospectos_ventasService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/prospectos/Prospectos_ventasServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/prospectos/Prospectos_ventas_detalleService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/tarjetas/prospectos/Prospectos_ventas_detalleServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/ventas/PronosticoscteService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/ventas/PronosticoscteServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/ventas/WarningspronService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/ventas/WarningspronServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/viajes/Viajes_detalleService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/viajes/Viajes_detalleServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/viajes/Viajes_embarquesService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/service/viajes/Viajes_embarquesServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/utilities/Crypto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/utilities/JsonFunctions.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/utilities/SQlServerDBDialect.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/utilities/SendMailGmail$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/utilities/SendMailGmail.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/websystique/springmvc/utilities/Utils.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/m2e-wtp/web-resources/META-INF/maven/com.websystique.springmvc/barcasii/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/m2e-wtp/web-resources/META-INF/maven/com.websystique.springmvc/barcasii/pom.properties" afterDir="false" />
     </list>
-    <ignored path="$PROJECT_DIR$/out/" />
+    <ignored path="$PROJECT_DIR$/target/classes/" />
+    <ignored path="$PROJECT_DIR$/RemoteSystemsTempFiles/bin/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,10 +321,9 @@
       <usages-collector id="statistics.lifecycle.project">
         <counts>
           <entry key="project.closed" value="4" />
-          <entry key="project.open.time.4" value="1" />
-          <entry key="project.open.time.5" value="1" />
-          <entry key="project.open.time.53" value="1" />
-          <entry key="project.open.time.7" value="1" />
+          <entry key="project.open.time.31" value="1" />
+          <entry key="project.open.time.8" value="2" />
+          <entry key="project.open.time.9" value="1" />
           <entry key="project.opened" value="4" />
         </counts>
       </usages-collector>
@@ -37,93 +340,62 @@
     </session>
   </component>
   <component name="FileEditorManager">
-    <leaf />
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/websystique/springmvc/model/reportes/Paros_maquina_dia.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="170">
+              <caret line="10" column="5" selection-start-line="10" selection-start-column="5" selection-end-line="10" selection-end-column="5" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="10" />
-    <option name="y" value="20" />
+    <option name="x" value="1284" />
+    <option name="y" value="173" />
     <option name="width" value="1346" />
     <option name="height" value="688" />
   </component>
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
               <item name="barcasii" type="b2602c69:ProjectViewProjectNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="barcasii" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="barcasii" type="b2602c69:ProjectViewProjectNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="webapp" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="barcasii" type="b2602c69:ProjectViewProjectNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="webapp" type="462c0819:PsiDirectoryNode" />
-              <item name="static" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="barcasii" type="b2602c69:ProjectViewProjectNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="webapp" type="462c0819:PsiDirectoryNode" />
-              <item name="WEB-INF" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="barcasii" type="b2602c69:ProjectViewProjectNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="webapp" type="462c0819:PsiDirectoryNode" />
-              <item name="WEB-INF" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="barcasii" type="b2602c69:ProjectViewProjectNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="webapp" type="462c0819:PsiDirectoryNode" />
-              <item name="WEB-INF" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-              <item name="appconfig" type="462c0819:PsiDirectoryNode" />
+              <item name="barcasii" type="462c0819:PsiDirectoryNode" />
+              <item name="target" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="barcasii" type="58d84e3e:PackageViewProjectNode" />
-              <item name="main" type="616d4139:PackageViewModuleNode" />
-            </path>
-            <path>
-              <item name="barcasii" type="58d84e3e:PackageViewProjectNode" />
-              <item name="main" type="616d4139:PackageViewModuleNode" />
-              <item name="com.websystique.springmvc" type="1f31426a:PackageElementNode" />
-            </path>
-            <path>
-              <item name="barcasii" type="58d84e3e:PackageViewProjectNode" />
-              <item name="main" type="616d4139:PackageViewModuleNode" />
-              <item name="com.websystique.springmvc" type="1f31426a:PackageElementNode" />
-              <item name="dao" type="1f31426a:PackageElementNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1575492658298" />
+    <property name="project.structure.last.edited" value="SDKs" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -142,18 +414,18 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="4dceb03f-2b73-45cc-a760-12136aee2da4" name="Default Changelist" comment="" />
-      <created>1556311042291</created>
+      <changelist id="11a0ce13-e514-4404-af06-47fefc6c16c9" name="Default Changelist" comment="" />
+      <created>1575489618933</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1556311042291</updated>
+      <updated>1575489618933</updated>
     </task>
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <frame x="1358" y="-8" width="1936" height="1096" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.26096824" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25799572" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -169,7 +441,8 @@
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" />
-      <window_info anchor="bottom" id="Version Control" order="9" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="9" />
+      <window_info anchor="bottom" id="Messages" order="10" visible="true" weight="0.32917964" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -184,19 +457,92 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/websystique/springmvc/dao/HibernateTokenRepositoryImpl.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/websystique/springmvc/model/reportes/Paros_maquina_dia.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="16" column="10" selection-start-line="16" selection-start-column="10" selection-end-line="16" selection-end-column="10" />
+        <state relative-caret-position="170">
+          <caret line="10" column="5" selection-start-line="10" selection-start-column="5" selection-end-line="10" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
   </component>
   <component name="masterDetails">
     <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>No facets are configured</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>1.8</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>barcasii</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
       <state key="ProjectJDKs.UI">
         <settings>
           <last-edited>1.8</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
           <splitter-proportions>
             <option name="proportions">
               <list>
