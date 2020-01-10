@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -37,7 +38,7 @@ public class Programas_reg_barca implements Serializable{/**
 	private String programa;
 	@NotNull
 	private Double cant_acumulada;
-	@NotNull
+	@NotNull @DecimalMin("1.0") 
 	private Double cant_programada;
 	@NotNull
 	private Double cant_pendiente;

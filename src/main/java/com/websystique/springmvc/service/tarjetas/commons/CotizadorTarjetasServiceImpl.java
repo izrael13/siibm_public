@@ -22,6 +22,8 @@ import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador_detalles;
 import com.websystique.springmvc.model.tarjetas.fabricacion.Tarjeta_fabricacion;
 import com.websystique.springmvc.model.tarjetas.fabricacion.Tarjetas_fabricacion_imagenes;
 import com.websystique.springmvc.service.UserService;
+import com.websystique.springmvc.service.programas.Catalogo_pedidos_sapService;
+import com.websystique.springmvc.service.programas.Programas_reg_barcaService;
 import com.websystique.springmvc.service.tarjetas.Catalogo_cajas_sap_vwService;
 import com.websystique.springmvc.service.tarjetas.Catalogo_clientes_sap_vwService;
 import com.websystique.springmvc.service.tarjetas.Catalogo_coloresService;
@@ -41,36 +43,23 @@ import com.websystique.springmvc.service.tarjetas.fabricacion.Tarjetas_fabricaci
 @Transactional
 public class CotizadorTarjetasServiceImpl implements CotizadorTarjetasService{
 	
-	@Autowired
-	UserService us;
-	@Autowired
-	CotizadorService cs;
-	@Autowired
-	Catalogo_clientes_sap_vwService ccavs;
-	@Autowired
-	Catalogo_direcciones_sap_vwService cdsv;
-	@Autowired
-	Cotizador_detallesService cds;
-	@Autowired
-	Codigo_barras_cotizadorService cbsc;
-	@Autowired
-	Especialidades_cotizacionService ecs;
-	@Autowired
-	Catalogo_especialidades_sap_vwService ces;
-	@Autowired
-	Catalogo_cajas_sap_vwService ccss;
-	@Autowired
-	Catalogo_resistencias_sap_vwService crss;
-	@Autowired
-	Catalogo_sellosService css;
-	@Autowired
-	Catalogo_coloresService ccos;
-	@Autowired
-	Catalogo_herramentalesService chs;
-	@Autowired
-	Tarjeta_fabricacionService tfs;
-	@Autowired
-	Tarjetas_fabricacion_imagenesService tfis;
+	@Autowired UserService us;
+	@Autowired CotizadorService cs;
+	@Autowired Catalogo_clientes_sap_vwService ccavs;
+	@Autowired Catalogo_direcciones_sap_vwService cdsv;
+	@Autowired Cotizador_detallesService cds;
+	@Autowired Codigo_barras_cotizadorService cbsc;
+	@Autowired Especialidades_cotizacionService ecs;
+	@Autowired Catalogo_especialidades_sap_vwService ces;
+	@Autowired Catalogo_cajas_sap_vwService ccss;
+	@Autowired Catalogo_resistencias_sap_vwService crss;
+	@Autowired Catalogo_sellosService css;
+	@Autowired Catalogo_coloresService ccos;
+	@Autowired Catalogo_herramentalesService chs;
+	@Autowired Tarjeta_fabricacionService tfs;
+	@Autowired Tarjetas_fabricacion_imagenesService tfis;
+	@Autowired Catalogo_pedidos_sapService cps;
+	@Autowired Programas_reg_barcaService prbs;
 	
 	@Override
 	public JSONObject DataSourceJasperCot(Integer id, Integer addDetalles) {
@@ -177,82 +166,6 @@ public class CotizadorTarjetasServiceImpl implements CotizadorTarjetasService{
 		return JsonCotDet;
 	}
 
-	/*@Override
-	public JSONObject DataSourceJasperReq(Integer id) {
-		GsonBuilder builder = new GsonBuilder();
-		Gson gson = builder.serializeNulls().setDateFormat("yyyy-MM-dd HH:mm").create();
-		Cotizador cot = new Cotizador();
-		cot = cs.BuscarxId(id);
-		JSONObject JsonCot = new JSONObject(gson.toJson(cot));
-		JsonCot.put("cliente", ccavs.cat_cte_sap(cot.getCardcode()).getCardname());
-		JsonCot.put("cliente_factura", (cot.getCardcode_factura() != null ? ccavs.cat_cte_sap(cot.getCardcode_factura()).getCardname() : ""));
-		Catalogo_direcciones_sap_vw dir = new Catalogo_direcciones_sap_vw();
-		dir = cdsv.DirCardCodeNumLine(cot.getCardcode(), cot.getLinenum_dir_entrega()); 
-		JsonCot.put("lab",dir.getDireccion()+ " " +dir.getCiudad()+ " "+dir.getEstado());
-		JsonCot.put("contacto",dir.getContacto());
-		JsonCot.put("correo",dir.getEmail());
-		JsonCot.put("telefono",dir.getTelefono());
-		User user = new User();
-		user = us.findById(cot.getUsuario_aut_ventas() == null ? 0 : cot.getUsuario_aut_ventas());
-		if(user != null)
-			JsonCot.put("autorizador", user.getFirstName() + " " + user.getLastName());
-		user = null;
-		user = us.findById(cot.getUsuario_insert());
-		if(user != null)
-			JsonCot.put("representante", user.getFirstName() + " " + user.getLastName());		
-		List<JSONObject> ListaJsonDet = new ArrayList<JSONObject>();	
-		cds.BuscarxCotId(id).forEach(a ->{
-			a.setCodigo_barra_cotizador(cbsc.BuscarXCotDet(a.getIdcotizacion(), a.getIddetalle()));
-			JSONObject JsonCotDet = new JSONObject(gson.toJson(a));
-			List<JSONObject> ListaJsonEsp = new ArrayList<JSONObject>();
-			ListaJsonEsp = addEspecialidades(id, a.getIddetalle());
-			JsonCotDet.put("ListaEsp", ListaJsonEsp);
-			JsonCotDet.put("estilo_caja", ccss.BuscarxId(a.getIdcaja_sap()).getNombrecorto());
-			Catalogo_resistencias_sap_vw objResis = new Catalogo_resistencias_sap_vw();
-			objResis = crss.BuscarxId(a.getIdresistencia_barca());
-			JsonCotDet.put("resistencia", objResis.getResistencia());
-			JsonCotDet.put("flauta", objResis.getCorrugado());
-			JsonCotDet.put("papel", objResis.getColor());
-			JsonCotDet.put("SUBREPORT_DIR", "/jasperreports/cotizador/");
-			JsonCotDet.put("resis_cte", css.BuscarxId(a.getResistencia_cte()).getNombre());
-			
-			Catalogo_colores color = new Catalogo_colores();
-			color = ccos.BuscarxId(a.getColor1() == null ? 0 : a.getColor1());		
-			JsonCotDet.put("color1n", a.getColor1() == null ? "" : color.getColor());
-			JsonCotDet.put("color1c", a.getColor1() == null ? "" : "#"+color.getColor_est().trim());
-			
-			color = ccos.BuscarxId(a.getColor2() == null ? 0 : a.getColor2());		
-			JsonCotDet.put("color2n", a.getColor2() == null ? "" : color.getColor());
-			JsonCotDet.put("color2c", a.getColor2() == null ? "" : "#"+color.getColor_est().trim());
-			
-			color = ccos.BuscarxId(a.getColor3() == null ? 0 : a.getColor3());		
-			JsonCotDet.put("color3n", a.getColor3() == null ? "" : color.getColor());
-			JsonCotDet.put("color3c", a.getColor3() == null ? "" : "#"+color.getColor_est().trim());
-			
-			color = ccos.BuscarxId(a.getColor4() == null ? 0 : a.getColor4());		
-			JsonCotDet.put("color4n", a.getColor4() == null ? "" : color.getColor());
-			JsonCotDet.put("color4c", a.getColor4() == null ? "" : "#"+color.getColor_est().trim());
-			
-			color = ccos.BuscarxId(a.getColor5() == null ? 0 : a.getColor5());		
-			JsonCotDet.put("color5n", a.getColor5() == null ? "" : color.getColor());
-			JsonCotDet.put("color5c", a.getColor5() == null ? "" : "#"+color.getColor_est().trim());
-			
-			color = ccos.BuscarxId(a.getColor6() == null ? 0 : a.getColor6());		
-			JsonCotDet.put("color6n", a.getColor6() == null ? "" : color.getColor());
-			JsonCotDet.put("color6c", a.getColor6() == null ? "" : "#"+color.getColor_est().trim());
-			
-			color = ccos.BuscarxId(a.getColor7() == null ? 0 : a.getColor7());		
-			JsonCotDet.put("color7n", a.getColor7() == null ? "" : color.getColor());
-			JsonCotDet.put("color7c", a.getColor7() == null ? "" : "#"+color.getColor_est().trim());
-			
-			ListaJsonDet.add(JsonCotDet);
-		});	
-		
-		JsonCot.put("ListaDetalles", ListaJsonDet);
-		JsonCot.put("SUBREPORT_DIR", "/jasperreports/cotizador/");
-		return JsonCot;
-	} */
-
 	@SuppressWarnings({ "rawtypes"})
 	@Override
 	public JSONObject DataSourceJasperTF(Integer id, Integer iddet, Integer addCotCotDet) {
@@ -335,6 +248,14 @@ public class CotizadorTarjetasServiceImpl implements CotizadorTarjetasService{
 		            JsonTF.put(key, JsonCotdet.get(key));
 		        }
 			}
+			
+			JSONObject JsonProg = addPrograma();
+			Iterator itProg = JsonProg.keys();
+			while(itProg.hasNext()) {
+	            String key = (String) itProg.next();
+	            JsonTF.put(key, JsonProg.get(key));
+	        }
+			
 		}
 		//System.out.println(JsonTF.toString());
 		return JsonTF;
@@ -361,5 +282,13 @@ public class CotizadorTarjetasServiceImpl implements CotizadorTarjetasService{
 		
 		return ListaJsonEsp;
 	}
+	
+	private JSONObject addPrograma()
+	{
+		JSONObject JsonProg = new JSONObject(prbs.BuscarxId(null));
+				
+		return JsonProg;
+	}
+	
 
 }

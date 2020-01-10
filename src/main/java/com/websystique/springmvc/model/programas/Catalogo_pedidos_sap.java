@@ -17,8 +17,8 @@ public class Catalogo_pedidos_sap implements Serializable{/**
 	 */
 	private static final long serialVersionUID = 1L;
 	@Id
+	private Integer id;
 	private String clavecliente;
-	@Id
 	private Integer pedido;
 	private Date fechapedido;
 	private Date fechaentrega;

@@ -559,7 +559,7 @@ function BuscarResistencias()
 							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
 								<div class="row border border-right">
 									<div class="col col-lg-1">
-										<form:input id="TIdCotDet" class="border border-secondary" size="9" maxlength="8" onkeypress="return Enteros(event)" readonly="true" type="text" path="cotizador_detalles.idcotizacion"/>
+										<form:input id="TIdCotDet" class="border border-secondary" size="9" maxlength="8" onkeypress="return Enteros(event)" readonly="true" type="hidden" path="cotizador_detalles.idcotizacion"/>
 										<form:input id="TIdDet" class="border border-secondary" size="9" maxlength="8" onkeypress="return Enteros(event)" readonly="true" type="text" path="cotizador_detalles.iddetalle"/>
 									</div>
 									<div class="col col-lg-1">Símbolo</div>

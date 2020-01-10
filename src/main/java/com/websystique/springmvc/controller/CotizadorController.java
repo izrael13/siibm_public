@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+//import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -209,7 +210,10 @@ public class CotizadorController {
 			
 			cvalidator.validate(cotizadorDataBean.getCotizador(), result);
 			cdvalidator.validate(cotizadorDataBean.getCotizador_detalles(), result);
-			  
+			/*for (ObjectError error : result.getAllErrors()) {
+			       String fieldErrors [] = error.getCodes();
+			       System.out.println(fieldErrors[0]);
+			   } */
 			if (result.hasErrors() )
 				return "/tarjetas/cotizador/cotizador";
 			
@@ -527,7 +531,7 @@ public class CotizadorController {
 							if(PorcComision == 0.0 && Vendedor.getClasevendedor().equals("Comisionista"))
 							{
 								List<Comision_comisionista_sap_vw> ListaC = ccs.ListaCCSV();
-								Supplier<Stream<Comision_comisionista_sap_vw>> streamc = () -> ListaC.stream().filter(a -> a.getName() <= CPSC && a.getCode() >= CPSC);
+								Supplier<Stream<Comision_comisionista_sap_vw>> streamc = () -> ListaC.stream().filter(a -> a.getCode() <= CPSC && a.getName() >= CPSC);
 								if(streamc.get().count() > 0)
 									PorcComision = streamc.get().findFirst().get().getU_comision(); 
 							}

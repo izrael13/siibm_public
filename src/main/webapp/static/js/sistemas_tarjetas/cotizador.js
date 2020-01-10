@@ -285,7 +285,7 @@ function FDisableElemens()
 
 function FDisenio()
 {
-	if($("#SDisenio").val() == "Nuevo")
+	if($("#SDisenio").val() != "Nuevo")
 	{
 		$("#CCancSust").prop('checked', true);
 		$("#TFechaCancelTF").attr("required","required");

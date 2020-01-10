@@ -111,6 +111,6 @@ public class Cotizador implements Serializable{/**
 	private String cardcode_factura;
 	private Boolean cancelar_sustituir;
 	private String tf_cs;
-	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date fecha_cancel_tf;
 }
