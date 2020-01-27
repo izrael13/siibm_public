@@ -962,9 +962,9 @@ function BuscarResistencias()
 									</div>
 									<div class="col col-lg-4">Diseño:
 										<form:select id="SDisenio" onChange="FDisenio()" path="cotizador.disenio" multiple="false" class="border border-primary">
+											<form:option value="Nuevo">Nuevo</form:option>
 											<form:option value="Con cambios">Con cambios</form:option>
 											<form:option value="Referencia de TF">Referencia de TF</form:option>
-											<form:option value="Nuevo">Nuevo</form:option>
 										</form:select>
 										Cancel/Sust: <form:checkbox id="CCancSust" path="cotizador.cancelar_sustituir"/>
 										TF: <form:input id="TTF" size="10" maxlength="8" type="text" path="cotizador.tf_cs" onkeypress="return SinCaracteresEspeciales(event);" class="border border-primary"/>

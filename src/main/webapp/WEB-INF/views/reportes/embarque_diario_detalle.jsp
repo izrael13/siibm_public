@@ -12,7 +12,7 @@
 <script>
 function FBuscar()
 {
-	window.location.replace('<c:url value="/reportes/vendedores/embarquediariodetalle" />?fecha='+$("#TDTP").val());
+	window.location.replace('<c:url value="/reportes/embarques/embarquediariodetalle" />?fecha='+$("#TDTP").val());
 }
 function Keypress()
 {

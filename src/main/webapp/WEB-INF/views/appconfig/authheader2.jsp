@@ -95,9 +95,17 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/vendedores/desempeniomesvend' />"><i class="fa fa-file-o" aria-hidden="true"></i> Desempeño mensual por vendedor</a></li>
 		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/vendedores/desempeniomesxcte' />"><i class="fa fa-file-o" aria-hidden="true"></i> Desempeño mensual por cliente</a></li>
 		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/vendedores/desempeniomesxprod' />"><i class="fa fa-file-o" aria-hidden="true"></i> Desempeño mensual por producto</a></li>
-		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/vendedores/peso_dia_d__' />"><i class="fa fa-file-o" aria-hidden="true"></i> Embarque diario</a></li>
-		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/vendedores/embarquediariodetalle' />"><i class="fa fa-file-o" aria-hidden="true"></i> Embarque diario detalle</a></li>
 		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/vendedores/PedidosConRetraso_' />"><i class="fa fa-file-o" aria-hidden="true"></i> Pedidos con Retraso</a></li>
+		    	</ul>
+		    </li>
+		    </sec:authorize>
+		    <sec:authorize access="hasRole('ADMIN') or hasRole('EMBARQUES') or hasRole('VENDEDOR')">
+		  	<li class="dropdown-submenu dropdown-menu-right">
+		  		<a class="nav-link dropdown-toggle"><i class="fa fa-sellsy" aria-hidden="true"></i> Embarques</a>
+		  		<ul class="dropdown-menu">
+		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/embarques/peso_dia_d__' />"><i class="fa fa-file-o" aria-hidden="true"></i> Embarque diario</a></li>
+		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/embarques/embarquediariodetalle' />"><i class="fa fa-file-o" aria-hidden="true"></i> Embarque diario detalle</a></li>
+		    		<li><a class="dropdown-item" href = "<c:url value='/reportes/embarques/listadeembarque' />"><i class="fa fa-file-o" aria-hidden="true"></i> Lista de embarques</a></li>
 		    	</ul>
 		    </li>
 		    </sec:authorize>
@@ -145,7 +153,7 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 	   </ul>
 	 </li>
 	 </sec:authorize>
-	 
+	 <sec:authorize access="hasRole('ADMIN') or hasRole('VENDEDOR') or hasRole('VENTAS') or hasRole('PROGRAMACION') or hasRole('INGENIERIA') or hasRole('ARRASTRE') or hasRole('MUESTRISTA') or hasRole('CALIDAD') or hasRole('PRODUCCION') or hasRole('INGENIERIA_GERENCIA') or hasRole('CLIENTE')">
 	 <li class="nav-item dropdown">				
 		<a class="dropdown-item" href="" data-toggle="dropdown"><i class="fa fa-id-card" aria-hidden="true"> Sistema de tarjetas</i></a>
 		<ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu">
@@ -225,6 +233,7 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 			 </sec:authorize>
 		</ul>		
 	</li>
+	</sec:authorize>
 	<sec:authorize access="hasRole('MATERIAPRIMA') or hasRole('ADMIN')">
 	<li class="nav-item dropdown"><a class="dropdown-item" href="" data-toggle="dropdown"><i class="fa fa-braille" aria-hidden="true"> Materia prima</i></a>
 	 	<ul class="dropdown-menu dropdown-menu-right">
@@ -234,6 +243,17 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 			    	<li><a class="dropdown-item" href = "<c:url value='/materia_prima/genrentemp/catalogo_inventarios' />"><i class="fa fa-inbox" aria-hidden="true"></i> Catálogo de inventarios</a></li>
 			    	</sec:authorize>
 			    	<li><a class="dropdown-item" href = "<c:url value='/materia_prima/inventario/conteo' />"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Conteo</a></li>
+			    </ul>
+			 </li>
+	   </ul>
+	 </li>
+	</sec:authorize>
+	<sec:authorize access="hasRole('CUENTASXCOBRAR') or hasRole('ADMIN')">
+	<li class="nav-item dropdown"><a class="dropdown-item" href="" data-toggle="dropdown"><i class="fa fa-google-wallet" aria-hidden="true"> Cuentas x cobrar</i></a>
+	 	<ul class="dropdown-menu dropdown-menu-right">
+	   		<li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-indent" aria-hidden="true"></i> Conciliación</a>
+			    <ul class="dropdown-menu">
+			    	<li><a class="dropdown-item" href = "<c:url value='/cuentasxcobrar/conciliacion/gestionarchivos' />"><i class="fa fa-file-archive-o" aria-hidden="true"></i> Gestión de archivos</a></li>
 			    </ul>
 			 </li>
 	   </ul>

@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -47,13 +48,13 @@ import com.websystique.springmvc.model.reportes.Desempenio_mensual_xcliente;
 import com.websystique.springmvc.model.reportes.Golpes_maquina_mes;
 import com.websystique.springmvc.model.reportes.Golpes_pendientes_fab;
 import com.websystique.springmvc.model.reportes.Golpeskilosmaquinas;
+import com.websystique.springmvc.model.reportes.ListaEmbarques;
 import com.websystique.springmvc.model.reportes.Media_pedidos_cte;
-
+import com.websystique.springmvc.model.reportes.Pedido;
 import com.websystique.springmvc.model.reportes.Reporte_consumo_papel;
 import com.websystique.springmvc.model.reportes.Reportes_consumo_papel_utl_sem;
 import com.websystique.springmvc.model.reportes.Todos_pedidos;
 import com.websystique.springmvc.service.UserService;
-import com.websystique.springmvc.model.reportes.Pedido;
 import com.websystique.springmvc.service.reportes.Amortiza_herramentalesService;
 import com.websystique.springmvc.service.reportes.Cobranza_acumService;
 import com.websystique.springmvc.service.reportes.Cobranza_detalleService;
@@ -67,11 +68,12 @@ import com.websystique.springmvc.service.reportes.Golpes_maquina_mesService;
 import com.websystique.springmvc.service.reportes.Golpes_pendientes_fabService;
 import com.websystique.springmvc.service.reportes.GolpeskilosmaquinasService;
 import com.websystique.springmvc.service.reportes.Inventario_almacenService;
+import com.websystique.springmvc.service.reportes.ListaEmbarquesService;
 import com.websystique.springmvc.service.reportes.Media_pedidos_cteService;
 import com.websystique.springmvc.service.reportes.Meses_anioService;
 import com.websystique.springmvc.service.reportes.Paros_concepto_diaService;
 import com.websystique.springmvc.service.reportes.Paros_maquina_diaService;
-
+import com.websystique.springmvc.service.reportes.PedidoService;
 import com.websystique.springmvc.service.reportes.Peso_diaService;
 import com.websystique.springmvc.service.reportes.Reporte_consumo_papelService;
 import com.websystique.springmvc.service.reportes.Reportes_consumo_papel_acum_mesService;
@@ -81,7 +83,6 @@ import com.websystique.springmvc.service.reportes.Todos_pedidosService;
 import com.websystique.springmvc.service.reportes.Viajes_mes_ciudadService;
 import com.websystique.springmvc.service.tarjetas.Catalogo_clientes_sap_vwService;
 import com.websystique.springmvc.service.tarjetas.Catalogo_vendedores_sap_vwService;
-import com.websystique.springmvc.service.reportes.PedidoService;
 
 //import net.sf.jasperreports.engine.JRDataSource;
 //import net.sf.jasperreports.engine.JREmptyDataSource;
@@ -155,14 +156,14 @@ public class ReportesController {
 	Desempenio_mensual_xproductoService dmxp;
 	@Autowired
 	Embarque_diario_detalleService emds;
-	
-	Calendar calendar = Calendar.getInstance();
-	
+	@Autowired
+	ListaEmbarquesService lem;	
 	
 	
 	@RequestMapping(value = {"/papel/consumo_papel_mes" }, method = RequestMethod.GET)
 	public String consumo_papel_mes(ModelMap model) {
 		try {
+			Calendar calendar = Calendar.getInstance();
 			model.addAttribute("loggedinuser", AppController.getPrincipal());
 			model.addAttribute("mesesanio", mesesanio.findallRegistros());
 			model.addAttribute("selectedValue", String.valueOf(calendar.get(Calendar.YEAR)) + String.valueOf(calendar.get(Calendar.MONTH)+1));
@@ -223,6 +224,7 @@ public class ReportesController {
 	public String consumo_papel(ModelMap model) {
 		Map<Integer, String> seman = null;
 		try {
+			Calendar calendar = Calendar.getInstance();
 			seman = semanioService.findAllSemanas();
 			model.addAttribute("loggedinuser", AppController.getPrincipal());
 			model.addAttribute("semanas_anio", seman);
@@ -277,6 +279,7 @@ public class ReportesController {
 	@RequestMapping(value = {"/produccion/golpes_maquina_mes__" }, method = RequestMethod.GET)
 	public String troqueladoras_prod(ModelMap model) {
 		try {
+			Calendar calendar = Calendar.getInstance();
 			model.addAttribute("loggedinuser", AppController.getPrincipal());
 			model.addAttribute("mesesanio", mesesanio.findallRegistros());
 			model.addAttribute("selectedValue", String.valueOf(calendar.get(Calendar.YEAR)) + String.valueOf(calendar.get(Calendar.MONTH)+1));
@@ -322,6 +325,7 @@ public class ReportesController {
 	@RequestMapping(value = {"/ventas/golpes_kilos_maquina__" }, method = RequestMethod.GET)
 	public String golpes_kilos_maquina(ModelMap model) {
 		try {
+			Calendar calendar = Calendar.getInstance();
 			model.addAttribute("loggedinuser", AppController.getPrincipal());
 			model.addAttribute("mesesanio", mesesanio.findallRegistros());
 			model.addAttribute("selectedValue", String.valueOf(calendar.get(Calendar.YEAR)) + String.valueOf(calendar.get(Calendar.MONTH)+1));
@@ -367,6 +371,7 @@ public class ReportesController {
 	@RequestMapping(value = {"/produccion/flautaPromSem__" }, method = RequestMethod.GET)
 	public String corrugado_maquina(ModelMap model) {
 		try {
+			Calendar calendar = Calendar.getInstance();
 			Map<Integer, String> seman = semanioService.findAllSemanas();
 			model.addAttribute("loggedinuser", AppController.getPrincipal());
 			model.addAttribute("semanas_anio", seman);
@@ -404,6 +409,7 @@ public class ReportesController {
 	@RequestMapping(value = {"/produccion/paros_maq_dia__" }, method = RequestMethod.GET)
 	public String paros_maquina(ModelMap model) {
 		try {
+			Calendar calendar = Calendar.getInstance();
 			model.addAttribute("loggedinuser", AppController.getPrincipal());
 			model.addAttribute("mesesanio", mesesanio.findallRegistros());
 			model.addAttribute("selectedValue", String.valueOf(calendar.get(Calendar.YEAR)) + String.valueOf(calendar.get(Calendar.MONTH)+1));
@@ -461,14 +467,16 @@ public class ReportesController {
 		return "/reportes/paros_concepto_dia";
 	}
 	
-	@RequestMapping(value = {"/vendedores/peso_dia_d__" })
+	@RequestMapping(value = {"/embarques/peso_dia_d__" })
 	public String peso_dia_d__(ModelMap model) {
-		try {
-		model.addAttribute("loggedinuser", AppController.getPrincipal());
-		model.addAttribute("mesesanio", mesesanio.findallRegistros());
-		model.addAttribute("selectedValue", String.valueOf(calendar.get(Calendar.YEAR)) + String.valueOf(calendar.get(Calendar.MONTH)+1));
-		model.addAttribute("reporte",pds.findByAnioMes(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH)+1));
-		logger.info(AppController.getPrincipal() + " - peso_dia_d__.");
+		try 
+		{
+			Calendar calendar = Calendar.getInstance();
+			model.addAttribute("loggedinuser", AppController.getPrincipal());
+			model.addAttribute("mesesanio", mesesanio.findallRegistros());
+			model.addAttribute("selectedValue", String.valueOf(calendar.get(Calendar.YEAR)) + String.valueOf(calendar.get(Calendar.MONTH)+1));
+			model.addAttribute("reporte",pds.findByAnioMes(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH)+1));
+			logger.info(AppController.getPrincipal() + " - peso_dia_d__.");
 		}
 		catch(Exception e) {
 			logger.error(AppController.getPrincipal() + " - peso_dia_d__. - " + e.getMessage());
@@ -476,7 +484,7 @@ public class ReportesController {
 		return "/reportes/peso_dia";
 	}
 	
-	@RequestMapping(value = {"/vendedores/buscarPeso_dia_" }, method = RequestMethod.GET)
+	@RequestMapping(value = {"/embarques/buscarPeso_dia_" }, method = RequestMethod.GET)
 	public String buscarPeso_dia_(ModelMap model,@RequestParam("aniomes") String aniomes) {
 		try {
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
@@ -533,12 +541,14 @@ public class ReportesController {
 	
 	@RequestMapping(value = {"/vendedores/golpes_pend_fab_" }, method = RequestMethod.GET)
 	public String golpes_pend_fab_(ModelMap model) {
-		try {
-		model.addAttribute("loggedinuser", AppController.getPrincipal());
-		model.addAttribute("mesesanio", mesesanio.findallRegistros());
-		model.addAttribute("selectedValue", String.valueOf(calendar.get(Calendar.YEAR)) + String.valueOf(calendar.get(Calendar.MONTH)+1));
-		model.addAttribute("reporte",gpf.findByAnioMes(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH)+1));
-		logger.info(AppController.getPrincipal() + " - golpes_pend_fab_.");
+		try 
+		{
+			Calendar calendar = Calendar.getInstance();
+			model.addAttribute("loggedinuser", AppController.getPrincipal());
+			model.addAttribute("mesesanio", mesesanio.findallRegistros());
+			model.addAttribute("selectedValue", String.valueOf(calendar.get(Calendar.YEAR)) + String.valueOf(calendar.get(Calendar.MONTH)+1));
+			model.addAttribute("reporte",gpf.findByAnioMes(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH)+1));
+			logger.info(AppController.getPrincipal() + " - golpes_pend_fab_.");
 		}
 		catch(Exception e) {
 			logger.error(AppController.getPrincipal() + " - golpes_pend_fab_. - " + e.getMessage());
@@ -578,12 +588,14 @@ public class ReportesController {
 	
 	@RequestMapping(value = {"/ventas/golpes_pend_fab_2" }, method = RequestMethod.GET)
 	public String golpes_pend_fab_2(ModelMap model) {
-		try {
-		model.addAttribute("loggedinuser", AppController.getPrincipal());
-		model.addAttribute("mesesanio", mesesanio.findallRegistros());
-		model.addAttribute("selectedValue", String.valueOf(calendar.get(Calendar.YEAR)) + String.valueOf(calendar.get(Calendar.MONTH)+1));
-		model.addAttribute("reporte",gpf.findByAnioMes(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH)+1));
-		logger.info(AppController.getPrincipal() + " - golpes_pend_fab_2.");
+		try 
+		{
+			Calendar calendar = Calendar.getInstance();
+			model.addAttribute("loggedinuser", AppController.getPrincipal());
+			model.addAttribute("mesesanio", mesesanio.findallRegistros());
+			model.addAttribute("selectedValue", String.valueOf(calendar.get(Calendar.YEAR)) + String.valueOf(calendar.get(Calendar.MONTH)+1));
+			model.addAttribute("reporte",gpf.findByAnioMes(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH)+1));
+			logger.info(AppController.getPrincipal() + " - golpes_pend_fab_2.");
 		}
 		catch(Exception e) {
 			logger.error(AppController.getPrincipal() + " - golpes_pend_fab_2. - " + e.getMessage());
@@ -669,13 +681,15 @@ public class ReportesController {
 	
 	@RequestMapping(value = {"/ventas/todos_pedidos___" }, method = RequestMethod.GET)
 	public String todos_pedidos___(ModelMap model) {
-		try {
-		User user = us.findBySSO(AppController.getPrincipal()); 
-		model.addAttribute("loggedinuser", AppController.getPrincipal());
-		int anio = calendar.get(Calendar.YEAR);
-		model.addAttribute("select", anio);
-		model.addAttribute("reporte", tps.findPedidosByAnio(anio,user.getCvevendedor_sap()));
-		logger.info(AppController.getPrincipal() + " - todos_pedidos___.");
+		try 
+		{
+			Calendar calendar = Calendar.getInstance();
+			User user = us.findBySSO(AppController.getPrincipal()); 
+			model.addAttribute("loggedinuser", AppController.getPrincipal());
+			int anio = calendar.get(Calendar.YEAR);
+			model.addAttribute("select", anio);
+			model.addAttribute("reporte", tps.findPedidosByAnio(anio,user.getCvevendedor_sap()));
+			logger.info(AppController.getPrincipal() + " - todos_pedidos___.");
 		}
 		catch(Exception e) {
 			logger.error(AppController.getPrincipal() + " - todos_pedidos___. - " + e.getMessage());
@@ -716,13 +730,15 @@ public class ReportesController {
 	
 	@RequestMapping(value = {"/ingenieria/todos_pedidos_ing_" }, method = RequestMethod.GET)
 	public String todos_pedidos_ing_(ModelMap model) {
-		try {
-		User user = us.findBySSO(AppController.getPrincipal());
-		model.addAttribute("loggedinuser", AppController.getPrincipal());
-		int anio = calendar.get(Calendar.YEAR);
-		model.addAttribute("select", anio);
-		model.addAttribute("reporte", tps.findPedidosByAnio(anio,user.getCvevendedor_sap()));
-		logger.info(AppController.getPrincipal() + " - todos_pedidos_ing_.");
+		try 
+		{
+			Calendar calendar = Calendar.getInstance();
+			User user = us.findBySSO(AppController.getPrincipal());
+			model.addAttribute("loggedinuser", AppController.getPrincipal());
+			int anio = calendar.get(Calendar.YEAR);
+			model.addAttribute("select", anio);
+			model.addAttribute("reporte", tps.findPedidosByAnio(anio,user.getCvevendedor_sap()));
+			logger.info(AppController.getPrincipal() + " - todos_pedidos_ing_.");
 		}
 		catch(Exception e) {
 			logger.error(AppController.getPrincipal() + " - todos_pedidos_ing_. - " + e.getMessage());
@@ -867,12 +883,14 @@ public class ReportesController {
 	
 	@RequestMapping(value = {"/ventas/viajes_mes_ciudad" }, method = RequestMethod.GET)
 	public String viajes_mes_ciudad(ModelMap model) {
-		try {
-		model.addAttribute("loggedinuser", AppController.getPrincipal());
-		logger.info(AppController.getPrincipal() + " - ventas/viajes_mes_ciudad.");
-		model.addAttribute("mesesanio", mesesanio.findallRegistros());
-		model.addAttribute("selectedValue", String.valueOf(calendar.get(Calendar.YEAR)) + String.valueOf(calendar.get(Calendar.MONTH)+1));
-		model.addAttribute("reporte", vmc.findByAnioMes(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH)+1));
+		try 
+		{
+			Calendar calendar = Calendar.getInstance();
+			model.addAttribute("loggedinuser", AppController.getPrincipal());
+			logger.info(AppController.getPrincipal() + " - ventas/viajes_mes_ciudad.");
+			model.addAttribute("mesesanio", mesesanio.findallRegistros());
+			model.addAttribute("selectedValue", String.valueOf(calendar.get(Calendar.YEAR)) + String.valueOf(calendar.get(Calendar.MONTH)+1));
+			model.addAttribute("reporte", vmc.findByAnioMes(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH)+1));
 		}
 		catch(Exception e) {
 			logger.error(AppController.getPrincipal() + " - ventas/viajes_mes_ciudad. - " + e.getMessage());
@@ -1098,7 +1116,7 @@ public class ReportesController {
 		return "/reportes/desempenio_mes_xprod";
 	}
 	
-	@RequestMapping(value = {"/vendedores/embarquediariodetalle" }, method = RequestMethod.GET)
+	@RequestMapping(value = {"/embarques/embarquediariodetalle" }, method = RequestMethod.GET)
 	public String embarquediariodetalle(ModelMap model,@RequestParam(value = "fecha", defaultValue = "", required = false) String fecha) {
 		try 
 		{
@@ -1112,7 +1130,7 @@ public class ReportesController {
 			int b = 0;
 			for(UserProfile s : user.getUserProfiles())
 			{
-				if(s.getType().equals("ADMIN") || s.getType().equals("VENTAS"))
+				if(s.getType().equals("ADMIN") || s.getType().equals("VENTAS") || s.getType().equals("EMBARQUES"))
 					b++;
 			}
 			model.addAttribute("selectedValue", fecha);
@@ -1165,18 +1183,46 @@ public class ReportesController {
 	
 	@RequestMapping(value = {"/vendedores/PedidosConRetraso_" }, method = RequestMethod.GET)
 	public String PedidoConretraso(ModelMap model) {
-		try {	  
-		   model.addAttribute("loggedinuser", AppController.getPrincipal());
+		try 
+		{	  
+		  model.addAttribute("loggedinuser", AppController.getPrincipal());
 		 
           List<Pedido> pedidosAtra = pedidoService.findAll();
 		  model.addAttribute("pedidosAtra", pedidosAtra);
 		 
 		  logger.info(AppController.getPrincipal() + " - PedidosConRetraso_.");
 					
-				}
-			catch(Exception e) {
-				logger.error(AppController.getPrincipal() + " - PedidosConRetraso_. - " + e.getMessage());
-				}
-				return "/reportes/pedidos_con_retraso";
-				}	           
+		}
+		catch(Exception e) 
+		{
+			logger.error(AppController.getPrincipal() + " - PedidosConRetraso_. - " + e.getMessage());
+		}
+		return "/reportes/pedidos_con_retraso";
+	}
+	
+	@RequestMapping(value = {"/embarques/listadeembarque" }, method = RequestMethod.GET)
+	public String listadeembarque(ModelMap model, @RequestParam(value = "fechaini", defaultValue = "", required = false) String fechaini
+												, @RequestParam(value = "fechafin", defaultValue = "", required = false) String fechafin) {
+		try 
+		{	  
+		  model.addAttribute("loggedinuser", AppController.getPrincipal());
+		  logger.info(AppController.getPrincipal() + " - listadeembarque.");
+		  List<ListaEmbarques> Lista = new ArrayList<ListaEmbarques>();
+		 
+		  if(!fechaini.equals("") || !fechafin.equals(""))
+		  {
+			  Lista = lem.ListaEmbarques(fechaini,fechafin);
+			  model.addAttribute("fechaini", fechaini);
+			  model.addAttribute("fechafin", fechafin);
+			  model.addAttribute("Lista", Lista); 
+		  }  
+		  	  
+		}
+		catch(Exception e) 
+		{
+			e.printStackTrace();
+			logger.error(AppController.getPrincipal() + " - listadeembarque. - ", e);
+		}
+		return "/reportes/listadeembarque";
+	}
 }

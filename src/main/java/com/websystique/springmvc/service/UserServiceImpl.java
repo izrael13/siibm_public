@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService{
 			entity.setEmail(user.getEmail());
 			entity.setUserProfiles(user.getUserProfiles());
 			entity.setCvevendedor_sap(user.getCvevendedor_sap());
-			entity.setCardcode_sap(user.getCardcode_sap());
+			//entity.setCardcode_sap(user.getCardcode_sap());
 		}
 	}
 

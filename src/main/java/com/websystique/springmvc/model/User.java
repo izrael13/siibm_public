@@ -62,7 +62,7 @@ public class User implements Serializable{
 	@Column(name="CVEVENDEDOR_SAP", nullable=false)
 	private Integer cvevendedor_sap;
 	
-	@Column(name="CARDCODE_SAP")
-	private String cardcode_sap;
+	///@Column(name="CARDCODE_SAP")
+	///private String cardcode_sap;
 	
 }

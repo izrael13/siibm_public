@@ -13,7 +13,7 @@
 function FBuscar()
 {
 	//alert(document.getElementById("aniomes").value);
-	window.location.replace('<c:url value="/reportes/vendedores/buscarPeso_dia_" />?aniomes='+document.getElementById("aniomes").value);
+	window.location.replace('<c:url value="/reportes/embarques/buscarPeso_dia_" />?aniomes='+document.getElementById("aniomes").value);
 	//var json = {"firstname" : "Israel", "lastname" : "Duran"};
 	/*$.ajax({
 		dataType: 'text',

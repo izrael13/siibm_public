@@ -125,23 +125,7 @@
 						</div>
 					</div>
 				</div>
-			</div>
-			
-			<div>
-				<div class="form-group col-md-12">
-					<label class="col-md-3 control-lable" for="cardcode_sap">Relación Cliente SAP</label>
-					<div class="col-md-7">
-						<form:select path="cardcode_sap" class="form-control input-sm">
-							<form:option value=""> - - -</form:option>
-							<form:options items="${clientes}" itemValue="cardcode" itemLabel="cardname"></form:options>
-						</form:select>
-						<div class="has-error">
-							<form:errors path="cardcode_sap" class="help-inline"/>
-						</div>
-					</div>
-				</div>
-			</div>
-	
+			</div>	
 			<div>
 				<div class="form-actions floatRight">
 					<c:choose>
