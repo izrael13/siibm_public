@@ -103,8 +103,8 @@ public class Tarjeta_fabricacion implements Serializable{/**
 	
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "TARJETA_FABRICACION_CATALOGO_MAQUINAS_SAP", 
-             joinColumns = { @JoinColumn(name = "Tarjeta_fabricacion_idcotizacion"),@JoinColumn(name = "Tarjeta_fabricacion_iddetalle") } , 
-             inverseJoinColumns = { @JoinColumn(name = "catalogo_maquinas_sap_vw_code")}
+             joinColumns = { @JoinColumn(name = "Tarjeta_fabricacion_idcotizacion"),@JoinColumn(name = "Tarjeta_fabricacion_iddetalle") } //, 
+             //inverseJoinColumns = { @JoinColumn(name = "catalogo_maquinas_sap_vw_code")}
 			)
 	private Set<Catalogo_maquinas_sap_vw> catalogo_maquinas_sap_vw = new HashSet<Catalogo_maquinas_sap_vw>();
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")

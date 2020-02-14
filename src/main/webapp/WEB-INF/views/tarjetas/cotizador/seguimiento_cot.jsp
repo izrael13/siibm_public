@@ -61,13 +61,15 @@ function FBuscarHist(id,iddet)
 			<div class="col-3 font-weight-bold">Estatus:
 			<select id="SEst" class="border border-primary">
 				<option value=""></option>
-				<option value="1"><c:out value="Enviadas"/></option>
-				<option value="2"><c:out value="Ventas"/></option>
-				<option value="3"><c:out value="Programacíon"/></option>
+				<option value="1"><c:out value="Pendientes de enviar ventas/programación"/></option>
+				<option value="2"><c:out value="En ventas"/></option>
+				<option value="3"><c:out value="En programacíon"/></option>
 				<option value="4"><c:out value="Pendientes asignar diseñador"/></option>
 				<option value="5"><c:out value="Convertidas a tarjetas"/></option>
 				<option value="6"><c:out value="Canceladas"/></option>
-				<!-- <option value="7"><c:out value="Rechazadas"/></option>  -->
+				<option value="7"><c:out value="Rechazadas x ventas"/></option>  
+				<option value="8"><c:out value="Rechazadas x programación"/></option>
+				<option value="9"><c:out value="Rechazadas x diseñador"/></option>
 			</select>
 			</div>
 		<div class="col-2 font-weight-bold"><a href="javascript:FBuscar()" class="btn btn-outline-primary"><i class="fa fa-search" aria-hidden="true"> Buscar</i></a></div>

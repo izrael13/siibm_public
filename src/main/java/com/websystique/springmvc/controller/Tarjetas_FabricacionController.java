@@ -22,9 +22,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -74,6 +78,7 @@ import com.websystique.springmvc.utilities.SendMailGmail;
 
 import _1._0._0._127.SAP.AddObjectResponseAddObjectResult;
 import _1._0._0._127.SAP.DIServerSoapProxy;
+import _1._0._0._127.SAP.ExecuteSQLResponseExecuteSQLResult;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -83,6 +88,7 @@ import net.sf.jasperreports.engine.data.JsonDataSource;
 import net.sf.jasperreports.engine.util.JRLoader;
 
 @Controller
+@PropertySource(value = { "classpath:diserver.properties"})
 @RequestMapping("/tarjeta")
 public class Tarjetas_FabricacionController {
 	private Logger logger = Logger.getLogger(Tarjetas_FabricacionController.class);
@@ -123,6 +129,8 @@ public class Tarjetas_FabricacionController {
 	Catalogo_maquinas_sap_vwService cms;
 	@Autowired
 	CotizadorTarjetasService ctsc;
+	@Autowired
+    Environment environment;
 	
 	@RequestMapping(value = {"/ingenieria/tarjeta_fabricacion" }, method = RequestMethod.GET)
 	public String tarjeta_fabricacion(ModelMap model, @RequestParam(value = "folio", defaultValue = "", required = false) String folio) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
@@ -161,12 +169,12 @@ public class Tarjetas_FabricacionController {
 				ListaEsp = ctsc.addEspecialidades(tf.getIdcotizacion(), tf.getIddetalle());
 				model.addAttribute("esp", gson.fromJson(ListaEsp.toString(),Object[].class));
 				//ctsc.DataSourceJasperTF(cot.getId(), cotdet.getIddetalle(), 1);
-				try {
-					System.out.println(SAP(tf.getIdcotizacion(),tf.getIddetalle(),tf.getFolio_tarjeta()));
-				} catch (RemoteException e) {
+				/*try {
+					SAP_UPDATE_OITM(tdb.getTarjeta_fabricacion().getIdcotizacion(),tdb.getTarjeta_fabricacion().getIddetalle(),tdb.getTarjeta_fabricacion().getFolio_tarjeta());
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}
+				} */
 			}
 		}
 		
@@ -269,12 +277,10 @@ public class Tarjetas_FabricacionController {
 			ListaEsp = ctsc.addEspecialidades(tdb.getTarjeta_fabricacion().getIdcotizacion(), tdb.getTarjeta_fabricacion().getIddetalle());
 			model.addAttribute("esp", gson.fromJson(ListaEsp.toString(),Object[].class));
 			model.addAttribute("colores", ccos.ListaColores());
-			
 			Cotizador cot = new Cotizador();
 			Cotizador_detalles cotdet = new Cotizador_detalles();
 			cot = cs.BuscarxId(tdb.getTarjeta_fabricacion().getIdcotizacion());
 			cotdet = cds.BuscarxIdDet(tdb.getTarjeta_fabricacion().getIdcotizacion(), tdb.getTarjeta_fabricacion().getIddetalle());
-			
 			cot.setTarimaxunitizado(tdb.getCotizador().getTarimaxunitizado());
 			cotdet.setAltura_pallet(tdb.getCotizador_detalles().getAltura_pallet());
 			cotdet.setCamas_pallet(tdb.getCotizador_detalles().getCamas_pallet());
@@ -284,19 +290,18 @@ public class Tarjetas_FabricacionController {
 			cotdet.setAtados_cama(tdb.getCotizador_detalles().getAtados_cama());
 			cotdet.setIdtiporequerimiento(0);
 			
-			if(tdb.getCotizador_detalles().getPiezasxtarima() < cotdet.getPiezasxtarima()) {
+			if((tdb.getCotizador_detalles().getPiezasxtarima() != null) && (tdb.getCotizador_detalles().getPiezasxtarima() < cotdet.getPiezasxtarima())) {
 				cotdet.setBan(1);
 			}
+
 			cotdet.setPiezasxtarima(tdb.getCotizador_detalles().getPiezasxtarima());
 			tdb.setCotizador(cot);
 			tdb.setCotizador_detalles(cotdet);
-			
 			model.addAttribute("tdb", tdb);
 			objCaja = ccss.BuscarxId(cotdet.getIdcaja_sap());
 			model.addAttribute("caja", objCaja);
 			model.addAttribute("resis", crss.BuscarxId(cotdet.getIdresistencia_barca()));
 			model.addAttribute("sello", css.BuscarxId(cotdet.getResistencia_cte()));
-
 			model.addAttribute("maquinas", BuscarMaquinas(ListaEsp,objCaja.getGrupo(),cotdet.getNum_tintas(),cotdet.getCierre(),tdb.getTarjeta_fabricacion().getFolio_tarjeta()));
 						
 			tfv.validate(tdb.getTarjeta_fabricacion(), result);
@@ -323,7 +328,8 @@ public class Tarjetas_FabricacionController {
 		catch(Exception e)
 		{
 			//model.addAttribute("mensajes", e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage());
-			//e.printStackTrace();
+			e.printStackTrace();
+			model.addAttribute("error", e);
 			logger.info(AppController.getPrincipal() + " - tarjeta_fabricacionpost. " + e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage());
 			return "/tarjetas/fabricacion/tarjeta_fabricacion";
 		}
@@ -334,8 +340,7 @@ public class Tarjetas_FabricacionController {
 	{
 		List<Catalogo_maquinas_sap_vw> Lista = new ArrayList<Catalogo_maquinas_sap_vw>();
 		if(Folio != null)
-		{
-			
+		{			
 			Lista = cms.ListaMaquinas(0);
 			Lista.addAll(cms.ListaMaquinas(Grupo,NumTintas));
 			
@@ -445,7 +450,12 @@ public class Tarjetas_FabricacionController {
 		String mensaje = "";
 		try 
 		{
-			tfis.BuscarxId(idcotizacion, iddetalle, nombre).stream().forEach(a -> tfis.Borrar(a));
+			tfis.BuscarxId(idcotizacion, iddetalle, nombre).stream().forEach(a -> {
+				if(DeleteFileImg(a.getPath(),a.getNombre()))
+					tfis.Borrar(a);
+			});
+			
+			
 			
 			List<Tarjetas_fabricacion_imagenes> ListimgTar = tfis.BuscarxIdCotidDert(idcotizacion, iddetalle);
             Gson  g = new Gson();
@@ -458,6 +468,23 @@ public class Tarjetas_FabricacionController {
 			logger.info(AppController.getPrincipal() + " - borrar_imagen_tarjeta. " + mensaje);
 			return new ResponseEntity<Object>(mensaje, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+	
+	private Boolean DeleteFileImg(String path, String name)
+	{
+		try 
+		{
+			String fullpath = path+name;
+			File file = new File(fullpath);
+			if(file.exists())
+				file.delete();
+			return true;
+		}
+		catch(Exception e)
+		{
+			return false;
+		}
+		
 	}
 	
 	@RequestMapping(value = {"/ingenieria/enviar_tarjeta_aut" }, method = RequestMethod.POST)
@@ -516,12 +543,12 @@ public class Tarjetas_FabricacionController {
 				tfs.Actualizar(a);
 				
 				tfis.BuscarxIdCotidDert(a.getIdcotizacion(), a.getIddetalle()).stream().forEach(b -> {
-					String fullpath = b.getPath()+b.getNombre();
+					/*String fullpath = b.getPath()+b.getNombre();
 					File file = new File(fullpath);
 					if(file.exists())
-						file.delete();
-					
-					tfis.Borrar(b);
+						file.delete();*/
+					if(DeleteFileImg(b.getPath(),b.getNombre()))
+						tfis.Borrar(b);
 				});
 			});
 			
@@ -751,49 +778,52 @@ public class Tarjetas_FabricacionController {
 	@ResponseBody
 	public ResponseEntity<?> tarjeta_aut_cliente(ModelMap model,
 			@RequestParam("folio") String folio,@RequestParam("coment") String coment, @RequestParam("ban") Integer ban) {
-		String mensaje = "";
 		try 
 		{
+			logger.info(AppController.getPrincipal() + " - tarjeta_aut_cliente_desicion. ");
 			Tarjeta_fabricacion tf = new Tarjeta_fabricacion();
 			java.util.Date date = new java.util.Date();
 			User user = us.findBySSO(AppController.getPrincipal());
 			tf = tfs.BuscarxFolio(folio);
+			tf.setObservaciones_ing(coment);
 			
-			if(SAP(tf.getIdcotizacion(),tf.getIddetalle(),folio))
-			{				
-				if(ban == 1) {
+			if(ban == 1) 
+			{
+				String MSJSAP=SAP_INSERT_OITM(tf.getIdcotizacion(),tf.getIddetalle(),folio);
+				if(MSJSAP == "OK")
+				{
 					tf.setUsuario_aut_cliente(user.getId());
 					tf.setFecha_aut_cliente(date);
+					tfs.Actualizar(tf);
+					return new ResponseEntity<Object>("OK", HttpStatus.OK);
 				}
-				else {
-					tf.setUsuario_rech_cliente(user.getId());
-					tf.setFecha_rech_cliente(date);
-					tf.setUsuario_aut_ing(null);
-					tf.setFecha_aut_ing(null);
-					tf.setUsuario_aut_calidad(null);
-					tf.setFecha_aut_calidad(null);
-					tf.setUsuario_aut_diseniador(null);
-					tf.setFecha_aut_diseniador(null);
-					tf.setUsuario_aut_produccion(null);
-					tf.setFecha_aut_produccion(null);
+				else
+				{
+					return new ResponseEntity<Object>(MSJSAP, HttpStatus.BAD_REQUEST);
 				}
-					
-				tf.setObservaciones_ing(coment);
+			}
+			else 
+			{
+				tf.setUsuario_rech_cliente(user.getId());
+				tf.setFecha_rech_cliente(date);
+				tf.setUsuario_aut_ing(null);
+				tf.setFecha_aut_ing(null);
+				tf.setUsuario_aut_calidad(null);
+				tf.setFecha_aut_calidad(null);
+				tf.setUsuario_aut_diseniador(null);
+				tf.setFecha_aut_diseniador(null);
+				tf.setUsuario_aut_produccion(null);
+				tf.setFecha_aut_produccion(null);
 				tfs.Actualizar(tf);
-				logger.info(AppController.getPrincipal() + " - tarjeta_aut_cliente_desicion. ");
 				return new ResponseEntity<Object>("OK", HttpStatus.OK);
 			}
-			else
-			{
-				return new ResponseEntity<Object>("NO SE PUDO GRABAR EN SAP", HttpStatus.BAD_REQUEST);
-			}
+		
 		}
 		catch(Exception e)
 		{
-			mensaje = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
-			model.addAttribute("mensajes", mensaje);
+			model.addAttribute("mensajes", e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage());
 			logger.info(AppController.getPrincipal() + " - tarjeta_aut_cliente_desicion. ", e);
-			return new ResponseEntity<Object>(mensaje, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<Object>(e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	
 	}
@@ -968,11 +998,18 @@ public class Tarjetas_FabricacionController {
 				return "/tarjetas/fabricacion/tarjeta_fabricacion_cambiosgi";
 			}
 			
-			tfs.Actualizar(tdb.getTarjeta_fabricacion());
-			cs.Actualizar(cot);
-			cds.Actualizar(cotdet);
+			String MSJSAP = SAP_UPDATE_OITM(tdb.getTarjeta_fabricacion().getIdcotizacion(),tdb.getTarjeta_fabricacion().getIddetalle(),tdb.getTarjeta_fabricacion().getFolio_tarjeta());
+			if(MSJSAP == "OK")
+			{
+				tfs.Actualizar(tdb.getTarjeta_fabricacion());
+				cs.Actualizar(cot);
+				cds.Actualizar(cotdet);
+				model.addAttribute("mensajes", "Tarjeta actualizada correctamente en SIIBM y SAP");
+			}
+			else
+				model.addAttribute("mensajes", "No se pudo actualizar en SAP: "+ MSJSAP);
+				
 			
-			model.addAttribute("mensajes", "Tarjeta actualizada correctamente.");
 			return "/tarjetas/fabricacion/tarjeta_fabricacion_cambiosgi";
 		}
 		catch(Exception e)
@@ -1009,7 +1046,7 @@ public class Tarjetas_FabricacionController {
 	@RequestMapping(value = "/ingenieria/imprimirtf", method = RequestMethod.GET)
     @ResponseBody
     public void getRpt1(HttpServletResponse response,HttpServletRequest request,ModelMap model,
-    				    @RequestParam("id") Integer id, @RequestParam("id") Integer iddet) throws JRException, IOException {
+    				    @RequestParam("id") Integer id, @RequestParam("iddet") Integer iddet) throws JRException, IOException {
 		String msj = "";
 		try
 		{
@@ -1033,6 +1070,7 @@ public class Tarjetas_FabricacionController {
 		catch(Exception e)
 		{
 			msj = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
+			e.printStackTrace();
 			logger.info(AppController.getPrincipal() + " - imprimircotizador :"+ e);
 		}
 	} 
@@ -1043,66 +1081,67 @@ public class Tarjetas_FabricacionController {
 	public ResponseEntity<?> cancelar_reactivarTFXCTE(ModelMap model,
 			@RequestParam("idcotizacion") Integer idcotizacion,@RequestParam("iddetalle") Integer iddetalle, 
 			@RequestParam("folio_tarjeta") String folio_tarjeta, @RequestParam("coment") String coment) throws RemoteException {
-		String mensaje = "";
 		User user = us.findBySSO(AppController.getPrincipal());
 		java.util.Date date = new java.util.Date();
-		logger.info(AppController.getPrincipal() + " - cancelar_reactivarTFXCTE. " + mensaje);
-		
+		logger.info(AppController.getPrincipal() + " - cancelar_reactivarTFXCTE. ");
+		DIServerSoapProxy DISERVER = new DIServerSoapProxy();
+		String idsession = "";
 		try 
 		{
 			Tarjeta_fabricacion a = tfs.BuscarxFolio(folio_tarjeta);
-			
-			if(a.getFecha_cancelxcte() == null && a.getUsuario_cancelxcte() == null)
-			{
-				a.setUsuario_cancelxcte(user.getId());
-				a.setFecha_cancelxcte(date);
-				a.setObservaciones(coment);
-			}
-			else
-			{
-				a.setUsuario_cancelxcte(null);
-				a.setFecha_cancelxcte(null);
-				a.setObservaciones(coment);
-			}
-			
-			tfs.Actualizar(a);
-			
-			return new ResponseEntity<Object>("OK", HttpStatus.OK);
-		}
-		catch(Exception e)
-		{
-			mensaje = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
-			model.addAttribute("mensajes", mensaje);
-			logger.info(AppController.getPrincipal() + " - cancelar_reactivarTFXCTE. " + mensaje);
-			return new ResponseEntity<Object>(mensaje, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	
-	}
-	
-	private Boolean SAP(Integer idcotizacion, Integer iddetalle, String folio_tf) throws RemoteException
-	{
-		DIServerSoapProxy DISERVER = new DIServerSoapProxy();
-		String idsession = "";
-		try
-		{
-			//JSONObject TFInfo = ctsc.DataSourceJasperTF(idcotizacion, iddetalle, 1);
-			idsession = DISERVER.login("192.169.1.50", "BARCAPRUEBAS", "dst_MSSQL2008", "sa", "Admin#2009", "ingenie", "4444", "ln_Spanish_La", "WIN-I1A2FG7OBS9", "");
+			JSONObject TFInfo = ctsc.DataSourceJasperTF(a.getIdcotizacion(), a.getIddetalle(), 1);
+			idsession = DISERVER.login(environment.getRequiredProperty("diserver.dbserver"), environment.getRequiredProperty("diserver.dbname"), 
+					   environment.getRequiredProperty("diserver.dbtype"), environment.getRequiredProperty("diserver.dbusername"), 
+					   environment.getRequiredProperty("diserver.dbpassword"), environment.getRequiredProperty("diserver.compusername"), 
+					   environment.getRequiredProperty("diserver.comppassword"), environment.getRequiredProperty("diserver.language"), 
+					   environment.getRequiredProperty("diserver.licenseserver"), environment.getRequiredProperty("diserver.licese"));
 			if(DISERVER.validate(idsession))
-			{				
-				String xml ="<BOM><BO> " + 
-								"<AdmInfo> " + 
-									"<Object>oItems</Object> " + 
-								"</AdmInfo> " + 
-								"<Items> " + 
-									"<row> " + 
-										"<ItemCode>Test01abc</ItemCode> " + 
-										"<ItemName>Description</ItemName> " + 
-									"</row> " + 
-								"</Items> " + 
-							"</BO></BOM> "; 
+			{
+				String xml ="<?xml version=\"1.0\" encoding=\"UTF-16\"?> " + 
+						"<env:Envelope xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\"> " + 
+							"<env:Header> " + 
+								"<SessionID>"+idsession+"</SessionID> " + 
+							"</env:Header> " + 
+							"<env:Body> " + 
+								"<dis:UpdateObject>" + 
+									"<BOM> " + 
+										"<BO> " + 
+											"<AdmInfo> " + 
+												"<Object>oItems</Object> " + 
+											"</AdmInfo> " + 
+											"<QueryParams> " + 
+												"<U_TF>"+TFInfo.getString("folio_tarjeta")+"</U_TF> " +
+												"<ItemName>"+TFInfo.optString("simbolo","")+"</ItemName> " +
+												"<ItemsGroupCode>105</ItemsGroupCode> " +
+											"</QueryParams> " + 
+											"<Items> " + 
+												"<row> "; 
+													
 				
-				AddObjectResponseAddObjectResult Mensajes = DISERVER.addObject(idsession, xml, folio_tf);
-				String MSJ = Mensajes.get_any()[0].getAsString();
+				if(a.getFecha_cancelxcte() == null && a.getUsuario_cancelxcte() == null)
+				{
+					a.setUsuario_cancelxcte(user.getId());
+					a.setFecha_cancelxcte(date);
+					a.setObservaciones(coment);
+										xml = xml + "<Properties62>tYES</Properties62> "; //Símbolo INactivo.
+				}
+				else
+				{
+					a.setUsuario_cancelxcte(null);
+					a.setFecha_cancelxcte(null);
+					a.setObservaciones(coment);
+								xml = xml + "<Properties62>tNO</Properties62> "; //Símbolo activo.
+				}
+				
+							xml = xml + "</row> " + 
+								"</Items> " + 
+							"</BO> " + 
+						"</BOM> " + 
+					"</dis:UpdateObject> " + 
+				"</env:Body> " + 
+				"</env:Envelope> ";
+				
+				String MSJ = DISERVER.interact(idsession, xml);
 				Document doc = 
 					    DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
 					        new ByteArrayInputStream(
@@ -1110,60 +1149,327 @@ public class Tarjetas_FabricacionController {
 					        )
 					);
 				Node e = null;
-				e = doc.getElementsByTagName("env:Reason").item(0);
-				if(!e.getTextContent().isEmpty())
+				e = doc.getElementsByTagName("UpdateObjectResponse").item(0);
+				if(e == null )
 				{
-					logger.info(AppController.getPrincipal() + " - SAP. " + e.getTextContent());
-					System.out.println(e.getTextContent());
-					return false;
+					logger.info(AppController.getPrincipal() + " - SAP. " + MSJ);
+					return new ResponseEntity<Object>(MSJ, HttpStatus.INTERNAL_SERVER_ERROR);
 				}
 				else
 				{
-					e = doc.getElementById("RetKey");
-					if(e.getTextContent().isEmpty())
+					tfs.Actualizar(a);
+					logger.info(AppController.getPrincipal() + " - SAP. " + MSJ);
+					return new ResponseEntity<Object>("OK", HttpStatus.OK);
+				}
+				
+			}
+			else
+				return new ResponseEntity<Object>("No se pudo conectar a SAP", HttpStatus.INTERNAL_SERVER_ERROR);
+			
+		}
+		catch(Exception e)
+		{
+			model.addAttribute("mensajes", e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage());
+			logger.info(AppController.getPrincipal() + " - cancelar_reactivarTFXCTE. ", e);
+			return new ResponseEntity<Object>(e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	
+	}
+	
+	private String SAP_INSERT_OITM(Integer idcotizacion, Integer iddetalle, String folio_tf) throws RemoteException
+	{
+		DIServerSoapProxy DISERVER = new DIServerSoapProxy();
+		String idsession = "";
+		try
+		{
+			JSONObject TFInfo = ctsc.DataSourceJasperTF(idcotizacion, iddetalle, 1);
+			JSONArray arrEsp = new JSONArray();
+			arrEsp = TFInfo.getJSONArray("ListaEsp");
+			String espXMLpart = "";
+			String maqXMLpart = "";
+			for(int i=0; i<arrEsp.length();i++)
+			{
+				JSONObject obj = arrEsp.getJSONObject(i);
+				espXMLpart = espXMLpart + "<Properties"+obj.optInt("propiedadoitm",0)+">tYES</Properties"+obj.optInt("propiedadoitm",0)+"> ";
+			}
+			JSONArray arrMaq = new JSONArray();
+			arrMaq = TFInfo.getJSONArray("catalogo_maquinas_sap_vw");
+			for(int j=0; j<arrMaq.length(); j++)
+			{
+				JSONObject obj = arrMaq.getJSONObject(j);
+				maqXMLpart = maqXMLpart + "<Properties"+obj.optInt("u_propiedad",0)+">tYES</Properties"+obj.optInt("u_propiedad",0)+"> ";
+			}
+			idsession = DISERVER.login(environment.getRequiredProperty("diserver.dbserver"), environment.getRequiredProperty("diserver.dbname"), 
+					   environment.getRequiredProperty("diserver.dbtype"), environment.getRequiredProperty("diserver.dbusername"), 
+					   environment.getRequiredProperty("diserver.dbpassword"), environment.getRequiredProperty("diserver.compusername"), 
+					   environment.getRequiredProperty("diserver.comppassword"), environment.getRequiredProperty("diserver.language"), 
+					   environment.getRequiredProperty("diserver.licenseserver"), environment.getRequiredProperty("diserver.licese"));
+//			String SOAPCommand ="<?xml version=\"1.0\" encoding=\"UTF-16\"?> " + 
+//								"<env:Envelope xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\"> " + 
+//								"<env:Header> " + 
+//								"<SessionID>"+idsession+"</SessionID> " + 
+//								"</env:Header> " + 
+//								"<env:Body> " + 
+//								"<dis:GetByKey xmlns:dis=\"http://www.sap.com/SBO/DIS\"> " + 
+//								"<Object>oItems</Object> " + 
+//								"<ItemCode>SI-013078</ItemCode> " + 
+//								"</dis:GetByKey> " + 
+//								"</env:Body> " + 
+//								"</env:Envelope> ";
+//			
+//			String x = DISERVER.interact(idsession, SOAPCommand);
+//			System.out.println(x); 
+			
+			if(DISERVER.validate(idsession))//Validar sesión en SAP 
+			{
+				ExecuteSQLResponseExecuteSQLResult ESRESRT = DISERVER.executeSQL(idsession, "select ItemCode from oitm where U_TF = '"+TFInfo.getString("folio_tarjeta")+"' and ItmsGrpCod = 105");
+				if(ESRESRT.get_any().length == 0)// Existe la tarjeta
+				{
+					ExecuteSQLResponseExecuteSQLResult ESRESR = DISERVER.executeSQL(idsession, "select SUBSTRING(max(ItemCode), 4, 6) + 1 maxtf from OITM where ItmsGrpCod in(105,192)");
+					if(ESRESR.get_any().length > 0)//Obtener el siguiente SI
 					{
-						logger.info(AppController.getPrincipal() + " - SAP. " + e.getTextContent());
-						System.out.println(e.getTextContent());
-						return false;
+						String newSimbolo = "SI-" + StringUtils.leftPad(ESRESR.get_any()[0].item(0).getLastChild().getFirstChild().getFirstChild().getFirstChild().toString(), 6,"0");
+						
+						String xml ="<BOM><BO> " + 
+										"<AdmInfo> " + 
+											"<Object>oItems</Object> " + 
+										"</AdmInfo> " + 
+										"<Items> " + 
+											"<row> " + 
+												"<ItemCode>"+newSimbolo+"</ItemCode> " + 
+												"<ItemName>"+TFInfo.optString("simbolo","")+"</ItemName> " +
+												"<ItemsGroupCode>105</ItemsGroupCode> " +
+												"<InventoryItem>tYES</InventoryItem> " +
+												"<PurchaseItem>tYES</PurchaseItem> " +
+												"<SalesItem>tYES</SalesItem> " +
+												"<ManageBatchNumbers>tYES</ManageBatchNumbers> " +
+												"<BaseUnitName>Millar</BaseUnitName> " +
+												"<PurchaseUnit>Millar</PurchaseUnit> " +
+												"<SalesUnit>Millar</SalesUnit> " +
+												"<InventoryUOM>Millar</InventoryUOM> " +
+												"<DefaultWarehouse>PT-04</DefaultWarehouse> " +
+												"<ManageStockByWarehouse>tYES</ManageStockByWarehouse> " +
+												"<Properties63>"+(TFInfo.getInt("iddetalle") == 1 ? "tNO" : "tYES")+"</Properties63> " + //detalle
+												"<Properties64>"+(TFInfo.getInt("iddetalle") == 1 ? "tYES" : "tNO")+"</Properties64> " + //principal
+												"<U_CPADRE>"+(TFInfo.getInt("iddetalle") == 1 ? "" : TFInfo.getInt("id")) +"</U_CPADRE> " +
+												"<U_TF>"+TFInfo.getString("folio_tarjeta")+"</U_TF> " +
+												"<U_L>"+TFInfo.optDouble("largo",0.0)+"</U_L> " +
+												"<U_A>"+TFInfo.optDouble("ancho",0.0)+"</U_A> " + 
+												"<U_F>"+TFInfo.optDouble("fondo",0.0)+"</U_F> " +
+												"<U_ESPSUP>"+TFInfo.optDouble("esp_sup",0.0)+"</U_ESPSUP> " + 
+												"<U_ESPINF>"+TFInfo.optDouble("esp_inf",0.0)+"</U_ESPINF> " +
+												"<U_CREST>"+TFInfo.optString("resistencia","")+"</U_CREST> " +
+												"<U_TIPO>"+TFInfo.optString("estilo_caja","")+"</U_TIPO> " +
+												"<U_AREA>"+TFInfo.optDouble("area_unitaria",0.0)+"</U_AREA> " +
+												"<U_PESO>"+TFInfo.optDouble("peso_teorico",0.0)+"</U_PESO> " +
+												"<U_NCAJASATADO>"+TFInfo.optDouble("pzas_atado",0.0)+"</U_NCAJASATADO> " + 
+												"<U_SCORE>"+TFInfo.optInt("score",0)+"</U_SCORE> " +
+												"<U_NORANU>"+TFInfo.optInt("num_raturas", 0)+"</U_NORANU> " +
+												"<U_LPLIEGO>"+TFInfo.optDouble("largo_pliego",0.0)+"</U_LPLIEGO> " +
+												"<U_APLIEGO>"+TFInfo.optDouble("ancho_pliego",0.0)+"</U_APLIEGO> " +
+												"<U_PJUEGO>"+TFInfo.optInt("piezasxjuego",0)+"</U_PJUEGO> " +
+												"<U_CLIENTE>"+TFInfo.optString("cardcode","")+"</U_CLIENTE> " +
+												"<U_CLRIMPR>"+ //colores
+													(TFInfo.optString("color1n","") + TFInfo.optString("color2n","") == "" ? "" : ", " +
+													TFInfo.optString("color2n","") + TFInfo.optString("color3n","") == "" ? "" : ", " +
+													TFInfo.optString("color3n","") + TFInfo.optString("color4n","") == "" ? "" : ", " +
+													TFInfo.optString("color4n","") + TFInfo.optString("color5n","") == "" ? "" : ", " +
+													TFInfo.optString("color5n","") + TFInfo.optString("color6n","") == "" ? "" : ", " +
+													TFInfo.optString("color6n","") + TFInfo.optString("color7n","") == "" ? "" : ", " +
+													TFInfo.optString("color7n","")) +
+												"</U_CLRIMPR> " +
+												"<U_SATCode>24121511</U_SATCode> " +
+												"<U_CIERRE>"+TFInfo.optString("cierre","")+" "+TFInfo.optString("cierre_detalle","")+"</U_CIERRE> " +
+												"<ForeignName>"+TFInfo.optString("descripcion_factura","")+"</ForeignName> " +
+												"<U_PRECIONET>"+TFInfo.optDouble("precio_neto",0.0)+"</U_PRECIONET> " +
+												"<U_VALESPECIAL></U_VALESPECIAL> " +//no se pa' que sirva
+												"<U_PIEZAS>"+TFInfo.optInt("piezasxtarima",0)+"</U_PIEZAS> " +
+												"<U_GOLPES>"+TFInfo.optInt("pzasxlargo",0) * TFInfo.optInt("pzasxancho",0)+"</U_GOLPES> " +
+												"<U_RAYADO1>"+((int)(TFInfo.optDouble("rayado1",0.0)*10))+"</U_RAYADO1> " +
+												"<U_RAYADO2>"+((int)(TFInfo.optDouble("rayado2",0.0)*10))+"</U_RAYADO2> " +
+												"<U_RAYADO3>"+((int)(TFInfo.optDouble("rayado3",0.0)*10))+"</U_RAYADO3> " +
+												"<U_RAYADO4>"+((int)(TFInfo.optDouble("rayado4",0.0)*10))+"</U_RAYADO4> " +
+												"<U_RAYADO5>"+((int)(TFInfo.optDouble("rayado5",0.0)*10))+"</U_RAYADO5> " +
+												"<U_PrecioVta>"+TFInfo.optDouble("precio_objetivo")+"</U_PrecioVta> " +
+												"<U_CPCC>"+TFInfo.optDouble("cpcc",0.0)+"</U_CPCC> " +
+												"<U_CPSC>"+TFInfo.optDouble("ref_para_comision",0.0)+"</U_CPSC> " +
+												"<U_Ctopapel>"+TFInfo.optDouble("costo_papel",0.0)+"</U_Ctopapel> " +
+												"<User_Text>"+TFInfo.optString("observaciones","")+"</User_Text> " +
+												"<U_Ciudad>"+TFInfo.optString("ciudad","")+"</U_Ciudad> " +
+												"<U_Estado>"+TFInfo.optString("estado","")+"</U_Estado> " +
+												"<U_GRABADO>"+TFInfo.optString("grabado","")+"</U_GRABADO> " +
+												"<U_SUAJE>"+TFInfo.optString("suaje","")+"</U_SUAJE> " +
+												"<Properties62>tNO</Properties62> " + //Símbolo activo.
+												espXMLpart +
+												maqXMLpart +
+											"</row> " + 
+										"</Items> " + 
+									"</BO></BOM> "; 
+
+						AddObjectResponseAddObjectResult Mensajes = DISERVER.addObject(idsession, xml, folio_tf);
+						String MSJ = Mensajes.get_any()[0].getAsString();
+						Document doc = 
+							    DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
+							        new ByteArrayInputStream(
+							        		MSJ.getBytes()  
+							        )
+							);
+						Node e = null;
+						e = doc.getElementsByTagName("env:Reason").item(0);
+						if(e != null )
+						{
+							logger.info(AppController.getPrincipal() + " - SAP. " + MSJ);
+							return MSJ;
+						}
+						else
+						{
+							e = doc.getElementsByTagName("AddObjectResponse").item(0);
+							if(e == null )
+							{
+								logger.info(AppController.getPrincipal() + " - SAP. " + MSJ);
+								return MSJ;
+							}
+							else
+							{
+								logger.info(AppController.getPrincipal() + " - SAP. " + MSJ);
+								return "OK";
+							}
+						} 
 					}
 					else
-						return true;
+					{
+						logger.info(AppController.getPrincipal() + " - SAP. " + "Execute Query failed");
+						return "SAPINSERT - Execute Query failed";
+					}
+				}
+				else
+				{
+					logger.info(AppController.getPrincipal() + " - SAP. " + "Ya existe la tarjeta en SAP");
+					return "Ya existe la tarjeta en SAP";
 				}
 			}
 			else
 			{
-				logger.info(AppController.getPrincipal() + " - SAP. " + "Sesión no válida...");
-				System.out.println("Sesión no válida...");
-				return false;
-			}
+				logger.info(AppController.getPrincipal() + " - SAP. " + "Sesión de SAP no válida...");
+				return "Sesión de SAP no válida...";
+			}    
 		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
 			logger.info(AppController.getPrincipal(), e);
-			return false;
+			return e.getMessage()+"-"+e.getStackTrace()+"-"+e.getCause();
 		}
 		finally
 		{
 			DISERVER.logout(idsession);
 		}
-		//WSTarjetasSoapProxy WSTF = new WSTarjetasSoapProxy();
-		
-		/*
-		ExecuteSQLResponseExecuteSQLResult ExeQueryRes = DISERVER.executeSQL(idsession, "select Count(ItemCode) from oitm where U_TF = '22707xxxx' and ItmsGrpCod = 105");
-		for(MessageElement x : ExeQueryRes.get_any())
+	}
+	
+	private String SAP_UPDATE_OITM(Integer idcotizacion, Integer iddetalle, String folio_tf) throws Exception
+	{
+		DIServerSoapProxy DISERVER = new DIServerSoapProxy();
+		String idsession = "";
+		try 
 		{
-			System.out.println(x.getElementsByTagName("oitm").item(0).getFirstChild().getFirstChild().getFirstChild());
-			//System.out.println(x.getElementsByTagName("oitm").item(0).getFirstChild().getLastChild().getLastChild());
-		}*/
+			JSONObject TFInfo = ctsc.DataSourceJasperTF(idcotizacion, iddetalle, 1);
+
+			JSONArray arrEsp = new JSONArray();
+			arrEsp = TFInfo.getJSONArray("ListaEsp");
+			String maqXMLpart = "";
+			
+			JSONArray arrMaq = new JSONArray();
+			arrMaq = TFInfo.getJSONArray("catalogo_maquinas_sap_vw");
+			for(int j=0; j<arrMaq.length(); j++)
+			{
+				JSONObject obj = arrEsp.getJSONObject(j);
+				maqXMLpart = maqXMLpart + "<Properties"+obj.optInt("propiedad",0)+">tYES</Properties"+obj.optInt("u_propiedad",0)+"> ";
+			}
+			
+			idsession = DISERVER.login(environment.getRequiredProperty("diserver.dbserver"), environment.getRequiredProperty("diserver.dbname"), 
+									   environment.getRequiredProperty("diserver.dbtype"), environment.getRequiredProperty("diserver.dbusername"), 
+									   environment.getRequiredProperty("diserver.dbpassword"), environment.getRequiredProperty("diserver.compusername"), 
+									   environment.getRequiredProperty("diserver.comppassword"), environment.getRequiredProperty("diserver.language"), 
+									   environment.getRequiredProperty("diserver.licenseserver"), environment.getRequiredProperty("diserver.licese"));
+
+			if(DISERVER.validate(idsession))
+			{
+				String xml ="<?xml version=\"1.0\" encoding=\"UTF-16\"?> " + 
+							"<env:Envelope xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\"> " + 
+								"<env:Header> " + 
+									"<SessionID>"+idsession+"</SessionID> " + 
+								"</env:Header> " + 
+								"<env:Body> " + 
+									"<dis:UpdateObject>" + 
+										"<BOM> " + 
+											"<BO> " + 
+												"<AdmInfo> " + 
+													"<Object>oItems</Object> " + 
+												"</AdmInfo> " + 
+												"<QueryParams> " + 
+													"<U_TF>"+TFInfo.getString("folio_tarjeta")+"</U_TF> " +
+													"<ItemName>"+TFInfo.optString("simbolo","")+"</ItemName> " +
+													"<ItemsGroupCode>105</ItemsGroupCode> " +
+												"</QueryParams> " + 
+												"<Items> " + 
+													"<row> " + 
+														"<U_AREA>"+TFInfo.optDouble("area_unitaria",0.0)+"</U_AREA> " +
+														"<U_LPLIEGO>"+TFInfo.optDouble("largo_pliego",0.0)+"</U_LPLIEGO> " +
+														"<U_APLIEGO>"+TFInfo.optDouble("ancho_pliego",0.0)+"</U_APLIEGO> " +
+														"<U_PIEZAS>"+TFInfo.optInt("piezasxtarima",0)+"</U_PIEZAS> " +
+														"<U_GOLPES>"+TFInfo.optInt("pzasxlargo",0) * TFInfo.optInt("pzasxancho",0)+"</U_GOLPES> " +
+														"<U_RAYADO1>"+((int)(TFInfo.optDouble("rayado1",0.0)*10))+"</U_RAYADO1> " +
+														"<U_RAYADO2>"+((int)(TFInfo.optDouble("rayado2",0.0)*10))+"</U_RAYADO2> " +
+														"<U_RAYADO3>"+((int)(TFInfo.optDouble("rayado3",0.0)*10))+"</U_RAYADO3> " +
+														"<U_RAYADO4>"+((int)(TFInfo.optDouble("rayado4",0.0)*10))+"</U_RAYADO4> " +
+														"<U_RAYADO5>"+((int)(TFInfo.optDouble("rayado5",0.0)*10))+"</U_RAYADO5> " +
+														"<User_Text>"+TFInfo.optString("observaciones","")+"</User_Text> " +
+														"<U_GRABADO>"+TFInfo.optString("grabado","")+"</U_GRABADO> " +
+														"<U_SUAJE>"+TFInfo.optString("suaje","")+"</U_SUAJE> " +
+														maqXMLpart +
+													"</row> " + 
+												"</Items> " + 
+											"</BO> " + 
+										"</BOM> " + 
+									"</dis:UpdateObject> " + 
+								"</env:Body> " + 
+							"</env:Envelope> ";
+				String MSJ = DISERVER.interact(idsession, xml);
+				Document doc = 
+					    DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
+					        new ByteArrayInputStream(
+					        		MSJ.getBytes()  
+					        )
+					);
+				Node e = null;
+				e = doc.getElementsByTagName("UpdateObjectResponse").item(0);
+				if(e == null )
+				{
+					logger.info(AppController.getPrincipal() + " - SAP. " + MSJ);
+					return MSJ;
+				}
+				else
+				{
+					logger.info(AppController.getPrincipal() + " - SAP. " + MSJ);
+					return "OK";
+				}
+			}
+			else
+			{
+				logger.info(AppController.getPrincipal() + " - SAP. " + "Sesión inválida.");
+				return "Sesión inválida.";
+			}
+		}
+		catch (RemoteException e) 
+		{
+			logger.info(AppController.getPrincipal() + " - SAP. ", e);
+			return e.getMessage()+"-"+e.getStackTrace()+""+e.getCause();
+		}
+		finally
+		{
+			DISERVER.logout(idsession);
+		}
 		
-		//
-		
-		//System.out.println(WSTF.grabarSimbolo());
-		//DISERVER.va
-		//if(){ //Si se actualizó de forma correcta en SAPse actualiza en barcasii
-		//String logout = DISERVER.logout(idsession);
-		//System.out.println(logout);
 	}
 	
 }

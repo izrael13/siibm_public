@@ -27,4 +27,5 @@ public class Especialidades_cotizacion implements Serializable{/**
 	private Double ajuste;
 	private Integer esquema;
 	private Double cm;
+	private Integer propiedadoitm;
 }

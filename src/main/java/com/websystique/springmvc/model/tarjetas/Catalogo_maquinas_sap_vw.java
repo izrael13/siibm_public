@@ -19,6 +19,7 @@ public class Catalogo_maquinas_sap_vw implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@Id
+	private Integer id;
 	private Integer code;
 	private String name;
 	private Double u_minlargo;
@@ -31,4 +32,5 @@ public class Catalogo_maquinas_sap_vw implements Serializable{
 	private Integer u_tintas;
 	private Integer u_pegado;
 	private Integer u_grapado;	
+	private Integer u_propiedad;
 }

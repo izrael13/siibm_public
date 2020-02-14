@@ -83,7 +83,6 @@ function FBuscar()
 				<th>Cantidad embarcada</th>
 				<th>Stock lote</th>
 				<th>Kilos</th>
-				<th>Posible embarcar</th>
 				<th>Lugar entrega</th>
 				<th>Observaciones</th>
 				<th>Vendedor</th>
@@ -102,7 +101,6 @@ function FBuscar()
 				<td>${i.canembarcada}</td>
 				<td>${i.stocklote}</td>
 				<td>${i.kilos}</td>
-				<td>${i.posibleembarcar}</td>
 				<td>${i.lugarentrega}</td>
 				<td>${i.observaciones}</td>
 				<td>${i.slpname}</td>

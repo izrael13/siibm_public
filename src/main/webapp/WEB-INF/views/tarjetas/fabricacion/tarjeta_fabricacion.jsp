@@ -261,8 +261,7 @@ function FEnviarAut()
     			window.location.replace('<c:url value="/login?expired"/>');
 			    return true;
 			  }    	
-	    	$("#mensajes" ).text("Tarjeta enviada OK");
-			$("#mensajes").removeClass().addClass("alert alert-success");
+	    	$("#mensajes" ).text("Tarjeta enviada a SAP OK").removeClass().addClass("alert alert-success");
 			window.location.replace('<c:url value="/tarjeta/ingenieria/tarjeta_fabricacion" />');
 	    },
 	    error: function(xhr, status, error) {
@@ -573,7 +572,7 @@ function FCalcular()
 				<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
 					<div class="row border border-right">
 						<div id="CSRutaDiv" class="col col-lg-12">
-							<form:checkboxes id="CSRuta" items="${maquinas}" itemLabel="name" itemValue="code" path="tarjeta_fabricacion.catalogo_maquinas_sap_vw" delimiter="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"/>							
+							<form:checkboxes id="CSRuta" items="${maquinas}" itemLabel="name" itemValue="id" path="tarjeta_fabricacion.catalogo_maquinas_sap_vw" delimiter="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"/>							
 							<div class="has-error">
 								<form:errors path="tarjeta_fabricacion.catalogo_maquinas_sap_vw" class="badge badge-danger small"/>
 							</div>

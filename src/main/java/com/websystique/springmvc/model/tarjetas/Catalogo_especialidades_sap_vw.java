@@ -21,7 +21,7 @@ public class Catalogo_especialidades_sap_vw implements Serializable{/**
 	private String name;
 	private Integer u_esquema;
 	private Double u_ajuste;
-	private Double u_propiedad;
+	private Integer u_propiedad;
 	private Double u_valmin;
 	private Double u_valmax;
 	private Integer vigente;

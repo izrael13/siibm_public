@@ -43,7 +43,7 @@ function FImprimirTF(id,iddet)
 	</div>
 	<div class="row small">
 		<fmt:parseNumber var = "i" integerOnly = "true" pattern="##############" type = "number" value = "${cot['id']}" />
-		<fmt:parseNumber var = "idet" integerOnly = "true" pattern="##############" type = "number" value = "${cotdet['idcotizacion']}" />
+		<fmt:parseNumber var = "idet" integerOnly = "true" pattern="##############" type = "number" value = "${cotdet['iddetalle']}" />
 		<div class="col-1">Folio: ${i}</div>
 		<div class="col-5">Cliente: ${cot['cliente']}</div>
 		<div class="col-6">Dirección: ${cot['lab']}</div>		
@@ -290,8 +290,14 @@ function FImprimirTF(id,iddet)
 	<div class = "row mx-auto">
 		<div id="carouselExampleIndicators" class="carousel slide" data-interval="false" data-ride="carousel">
 		  <div id="DImg" class="carousel-inner">
+		  		<div class="carousel-item active">
+		  			<img height="400" width="400" src="<c:url value="/static/img_tarjetas/${tar.cama_nombre}"/>" alt="${tar.cama_nombre}" id="" onclick="AmpliarImg('<c:url value="/static/img_tarjetas/${tar.cama_nombre}"/>')">
+		  		</div>
+		  		<div class="carousel-item">
+		  			<img height="400" width="400" src="<c:url value="/static/img_tarjetas/${tar.principal_nombre}"/>" alt="${tar.principal_nombre}" id="" onclick="AmpliarImg('<c:url value="/static/img_tarjetas/${tar.principal_nombre}"/>')">
+		  		</div>
 			<c:forEach var="item" items="${tar.tarjeta_img}" varStatus="status">
-			    <div class="${status.index == 0 ? 'carousel-item active':'carousel-item'}">
+			    <div class="carousel-item">
 			      <img height="400" width="400" src="<c:url value="/static/img_tarjetas/${item.nombre}"/>" alt="${item.nombre}" id="" onclick="AmpliarImg('<c:url value="/static/img_tarjetas/${item.nombre}"/>')">
 			      <div class="carousel-caption">
 				    <h3>${item.nombre}</h3>

@@ -28,7 +28,7 @@ public class Catalogo_maquinas_sap_vwDAOImpl extends AbstractDao<Integer, Catalo
 	@Override
 	public Catalogo_maquinas_sap_vw BuscarxId(Integer id) {
 		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
-		Params.add(new ParamsGeneral(1,"code",id,"EQ"));
+		Params.add(new ParamsGeneral(1,"id",id,"EQ"));
 		
 		Catalogo_maquinas_sap_vw ListaMaq = (Catalogo_maquinas_sap_vw) criteriaGeneralObj(Params);
 		return ListaMaq;

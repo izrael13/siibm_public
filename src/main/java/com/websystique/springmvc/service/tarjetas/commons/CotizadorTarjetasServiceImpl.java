@@ -73,6 +73,8 @@ public class CotizadorTarjetasServiceImpl implements CotizadorTarjetasService{
 		Catalogo_direcciones_sap_vw dir = new Catalogo_direcciones_sap_vw();
 		dir = cdsv.DirCardCodeNumLine(cot.getCardcode(), cot.getLinenum_dir_entrega()); 
 		JsonCot.put("lab",dir.getDireccion()+ " " +dir.getCiudad()+ " "+dir.getEstado());
+		JsonCot.put("ciudad",dir.getCiudad());
+		JsonCot.put("estado",dir.getEstado());
 		User user = new User();
 		user = us.findById(cot.getUsuario_aut_ventas() == null ? 0 : cot.getUsuario_aut_ventas());
 		JsonCot.put("autorizador", user != null ? user.getFirstName() + " " + user.getLastName() : "");
@@ -174,12 +176,10 @@ public class CotizadorTarjetasServiceImpl implements CotizadorTarjetasService{
 		User user = new User();
 		Tarjeta_fabricacion tf= new Tarjeta_fabricacion();
 		JSONObject JsonTF = null;
-		
 		tf = tfs.BuscarxCot_Cotdet(id, iddet);
 		if(tf != null)
-		{			
+		{
 			JsonTF = new JSONObject(gson.toJson(tf));
-			
 			tf.setTarjeta_img(tfis.BuscarxIdCotidDert(id, iddet));
 			for(Tarjetas_fabricacion_imagenes tfi : tf.getTarjeta_img())
 			{
@@ -249,12 +249,12 @@ public class CotizadorTarjetasServiceImpl implements CotizadorTarjetasService{
 		        }
 			}
 			
-			JSONObject JsonProg = addPrograma();
+			/*JSONObject JsonProg = addPrograma();
 			Iterator itProg = JsonProg.keys();
 			while(itProg.hasNext()) {
 	            String key = (String) itProg.next();
 	            JsonTF.put(key, JsonProg.get(key));
-	        }
+	        } */
 			
 		}
 		//System.out.println(JsonTF.toString());
@@ -277,6 +277,7 @@ public class CotizadorTarjetasServiceImpl implements CotizadorTarjetasService{
 			JsonEsp.put("cm", b.getCm());
 			JsonEsp.put("iddespecialidad", b.getIdespecialidad());
 			JsonEsp.put("ruta", EspSap.getRuta());
+			JsonEsp.put("propiedadoitm", EspSap.getU_propiedad());
 			ListaJsonEsp.add(JsonEsp);
 		});
 		

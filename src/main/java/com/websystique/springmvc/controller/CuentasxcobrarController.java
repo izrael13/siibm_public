@@ -42,17 +42,17 @@ public class CuentasxcobrarController {
 	}
 	
 	@RequestMapping(value = {"/conciliacion/gestionarchivos" }, method = RequestMethod.POST)
-	public ResponseEntity<?> gestionarchivospost(ModelMap model,@RequestParam("file")  MultipartFile[] file) throws Exception, Exception {
+	public ResponseEntity<?> gestionarchivospost(ModelMap model,@RequestParam("file")  MultipartFile[] file, @RequestParam("fecha")  String fecha) throws Exception, Exception {
 		logger.info(AppController.getPrincipal() + " - gestionarchivospost.");
 		
 		if(file.length == 0)
 			return new ResponseEntity<Object>("Seleccione archivo...",HttpStatus.LENGTH_REQUIRED);
 		else
-			return LeerArchivo(file[0]);
+			return LeerArchivo(file[0], fecha);
 		
 	}
 	
-	private ResponseEntity<?> LeerArchivo(MultipartFile file) throws EncryptedDocumentException, InvalidFormatException, ParseException
+	private ResponseEntity<?> LeerArchivo(MultipartFile file, String fecha) throws EncryptedDocumentException, InvalidFormatException, ParseException
 	{
 		try 
 		{
@@ -77,8 +77,8 @@ public class CuentasxcobrarController {
 			         Json.put("cfdi", arrayLine[0]);
 			         Json.put("fecha_fac", newPattern.format(oldPattern.parse(arrayLine[1])));
 			         Json.put("importe", Double.valueOf(arrayLine[4].replace(",", "")));
-			         Json.put("fecha_conci", newPattern.format(oldPattern.parse(arrayLine[11])));
-			         cs.GrabarArchivo(arrayLine[0], newPattern.format(oldPattern.parse(arrayLine[1])), newPattern.format(oldPattern.parse(arrayLine[11])), Double.valueOf(arrayLine[4].replace(",", "")));
+			         Json.put("fecha_conci", fecha);
+			         cs.GrabarArchivo(arrayLine[0], newPattern.format(oldPattern.parse(arrayLine[1])), fecha, Double.valueOf(arrayLine[4].replace(",", "")));
 			         ListaJson.add(Json);
 		    	 }
 		     }

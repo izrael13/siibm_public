@@ -285,14 +285,15 @@ function FDisableElemens()
 
 function FDisenio()
 {
-	if($("#SDisenio").val() != "Nuevo")
+	if($("#CCancSust").prop('checked'))
 	{
-		$("#CCancSust").prop('checked', true);
-		$("#TFechaCancelTF").attr("required","required");
+		$("#TTF").attr("required",true);
+		$("#TFechaCancelTF").attr("required",true);
 	}
 	else
 	{
-		$("#CCancSust").prop('checked', false);
+		
+		$("#TTF").attr("required",false);
 		$("#TFechaCancelTF").attr("required",false);
 	}
 }

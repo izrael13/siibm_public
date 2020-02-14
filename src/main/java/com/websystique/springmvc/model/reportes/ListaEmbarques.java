@@ -30,5 +30,5 @@ public class ListaEmbarques implements Serializable{/**
 	private String lugarentrega;	
 	private String observaciones;	
 	private String slpname;
-	private Double posibleembarcar;
+	//private Double posibleembarcar;
 }

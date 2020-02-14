@@ -16,6 +16,7 @@ function FSubirArchivo()
 	jQuery.each(jQuery('#TSubirF')[0].files, function(i, file) {
 		data.append('file', file);
 	});
+	data.append('fecha',$("#TFecha").val());
 	
 	$("#mensajes" ).text("Subiendo archivo...").removeClass().addClass("alert alert-info");
 	var tabla = "";
@@ -84,11 +85,31 @@ function FLimpar()
 <div class="alert alert-warning col-12" align="center">Atención: Se actualizarán los datos si ya existen</div>
 <div class="container">
 	<div class="row small">
-		 <div class="col-lg border border-secondary">
+		 <div class="col-lg-3 border border-secondary">
 		   Seleccione archivo
 		 </div>
-		 <div class="col-lg border border-secondary">
+		 <div class="col-lg-4 border border-secondary">
 			<input type="file" id="TSubirF" class="btn btn-outline-primary btn-sm">
+		 </div>
+		 <div class="col-lg-2 border border-secondary">
+		   Fecha de pago
+		 </div>
+		 <div class="col-lg-3 border border-secondary">
+		    <div class="">
+			<div class="input-group date" id="datetimepicker4" data-target-input="nearest">
+	            <input onkeypress="return false" id="TFecha" data-target="#datetimepicker4" placeholder="yyyy-mm-dd" class="border border-primary"/>
+	            <div class="input-group-append" data-target="#datetimepicker4" data-toggle="datetimepicker">
+	                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+	            </div>
+            </div>
+            </div>
+			<script type="text/javascript">
+	            $(function () {
+	                $('#datetimepicker4').datetimepicker({
+	                    format: 'YYYY-MM-DD'
+	                });
+	            });
+	        </script>
 		 </div>
 	</div>
 	<div class="col-12" align="center">

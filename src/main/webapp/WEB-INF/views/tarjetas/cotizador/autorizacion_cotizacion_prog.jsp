@@ -54,11 +54,11 @@ function FAut(id)
 			    		alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
 			    		window.location.replace('<c:url value="/cotizador/programacion/autorizacion_cotizacion_prog"/>');
 			    	}
-			    	/*else
+			    	else
 			    	{
-				    	$("#mensajes" ).text("Procesando petición");
+				    	$("#mensajes" ).text("Procesando petición, por favor espere...");
 						$("#mensajes").removeClass().addClass("alert alert-info");
-			    	}*/
+			    	}
 			    }
 			    
 			}
@@ -112,17 +112,22 @@ function FReach(id)
 			    		alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
 			    		window.location.replace('<c:url value="/cotizador/programacion/autorizacion_cotizacion_prog"/>');
 			    	}
-			    	/*else
+			    	else
 			    	{
-				    	$("#mensajes" ).text("Procesando petición");
+				    	$("#mensajes" ).text("Procesando petición, por favor espere...");
 						$("#mensajes").removeClass().addClass("alert alert-info");
-			    	}*/
+			    	}
 			    }
 			    
 			}
 			http.send(encodeURI(params));
 		}
 	}
+}
+function FSeguimiento(id, iddet)
+{
+	var redirectWindow = window.open('<c:url value="/cotizador/vendedor/seguimiento_cot_hist" />?id='+id+'&iddet='+iddet);
+	redirectWindow.replace();
 }
 </script>
 </head>
@@ -138,6 +143,7 @@ function FReach(id)
 		<thead>
 			<tr>
 				<th>Folio</th>
+				<th>Vendedor</th>
 				<th colspan="6">Detalles</th>
 				<th>Comentarios</th>
 				<th>Autorizar</th>
@@ -149,20 +155,30 @@ function FReach(id)
 		<fmt:parseNumber var = "i" integerOnly = "true" pattern="##############" type = "number" value = "${item['id']}" />
 			<tr>
 				<td>${i}</td>
+				<td>${item['representante']}</td>
 					<td colspan="6">
 					<table class="container-fluid table-hover text-center">
 					<tr>
+					<th>iddet</th>
 					<th>Largo</th>
 					<th>Ancho</th>
+					<th>Resistencia</th>
+					<th>Obs vendedor</th>
+					<th>Cant estimada</th>
 					<th>Color</th>
 					<th>Flauta</th>
 					<th>Medidas pliego</th>
 					<th>Especialidades</th>
 					</tr>
 					<c:forEach var="det" items="${item['ListaDetalles']}" varStatus="counter">
+					<fmt:parseNumber var = "iddet" integerOnly = "true" pattern="##############" type = "number" value = "${det['iddetalle']}" />
 					<tr>
+						<td><a href="javascript:FSeguimiento(${i},${iddet})">${iddet}</a></td>
 						<td>${det['largo']}</td>
 						<td>${det['ancho']}</td>
+						<td>${det['resistencia']}</td>
+						<td>${det['observaciones_vendedor']}</td>
+						<td>${det['cantidad_pedido_mes']}</td>
 						<td>${det['papel']}</td>
 						<td>${det['flauta']}</td>
 						<td>${det['medida_lamina']}</td>

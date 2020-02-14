@@ -727,9 +727,6 @@ function BuscarResistencias()
 											<form:errors path="cotizador_detalles.precio_objetivo" class="badge badge-danger small"/>
 										</div>
 									</div>
-									
-									<!-- <div class="col-sm-1">Costo tarima</div>
-									<div class="col-sm-1">???</div>  -->
 									<div class="col col-lg-1">Imp rebasada</div>
 									<div class="col col-lg-1">
 										<form:select onChange="CalcularDatos()" id="SScore" path="cotizador_detalles.score" multiple="false" class="border border-primary">
@@ -960,17 +957,20 @@ function BuscarResistencias()
 											<form:option value="10">10</form:option>
 										</form:select> 
 									</div>
-									<div class="col col-lg-4">Diseño:
+									<div class="col col-lg-5">Diseño:
 										<form:select id="SDisenio" onChange="FDisenio()" path="cotizador.disenio" multiple="false" class="border border-primary">
 											<form:option value="Nuevo">Nuevo</form:option>
 											<form:option value="Con cambios">Con cambios</form:option>
 											<form:option value="Referencia de TF">Referencia de TF</form:option>
+											<form:option value="Nuevo con referencia">Nuevo con referencia</form:option>
+											<form:option value="Con cambios y con referencia">Con cambios y con referencia</form:option>
+											<form:option value="Nuevo con cambios">Nuevo con cambios</form:option>
 										</form:select>
-										Cancel/Sust: <form:checkbox id="CCancSust" path="cotizador.cancelar_sustituir"/>
+										Cancel/Sust: <form:checkbox id="CCancSust" path="cotizador.cancelar_sustituir" onChange="FDisenio()"/>
 										TF: <form:input id="TTF" size="10" maxlength="8" type="text" path="cotizador.tf_cs" onkeypress="return SinCaracteresEspeciales(event);" class="border border-primary"/>
 									</div>
-									<div class="col col-lg-2">
-										Fecha cancelación TF:
+									<div class="col col-lg-1">
+										Fecha can TF:
 									</div>
 									<div class="col col-lg-2">
 										<div class="input-group date" id="datetimepicker5" data-target-input="nearest">										
@@ -1090,15 +1090,19 @@ function BuscarResistencias()
 										<form:checkbox id="ChEsp" onChange="CalcularDatos()"
 		                              		path="cotizador_detalles.especialidades_cotizacion[${status.index}].idespecialidad" value="${item.code}"/>${item.name}
 		<form:input type="hidden" id="TEsquema${item.code}" 
-     	path="cotizador_detalles.especialidades_cotizacion[${status.index}].esquema" value="${item.u_esquema}"  class="border border-primary"/>
+     	path="cotizador_detalles.especialidades_cotizacion[${status.index}].esquema" value="${item.u_esquema}" />
+     	
+     	<form:input type="hidden" id="TPropOITM${item.code}" 
+     	path="cotizador_detalles.especialidades_cotizacion[${status.index}].propiedadoitm" value="${item.u_propiedad}"/>
+     	
      	<form:input type="${item.code != 19 ? 'hidden' : !empty cotizadordatabean.cotizador_detalles.especialidades_cotizacion[status.index].ajuste ? (cotizadordatabean.cotizador_detalles.especialidades_cotizacion[status.index].ajuste > 0 ? 'text' : 'hidden') : 'hidden'}" 
      	id="TAjuste${item.code}" onkeypress="return filterFloat(event,this);" onKeyUp="CalcularDatos();" size="10" maxlength="8" placeholder="ajuste"
      	path="cotizador_detalles.especialidades_cotizacion[${status.index}].ajuste" value="${item.code == 19 ? cotizadordatabean.cotizador_detalles.especialidades_cotizacion[status.index].ajuste : item.u_ajuste}"  class="border border-primary"/>
      	
      	<form:input type="hidden" id="TIdcot${item.code}" 
-     	path="cotizador_detalles.especialidades_cotizacion[${status.index}].idcotizacion" value="${cotizadordatabean.cotizador.id}"  class="border border-primary"/>
+     	path="cotizador_detalles.especialidades_cotizacion[${status.index}].idcotizacion" value="${cotizadordatabean.cotizador.id}"/>
      	<form:input type="hidden" id="TIdDet${item.code}" 
-     	path="cotizador_detalles.especialidades_cotizacion[${status.index}].iddetalle" value="${cotizadordatabean.cotizador_detalles.iddetalle}"  class="border border-primary"/>
+     	path="cotizador_detalles.especialidades_cotizacion[${status.index}].iddetalle" value="${cotizadordatabean.cotizador_detalles.iddetalle}"/>
      	
      	<form:input type="${!empty cotizadordatabean.cotizador_detalles.especialidades_cotizacion[status.index].cm ? 'text' : 'hidden'}"
      	onkeypress="return filterFloat(event,this);"
@@ -1148,22 +1152,22 @@ function BuscarResistencias()
 		 
 		 <form:input type="hidden" path="cotizador.usuario_envia_ventas"/>
 		 <form:input type="hidden" path="cotizador.usuario_aut_ventas"/>
-		 <form:input type="hidden" path="cotizador.usuario_rech_ventas"/>
+		 
 		 <form:input type="hidden" path="cotizador.usuario_envia_a_prog"/>
-		 <form:input type="hidden" path="cotizador.usuario_aut_prog"/>
-		 <form:input type="hidden" path="cotizador.usuario_rech_prog"/>		 
-		 <form:input type="hidden" path="cotizador.usuario_cancel"/>
-		 		 
+		 <form:input type="hidden" path="cotizador.usuario_aut_prog"/>	 
 		 <form:input type="hidden" path="cotizador.fecha_aut_ventas"/>		 
-		 <form:input type="hidden" path="cotizador.fecha_rech_ventas"/>		 
 		 <form:input type="hidden" path="cotizador.fecha_aut_prog"/>		 
-		 <form:input type="hidden" path="cotizador.fecha_rech_prog"/>		 
-		 <form:input type="hidden" path="cotizador.fecha_envia_ventas"/>		 
 		 <form:input type="hidden" path="cotizador.fecha_envia_a_prog"/> 
-		 <form:input type="hidden" path="cotizador.fecha_cancel"/>
-		  
-		 <form:input type="hidden" path="cotizador.observaciones_ventas"/>
-		 <form:input type="hidden" path="cotizador.observaciones_prog"/>
+		 <form:input type="hidden" path="cotizador.fecha_envia_ventas"/>
+		 
+		 <!--<f o rm:input ty pe="hidden" pat h="cotizad or.usuario_ rech_ventas"/> 
+		 <f o  rm:in put ty pe="hidden" pa t h="cotiza dor.fecha _rech_ventas"/>
+		 <f o rm:inp ut typ e="hidden" pa t h="cotizad or.usuario _rech_prog"/>
+		 <f o rm:inp ut ty pe="hidden" pa t h="cotizad or.fecha_re ch_prog"/>
+		 <f o rm:inp ut ty pe="hidden" pa t h="cotizad or.fecha_can cel"/>
+		 <f o rm:inp ut ty pe="hidden" pa t h="cotizad or.usuario_ca ncel"/> 
+		 <f o r m:in put ty pe="hidden" p at h="cotizad or.obs ervaci ones_ventas"/>
+		 <fo r m:inp ut ty pe="hidden" pa t h="co tizador. ob servacio nes_prog"/> -->
 		 
 		<div align="left" class = "container">
 		<div class = "row" align="center">			
@@ -1173,8 +1177,7 @@ function BuscarResistencias()
 			<div class="col col-lg-4"><button id="BEnvVtas" type="button" data-toggle="modal" data-target="#VtaModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-paper-plane-o" aria-hidden="true"> Enviar para autorización</i></button></div>
 			<div class="col col-lg-2"><button id="BCancel" type="button" data-toggle="modal" data-target="#CancelModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-times-circle-o" aria-hidden="true"> Cancelar</i></button></div>
 		</div>
-		</div>
-		
+		</div>		
 			<!-- REGION DE MODALS -->
 		<div class="modal fade bd-example-modal-lg" id="CodigoBarras" tabindex="-1" role="dialog" aria-labelledby="CodigoBarrasLabel" aria-hidden="true">
 		  <div class="modal-dialog modal-lg" role="document">

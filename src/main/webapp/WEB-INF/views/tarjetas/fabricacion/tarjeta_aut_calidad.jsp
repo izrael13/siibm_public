@@ -53,7 +53,7 @@ function FAut(folio)
 			    	}
 			    	else
 			    	{
-				    	$("#mensajes" ).text("Procesando petición");
+				    	$("#mensajes" ).text("Procesando petición, por favor espere...");
 						$("#mensajes").removeClass().addClass("alert alert-info");
 			    	}
 			    }
@@ -109,7 +109,7 @@ function FReach(folio)
 			    	}
 			    	else
 			    	{
-				    	$("#mensajes" ).text("Procesando petición");
+				    	$("#mensajes" ).text("Procesando petición, por favor espere...");
 						$("#mensajes").removeClass().addClass("alert alert-info");
 			    	}
 			    }
@@ -119,6 +119,16 @@ function FReach(folio)
 		}
 	}
 }
+function FSeguimiento(id, iddet)
+{
+	var redirectWindow = window.open('<c:url value="/cotizador/vendedor/seguimiento_cot_hist" />?id='+id+'&iddet='+iddet);
+	redirectWindow.replace();
+}
+function FImprimirTF(id,iddet)
+{
+	var redirectWindow = window.open('<c:url value="/tarjeta/ingenieria/imprimirtf"/>?id='+id+'&iddet='+iddet);
+	redirectWindow.replace;
+}
 </script>
 </head>
 <body>
@@ -127,6 +137,7 @@ function FReach(folio)
 		<span class="badge badge-secondary">Autorización de tarjetas Calidad</span>
 	</div>
 	<br>
+	<div id = "mensajes" class = "${!empty mensajes ? 'alert alert-success' : ''}">${mensajes}</div>
 	<div align="center" class="container-fluid">
 	<table class="container-fluid table-hover text-center table-bordered small">
 	<thead>
@@ -145,13 +156,13 @@ function FReach(folio)
 	<tbody>
 		<c:forEach var="item" items="${tarjetas}">
 		<tr>
-			<td>${item.folio_tarjeta}</td>
+			<td><a href="javascript:FSeguimiento(${item.idcotizacion},${item.iddetalle})">${item.folio_tarjeta}</a></td>
 			<td>${item.idcotizacion}</td>
 			<td>${item.descripcion_factura}</td>
 			<td>${item.observaciones_disenador}</td>
 			<td>${item.fecha_aut_diseniador}</td>
 			<td><input id="TComent${item.folio_tarjeta}" type="text" size="50" onkeypress="return SinCaracteresEspeciales(event)" maxlength="100" class="border border-primary"/></td>
-			<td><a href="javascript:FImprimir(${item.folio_tarjeta})"><i class="fa fa-print" aria-hidden="true"></i></a></td>
+			<td><a href="javascript:FImprimirTF(${item.idcotizacion},${item.iddetalle})"><i class="fa fa-print" aria-hidden="true"></i></a></td>
 			<td><a href="javascript:FAut(${item.folio_tarjeta})"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></a></td>
 			<td><a href="javascript:FReach(${item.folio_tarjeta})"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i></a></td>
 		</tr>

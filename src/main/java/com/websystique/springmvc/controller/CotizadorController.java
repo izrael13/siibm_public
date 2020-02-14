@@ -283,6 +283,7 @@ public class CotizadorController {
 						obj.setIddetalle(idND);
 						obj.setIdespecialidad(ListaEsp.get(i).getIdespecialidad());
 						obj.setCm(ListaEsp.get(i).getCm());
+						obj.setPropiedadoitm(ListaEsp.get(i).getPropiedadoitm());
 						ecs.Guardar(obj);
 					}
 				}
@@ -1312,6 +1313,7 @@ public class CotizadorController {
 		{
 			msj = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage() + " "+e.getClass().getName();
 			logger.info(AppController.getPrincipal() + " - convertiratarjeta :"+ msj);
+			e.printStackTrace();
 			return msj;
 		}
 	}
@@ -1797,15 +1799,18 @@ public class CotizadorController {
 		if(!est.equals(""))
 		{
 			Integer estatus = Integer.valueOf(est);
-			if(estatus == 1)//Enviadas
-			{
+			if(estatus == 1) {//Pendientes de enviar ventas/programación
+				params.add(new ParamsGeneral(1,"fecha_envia_ventas","EQ"));
+				params.add(new ParamsGeneral(1,"fecha_envia_a_prog","EQ"));
+			}				
+			if(estatus == 2) {//En ventas
+				params.add(new ParamsGeneral(1,"fecha_aut_ventas","EQ"));
 				params.add(new ParamsGeneral(1,"fecha_envia_ventas","NE"));
+			}
+			if(estatus == 3) {//En programación
+				params.add(new ParamsGeneral(1,"fecha_aut_prog","EQ"));
 				params.add(new ParamsGeneral(1,"fecha_envia_a_prog","NE"));
 			}
-			if(estatus == 2)//En ventas
-				params.add(new ParamsGeneral(1,"fecha_aut_ventas","EQ"));
-			if(estatus == 3)//En programación
-				params.add(new ParamsGeneral(1,"fecha_aut_prog","EQ"));
 			if(estatus == 4)//Pendientes de asignar diseniador
 			{
 				params.add(new ParamsGeneral(1,"fecha_aut_prog","NE"));
@@ -1818,8 +1823,12 @@ public class CotizadorController {
 			if(estatus == 6)//Canceladas
 				params.add(new ParamsGeneral(1,"fecha_cancel","NE"));
 			
-			//if(estatus == 7)//Rechazas
-				//params.add(new ParamsGeneral(1,"fecha_rech_arrastre","NE"));
+			if(estatus == 7)//Rechazadas x ventas
+				params.add(new ParamsGeneral(1,"fecha_rech_ventas","NE"));
+			if(estatus == 8)//Rechazadas x programación
+				params.add(new ParamsGeneral(1,"usuario_rech_prog","NE"));
+			if(estatus == 9)//Rechazadas x diseñador
+				params.add(new ParamsGeneral(1,"fecha_rech_diseniador","NE"));
 			
 		}
 		
