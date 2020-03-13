@@ -534,6 +534,7 @@ public class ReportesController {
 		logger.info(AppController.getPrincipal() + " - buscaInvenalm_.");
 		}
 		catch(Exception e) {
+			e.printStackTrace();
 			logger.error(AppController.getPrincipal() + " - buscaInvenalm_. - " + e.getMessage());
 		}
 		return "/reportes/inventario_almacen";
@@ -566,6 +567,7 @@ public class ReportesController {
 		logger.info(AppController.getPrincipal() + " - buscargplpenfab.");
 		}
 		catch(Exception e) {
+			e.printStackTrace();
 			logger.error(AppController.getPrincipal() + " - buscargplpenfab. - " + e.getMessage());
 		}
 		return "/reportes/golpes_pendientes_fab";

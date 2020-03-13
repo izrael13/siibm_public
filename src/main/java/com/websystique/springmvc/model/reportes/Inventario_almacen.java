@@ -10,7 +10,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "inventario_almacen")
+@Table(name = "INVENTARIO_ALMACEN")
 public class Inventario_almacen implements Serializable{
 
 	/**
@@ -29,4 +29,6 @@ public class Inventario_almacen implements Serializable{
 	private String slpname;
 	private Date fecha;
 	private Date fechaentregasap;
+	private String whscode;
+	private Integer slpcode;
 }

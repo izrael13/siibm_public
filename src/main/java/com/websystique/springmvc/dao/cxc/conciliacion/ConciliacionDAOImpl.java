@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.websystique.springmvc.dao.AbstractDao;
 
 @Repository("conciliacionDAO")
-public class ConciliacionDAOImpl extends AbstractDao<Integer, Integer> implements ConciliacionDAO{
+public class ConciliacionDAOImpl extends AbstractDao<Integer, String> implements ConciliacionDAO{
 
 	@SuppressWarnings("unchecked")
 	@Override
