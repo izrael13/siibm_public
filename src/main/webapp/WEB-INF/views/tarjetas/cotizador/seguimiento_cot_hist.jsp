@@ -31,12 +31,17 @@ function FImprimirCot(id)
 }
 function FImprimirTF(id,iddet)
 {
-	var redirectWindow = window.open('<c:url value="/cotizador/vendedor/imprimirtf"/>?id='+id+'&iddet='+iddet);
+	var redirectWindow = window.open('<c:url value="/tarjeta/ingenieria/imprimirtf"/>?id='+id+'&iddet='+iddet);
 	redirectWindow.replace;
 }
 function FImprimirReq(id)
 {
 	var redirectWindow = window.open('<c:url value="/cotizador/ingenieria/imprimirreq"/>?id='+id);
+	redirectWindow.replace;
+}
+function FImprimirTFCTE(id,iddet)
+{
+	var redirectWindow = window.open('<c:url value="/cotizador/vendedor/imprimirtarjetacte"/>?id='+id+'&iddet='+iddet);
 	redirectWindow.replace;
 }
 </script>
@@ -48,7 +53,7 @@ function FImprimirReq(id)
 	</div>
 	<div class="row small">
 		<fmt:parseNumber var = "i" integerOnly = "true" pattern="##############" type = "number" value = "${cot['id']}" />
-		<fmt:parseNumber var = "idet" integerOnly = "true" pattern="##############" type = "number" value = "${cotdet['idcotizacion']}" />
+		<fmt:parseNumber var = "idet" integerOnly = "true" pattern="##############" type = "number" value = "${cotdet['iddetalle']}" />
 		<div class="col-1">Folio: ${i}</div>
 		<div class="col-5">Cliente: ${cot['cliente']}</div>
 		<div class="col-6">Dirección: ${cot['lab']}</div>		
@@ -193,11 +198,16 @@ function FImprimirReq(id)
 		<div class="col-2" style="background:${cotdet['color5c']}">Color5: ${cotdet['color5n']}</div>
 		<div class="col-2" style="background:${cotdet['color6c']}">Color6: ${cotdet['color6n']}</div>
 		<div class="col-2" style="background:${cotdet['color7c']}">Color7: ${cotdet['color7n']}</div>
-		<sec:authorize access="hasRole('ADMIN') or hasRole('VENTAS')">
-		<div class="col-2"><a href="javascript:FImprimirReq(${i})"><i class="fa fa-print" aria-hidden="true">Imprimir requerimiento</i></a></div>
-			<div class="col-2"><a href="javascript:FImprimirCot(${i})"><i class="fa fa-print" aria-hidden="true">Imprimir cotización</i></a></div>
+		<sec:authorize access="hasRole('ADMIN') or hasRole('VENTAS') or hasRole('VENDEDOR') or hasRole('PROGRAMACION') or hasRole('INGENIERIA')">
+			<div class="col-2"><a href="javascript:FImprimirReq(${i})"><i class="fa fa-print" aria-hidden="true">Imprimir requerimiento</i></a></div>
 		</sec:authorize>
-			<div class="col-2"><a href="javascript:FImprimirTF(${i},${idet})"><i class="fa fa-print" aria-hidden="true">Imprimir TF</i></a></div>
+		<sec:authorize access="hasRole('ADMIN') or hasRole('VENTAS') or hasRole('INGENIERIA')">
+			<div class="col-2"><a href="javascript:FImprimirCot(${i})"><i class="fa fa-print" aria-hidden="true">Imprimir cotización</i></a></div>
+			<div class="col-2"><a href="javascript:FImprimirTF(${i},${idet})"><i class="fa fa-print" aria-hidden="true">Imprimir TF Ingeniería</i></a></div>
+		</sec:authorize>
+		<sec:authorize access="hasRole('ADMIN') or hasRole('VENDEDOR')">
+			<div class="col-2"><a href="javascript:FImprimirTFCTE(${i},${idet})"><i class="fa fa-print" aria-hidden="true">Imprimir TF Cliente</i></a></div>
+		</sec:authorize>
 	</div>
 	<div class="badge badge-info col-12">Especialidades</div>
 	<div class="row small">
@@ -230,7 +240,7 @@ function FImprimirReq(id)
 		<div class="badge badge-primary col-12">Tarjeta</div>
 	</div>
 	<div class="row small">
-		<div class="col-1">Folio: ${tar['folio_tarjeta']}</div>
+		<div class="col-1">TF: ${tar['folio_tarjeta']}</div>
 		<div class="col-5">Descripción factura: ${tar.descripcion_factura}</div>
 		<div class="col-2">Num partes: ${tar.num_partes}</div>
 		<div class="col-2">Piezas x largo: ${tar.pzasxlargo}</div>
@@ -293,11 +303,17 @@ function FImprimirReq(id)
 	</c:forEach>
 	<div class="badge badge-info col-12">Imágenes</div>
 	<br><br>
-	<div class = "row mx-auto">
+<div class = "row mx-auto">
 		<div id="carouselExampleIndicators" class="carousel slide" data-interval="false" data-ride="carousel">
 		  <div id="DImg" class="carousel-inner">
+		  		<div class="carousel-item active">
+		  			<img height="400" width="400" src="<c:url value="/static/img_tarjetas/${tar.cama_nombre}"/>" alt="${tar.cama_nombre}" id="" onclick="AmpliarImg('<c:url value="/static/img_tarjetas/${tar.cama_nombre}"/>')">
+		  		</div>
+		  		<div class="carousel-item">
+		  			<img height="400" width="400" src="<c:url value="/static/img_tarjetas/${tar.principal_nombre}"/>" alt="${tar.principal_nombre}" id="" onclick="AmpliarImg('<c:url value="/static/img_tarjetas/${tar.principal_nombre}"/>')">
+		  		</div>
 			<c:forEach var="item" items="${tar.tarjeta_img}" varStatus="status">
-			    <div class="${status.index == 0 ? 'carousel-item active':'carousel-item'}">
+			    <div class="carousel-item">
 			      <img height="400" width="400" src="<c:url value="/static/img_tarjetas/${item.nombre}"/>" alt="${item.nombre}" id="" onclick="AmpliarImg('<c:url value="/static/img_tarjetas/${item.nombre}"/>')">
 			      <div class="carousel-caption">
 				    <h3>${item.nombre}</h3>

@@ -29,7 +29,9 @@ public class CotizadorValidator implements Validator{
 			{
 				if(cot.getCosto_flete() < 1)
 					errors.rejectValue("cotizador.costo_flete", "Range");
-			}			
+			}
+			if((cot.getCardcode_factura() == null ? "" : cot.getCardcode_factura()).length() < 2)
+				errors.rejectValue("cotizador.cardcode_factura", "Size");
 			
 		}
 					

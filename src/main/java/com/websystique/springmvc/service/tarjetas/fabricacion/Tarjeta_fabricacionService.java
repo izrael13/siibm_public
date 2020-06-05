@@ -17,5 +17,6 @@ public interface Tarjeta_fabricacionService {
 	Tarjeta_fabricacion BuscarTFPG(List<ParamsGeneral> Params);
 	//List<Object> BuscarEsp(Integer idcot, Integer Iddet);
 	List<Tarjeta_fabricacion> ListaSeguimiento(String Folio, Integer IdCot, Integer Status, String CardCode);
+	List<Tarjeta_fabricacion> ListaSeguimiento(String Folio, Integer IdCot, Integer Status, String CardCode, Integer usrinsert);
 	Tarjeta_fabricacion BuscarxCot_Cotdet(Integer idcot, Integer iddet);
 }

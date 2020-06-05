@@ -326,7 +326,7 @@ function FCancelar()
 					<div class="has-error"><form:errors path="tarjeta_fabricacion.medida_pliego" class="badge badge-danger small"/></div>
 				</div>
 				<div class="col-sm-2">Medidas internas:
-					<form:input id="TMedInt" readonly="true" class="border border-secondary" size="9" maxlength="20" onkeypress="return SinCaracteresEspeciales(event)" type="text" path="tarjeta_fabricacion.medidas_internas"/>
+					<form:input id="TMedInt" class="border border-secondary" size="9" maxlength="20" onkeypress="return SinCaracteresEspeciales(event)" type="text" path="tarjeta_fabricacion.medidas_internas"/>
 					<div class="has-error"><form:errors path="tarjeta_fabricacion.medidas_internas" class="badge badge-danger small"/></div>
 				</div>
 				<div class="col-sm-2">Grabado:

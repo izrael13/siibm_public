@@ -72,6 +72,7 @@ function FReach(folio)
 	{
 		if(folio != "")
 		{
+			$("#mensajes" ).text("Procesando petición, por favor espere...");
 			var http = new XMLHttpRequest();
 			var url = '<c:url value="/tarjeta/cliente/tarjeta_aut_cliente_desicion"/>';
 			var params = 'folio='+folio+'&coment='+$("#TComent"+folio).val()+'&ban='+0;

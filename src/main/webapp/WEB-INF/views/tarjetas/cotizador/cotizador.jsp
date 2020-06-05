@@ -802,9 +802,12 @@ function BuscarResistencias()
 											<form:errors path="cotizador_detalles.precio_sugerido" class="badge badge-danger small"/>
 										</div>
 									</div>
+									<sec:authorize access="hasRole('ADMIN') or hasRole('VENTAS')" var="isAdmin"/>
 									<div class="col col-lg-1">Costo papel</div>
 									<div class="col col-lg-1">
-										<form:input readonly="true" id="TCostoPapel" type="text" size="10" path="cotizador_detalles.costo_papel"  class="border border-secondary"/>
+										<form:input readonly="true" id="TCostoPapel" 
+										type="${isAdmin ? 'text' : 'hidden'}" 
+										size="10" path="cotizador_detalles.costo_papel"  class="border border-secondary"/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.costo_papel" class="badge badge-danger small"/>
 										</div>

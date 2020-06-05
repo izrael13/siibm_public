@@ -32,13 +32,10 @@ function FBuscarId(id,iddet)
 		<fmt:parseNumber var = "id" integerOnly = "true" pattern="##############" type = "number" value = "${item['id']}" />
 			<tr>
 				<td><a href="javascript:FBuscarId(${id},0)">${id}</a></td>
-				<td>${item['cliente']}</td>
-				<td>${item['fecha_insert']}</td>
 				<td>
 					<table class="table-hover table-bordered text-center container-fluid">
 						<thead>
 							<tr>
-								<td>F Det</td>
 								<td>Símbolo</td>
 								<td>Caja</td>
 							</tr>
@@ -47,14 +44,15 @@ function FBuscarId(id,iddet)
 						<c:forEach var="itemd" items="${item['ListaDetalles']}" varStatus="counter">
 						<fmt:parseNumber var = "idcot" integerOnly = "true" pattern="##############" type = "number" value = "${itemd['iddetalle']}" />
 							<tr>
-								<td><a href="javascript:FBuscarId(${id},${idcot})">${idcot}</a></td>
-								<td>${itemd['simbolo']}</td>
+								<td><a href="javascript:FBuscarId(${id},${idcot})">${itemd['simbolo']}</a></td>
 								<td>${itemd['estilo_caja']}</td>
 							</tr>
 						</c:forEach>
 						</tbody>
 					</table>
 				</td>
+				<td>${item['cliente']}</td>
+				<td>${item['fecha_insert']}</td>
 			</tr>
 		</c:forEach>
 		</tbody>

@@ -19,7 +19,7 @@ function FBuscar()
 	
 	if(folio != "" || emp != "" || ven != "" || est != "" || tipo != "")
 	{
-		window.location.replace('<c:url value="/cotizador/ingenieria/seguimiento_arrastres_muestras" />?folio='+folio+'&emp='+emp+'&ven='+ven+'&est='+est+'&tipo='+tipo);
+		window.location.replace('<c:url value="/cotizador/vendedor/seguimiento_arrastres_muestras" />?folio='+folio+'&emp='+emp+'&ven='+ven+'&est='+est+'&tipo='+tipo);
 	}
 }
 </script>
@@ -81,7 +81,7 @@ function FBuscar()
 		<thead>
 			<tr>
 				<th>Folio</th>
-				<th>Símbolo</th>
+				<th>Detalles</th>
 				<th>Fecha creación</th>
 				<th>Fecha envío</th>				
 				<th>Fecha asignación</th>
@@ -103,8 +103,11 @@ function FBuscar()
 				<td>
 				<c:forEach var="itemd" items="${item['ListaDetalles']}" varStatus="counter">
 					<table class="container-fluid table-hover text-center">
+						<th>Símbolo</th>
+						<th>Resistencia</th>
 						<tr>
 							<td>${itemd['simbolo']}</td>
+							<td>R:${itemd['resistencia']} F:${itemd['flauta']} P:${itemd['papel']}</td>
 						</tr>
 					</table>
 				</c:forEach>

@@ -89,4 +89,11 @@ public class Tarjeta_fabricacionServiceImpl implements Tarjeta_fabricacionServic
 		return dao.BuscarTFPG(Params);
 	}
 
+	@Override
+	public List<Tarjeta_fabricacion> ListaSeguimiento(String Folio, Integer IdCot, Integer Status, String CardCode,
+			Integer usrinsert) {
+		// TODO Auto-generated method stub
+		return dao.ListaSeguimiento(Folio, IdCot, Status, CardCode, usrinsert);
+	}
+
 }

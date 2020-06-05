@@ -151,6 +151,9 @@ public class Cotizador_detallesValidator implements Validator{
 				
 				if((cotizador_detalles.getCantidad_pedido_mes() == null ? 0 : cotizador_detalles.getCantidad_pedido_mes()) == 0)
 					errors.rejectValue("cotizador_detalles.cantidad_pedido_mes", "Range");
+				
+				if((cotizador_detalles.getIdresistencia_barca() == null ? 0 : cotizador_detalles.getIdresistencia_barca()) < 1)
+					errors.rejectValue("cotizador_detalles.idresistencia_barca", "Range");
 			}//Fin Arrastre
 			else
 			{
@@ -219,9 +222,8 @@ public class Cotizador_detallesValidator implements Validator{
 					if(cotizador_detalles.getIdcaja_sap() == 7 && (cotizador_detalles.getNum_raturas() == null || cotizador_detalles.getNum_raturas() <= 0)) //Si es  SEPARADOR debe llevar número de ranuras.
 						errors.rejectValue("cotizador_detalles.num_raturas", "Required");
 					
-					if(cotizador_detalles.getIddetalle() > 1 && (cotizador_detalles.getPiezasxjuego() == null || cotizador_detalles.getPiezasxjuego() == 0))
-						errors.rejectValue("cotizador_detalles.piezasxjuego", "NotNull");
-					
+					if((cotizador_detalles.getIddetalle() == null ? 0 : cotizador_detalles.getIddetalle()) > 1 && (cotizador_detalles.getPiezasxjuego() == null || cotizador_detalles.getPiezasxjuego() == 0))
+						errors.rejectValue("cotizador_detalles.piezasxjuego", "NotNull");				
 					
 				}//Fin Muestras
 			}

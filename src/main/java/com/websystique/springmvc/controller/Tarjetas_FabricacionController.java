@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -20,7 +21,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -43,6 +46,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -78,7 +84,6 @@ import com.websystique.springmvc.utilities.SendMailGmail;
 
 import _1._0._0._127.SAP.AddObjectResponseAddObjectResult;
 import _1._0._0._127.SAP.DIServerSoapProxy;
-import _1._0._0._127.SAP.ExecuteSQLResponseExecuteSQLResult;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -370,6 +375,7 @@ public class Tarjetas_FabricacionController {
 			String fileName = img.getOriginalFilename();
 		    String folderPath = request.getServletContext().getRealPath("/")+"static\\img_tarjetas\\";
 		    String filePath = folderPath + fileName;
+		    System.out.println(filePath);
 		    User user = us.findBySSO(AppController.getPrincipal());
 		    byte[] bytes = img.getBytes();
 		    Path path = Paths.get(filePath);
@@ -432,9 +438,10 @@ public class Tarjetas_FabricacionController {
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
 			mensaje = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
 			logger.info(AppController.getPrincipal() + " - subir_imagen_tarjeta. " + mensaje);
-			return new ResponseEntity<Object>(mensaje, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<Object>(e, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
@@ -835,14 +842,28 @@ public class Tarjetas_FabricacionController {
 													  @RequestParam(value = "CardCode", defaultValue = "", required = false) String cardcode) {
 
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
-		model.addAttribute("clientes", ccavs.ListaCtes());
+		User user = us.findBySSO(AppController.getPrincipal());	
+		Integer usrinsert = 0;
+		if(user.getUserProfiles().stream()
+				.filter(b -> b.getType().equals("VENTAS") ||
+							 b.getType().equals("INGENIERIA") ||
+							 b.getType().equals("ADMIN") ||
+							 b.getType().equals("INGENIERIA_GERENCIA")
+				).count() == 0)
+		{
+			model.addAttribute("clientes", ccavs.ListaCtes(user.getCvevendedor_sap()));
+			usrinsert = user.getId();
+		}
+		else
+			model.addAttribute("clientes", ccavs.ListaCtes());
+		
 		if(!folio.equals("") || idCot > 0 || status > 0 || !cardcode.equals(""))
 		{
 			GsonBuilder builder = new GsonBuilder();
 			Gson gson = builder.serializeNulls().create();
 			List<JSONObject> lista = new ArrayList<JSONObject>();
-			tfs.ListaSeguimiento(folio,idCot,status,cardcode).forEach(a -> {
-				lista.add(ctsc.DataSourceJasperTF(a.getIdcotizacion(), a.getIddetalle(), 1));
+			tfs.ListaSeguimiento(folio,idCot,status,cardcode,usrinsert).forEach(a -> {
+				lista.add(ctsc.DataSourceJasperTF(a, 1, 0));
 			});
 			model.addAttribute("lista", gson.fromJson(lista.toString(),Object[].class));
 		}
@@ -861,7 +882,7 @@ public class Tarjetas_FabricacionController {
 			GsonBuilder builder = new GsonBuilder();
 			Gson gson = builder.serializeNulls().create();
 			
-			model.addAttribute("tar", gson.fromJson(ctsc.DataSourceJasperTF(id, iddet, 0).toString(),Object.class));
+			model.addAttribute("tar", gson.fromJson(ctsc.DataSourceJasperTF(id, iddet, 0,0).toString(),Object.class));
 			model.addAttribute("cot", gson.fromJson(ctsc.DataSourceJasperCot(id,0).toString(),Object.class));
 			model.addAttribute("cotdet", gson.fromJson(ctsc.addSpecificDetalle(id,iddet).toString(), Object.class));
 			
@@ -1054,7 +1075,7 @@ public class Tarjetas_FabricacionController {
 			Map<String,Object> params = new HashMap<>();
 			
 			JasperReport jasperReport = (JasperReport) JRLoader.loadObject(jasperStream);
-			ByteArrayInputStream jsonDataStream = new ByteArrayInputStream(stripAccents(ctsc.DataSourceJasperTF(id, iddet, 1).toString()).getBytes("UTF-8"));
+			ByteArrayInputStream jsonDataStream = new ByteArrayInputStream(stripAccents(ctsc.DataSourceJasperTF(id, iddet, 1, 0).toString()).getBytes("UTF-8"));
 			JsonDataSource dataSource = new JsonDataSource(jsonDataStream);
 			params.put("Imagen",request.getServletContext().getRealPath("/"));
 			
@@ -1089,7 +1110,7 @@ public class Tarjetas_FabricacionController {
 		try 
 		{
 			Tarjeta_fabricacion a = tfs.BuscarxFolio(folio_tarjeta);
-			JSONObject TFInfo = ctsc.DataSourceJasperTF(a.getIdcotizacion(), a.getIddetalle(), 1);
+			JSONObject TFInfo = ctsc.DataSourceJasperTF(a.getIdcotizacion(), a.getIddetalle(), 1,0);
 			idsession = DISERVER.login(environment.getRequiredProperty("diserver.dbserver"), environment.getRequiredProperty("diserver.dbname"), 
 					   environment.getRequiredProperty("diserver.dbtype"), environment.getRequiredProperty("diserver.dbusername"), 
 					   environment.getRequiredProperty("diserver.dbpassword"), environment.getRequiredProperty("diserver.compusername"), 
@@ -1176,13 +1197,13 @@ public class Tarjetas_FabricacionController {
 	
 	}
 	
-	private String SAP_INSERT_OITM(Integer idcotizacion, Integer iddetalle, String folio_tf) throws RemoteException
+	private String SAP_INSERT_OITM(Integer idcotizacion, Integer iddetalle, String folio_tf) throws SAXException, IOException, ParserConfigurationException
 	{
 		DIServerSoapProxy DISERVER = new DIServerSoapProxy();
 		String idsession = "";
 		try
 		{
-			JSONObject TFInfo = ctsc.DataSourceJasperTF(idcotizacion, iddetalle, 1);
+			JSONObject TFInfo = ctsc.DataSourceJasperTF(idcotizacion, iddetalle, 1,0);
 			JSONArray arrEsp = new JSONArray();
 			arrEsp = TFInfo.getJSONArray("ListaEsp");
 			String espXMLpart = "";
@@ -1204,31 +1225,49 @@ public class Tarjetas_FabricacionController {
 					   environment.getRequiredProperty("diserver.dbpassword"), environment.getRequiredProperty("diserver.compusername"), 
 					   environment.getRequiredProperty("diserver.comppassword"), environment.getRequiredProperty("diserver.language"), 
 					   environment.getRequiredProperty("diserver.licenseserver"), environment.getRequiredProperty("diserver.licese"));
-//			String SOAPCommand ="<?xml version=\"1.0\" encoding=\"UTF-16\"?> " + 
-//								"<env:Envelope xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\"> " + 
-//								"<env:Header> " + 
-//								"<SessionID>"+idsession+"</SessionID> " + 
-//								"</env:Header> " + 
-//								"<env:Body> " + 
-//								"<dis:GetByKey xmlns:dis=\"http://www.sap.com/SBO/DIS\"> " + 
-//								"<Object>oItems</Object> " + 
-//								"<ItemCode>SI-013078</ItemCode> " + 
-//								"</dis:GetByKey> " + 
-//								"</env:Body> " + 
-//								"</env:Envelope> ";
-//			
-//			String x = DISERVER.interact(idsession, SOAPCommand);
-//			System.out.println(x); 
 			
 			if(DISERVER.validate(idsession))//Validar sesión en SAP 
 			{
-				ExecuteSQLResponseExecuteSQLResult ESRESRT = DISERVER.executeSQL(idsession, "select ItemCode from oitm where U_TF = '"+TFInfo.getString("folio_tarjeta")+"' and ItmsGrpCod = 105");
-				if(ESRESRT.get_any().length == 0)// Existe la tarjeta
+				
+				String xmlValTFSol ="<?xml version=\"1.0\" encoding=\"utf-16\"?>\n" + 
+						"<env:Envelope xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\">\n" + 
+						"	<env:Header>\n" + 
+						"		<SessionID>"+idsession+"</SessionID>\n" + 
+						"	</env:Header>\n" + 
+						"	<env:Body>\n" + 
+						"		<dis:ExecuteSQL xmlns:dis=\"http://www.sap.com/SBO/DIS\">\n" + 
+						"			<DoQuery>select count(0) n from oitm where U_TF = '"+TFInfo.getString("folio_tarjeta")+"' and ItmsGrpCod = 105</DoQuery>\n" + 
+						"		</dis:ExecuteSQL>\n" + 
+						"	</env:Body>\n" + 
+						"</env:Envelope>";
+				
+				String xmlValTFRes = DISERVER.interact(idsession, xmlValTFSol);
+				
+				Document docresvaltf = convertStringToXMLDocument(xmlValTFRes);
+		        NodeList nodesresvaltf = docresvaltf.getElementsByTagName("n");				
+
+				if(nodesresvaltf.item(0).getTextContent().equals("0"))// Existe la tarjeta
 				{
-					ExecuteSQLResponseExecuteSQLResult ESRESR = DISERVER.executeSQL(idsession, "select SUBSTRING(max(ItemCode), 4, 6) + 1 maxtf from OITM where ItmsGrpCod in(105,192)");
-					if(ESRESR.get_any().length > 0)//Obtener el siguiente SI
+					String xmlNextSim = "<?xml version=\"1.0\" encoding=\"utf-16\"?>\n" + 
+							"<env:Envelope xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\">\n" + 
+							"	<env:Header>\n" + 
+							"		<SessionID>"+idsession+"</SessionID>\n" + 
+							"	</env:Header>\n" + 
+							"	<env:Body>\n" + 
+							"		<dis:ExecuteSQL xmlns:dis=\"http://www.sap.com/SBO/DIS\">\n" + 
+							"			<DoQuery>select SUBSTRING(max(ItemCode), 4, 6) + 1 maxtf from OITM where ItmsGrpCod in(105,192)</DoQuery>\n" + 
+							"		</dis:ExecuteSQL>\n" + 
+							"	</env:Body>\n" + 
+							"</env:Envelope>";
+					 String ESRESR = DISERVER.interact(idsession, xmlNextSim);
+
+					 Document docESRESR = convertStringToXMLDocument(ESRESR);
+				     NodeList nodesESRESR = docESRESR.getElementsByTagName("maxtf");
+				     String nextSim = nodesESRESR.item(0).getTextContent();
+
+				    if(Integer.valueOf(nextSim) > 0)//Obtener el siguiente SI
 					{
-						String newSimbolo = "SI-" + StringUtils.leftPad(ESRESR.get_any()[0].item(0).getLastChild().getFirstChild().getFirstChild().getFirstChild().toString(), 6,"0");
+						String newSimbolo = "SI-" + StringUtils.leftPad(nextSim, 6,"0");
 						
 						String xml ="<BOM><BO> " + 
 										"<AdmInfo> " + 
@@ -1346,7 +1385,7 @@ public class Tarjetas_FabricacionController {
 				{
 					logger.info(AppController.getPrincipal() + " - SAP. " + "Ya existe la tarjeta en SAP");
 					return "Ya existe la tarjeta en SAP";
-				}
+				} 
 			}
 			else
 			{
@@ -1358,7 +1397,7 @@ public class Tarjetas_FabricacionController {
 		{
 			e.printStackTrace();
 			logger.info(AppController.getPrincipal(), e);
-			return e.getMessage()+"-"+e.getStackTrace()+"-"+e.getCause();
+			return e.toString();
 		}
 		finally
 		{
@@ -1372,7 +1411,7 @@ public class Tarjetas_FabricacionController {
 		String idsession = "";
 		try 
 		{
-			JSONObject TFInfo = ctsc.DataSourceJasperTF(idcotizacion, iddetalle, 1);
+			JSONObject TFInfo = ctsc.DataSourceJasperTF(idcotizacion, iddetalle, 1,0);
 
 			JSONArray arrEsp = new JSONArray();
 			arrEsp = TFInfo.getJSONArray("ListaEsp");
@@ -1471,5 +1510,29 @@ public class Tarjetas_FabricacionController {
 		}
 		
 	}
+	
+	private static Document convertStringToXMLDocument(String xmlString) 
+    {
+		xmlString = xmlString.replace("<?xml version=\"1.0\"?>", "");
+        //Parser that produces DOM object trees from XML content
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+         
+        //API to obtain DOM Document instance
+        DocumentBuilder builder = null;
+        try
+        {
+            //Create DocumentBuilder with default configuration
+            builder = factory.newDocumentBuilder();
+             
+            //Parse the content to Document object
+            Document doc = builder.parse(new InputSource(new StringReader(xmlString)));
+            return doc;
+        } 
+        catch (Exception e) 
+        {
+            e.printStackTrace();
+        }
+        return null;
+    }	
 	
 }

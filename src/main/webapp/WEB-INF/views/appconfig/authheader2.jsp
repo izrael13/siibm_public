@@ -155,7 +155,7 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 	 </sec:authorize>
 	 <sec:authorize access="hasRole('ADMIN') or hasRole('VENDEDOR') or hasRole('VENTAS') or hasRole('PROGRAMACION') or hasRole('INGENIERIA') or hasRole('ARRASTRE') or hasRole('MUESTRISTA') or hasRole('CALIDAD') or hasRole('PRODUCCION') or hasRole('INGENIERIA_GERENCIA') or hasRole('CLIENTE')">
 	 <li class="nav-item dropdown">				
-		<a class="dropdown-item" href="" data-toggle="dropdown"><i class="fa fa-id-card" aria-hidden="true"> Sistema de tarjetas</i></a>
+		<a class="dropdown-item" href="" data-toggle="dropdown"><i class="fa fa-id-card" aria-hidden="true"> Tarjetas</i></a>
 		<ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu">
 			<li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-user-circle" aria-hidden="true"></i> Prospectos</a>
 			    <ul class="dropdown-menu">
@@ -174,6 +174,9 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 			    		<li><a class="dropdown-item" href = "<c:url value='/cotizador/vendedor/arrastresabc'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro Arrastres</a></li>
 			    		<li><a class="dropdown-item" href = "<c:url value='/cotizador/vendedor/seguimiento_cot'/>"><i class="fa fa-angle-right" aria-hidden="true"></i> Seguimiento de cotizaciones</a></li>
 			    	</sec:authorize>
+			    	<sec:authorize access="hasRole('ADMIN') or hasRole('VENDEDOR') or hasRole('ARRASTRE') or hasRole('MUESTRISTA') or hasRole('VENTAS ') or hasRole('INGENIERIA_GERENCIA')">
+			    		<li><a class="dropdown-item" href = "<c:url value='/cotizador/vendedor/seguimiento_arrastres_muestras'/>"><i class="fa fa-angle-right" aria-hidden="true"></i> Seguimiento de arrastres/muestras</a></li>
+			    	</sec:authorize>
 			    	<sec:authorize access="hasRole('ADMIN') or hasRole('VENTAS')">
 			    		<li><a class="dropdown-item" href = "<c:url value='/cotizador/ventas/autorizacion_cotizacion_vtas'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de cotizaciones Ventas</a></li>
 			    	</sec:authorize>
@@ -182,13 +185,12 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 			    	</sec:authorize>
 			    	<sec:authorize access="hasRole('ADMIN') or hasRole('INGENIERIA')">
 			    		<li><a class="dropdown-item" href = "<c:url value='/cotizador/ingenieria/requerimientoabc'/>"><i class="fa fa-check-circle-o" aria-hidden="true"></i> Imprimir/Asignar diseñador requerimientos</a></li>
-			    		<li><a class="dropdown-item" href = "<c:url value='/cotizador/ingenieria/seguimiento_arrastres_muestras'/>"><i class="fa fa-angle-right" aria-hidden="true"></i> Seguimiento de arrastres/muestras</a></li>
 			    	</sec:authorize>
-			    	<sec:authorize access="hasRole('ADMIN') or hasRole('ARRASTRE')">
+			    	<sec:authorize access="hasRole('ADMIN') or hasRole('ARRASTRE') or hasRole('INGENIERIA_GERENCIA')">
 				    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/arrastres/asignar_arrastres'/>"><i class="fa fa-check-circle-o" aria-hidden="true"></i> Asignar arrastres</a></li>
 				    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/arrastres/liberar_arrastres'/>"><i class="fa fa-lightbulb-o" aria-hidden="true"></i> Liberar arrastres</a></li>
 			    	</sec:authorize>
-			    	<sec:authorize access="hasRole('ADMIN') or hasRole('MUESTRISTA')">
+			    	<sec:authorize access="hasRole('ADMIN') or hasRole('MUESTRISTA') or hasRole('INGENIERIA_GERENCIA')">
 				    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/muestras/asignar_muestras'/>"><i class="fa fa-check-circle-o" aria-hidden="true"></i> Asignar muestras</a></li>
 				    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/muestras/liberar_muestras'/>"><i class="fa fa-lightbulb-o" aria-hidden="true"></i> Liberar muestras</a></li>
 			    	</sec:authorize>
@@ -198,6 +200,8 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 			 	<ul class="dropdown-menu">
 			 		<sec:authorize access="hasRole('ADMIN') or hasRole('INGENIERIA')">
 			 			<li><a class="dropdown-item" href = "<c:url value='/tarjeta/ingenieria/tarjeta_fabricacion'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro tarjetas</a></li>
+			 		</sec:authorize>
+			 		<sec:authorize access="hasRole('ADMIN') or hasRole('INGENIERIA') or hasRole('VENTAS') or hasRole('VENDEDOR')">
 			 			<li><a class="dropdown-item" href = "<c:url value='/tarjeta/ingenieria/tarjetas_seguimiento'/>"><i class="fa fa-angle-right" aria-hidden="true"></i> Seguimiento de tarjetas</a></li>
 			 		</sec:authorize>
 			 		<sec:authorize access="hasRole('ADMIN') or hasRole('CALIDAD')">
@@ -227,7 +231,8 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 			 <sec:authorize access="hasRole('ADMIN') or hasRole('PROGRAMACION')">
 			 <li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-file-powerpoint-o" aria-hidden="true"></i> Programas</a>
 			    <ul class="dropdown-menu">
-			    		<li><a class="dropdown-item" href = "<c:url value='/programas/programacion/programacionabc'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro de programas</a></li>
+		    		<li><a class="dropdown-item" href = "<c:url value='/programas/programacion/programacionabc'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro de programas</a></li>
+		    		<li><a class="dropdown-item" href = "<c:url value='/programas/programacion/programaconsulta'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Consulta de programas</a></li>
 			    </ul>
 			 </li>
 			 </sec:authorize>
@@ -259,6 +264,17 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 	   </ul>
 	 </li>
 	</sec:authorize>
+		 <sec:authorize access="hasRole('ADMIN') or hasRole('PRODUCCION')">
+	 <li class="nav-item dropdown"><a class="dropdown-item" href="" data-toggle="dropdown"><i class="fa fa-money" aria-hidden="true"> Producción</i></a>
+	 	<ul class="dropdown-menu dropdown-menu-right">
+	   		<li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-inbox" aria-hidden="true"></i> Validar</a>
+			    <ul class="dropdown-menu">
+			    		<li><a class="dropdown-item" href = "<c:url value='/produccion/validacion/pedidopapel' />"><i class="fa fa-file-o" aria-hidden="true"></i> Pedidos</a></li>
+			    </ul>
+			 </li>
+	   </ul>
+	 </li>
+	 </sec:authorize>
 	<sec:authorize access="hasRole('DIRECCION') or hasRole('ADMIN')">
 	<ul class="navbar-nav">
 		<li class="nav-item dropdown"><a class="dropdown-item" href="" data-toggle="dropdown"><i class="fa fa-square-o" aria-hidden="true"> Dirección</i></a>

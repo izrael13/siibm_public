@@ -66,7 +66,7 @@ function FImprimir(id)
 <body>
 		<br>
 	<div align="center">
-		<span class="badge badge-secondary">Asignar arrastres</span>
+		<span class="badge badge-secondary">Liberar arrastres</span>
 	</div>
 	<br>
 	<div id = "mensajes" class = "${!empty mensajes ? 'alert alert-success' : ''}">${mensajes}</div>
@@ -76,6 +76,7 @@ function FImprimir(id)
 			<tr>
 				<th>Folio</th>
 				<th>Símbolo</th>
+				<th>Resistencia</th>
 				<th>Colo1</th>
 				<th>Colo2</th>
 				<th>Colo3</th>
@@ -96,6 +97,7 @@ function FImprimir(id)
 				<td>${i}</td>
 				<c:forEach var="det" items="${item['ListaDetalles']}" varStatus="counter">
 						<td>${det['simbolo']}</td>
+						<td>R:${det['resistencia']} F:${det['flauta']} P:${det['papel']}</td>
 						<td><div style="background:#${det['color1c']}">${det['color1n']} - ${det['color1c']}</div></td>
 						<td><div style="background:#${det['color2c']}">${det['color2n']} - ${det['color2c']}</div></td>
 						<td><div style="background:#${det['color3c']}">${det['color3n']} - ${det['color3c']}</div></td>

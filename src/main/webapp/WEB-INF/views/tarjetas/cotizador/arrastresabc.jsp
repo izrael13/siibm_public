@@ -414,6 +414,22 @@ function FEnviar()
 			</div>
 		</div>
 		</div>
+		<div class="col-12 small">
+			<div class="row border border-right">
+				<div class="col col-lg-1">Tipo de papel</div>
+				<div class="col col-lg-11">
+					<form:select id="SResis" path="cotizador_detalles.idresistencia_barca" multiple="false" class="border border-primary">
+					<form:option value="0">Seleccione resistencia</form:option>
+					<c:forEach var="res" items="${resistencias}">
+						<form:option value="${res.idresistencia}"><c:out value="${res.resistencia} Flauta:${res.corrugado} Papel:${res.color}"/></form:option>
+					</c:forEach>
+					</form:select>
+					<div class="has-error">
+						<form:errors path="cotizador_detalles.idresistencia_barca" class="badge badge-danger small"/>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div align="left" class = "container">
 		<div class = "row" align="center">			
 			<div class="col col-lg-2"><form:button id="BGrabar" class="btn btn-outline-primary btn-sm"><i class="fa fa-floppy-o" aria-hidden="true"> Grabar</i></form:button></div>

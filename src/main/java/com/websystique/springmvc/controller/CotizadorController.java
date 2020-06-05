@@ -31,7 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-//import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -556,7 +555,7 @@ public class CotizadorController {
 				object.addProperty("PorcFlete", decimal2.format(PorcFlete));
 				
 				object.addProperty("AreaTotal",decimal4.format(AreaUni * jsonObjectParams.get("pzasxjgo").getAsInt()));
-				object.addProperty("PesoTotal",decimal4.format(AreaUni * PesoPza));
+				object.addProperty("PesoTotal",decimal4.format(PesoPza * jsonObjectParams.get("pzasxjgo").getAsInt()));
 				object.addProperty("PK_Teorico",decimal4.format( (jsonObjectParams.get("cantpedmes").getAsDouble() / 1000) * (jsonObjectParams.get("precioobj").getAsDouble() / KG)));
 				
 			}//Fin Si hay Caja seleccionada
@@ -658,12 +657,12 @@ public class CotizadorController {
 						c.setFecha_aut_ventas(date);
 						c.setObservaciones_ventas("Autorización automática por sistema.");
 						
-						////ENVÍO DE EMAIL
+						/*///ENVÍO DE EMAIL
 						SendMailGmail Email = new SendMailGmail();
 						String emailMsj="Cotización: ("+c.getId()+") autorizada automáticamente por precio a través del sistema.";
 						User userInsertCot = us.findById(c.getUsuario_insert());
 						Email.sendMail(userInsertCot.getEmail(), emailMsj, "Cotización autorizada");
-						/////
+						////*/
 						
 						c.setUsuario_rech_ventas(null);
 						c.setFecha_rech_ventas(null);
@@ -765,6 +764,7 @@ public class CotizadorController {
 			Params.add(new ParamsGeneral(1,"usuario_rech_prog","EQ"));
 			Params.add(new ParamsGeneral(1,"usuario_cancel","EQ"));
 			Params.add(new ParamsGeneral(1,"fecha_cancel","EQ"));
+			Params.add(new ParamsGeneral(1,"idtiporequerimiento",0,"EQ"));
 		}
 		else
 		{
@@ -780,6 +780,7 @@ public class CotizadorController {
 				Params.add(new ParamsGeneral(1,"fecha_asign_diseniador","EQ"));
 				Params.add(new ParamsGeneral(1,"usuario_rech_diseniador","EQ"));
 				Params.add(new ParamsGeneral(1,"fecha_rech_diseniador","EQ"));
+				Params.add(new ParamsGeneral(1,"idtiporequerimiento",0,"EQ"));
 			}
 			else
 			{
@@ -793,6 +794,7 @@ public class CotizadorController {
 					Params.add(new ParamsGeneral(1,"usuario_rech_ventas","EQ"));
 					Params.add(new ParamsGeneral(1,"usuario_cancel","EQ"));
 					Params.add(new ParamsGeneral(1,"fecha_cancel","EQ"));
+					Params.add(new ParamsGeneral(1,"idtiporequerimiento",0,"EQ"));
 				}
 				else
 				{
@@ -903,8 +905,8 @@ public class CotizadorController {
 		}
 		List<Cotizador> ListaCot = cs.ListasCotAut(Params);
 		List<JSONObject> ListaCotJson = new ArrayList<JSONObject>();
-		ListaCot.forEach(a -> {				
-			ListaCotJson.add(ctsc.DataSourceJasperCot(a.getId(),1));
+		ListaCot.forEach(a -> {	
+			ListaCotJson.add(ctsc.DataSourceJasperCot(a,1));
 		});
 		GsonBuilder builder = new GsonBuilder();
 		Gson gson = builder.serializeNulls().create();
@@ -1063,6 +1065,7 @@ public class CotizadorController {
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
 			msj = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
 		}
 		logger.info(AppController.getPrincipal() + " - requerimientoabcget :"+ msj);
@@ -1177,43 +1180,43 @@ public class CotizadorController {
 								DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols(Locale.getDefault());
 								formatSymbols.setDecimalSeparator('.');
 								
-								DecimalFormat format = new DecimalFormat("##########0.0#", formatSymbols);							
+								DecimalFormat format = new DecimalFormat("##########0.0", formatSymbols);							
 								
-								Double deci = 0.0;
+								//Double deci = 0.0;
 								//RAYADO 1
 								Double rayado1 = 0.0;
 								if(objCaja.getGrupo() == 1)
-									rayado1 = ListaDetalles.get(i).getAncho() / 2 + (objCaja.getCorrugado() == "S" ? 3 : 5);
+									rayado1 = ListaDetalles.get(i).getAncho() / 2 + (objCaja.getCorrugado().equals("S") ? 0.3 : 0.5);
 								
 								if(objCaja.getGrupo() == 2)
-									rayado1 = ListaDetalles.get(i).getFondo() + (objCaja.getCorrugado() == "S" ? 4 : 8);
+									rayado1 = ListaDetalles.get(i).getFondo() + (objCaja.getCorrugado().equals("S") ? 0.4 : 0.8);
 	
 								rayado1 = Double.valueOf(format.format(rayado1));
-								deci = rayado1 - rayado1.intValue();
-								if(deci >= 0.5)
-									rayado1 = rayado1 + (1 - deci);
+								/*deci = rayado1 - rayado1.intValue();
+								 if(deci >= 0.5) rayado1 = rayado1 + (1 - deci);
+								 */
 								
 								//RAYADO 2
 								Double rayado2 = 0.0;
 								if(objCaja.getGrupo() == 1)
-									rayado2 = ListaDetalles.get(i).getFondo() + (objCaja.getCorrugado() == "S" ? 7 : 15);
+									rayado2 = ListaDetalles.get(i).getFondo() + (objCaja.getCorrugado().equals("S") ? 0.7 : 1.5);
 								if(objCaja.getGrupo() == 2)
-									rayado2 = ListaDetalles.get(i).getAncho() / 2 + (objCaja.getCorrugado() == "S" ? 3 : 5);
+									rayado2 = ListaDetalles.get(i).getAncho() / 2 + (objCaja.getCorrugado().equals("S") ? 0.3 : 0.5);
 								
 								rayado2 = Double.valueOf(format.format(rayado2));
-								deci = rayado2 - rayado2.intValue();
-								if(deci >= 0.5)
-									rayado2 = rayado2 + (1 - deci);
+//								deci = rayado2 - rayado2.intValue();
+//								if(deci >= 0.5)
+//									rayado2 = rayado2 + (1 - deci);
 								
 								//RAYADO 3
 								Double rayado3 = 0.0;
 								if(objCaja.getGrupo() == 1)
-									rayado3 = objCaja.getCorrugado() == "S" ? ListaDetalles.get(i).getAncho() / 2 + 3 : ListaDetalles.get(i).getFondo() + 15;
+									rayado3 = objCaja.getCorrugado().equals("S") ? ListaDetalles.get(i).getAncho() / 2 + 0.3 : ListaDetalles.get(i).getFondo() + 1.5;
 								
 								rayado3 = Double.valueOf(format.format(rayado3));
-								deci = rayado3 - rayado3.intValue();
-								if(deci >= 0.5)
-									rayado3 = rayado3 + (1 - deci);
+//								deci = rayado3 - rayado3.intValue();
+//								if(deci >= 0.5)
+//									rayado3 = rayado3 + (1 - deci);
 								
 								Tarjeta.setRayado1(rayado1);
 								Tarjeta.setRayado2(rayado2);
@@ -1365,6 +1368,7 @@ public class CotizadorController {
 		User user = us.findBySSO(AppController.getPrincipal());
 		model.addAttribute("clientes", ccavs.ListaCtes(user.getCvevendedor_sap()));
 		model.addAttribute("colores", ccos.ListaColores());
+		model.addAttribute("resistencias", crss.ListaResis());
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
 		
 		if(id == 0)
@@ -1397,15 +1401,20 @@ public class CotizadorController {
 			model.addAttribute("colores", ccos.ListaColores());
 			model.addAttribute("direcciones", cdsv.ListaDirCardCode(cotizadorDataBean.getCotizador().getCardcode()));
 			model.addAttribute("direccionSelect", cdsv.ListaDirCardCodeNumLine(cotizadorDataBean.getCotizador().getCardcode(),cotizadorDataBean.getCotizador().getLinenum_dir_entrega()));
+			model.addAttribute("resistencias", crss.ListaResis());
 			
 			java.util.Date date = new java.util.Date();
 			
 			cotizadorDataBean.getCotizador_detalles().setBan(null);
 			cotizadorDataBean.getCotizador_detalles().setIdtiporequerimiento(cotizadorDataBean.getCotizador().getIdtiporequerimiento());
+			//cotizadorDataBean.getCotizador().setCardcode_factura(cotizadorDataBean.getCotizador().getCardcode());
 			
 			cvalidator.validate(cotizadorDataBean.getCotizador(), result);
 			cdvalidator.validate(cotizadorDataBean.getCotizador_detalles(), result);
-
+			/*for (ObjectError error : result.getAllErrors()) {
+		       String fieldErrors [] = error.getCodes();
+		       System.out.println(fieldErrors[0]);
+		   }*/ 
 			if (result.hasErrors() )
 			{
 				return "/tarjetas/cotizador/arrastresabc";
@@ -1415,30 +1424,30 @@ public class CotizadorController {
 			cotizadorDataBean.getCotizador().setUsuario_update(user.getId());
 			cotizadorDataBean.getCotizador_detalles().setFecha_update(date);
 			cotizadorDataBean.getCotizador_detalles().setUsuario_update(user.getId());
-			
-			if(cotizadorDataBean.getCotizador().getId() == null)
+			idN = 0;
+			idND = 0;
+			if(cotizadorDataBean.getCotizador().getId() == null || cotizadorDataBean.getCotizador().getId() == 0)
 			{
 				cotizadorDataBean.getCotizador().setFecha_insert(date);
 				cotizadorDataBean.getCotizador().setUsuario_insert(user.getId());
 				cotizadorDataBean.getCotizador_detalles().setFecha_insert(date);
 				cotizadorDataBean.getCotizador_detalles().setUsuario_insert(user.getId());
 				idN = cs.Maximo("id");
-				cotizadorDataBean.getCotizador().setId((idN == null ? 1 : idN++));
+				idN = (idN == null ? 1 : ++idN);
+				cotizadorDataBean.getCotizador().setId(idN);
 				cs.Guardar(cotizadorDataBean.getCotizador());
 				//idN = cs.Guardar(cotizadorDataBean.getCotizador());
 				cotizadorDataBean.getCotizador_detalles().setIdcotizacion(idN);
 				cotizadorDataBean.getCotizador_detalles().setIddetalle(cds.BuscarxCotId(idN).size() + 1);
-				
 				idND = cds.Guardar(cotizadorDataBean.getCotizador_detalles());
-				msj= "COTIZACIÓN: "+idN+" Y DETALLE: " +idND+" GRABADA SATISFACTORIAMENTE";
+				msj= "ARRASTRE: "+idN+" Y DETALLE: " +idND+" GRABADO SATISFACTORIAMENTE";
 			}
 			else
 			{
 				cs.Actualizar(cotizadorDataBean.getCotizador());
 				cds.Actualizar(cotizadorDataBean.getCotizador_detalles());
-				msj= "COTIZACIÓN: "+cotizadorDataBean.getCotizador().getId()+" Y DETALLE: " +cotizadorDataBean.getCotizador_detalles().getIddetalle()+" ACTUALIZADA SATISFACTORIAMENTE";
+				msj= "ARRASTRE: "+cotizadorDataBean.getCotizador().getId()+" Y DETALLE: " +cotizadorDataBean.getCotizador_detalles().getIddetalle()+" ACTUALIZADO SATISFACTORIAMENTE";
 			}
-			
 			model.addAttribute("mensajes", msj);
 			
 			return "/tarjetas/cotizador/arrastresabc";
@@ -1690,7 +1699,7 @@ public class CotizadorController {
 		return "/tarjetas/cotizador/liberar_muestras";
 	}
 	
-	@RequestMapping(value = {"/ingenieria/seguimiento_arrastres_muestras" }, method = RequestMethod.GET)
+	@RequestMapping(value = {"/vendedor/seguimiento_arrastres_muestras" }, method = RequestMethod.GET)
 	public String seguimiento_arrastres_muestras(ModelMap model,
 			@RequestParam(value = "folio", defaultValue = "", required = false) String folio,
 			@RequestParam(value = "emp", defaultValue = "", required = false) String emp,
@@ -1699,15 +1708,31 @@ public class CotizadorController {
 			@RequestParam(value = "tipo", defaultValue = "", required = false) String tipo)
 	{		
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
-		model.addAttribute("vendedores", cvss.ListaVendedores());
-		
-		List<User> users = null;		
-		users = us.findAllUsers().stream()
-		.filter(a -> a.getUserProfiles().stream()
-				.filter(b -> b.getType().equals("ARRASTRE") || b.getType().equals("MUESTRISTA")).count() > 0).collect(Collectors.toList());
-		model.addAttribute("ListaEmp", users);
 		List<ParamsGeneral> params = new ArrayList<ParamsGeneral>();
 		List<JSONObject> Lista = new ArrayList<JSONObject>();
+		User user = us.findBySSO(AppController.getPrincipal());
+		int c = 0;
+		c = (int)(user.getUserProfiles().stream().filter(s -> 
+															s.getType().equals("ADMIN") || 
+															s.getType().equals("VENTAS") ||
+															s.getType().equals("INGENIERIA") ||
+															s.getType().equals("INGENIERIA_GERENCIA")
+														).count());
+		
+		if(c == 0)
+		{
+			params.add(new ParamsGeneral(1,"usuario_insert",user.getId(),"EQ"));
+		}
+		else
+		{	
+			model.addAttribute("vendedores", cvss.ListaVendedores());
+			List<User> users = null;		
+			users = us.findAllUsers().stream()
+			.filter(a -> a.getUserProfiles().stream()
+					.filter(b -> b.getType().equals("ARRASTRE") || b.getType().equals("MUESTRISTA")).count() > 0).collect(Collectors.toList());
+			model.addAttribute("ListaEmp", users);
+		}
+		
 		if(!folio.equals(""))
 		{
 			params.add(new ParamsGeneral(1,"id",Integer.valueOf(folio),"EQ"));
@@ -1739,14 +1764,16 @@ public class CotizadorController {
 				params.add(new ParamsGeneral(1,"fecha_rech_arrastre","NE"));
 		}
 		
-		if(!tipo.equals(""))
+		if(!tipo.equals("") && !tipo.equals("0"))
+		{
 			params.add(new ParamsGeneral(1,"idtiporequerimiento",Integer.valueOf(tipo),"EQ"));
 		
-		if(params.size() > 0)
-		{
-			cs.ListasCotAut(params).forEach(a -> {
-					Lista.add(ctsc.DataSourceJasperCot(a.getId(),1));
-			});
+			if(params.size() > 0)
+			{
+				cs.ListasCotAut(params).forEach(a -> {
+						Lista.add(ctsc.DataSourceJasperCot(a.getId(),1));
+				});
+			}
 		}
 		GsonBuilder builder = new GsonBuilder();
 		Gson gson = builder.serializeNulls().create();
@@ -1840,17 +1867,17 @@ public class CotizadorController {
 				if(params.size() > 1)
 				{
 					cs.ListasCotAut(params).forEach(a -> {
-							Lista.add(ctsc.DataSourceJasperCot(a.getId(),1));
+							Lista.add(ctsc.DataSourceJasperCot(a,1));
 					});
 				}
 			}
 			else
 			{
-				Integer CveVen = Integer.valueOf(ven);
+				Integer CveVen = user.getCvevendedor_sap();
 				us.findCveVenUsers(CveVen).forEach(usr -> {
 					params.add(new ParamsGeneral(10,"usuario_insert", usr.getId(),"EQ"));
 					cs.ListasCotAut(params).forEach(a -> {
-						Lista.add(ctsc.DataSourceJasperCot(a.getId(),1));
+						Lista.add(ctsc.DataSourceJasperCot(a,1));
 					});
 					params.remove(params.size() -1);
 				});
@@ -1873,40 +1900,53 @@ public class CotizadorController {
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
 		logger.info(AppController.getPrincipal() + " - seguimiento_cot_hist.");
 		User user = us.findBySSO(AppController.getPrincipal());		
-		
-		Cotizador Cot = new Cotizador();
-		
-		if(id > 0 && iddet > 0)
+		try
 		{
-			GsonBuilder builder = new GsonBuilder();
-			Gson gson = builder.serializeNulls().create();
+			Cotizador Cot = new Cotizador();
 			
-			if(user.getUserProfiles().stream().filter(b -> b.getType().equals("VENTAS")).count() == 0)
-				Cot = cs.BuscarxId(id, user.getId());
-			
-			else
-				Cot = cs.BuscarxId(id);
-			
-			if(Cot != null)
+			if(id > 0 && iddet > 0)
 			{
-				if(Cot.getIdtiporequerimiento() == 0)
+				GsonBuilder builder = new GsonBuilder();
+				Gson gson = builder.serializeNulls().create();
+				
+				if(user.getUserProfiles().stream().filter(b -> b.getType().equals("VENTAS") || b.getType().equals("INGENIERIA") || b.getType().equals("PROGRAMACION")).count() == 0)
+				{					
+					for(User usr : us.findCveVenUsers(user.getCvevendedor_sap()))
+					{
+						Cot = cs.BuscarxId(id, usr.getId());
+						if(Cot != null)
+							break;
+					}
+					
+				}
+				else
+					Cot = cs.BuscarxId(id);
+				
+				if(Cot != null)
 				{
-					model.addAttribute("cot", gson.fromJson(ctsc.DataSourceJasperCot(id,0).toString(),Object.class));
-					model.addAttribute("cotdet", gson.fromJson(ctsc.addSpecificDetalle(id,iddet).toString(), Object.class));
-					JSONObject Tar = new JSONObject();
-					Tar = ctsc.DataSourceJasperTF(id, iddet, 0);
-					if(Tar != null)
-						model.addAttribute("tar", gson.fromJson(Tar.toString(),Object.class));
+					if(Cot.getIdtiporequerimiento() == 0)
+					{
+						model.addAttribute("cot", gson.fromJson(ctsc.DataSourceJasperCot(id,0).toString(),Object.class));
+						model.addAttribute("cotdet", gson.fromJson(ctsc.addSpecificDetalle(id,iddet).toString(), Object.class));
+						JSONObject Tar = new JSONObject();
+						Tar = ctsc.DataSourceJasperTF(id, iddet, 0,0);
+						if(Tar != null)
+							model.addAttribute("tar", gson.fromJson(Tar.toString(),Object.class));
+					}
 				}
 			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
 		}
 		return "/tarjetas/cotizador/seguimiento_cot_hist";
 	}
 	
-	@RequestMapping(value = "/vendedor/imprimirtf", method = RequestMethod.GET)
+	@RequestMapping(value = "/vendedor/imprimirtarjetacte", method = RequestMethod.GET)
     @ResponseBody
-    public void imprimirtf(HttpServletResponse response,HttpServletRequest request,ModelMap model,
-    				    @RequestParam("id") Integer id, @RequestParam("id") Integer iddet) throws JRException, IOException {
+    public void getRpt1(HttpServletResponse response,HttpServletRequest request,ModelMap model,
+    				    @RequestParam("id") Integer id, @RequestParam("iddet") Integer iddet) throws JRException, IOException {
 		String msj = "";
 		try
 		{
@@ -1914,7 +1954,7 @@ public class CotizadorController {
 			Map<String,Object> params = new HashMap<>();
 			
 			JasperReport jasperReport = (JasperReport) JRLoader.loadObject(jasperStream);
-			ByteArrayInputStream jsonDataStream = new ByteArrayInputStream(stripAccents(ctsc.DataSourceJasperTF(id, iddet, 1).toString()).getBytes("UTF-8"));
+			ByteArrayInputStream jsonDataStream = new ByteArrayInputStream(stripAccents(ctsc.DataSourceJasperTF(id, iddet, 1, 0).toString()).getBytes("UTF-8"));
 			JsonDataSource dataSource = new JsonDataSource(jsonDataStream);
 			params.put("Imagen",request.getServletContext().getRealPath("/"));
 			
@@ -1925,12 +1965,13 @@ public class CotizadorController {
 			
 			    final OutputStream outStream = response.getOutputStream();
 			    JasperExportManager.exportReportToPdfStream(jasperPrint, outStream);
-			logger.info(AppController.getPrincipal() + " - imprimirtf :"+ msj);
+			logger.info(AppController.getPrincipal() + " - imprimirtarjetacte :"+ msj);
 		}
 		catch(Exception e)
 		{
 			msj = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
-			logger.info(AppController.getPrincipal() + " - imprimircotizador :"+ e);
+			e.printStackTrace();
+			logger.info(AppController.getPrincipal() + " - imprimirtarjetacte :"+ e);
 		}
 	} 
 	

@@ -75,6 +75,7 @@ public class CotizadorDAOImpl extends AbstractDao<Integer,Cotizador> implements 
 	public List<Cotizador> ListasCotAut(List<ParamsGeneral> params) {
 		List<Cotizador> Lista = new ArrayList<Cotizador>();
 		Map<String,String> mOrd =  new HashMap<String, String>();
+		mOrd.put("101", "fecha_insert");
 		Lista = criteriaGeneralList(params, mOrd);
 		return Lista;
 	}

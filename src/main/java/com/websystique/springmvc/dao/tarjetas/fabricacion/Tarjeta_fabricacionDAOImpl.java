@@ -226,5 +226,90 @@ public class Tarjeta_fabricacionDAOImpl extends AbstractDao<Integer,Tarjeta_fabr
 		Tarjeta_fabricacion TF = (Tarjeta_fabricacion) criteriaGeneralObj(Params);
 		return TF;
 	}
+
+	@Override
+	public List<Tarjeta_fabricacion> ListaSeguimiento(String Folio, Integer IdCot, Integer Status, String CardCode,
+			Integer usrinsert) {
+		Map<Integer,Integer> paramsInt = new HashMap<Integer, Integer>();
+		Map<Integer,String> paramStr = new HashMap<Integer, String>();
+		Integer posicion = 0;
+
+		String query = "select * from TARJETA_FABRICACION a inner join COTIZADOR b on a.IDCOTIZACION = b.ID\r\n" + 
+				"where a.FOLIO_TARJETA != '' ";
+		if(!Folio.equals(""))
+		{
+			posicion++;
+			query = query + " and a.FOLIO_TARJETA = ?"+posicion;
+			paramStr.put(posicion, Folio);		
+		}
+		
+		if(IdCot > 0)
+		{
+			posicion++;
+			query = query + " and a.IDCOTIZACION = ?"+posicion;
+			paramsInt.put(posicion, IdCot);
+		}
+		
+		if(!CardCode.equals(""))
+		{
+			posicion++;
+			query = query + " and a.CARDCODE = ?"+posicion;
+			paramStr.put(posicion, CardCode);		
+		}
+		
+		if(Status == 1)//rechazadas
+		{
+			query = query + " and (a.FECHA_RECH_CALIDAD is not null or \r\n" + 
+								"a.FECHA_RECH_PRODUCCION is not null or\r\n" + 
+								"a.FECHA_RECH_ING is not null or\r\n" + 
+								"a.FECHA_RECH_CLIENTE is not null ) and a.FECHA_CANCELA is null";
+		}
+		
+		if(Status == 2)//canceladas
+		{
+			query = query + " and a.FECHA_CANCELA is not null ";
+		}
+		
+		if(Status == 3)//Diseño
+		{
+			query = query + " and a.FECHA_AUT_DISENIADOR is null and a.FECHA_CANCELA is null ";
+		}
+		
+		if(Status == 4)//Calidad
+		{
+			query = query + " and a.FECHA_AUT_DISENIADOR is not null and a.FECHA_AUT_CALIDAD is null  and a.FECHA_CANCELA is null ";
+		}
+		
+		if(Status == 5)//Produccion
+		{
+			query = query + " and a.FECHA_AUT_CALIDAD is not null and a.FECHA_AUT_PRODUCCION is null  and a.FECHA_CANCELA is null ";
+		}
+		
+		if(Status == 6)//Ingenieria
+		{
+			query = query + " and a.FECHA_AUT_PRODUCCION is not null and a.FECHA_AUT_ING is null  and a.FECHA_CANCELA is null ";
+		}
+		
+		if(Status == 7)//Cliente
+		{
+			query = query + " and a.FECHA_AUT_ING is not null and a.FECHA_AUT_CLIENTE is null  and a.FECHA_CANCELA is null ";
+		}
+		
+		if(Status == 8)//aut cliente
+		{
+			query = query + " and a.FECHA_AUT_CLIENTE is not null  and a.FECHA_CANCELA is null ";
+		}
+		
+		if(usrinsert > 0)// vendedor, usuario insert
+		{
+			posicion++;
+			query = query + " and b.USUARIO_INSERT = ?"+posicion;
+			paramsInt.put(posicion, usrinsert);	
+		}
+		
+
+		List<Tarjeta_fabricacion> Lista = criteriaQueryNamedStr(query,paramsInt,paramStr);
+		return Lista;
+	}
 	
 }

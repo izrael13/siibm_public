@@ -109,6 +109,11 @@ function FImprimir(id)
 	var redirectWindow = window.open('<c:url value="/cotizador/ingenieria/imprimirreq"/>?id='+id);
 	redirectWindow.replace;
 }
+function FSeguimiento(id, iddet)
+{
+	var redirectWindow = window.open('<c:url value="/cotizador/vendedor/seguimiento_cot_hist" />?id='+id+'&iddet='+iddet);
+	redirectWindow.replace();
+}
 </script>
 </head>
 <body>
@@ -144,6 +149,7 @@ function FImprimir(id)
 					<td colspan="6">
 					<table class="container-fluid table-hover text-center">
 					<tr>
+					<th>Det</th>
 					<th>Largo</th>
 					<th>Ancho</th>
 					<th>Color</th>
@@ -152,7 +158,9 @@ function FImprimir(id)
 					<th>Especialidades</th>
 					</tr>
 					<c:forEach var="det" items="${item['ListaDetalles']}" varStatus="counter">
+						<fmt:parseNumber var = "iddet" integerOnly = "true" pattern="##############" type = "number" value = "${det['iddetalle']}" />
 					<tr>
+						<td><a href="javascript:FSeguimiento(${i},${iddet})">${iddet}</a></td>
 						<td>${det['largo']}</td>
 						<td>${det['ancho']}</td>
 						<td>${det['papel']}</td>

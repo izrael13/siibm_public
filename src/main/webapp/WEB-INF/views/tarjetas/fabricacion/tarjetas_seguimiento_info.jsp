@@ -34,6 +34,16 @@ function FImprimirTF(id,iddet)
 	var redirectWindow = window.open('<c:url value="/tarjeta/ingenieria/imprimirtf"/>?id='+id+'&iddet='+iddet);
 	redirectWindow.replace;
 }
+function FImprimirCot(id)
+{
+	var redirectWindow = window.open('<c:url value="/cotizador/ventas/imprimircotizador"/>?id='+id);
+	redirectWindow.replace;
+}
+function FImprimirTFCTE(id,iddet)
+{
+	var redirectWindow = window.open('<c:url value="/cotizador/vendedor/imprimirtarjetacte"/>?id='+id+'&iddet='+iddet);
+	redirectWindow.replace;
+}
 </script>
 </head>
 <body>
@@ -188,9 +198,15 @@ function FImprimirTF(id,iddet)
 		<div class="col-2" style="background:${cotdet['color5c']}">Color5: ${cotdet['color5n']}</div>
 		<div class="col-2" style="background:${cotdet['color6c']}">Color6: ${cotdet['color6n']}</div>
 		<div class="col-2" style="background:${cotdet['color7c']}">Color7: ${cotdet['color7n']}</div>
-		<sec:authorize access="hasRole('ADMIN') or hasRole('INGENIERIA')">
+		<sec:authorize access="hasRole('ADMIN') or hasRole('VENTAS') or hasRole('VENDEDOR') or hasRole('PROGRAMACION') or hasRole('INGENIERIA')">
 			<div class="col-2"><a href="javascript:FImprimirReq(${i})"><i class="fa fa-print" aria-hidden="true">Imprimir requerimiento</i></a></div>
-			<div class="col-2"><a href="javascript:FImprimirTF(${i},${idet})"><i class="fa fa-print" aria-hidden="true">Imprimir TF</i></a></div>
+		</sec:authorize>
+		<sec:authorize access="hasRole('ADMIN') or hasRole('VENTAS') or hasRole('INGENIERIA')">
+			<div class="col-2"><a href="javascript:FImprimirCot(${i})"><i class="fa fa-print" aria-hidden="true">Imprimir cotización</i></a></div>
+			<div class="col-2"><a href="javascript:FImprimirTF(${i},${idet})"><i class="fa fa-print" aria-hidden="true">Imprimir TF Ingeniería</i></a></div>
+		</sec:authorize>
+		<sec:authorize access="hasRole('ADMIN') or hasRole('VENDEDOR')">
+			<div class="col-2"><a href="javascript:FImprimirTFCTE(${i},${idet})"><i class="fa fa-print" aria-hidden="true">Imprimir TF Cliente</i></a></div>
 		</sec:authorize>
 	</div>
 	<div class="badge badge-info col-12">Especialidades</div>

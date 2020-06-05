@@ -144,6 +144,7 @@ function FSeguimiento(id, iddet)
 			<tr>
 				<th>Folio</th>
 				<th>Vendedor</th>
+				<th>Obs Ventas</th>
 				<th colspan="6">Detalles</th>
 				<th>Comentarios</th>
 				<th>Autorizar</th>
@@ -156,6 +157,7 @@ function FSeguimiento(id, iddet)
 			<tr>
 				<td>${i}</td>
 				<td>${item['representante']}</td>
+				<td>${item['observaciones_ventas']}</td>
 					<td colspan="6">
 					<table class="container-fluid table-hover text-center">
 					<tr>
