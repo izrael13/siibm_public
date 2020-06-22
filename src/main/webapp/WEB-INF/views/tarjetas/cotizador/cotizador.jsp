@@ -13,9 +13,12 @@ $(document).ready(function() {
 	if('${cotizadordatabean.cotizador.id}' > 0)
 	{
 		if(('${cotizadordatabean.cotizador.usuario_envia_ventas}' > 0 && '${cotizadordatabean.cotizador.fecha_envia_ventas}' != '') || 
-		   ('${cotizadordatabean.cotizador.usuario_envia_a_prog}' > 0 && '${cotizadordatabean.cotizador.fecha_envia_a_prog}' != '')||
+		   ('${cotizadordatabean.cotizador.usuario_envia_a_prog}' > 0 && '${cotizadordatabean.cotizador.fecha_envia_a_prog}' != '') ||
 		   ('${cotizadordatabean.cotizador.usuario_cancel}' > 0  && '${cotizadordatabean.cotizador.fecha_cancel}' != '') ||
-		   ('${cotizadordatabean.cotizador.usuario_envia_arrmues}' > 0  && '${cotizadordatabean.cotizador.fecha_envia_arrmues}' != ''))
+		   ('${cotizadordatabean.cotizador.usuario_envia_arrmues}' > 0  && '${cotizadordatabean.cotizador.fecha_envia_arrmues}' != '') ||
+		  // ('${cotizadordatabean.cotizador.usuario_envia_ing}' > 0  && '${cotizadordatabean.cotizador.fecha_envia_ing}' != '') ||
+		   ('${cotizadordatabean.cotizador.idboceto}' > 0 )
+		  )
 		{
 			
 			if( ('${cotizadordatabean.cotizador.usuario_rech_prog}' == '' && '${cotizadordatabean.cotizador.fecha_rech_prog}' == '') ||
@@ -301,15 +304,14 @@ function CalcularDatos()
 	 });
 	
 }
-
-function FEnviarVtaProg()
+function FEnviarIngBoc()
 {
-	var idcot = +$("#TId").val();
-	var iddet = $("#TIdDet").val();
+	var idcot = $("#TId").val();
+	var iddet =  $("#TIdDet").val();
 	if(idcot > 0)
 	{
 		var http = new XMLHttpRequest();
-		var url = '<c:url value="/cotizador/vendedor/enviaragerenteventasprog"/>';
+		var url = '<c:url value="/cotizador/vendedor/enviaraingenieriaboceto"/>';
 		var params = 'idcot='+idcot;
 		
 		$("#DivMensaje").text("Procesando petición. Por favor espere...").removeClass().addClass("alert alert-danger");
@@ -328,7 +330,7 @@ function FEnviarVtaProg()
 	    			if(http.responseText === 'OK')
 	    			{
 	    				alert("Exitoso envío a autorización.");
-			    		window.location.replace('<c:url value="/cotizador/vendedor/cotizadorabc"/>?id=0'+'&iddet='+0);
+	    				window.location.replace('<c:url value="/cotizador/vendedor/cotizadorabc"/>?id='+idcot+'&iddet='+iddet);
 	    			}
 	    			else
 	    			{
@@ -349,6 +351,7 @@ function FEnviarVtaProg()
 		http.send(encodeURI(params));
 	}
 }
+
 function FCancelar()
 {
 	var idcot = +$("#TId").val();
@@ -435,6 +438,63 @@ function BuscarResistencias()
 				
 	 });
 }
+function FAutRechBoc(idcot,iddet,idb,ban)
+{
+	var r = false;
+	
+	if(ban == 1)
+		r = confirm("Autorizar Boceto?");
+	else
+		r = confirm("Rechazar Boceto?");
+	
+	if(r)
+	{
+		var http = new XMLHttpRequest();
+		var url = '<c:url value="/cotizador/vendedor/bocetodecicionvendedor"/>';
+		var params = 'idcot='+idcot+'&idb='+idb+'&ban='+ban+'&obs='+$("#TBocObsVen"+idb).val();
+		
+		
+		$("#DivMsj").text("Procesando petición. Por favor espere...").removeClass().addClass("alert alert-danger");
+		
+		http.open('POST', url, true);
+		http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	
+		http.onreadystatechange = function() {//Call a function when the state changes.
+		    if(http.readyState == 4 && http.status == 200) 
+		    {
+		    	if (http.responseText.search(/Login page/i) != -1) {
+		    		alert("La sessión ha expirado, Por favor vuelva a intentarlo.");
+	    			window.location.replace('<c:url value="/login?expired"/>');
+		    	}
+	    		else{
+	    			if(http.responseText === 'OK')
+	    			{
+	    				if(ban == 1)
+	    					alert("AUTORIZACIÓN DE BOCETO EXITOSA!!!!!!");
+	    				else
+	    					alert("RECHAZO DE BOCETO EXITOSO?");
+	    				
+	    				window.location.replace('<c:url value="/cotizador/vendedor/cotizadorabc"/>?id='+idcot+'&iddet='+iddet);
+	    			}
+	    			else
+	    			{
+	    				alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
+			    		window.location.replace('<c:url value="/cotizador/vendedor/cotizadorabc"/>?id='+idcot+'&iddet='+iddet);
+	    			}
+	    		}
+		    }
+		    else
+		    {
+		    	if(http.readyState == 4 && http.status != 200){
+		    		alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
+		    		window.location.replace('<c:url value="/cotizador/vendedor/cotizadorabc"/>?id='+idcot+'&iddet='+iddet);
+		    	}
+		    }
+		    
+		}
+		http.send(encodeURI(params));
+	}
+}
 </script>
 <title>Registro cotizaciones/Requerimientos/Muestras</title>
 </head>
@@ -516,7 +576,7 @@ function BuscarResistencias()
 							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
 								<div class="row border border-right">
 									<div class="col col-lg-2">Cliente factura</div>
-									<div class="col col-lg-10">
+									<div class="col col-lg-9">
 										<form:select id="SClientesFactura" path="cotizador.cardcode_factura" multiple="false" class="border border-primary">
 											<form:option value="0">Seleccione un cliente factura</form:option>
 											<c:forEach var="cte" items="${clientes}">
@@ -527,6 +587,7 @@ function BuscarResistencias()
 											<form:errors path="cotizador.cardcode_factura" class="badge badge-danger small"/>
 										</div>
 									</div>
+									<div class="col col-lg-1"><button type="button" data-toggle="modal" data-target="#BocetosModal" class="float-right btn btn-outline-primary btn-sm"><i class="fa fa-bold" aria-hidden="true">ocetos</i></button></div>
 								</div>
 							</div>							
 							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
@@ -1177,7 +1238,7 @@ function BuscarResistencias()
 			<div class="col col-lg-2"><form:button id="BGrabar" class="btn btn-outline-primary btn-sm"><i class="fa fa-floppy-o" aria-hidden="true"> Grabar</i></form:button></div>
 			<div class="col col-lg-2"><a href="javascript:FBuscar()" class="btn btn-outline-primary btn-sm"><i class="fa fa-search" aria-hidden="true"> Buscar</i></a></div>
 			<div class="col col-lg-2"><button type="button" data-toggle="modal" data-target="#LimpiarModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-refresh" aria-hidden="true"> Limpiar</i></button></div>
-			<div class="col col-lg-4"><button id="BEnvVtas" type="button" data-toggle="modal" data-target="#VtaModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-paper-plane-o" aria-hidden="true"> Enviar para autorización</i></button></div>
+			<div class="col col-lg-2"><button id="BIngBoc" type="button" data-toggle="modal" data-target="#IngBocModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-paper-plane-o" aria-hidden="true"> Enviar</i></button></div>
 			<div class="col col-lg-2"><button id="BCancel" type="button" data-toggle="modal" data-target="#CancelModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-times-circle-o" aria-hidden="true"> Cancelar</i></button></div>
 		</div>
 		</div>		

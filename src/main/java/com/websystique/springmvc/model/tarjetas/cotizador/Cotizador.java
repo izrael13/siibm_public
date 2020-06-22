@@ -113,4 +113,20 @@ public class Cotizador implements Serializable{/**
 	private String tf_cs;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date fecha_cancel_tf;
+	private Integer idboceto;
+	private Integer usuario_aut_calidad;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date fecha_aut_calidad;
+	private Integer usuario_rech_calidad;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date fecha_rech_calidad;
+	private String obsevaciones_calidad;
+	private Integer usuario_envia_ing;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date fecha_envia_ing;
+	private Date fecha_envia_calidad;
+	private Integer usuario_envia_calidad;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date fecha_conv_tf;
+	private Integer usuario_conv_tf;
 }

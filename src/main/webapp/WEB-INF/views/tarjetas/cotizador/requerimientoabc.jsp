@@ -104,6 +104,11 @@ function FTarjeta(id,b)
 		}
 	}
 }
+function FBoceto(id)
+{
+	var redirectWindow = window.open('<c:url value="/cotizador/ingenieria/bocetosabc"/>?id='+id);
+	redirectWindow.replace;
+}
 function FImprimir(id)
 {
 	var redirectWindow = window.open('<c:url value="/cotizador/ingenieria/imprimirreq"/>?id='+id);
@@ -113,6 +118,10 @@ function FSeguimiento(id, iddet)
 {
 	var redirectWindow = window.open('<c:url value="/cotizador/vendedor/seguimiento_cot_hist" />?id='+id+'&iddet='+iddet);
 	redirectWindow.replace();
+}
+function FRefreshParent()
+{
+	window.location.replace('<c:url value="/cotizador/ingenieria/requerimientoabc"/>');
 }
 </script>
 </head>
@@ -134,6 +143,7 @@ function FSeguimiento(id, iddet)
 				<th>Comentarios</th>
 				<th>Grabar comentario</th>
 				<th>Imprimir</th>
+				<th class="text-info">Boceto</th>
 				<th class="text-success">Convertir a Tarjeta</th>
 				<th class="text-warning">Rechazar</th>
 				<th class="text-danger">Cancelar</th>
@@ -154,7 +164,7 @@ function FSeguimiento(id, iddet)
 					<th>Ancho</th>
 					<th>Color</th>
 					<th>Flauta</th>
-					<th>Medidas pliego</th>
+					<th>M pliego</th>
 					<th>Especialidades</th>
 					</tr>
 					<c:forEach var="det" items="${item['ListaDetalles']}" varStatus="counter">
@@ -180,9 +190,14 @@ function FSeguimiento(id, iddet)
 				<td><input id="TComent${i}" type="text" size="50" onkeypress="return SinCaracteresEspeciales(event)" value="${item['observaciones_diseniador']}" maxlength="100" class="border border-primary"/></td>
 				<td><a href="javascript:FTarjeta(${i},0)"><i class="fa fa-floppy-o" aria-hidden="true"></i></a></td>
 				<td><a href="javascript:FImprimir(${i})"><i class="fa fa-print" aria-hidden="true"></i></a></td>
+				<td><a href="javascript:FBoceto(${i})"><i class="text-info fa fa-cloud-upload" aria-hidden="true"></i></a></td>
+				<c:if test="${!empty item['fecha_envia_ing'] && !empty item['fecha_aut_prog'] && 
+								  !empty item['fecha_aut_ventas'] && empty item['fecha_cancel'] &&
+								  !empty item['fecha_asign_diseniador'] && !empty item['fecha_aut_calidad']}">
 				<td><a href="javascript:FTarjeta(${i},1)"><i class="text-success fa fa-file-text-o" aria-hidden="true"></i></a></td>
 				<td><a href="javascript:FTarjeta(${i},3)"><i class="text-warning fa fa-thumbs-o-down" aria-hidden="true"></i></a></td>
 				<td><a href="javascript:FTarjeta(${i},2)"><i class="text-danger fa fa-times-circle-o" aria-hidden="true"></i></a></td>
+				</c:if>
 			</tr>
 		</c:forEach>
 		</tbody>

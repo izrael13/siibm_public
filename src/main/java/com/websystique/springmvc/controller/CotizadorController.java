@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.Normalizer;
@@ -36,6 +39,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -54,6 +58,7 @@ import com.websystique.springmvc.model.tarjetas.Comision_comisionista_sap_vw;
 import com.websystique.springmvc.model.tarjetas.Comision_directo_sap_vw;
 import com.websystique.springmvc.model.tarjetas.Especialidades_cotizacion;
 import com.websystique.springmvc.model.tarjetas.Vendedores_especiales_comision_sap_vw;
+import com.websystique.springmvc.model.tarjetas.cotizador.Bocetos_cotizador;
 import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador;
 import com.websystique.springmvc.model.tarjetas.cotizador.CotizadorDataBean;
 import com.websystique.springmvc.model.tarjetas.cotizador.CotizadorValidator;
@@ -77,6 +82,7 @@ import com.websystique.springmvc.service.tarjetas.Comision_directo_sap_vwService
 import com.websystique.springmvc.service.tarjetas.Especialidades_cotizacionService;
 import com.websystique.springmvc.service.tarjetas.Vendedores_especiales_comision_sap_vwService;
 import com.websystique.springmvc.service.tarjetas.commons.CotizadorTarjetasService;
+import com.websystique.springmvc.service.tarjetas.cotizador.Bocetos_cotizadorService;
 import com.websystique.springmvc.service.tarjetas.cotizador.CotizadorService;
 import com.websystique.springmvc.service.tarjetas.cotizador.Cotizador_detallesService;
 import com.websystique.springmvc.service.tarjetas.fabricacion.Tarjeta_fabricacionService;
@@ -120,6 +126,7 @@ public class CotizadorController {
 	@Autowired Catalogo_herramentalesService chs;
 	@Autowired Tarjetas_fabricacion_imagenesService tfis;
 	@Autowired CotizadorTarjetasService ctsc;
+	@Autowired Bocetos_cotizadorService bs;
 	
 	Integer idN = 0,idND = 0;
 	
@@ -172,6 +179,7 @@ public class CotizadorController {
 					model.addAttribute("cotizadordatabean", cdb);
 					model.addAttribute("direcciones", cdsv.ListaDirCardCode(cdb.getCotizador().getCardcode()));
 					model.addAttribute("direccionSelect", cdsv.ListaDirCardCodeNumLine(cdb.getCotizador().getCardcode(),cdb.getCotizador().getLinenum_dir_entrega()));
+					model.addAttribute("bocetos", BuscarBocetosCotizador(cdb.getCotizador().getId(),cdb.getCotizador().getIdboceto(),cdb.getCotizador().getFecha_envia_ing(),cdb.getCotizador().getUsuario_envia_ing()));
 				}	
 					
 				logger.info(AppController.getPrincipal() + " - cotizadorabc.");
@@ -201,7 +209,8 @@ public class CotizadorController {
 			model.addAttribute("listaresiscte", css.ListaSellos());
 			model.addAttribute("especialidades", ces.ListaEsp(1));
 			model.addAttribute("colores", ccos.ListaColores());
-
+			model.addAttribute("bocetos", BuscarBocetosCotizador(cotizadorDataBean.getCotizador().getId(),cotizadorDataBean.getCotizador().getIdboceto(),cotizadorDataBean.getCotizador().getFecha_envia_ing(),cotizadorDataBean.getCotizador().getUsuario_envia_ing()));
+			
 			java.util.Date date = new java.util.Date();
 			
 			cotizadorDataBean.getCotizador_detalles().setBan(null);
@@ -319,6 +328,29 @@ public class CotizadorController {
 			logger.error(AppController.getPrincipal() + " - cotizadorabc. - " + e);
 		}
 		return "/tarjetas/cotizador/cotizador";
+	}
+	
+	private List<Bocetos_cotizador> BuscarBocetosCotizador(Integer idcot, Integer idb, java.util.Date fecha_env_ing, Integer usr_env_ing)
+	{
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		List<Bocetos_cotizador> ListaBocetos = new ArrayList<Bocetos_cotizador> ();
+		if(fecha_env_ing != null && usr_env_ing != null)
+		{
+			if(idb != null)
+				ListaBocetos.add(bs.BuscarXId(idb));
+			else
+			{
+				Params.add(new ParamsGeneral(1,"fecha_envio","NE"));
+				Params.add(new ParamsGeneral(1,"usuario_envio","NE"));
+				Params.add(new ParamsGeneral(1,"fecha_rechazo","EQ"));
+				Params.add(new ParamsGeneral(1,"usuario_rechazo","EQ"));
+				Params.add(new ParamsGeneral(1,"fecha_acepta","EQ"));
+				Params.add(new ParamsGeneral(1,"usuario_acepta","EQ"));
+				Params.add(new ParamsGeneral(1,"idcotizacion",idcot,"EQ"));
+				ListaBocetos = bs.BuscarxIdCot(Params);
+			}
+		}
+		return ListaBocetos; 
 	}
 	
 	@RequestMapping(value = {"/vendedor/buscardirecciones"}, method = RequestMethod.GET)
@@ -624,7 +656,7 @@ public class CotizadorController {
 		return String.valueOf(costo);
 	}
 	
-	@RequestMapping(value = {"/vendedor/enviaragerenteventasprog" }, method = RequestMethod.POST)
+	/* @RequestMapping(value = {"/vendedor/enviaragerenteventasprog" }, method = RequestMethod.POST)
 	public @ResponseBody String enviaragerenteventasprog(ModelMap model, @RequestParam("idcot") String idcot)
 	{
 		String msj = "";
@@ -657,12 +689,6 @@ public class CotizadorController {
 						c.setFecha_aut_ventas(date);
 						c.setObservaciones_ventas("Autorización automática por sistema.");
 						
-						/*///ENVÍO DE EMAIL
-						SendMailGmail Email = new SendMailGmail();
-						String emailMsj="Cotización: ("+c.getId()+") autorizada automáticamente por precio a través del sistema.";
-						User userInsertCot = us.findById(c.getUsuario_insert());
-						Email.sendMail(userInsertCot.getEmail(), emailMsj, "Cotización autorizada");
-						////*/
 						
 						c.setUsuario_rech_ventas(null);
 						c.setFecha_rech_ventas(null);
@@ -699,8 +725,47 @@ public class CotizadorController {
 			logger.info(AppController.getPrincipal() + " - enviaragerenteventasprog :"+ msj);
 			return msj;
 		}
+	} */
+	
+	@RequestMapping(value = {"/vendedor/enviaraingenieriaboceto" }, method = RequestMethod.POST)
+	public @ResponseBody String enviaraingenieriaboceto(ModelMap model, @RequestParam("idcot") String idcot)
+	{
+		String msj = "";
+		try
+		{
+			User user = us.findBySSO(AppController.getPrincipal());
+			Cotizador c = cs.BuscarxId(Integer.valueOf(idcot), user.getId());
+			
+			java.util.Date date = new java.util.Date();
+			
+			if(c.getIdtiporequerimiento() == 0)//diseño
+			{
+				c.setFecha_envia_ing(date);
+				c.setUsuario_envia_ing(user.getId());
+				c.setFecha_rech_diseniador(null);
+				c.setUsuario_rech_diseniador(null);
+			}
+			else//muestras
+			{
+				c.setFecha_envia_arrmues(date);
+				c.setUsuario_envia_arrmues(user.getId());
+				c.setFecha_rech_arrastre(null);
+				c.setUsuario_rech_arrastre(null);
+				c.setObservaciones_arrastre(null);
+			}
+			
+			cs.Actualizar(c);
+			logger.info(AppController.getPrincipal() + " - enviaraingenieriaboceto.");
+			return "OK";
+		}
+		catch(Exception e)
+		{
+			msj = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
+			logger.info(AppController.getPrincipal() + " - enviaraingenieriaboceto :"+ msj);
+			return msj;
+		}
 	}
-
+	
 	@RequestMapping(value = {"/vendedor/cancelarcotizacion" }, method = RequestMethod.POST)
 	public @ResponseBody String cancelarcotizacion(ModelMap model, @RequestParam("idcot") String idcot) {
 		String msj = "";
@@ -714,10 +779,11 @@ public class CotizadorController {
 			cs.Actualizar(c);
 			
 			////ENVÍO DE EMAIL
-			SendMailGmail Email = new SendMailGmail();
+			//SendMailGmail Email = new SendMailGmail();
 			String emailMsj="Cotización cancelada: ("+c.getId()+") por el usuario: "+user.getFirstName()+ " " +user.getLastName()+ " (" + user.getSsoId() + ") \r\n\n Contacto: "+user.getEmail();
-			User userInsertCot = us.findById(c.getUsuario_insert());
-			Email.sendMail(userInsertCot.getEmail(), emailMsj, "Cotización cancelada");
+			//User userInsertCot = us.findById(c.getUsuario_insert());
+			//Email.sendMail(userInsertCot.getEmail(), emailMsj, "Cotización cancelada");
+			SendEmail(emailMsj,us.findById(c.getUsuario_insert()).getEmail(), "Cotización cancelada");
 			/////
 			
 			logger.info(AppController.getPrincipal() + " - cancelarcotizacion.");
@@ -752,6 +818,16 @@ public class CotizadorController {
 		return "/tarjetas/cotizador/autorizacion_cotizacion_prog";
 	}
 	
+	@RequestMapping(value = {"/calidad/autorizacion_cotizacion_calidad" }, method = RequestMethod.GET)
+	public String autcalidad(ModelMap model) {
+		
+		model.addAttribute("loggedinuser", AppController.getPrincipal());
+		model.addAttribute("listaDet",ListaCotAut(11));
+		logger.info(AppController.getPrincipal() + " - autorizacion_cotizacion_calidad.");
+		
+		return "/tarjetas/cotizador/autorizacion_cotizacion_calidad";
+	}
+	
 	private Object[] ListaCotAut(Integer ban)
 	{
 		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
@@ -770,17 +846,23 @@ public class CotizadorController {
 		{
 			if(ban == 2)//req abc
 			{
-				Params.add(new ParamsGeneral(1,"fecha_aut_prog","NE"));
-				Params.add(new ParamsGeneral(1,"usuario_aut_prog","NE"));
-				Params.add(new ParamsGeneral(1,"fecha_aut_ventas","NE"));
-				Params.add(new ParamsGeneral(1,"usuario_aut_ventas","NE"));
+				Params.add(new ParamsGeneral(1,"fecha_envia_ing","NE"));
+				Params.add(new ParamsGeneral(1,"usuario_envia_ing","NE"));				
+				//Params.add(new ParamsGeneral(1,"fecha_aut_prog","NE"));
+				//Params.add(new ParamsGeneral(1,"usuario_aut_prog","NE"));
+				//Params.add(new ParamsGeneral(1,"fecha_aut_ventas","NE"));
+				//Params.add(new ParamsGeneral(1,"usuario_aut_ventas","NE"));
+				Params.add(new ParamsGeneral(1,"fecha_conv_tf","EQ"));
+				Params.add(new ParamsGeneral(1,"usuario_conv_tf","EQ"));
 				Params.add(new ParamsGeneral(1,"usuario_cancel","EQ"));
 				Params.add(new ParamsGeneral(1,"fecha_cancel","EQ"));
-				Params.add(new ParamsGeneral(1,"usuario_diseniador","EQ"));
-				Params.add(new ParamsGeneral(1,"fecha_asign_diseniador","EQ"));
+				Params.add(new ParamsGeneral(1,"usuario_diseniador","NE"));
+				Params.add(new ParamsGeneral(1,"fecha_asign_diseniador","NE"));
 				Params.add(new ParamsGeneral(1,"usuario_rech_diseniador","EQ"));
 				Params.add(new ParamsGeneral(1,"fecha_rech_diseniador","EQ"));
 				Params.add(new ParamsGeneral(1,"idtiporequerimiento",0,"EQ"));
+				User user = us.findBySSO(AppController.getPrincipal());
+				Params.add(new ParamsGeneral(1,"usuario_diseniador",user.getId(),"EQ"));
 			}
 			else
 			{
@@ -895,6 +977,33 @@ public class CotizadorController {
 											User user = us.findBySSO(AppController.getPrincipal());
 											Params.add(new ParamsGeneral(1,"usuario_asigna_arrastre",user.getId(),"EQ"));
 										}
+										else
+										{
+											if(ban == 10) {//asignar diseñador
+												Params.add(new ParamsGeneral(1,"fecha_envia_ing","NE"));
+												Params.add(new ParamsGeneral(1,"usuario_envia_ing","NE"));
+												Params.add(new ParamsGeneral(1,"usuario_diseniador","EQ"));
+												Params.add(new ParamsGeneral(1,"fecha_asign_diseniador","EQ"));
+												Params.add(new ParamsGeneral(1,"idboceto","EQ"));
+												Params.add(new ParamsGeneral(1,"usuario_cancel","EQ"));
+												Params.add(new ParamsGeneral(1,"fecha_cancel","EQ"));
+												Params.add(new ParamsGeneral(1,"idtiporequerimiento",0,"EQ"));
+											}
+											else
+											{
+												if(ban == 11) {//calidad
+													Params.add(new ParamsGeneral(1,"fecha_envia_calidad","NE"));
+													Params.add(new ParamsGeneral(1,"usuario_envia_calidad","NE"));
+													Params.add(new ParamsGeneral(1,"fecha_aut_calidad","EQ"));
+													Params.add(new ParamsGeneral(1,"usuario_aut_calidad","EQ"));
+													Params.add(new ParamsGeneral(1,"fecha_rech_calidad","EQ"));
+													Params.add(new ParamsGeneral(1,"usuario_rech_calidad","EQ"));
+													Params.add(new ParamsGeneral(1,"usuario_cancel","EQ"));
+													Params.add(new ParamsGeneral(1,"fecha_cancel","EQ"));
+													Params.add(new ParamsGeneral(1,"idtiporequerimiento",0,"EQ"));
+												}
+											}
+										}
 									}
 								}
 							}
@@ -933,14 +1042,28 @@ public class CotizadorController {
 			}
 			else
 			{			
-				c.setUsuario_envia_ventas(null);
-				c.setFecha_envia_ventas(null);
+				
 				c.setUsuario_envia_a_prog(null);
 				c.setFecha_envia_a_prog(null);
 				c.setObservaciones_prog(null);
 				c.setFecha_aut_prog(null);
 				c.setUsuario_aut_prog(null);
 				
+				c.setFecha_aut_calidad(null);
+				c.setUsuario_aut_calidad(null);
+				c.setFecha_envia_calidad(null);
+				c.setUsuario_envia_calidad(null);
+				c.setObsevaciones_calidad(null);
+				
+				c.setUsuario_envia_ing(null);
+				c.setFecha_envia_ing(null);
+				
+				//Se regresan los bocetos al vendedor para que autorice/rechace de nuevo.
+				c.setIdboceto(null);
+				RegresarBocetosxrechazo(Integer.valueOf(idcot));
+				
+				c.setUsuario_envia_ventas(null);
+				c.setFecha_envia_ventas(null);
 				c.setUsuario_rech_ventas(user.getId());
 				c.setFecha_rech_ventas(date);
 				c.setObservaciones_ventas(coment);
@@ -949,9 +1072,10 @@ public class CotizadorController {
 			}
 			cs.Actualizar(c);
 			////ENVÍO DE EMAIL
-			SendMailGmail Email = new SendMailGmail();
-			User userInsertCot = us.findById(c.getUsuario_insert());
-			Email.sendMail(userInsertCot.getEmail(), emailMsj, asunto);
+			//SendMailGmail Email = new SendMailGmail();
+			//User userInsertCot = us.findById(c.getUsuario_insert());
+			//Email.sendMail(userInsertCot.getEmail(), emailMsj, asunto);
+			SendEmail(emailMsj,us.findById(c.getUsuario_insert()).getEmail(), asunto);
 			/////
 			logger.info(AppController.getPrincipal() + " - autorizacion_cotizacion_vtas_desicion :"+ msj);
 			return "OK";
@@ -985,28 +1109,42 @@ public class CotizadorController {
 			}
 			else
 			{
-				c.setUsuario_rech_prog(user.getId());
-				c.setFecha_rech_prog(date);
-				c.setObservaciones_prog(coment);
 				
 				c.setUsuario_aut_ventas(null);
 				c.setFecha_aut_ventas(null);
-				
 				c.setUsuario_envia_ventas(null);
 				c.setFecha_envia_ventas(null);
+				c.setObservaciones_ventas(null);
 				
+				c.setFecha_aut_calidad(null);
+				c.setUsuario_aut_calidad(null);
+				c.setFecha_envia_calidad(null);
+				c.setUsuario_envia_calidad(null);
+				c.setObsevaciones_calidad(null);
+				
+				c.setUsuario_envia_ing(null);
+				c.setFecha_envia_ing(null);
+				
+				c.setUsuario_rech_prog(user.getId());
+				c.setFecha_rech_prog(date);
+				c.setObservaciones_prog(coment);
 				c.setUsuario_envia_a_prog(null);
 				c.setFecha_envia_a_prog(null);
-				c.setObservaciones_ventas(null);
+				
+				//Se regresan los bocetos al vendedor para que autorice/rechace de nuevo.
+				c.setIdboceto(null);
+				RegresarBocetosxrechazo(Integer.valueOf(idcot));
+				
 				emailMsj="Cotización: ("+c.getId()+") rechazada (PROGRAMACIÓN) por el usuario: "+user.getFirstName()+ " " +user.getLastName()+ " (" + user.getSsoId() + ") \r\n\n Contacto: "+user.getEmail()+" \r\n\n Motivo: "+coment ;
 				asunto = "Cotización rechazada";
 			}
 			cs.Actualizar(c);
 			
 			////ENVÍO DE EMAIL
-			SendMailGmail Email = new SendMailGmail();
-			User userInsertCot = us.findById(c.getUsuario_insert());
-			Email.sendMail(userInsertCot.getEmail(), emailMsj, asunto);
+			//SendMailGmail Email = new SendMailGmail();
+			//User userInsertCot = us.findById(c.getUsuario_insert());
+			//Email.sendMail(userInsertCot.getEmail(), emailMsj, asunto);
+			SendEmail(emailMsj,us.findById(c.getUsuario_insert()).getEmail(), asunto);
 			/////
 			
 			logger.info(AppController.getPrincipal() + " - autorizacion_cotizacion_prog_desicion :"+ msj);
@@ -1019,6 +1157,86 @@ public class CotizadorController {
 			return msj;
 		}
 		
+	}
+	
+	@RequestMapping(value = {"/calidad/autorizacion_cotizacion_calidad_desicion" }, method = RequestMethod.POST)
+	public @ResponseBody String autorizacion_cotizacion_calidad_desicion(ModelMap model, @RequestParam("idcot") String idcot, @RequestParam("coment") String coment, @RequestParam("ban") String ban) {
+		String msj = "";
+		try
+		{
+			User user = us.findBySSO(AppController.getPrincipal());
+			Cotizador c = cs.BuscarxId(Integer.valueOf(idcot)); 
+			java.util.Date date = new java.util.Date();
+			String emailMsj = "";
+			String asunto = "";
+			if(Integer.valueOf(ban) == 1)
+			{
+				c.setUsuario_aut_calidad(user.getId());
+				c.setFecha_aut_calidad(date);
+				c.setObsevaciones_calidad(coment);
+				emailMsj="Cotización: ("+c.getId()+") autorizada (CALIDAD) por el usuario: "+user.getFirstName()+ " " +user.getLastName()+ " (" + user.getSsoId() + ") \r\n\n Contacto: "+user.getEmail()+" \r\n\n Motivo: "+coment ;
+				asunto = "Cotización autorizada departamento Calidad";
+			}
+			else
+			{
+				
+				c.setUsuario_aut_ventas(null);
+				c.setFecha_aut_ventas(null);
+				c.setUsuario_envia_ventas(null);
+				c.setFecha_envia_ventas(null);
+				c.setObservaciones_ventas(null);
+				
+				c.setUsuario_envia_a_prog(null);
+				c.setFecha_envia_a_prog(null);
+				c.setObservaciones_prog(null);
+				c.setFecha_aut_prog(null);
+				c.setUsuario_aut_prog(null);
+				
+				c.setUsuario_envia_ing(null);
+				c.setFecha_envia_ing(null);
+				
+				c.setUsuario_rech_calidad(user.getId());
+				c.setFecha_rech_calidad(date);
+				c.setObsevaciones_calidad(coment);
+				c.setUsuario_envia_calidad(null);
+				c.setFecha_envia_calidad(null);
+				
+				//Se regresan los bocetos al vendedor para que autorice/rechace de nuevo.
+				c.setIdboceto(null);
+				RegresarBocetosxrechazo(Integer.valueOf(idcot));
+				
+				emailMsj="Cotización: ("+c.getId()+") rechazada (CALIDAD) por el usuario: "+user.getFirstName()+ " " +user.getLastName()+ " (" + user.getSsoId() + ") \r\n\n Contacto: "+user.getEmail()+" \r\n\n Motivo: "+coment ;
+				asunto = "Cotización rechazada";
+			}
+			cs.Actualizar(c);
+			
+			////ENVÍO DE EMAIL
+			//SendMailGmail Email = new SendMailGmail();
+			//User userInsertCot = us.findById(c.getUsuario_insert());
+			//Email.sendMail(userInsertCot.getEmail(), emailMsj, asunto);
+			SendEmail(emailMsj,us.findById(c.getUsuario_insert()).getEmail(), asunto);
+			/////
+			
+			logger.info(AppController.getPrincipal() + " - autorizacion_cotizacion_calidad_desicion :"+ msj);
+			return "OK";
+		}
+		catch(Exception e)
+		{
+			msj = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
+			logger.info(AppController.getPrincipal() + " - autorizacion_cotizacion_calidad_desicion :"+ msj);
+			return msj;
+		}
+		
+	}
+
+	private void RegresarBocetosxrechazo(Integer idcot)
+	{
+		bs.BuscarxIdCot(idcot).forEach(a ->{
+			a.setFecha_acepta(null);
+			a.setUsuario_acepta(null);
+			bs.Actualizar(a);
+		}
+				);
 	}
 	////////////////////////////////////IMPRIMIR JASPER/////////////////////////////
 	@RequestMapping(value = "/ventas/imprimircotizador", method = RequestMethod.GET)
@@ -1053,6 +1271,13 @@ public class CotizadorController {
 		}
 	} 
 		
+	@RequestMapping(value = {"/ingenieria/asignardiseniador" }, method = RequestMethod.GET)
+	public String asignardiseniador(ModelMap model) {
+		model.addAttribute("loggedinuser", AppController.getPrincipal());
+		logger.info(AppController.getPrincipal() + " - asignardiseniador.");
+		model.addAttribute("listaDet",ListaCotAut(10));
+		return "/tarjetas/cotizador/asignar_diseniador";
+	}
 	
 	@RequestMapping(value = {"/ingenieria/requerimientoabc" }, method = RequestMethod.GET)
 	public String requerimientoabcget(ModelMap model) {
@@ -1123,7 +1348,7 @@ public class CotizadorController {
 			Cotizador c = cs.BuscarxId(Integer.valueOf(idcot));
 			java.util.Date date = new java.util.Date();
 			
-			if(Integer.valueOf(ban) == 0)
+			if(Integer.valueOf(ban) == 0)//Grabar comentario.
 			{
 				c.setObservaciones_diseniador(coment);
 				cs.Actualizar(c);
@@ -1134,7 +1359,7 @@ public class CotizadorController {
 			{
 				String emailMsj = "";
 				String asunto = "";
-				if(Integer.valueOf(ban) == 1)
+				if(Integer.valueOf(ban) == 1)//Convertir a TF
 				{					
 					List<Cotizador_detalles>  ListaDetalles = cds.BuscarxCotId(Integer.valueOf(idcot));					
 					
@@ -1246,8 +1471,8 @@ public class CotizadorController {
 						ListaTar.stream().forEach(a -> tfs.Guardar(a));
 						
 						if(ListaTar.size() > 0) {
-							c.setUsuario_diseniador(user.getId());
-							c.setFecha_asign_diseniador(date);
+							c.setUsuario_conv_tf(user.getId());
+							c.setFecha_conv_tf(date);
 							c.setObservaciones_diseniador(coment);
 							cs.Actualizar(c);
 							emailMsj="Cotización: ("+c.getId()+") convertida a Tarjeta de Fabricación por el usuario: "+user.getFirstName()+ " " +user.getLastName()+ " (" + user.getSsoId() + ") \r\n\n Contacto: "+user.getEmail()+" \r\n\n Motivo: "+coment ;
@@ -1259,7 +1484,7 @@ public class CotizadorController {
 				}
 				else
 				{
-					if(Integer.valueOf(ban) == 2)
+					if(Integer.valueOf(ban) == 2)//Cancelar cotización.
 					{
 						c.setUsuario_cancel(user.getId());
 						c.setFecha_cancel(date);
@@ -1273,39 +1498,70 @@ public class CotizadorController {
 					}
 					else
 					{
-						c.setUsuario_rech_prog(null);
-						c.setFecha_rech_prog(null);
-						c.setObservaciones_prog(null);
-						c.setUsuario_envia_a_prog(null);
-						c.setFecha_envia_a_prog(null);
-						c.setUsuario_aut_prog(null);
-						c.setFecha_aut_prog(null);
-						
-						c.setUsuario_aut_ventas(null);
-						c.setFecha_aut_ventas(null);
-						c.setUsuario_envia_ventas(null);
-						c.setFecha_envia_ventas(null);
-						c.setObservaciones_ventas(null);
-						c.setUsuario_envia_ventas(null);
-						c.setFecha_envia_ventas(null);
-						
-						c.setUsuario_rech_diseniador(user.getId());
-						c.setFecha_rech_diseniador(date);
-						c.setObservaciones_diseniador(coment);
-						cs.Actualizar(c);
-						
-						emailMsj="Cotización: ("+c.getId()+") rechazada por el usuario: "+user.getFirstName()+ " " +user.getLastName()+ " (" + user.getSsoId() + ") \r\n\n Contacto: "+user.getEmail()+" \r\n\n Motivo: "+coment ;
-						asunto = "Cotización rechazada";						
-						msj="OK";
-						logger.info(AppController.getPrincipal() + " - convertiratarjeta - rechazarcotizacion ingeniería.");
+						if(Integer.valueOf(ban) == 3)//Rechazar cotización.
+						{
+							c.setUsuario_rech_prog(null);
+							c.setFecha_rech_prog(null);
+							c.setObservaciones_prog(null);
+							c.setUsuario_envia_a_prog(null);
+							c.setFecha_envia_a_prog(null);
+							c.setUsuario_aut_prog(null);
+							c.setFecha_aut_prog(null);
+							
+							c.setUsuario_aut_ventas(null);
+							c.setFecha_aut_ventas(null);
+							c.setUsuario_envia_ventas(null);
+							c.setFecha_envia_ventas(null);
+							c.setObservaciones_ventas(null);
+							c.setUsuario_rech_ventas(null);
+							c.setFecha_rech_ventas(null);
+							
+							c.setUsuario_aut_calidad(null);
+							c.setFecha_aut_calidad(null);
+							c.setUsuario_envia_calidad(null);
+							c.setFecha_envia_calidad(null);
+							c.setObsevaciones_calidad(null);
+							c.setUsuario_rech_calidad(null);
+							c.setFecha_rech_calidad(null);
+							
+							c.setUsuario_envia_ing(null);
+							c.setFecha_envia_ing(null);
+							
+							//Se regresan los bocetos al vendedor para que autorice/rechace de nuevo.
+							c.setIdboceto(null);
+							RegresarBocetosxrechazo(Integer.valueOf(idcot));
+							
+							c.setUsuario_rech_diseniador(user.getId());
+							c.setFecha_rech_diseniador(date);
+							c.setObservaciones_diseniador(coment);
+							cs.Actualizar(c);
+							
+							emailMsj="Cotización: ("+c.getId()+") rechazada por el usuario: "+user.getFirstName()+ " " +user.getLastName()+ " (" + user.getSsoId() + ") \r\n\n Contacto: "+user.getEmail()+" \r\n\n Motivo: "+coment ;
+							asunto = "Cotización rechazada";						
+							msj="OK";
+							logger.info(AppController.getPrincipal() + " - convertiratarjeta - rechazarcotizacion ingeniería.");
+						}
+						else
+						{
+							if(Integer.valueOf(ban) == 4)//Asignar diseñaor a cotización.
+							{
+								c.setUsuario_diseniador(user.getId());
+								c.setFecha_asign_diseniador(date);
+								c.setObservaciones_diseniador(coment);
+								logger.info(AppController.getPrincipal() + " - convertiratarjeta - asignar diseñador.");
+								cs.Actualizar(c);
+								msj="OK";
+							}
+						}
 					}
 				}
 				
 				////ENVÍO DE EMAIL
 				if(!emailMsj.equals("")) {
-					SendMailGmail Email = new SendMailGmail();
-					User userInsertCot = us.findById(c.getUsuario_insert());
-					Email.sendMail(userInsertCot.getEmail(), emailMsj, asunto);
+					//SendMailGmail Email = new SendMailGmail();
+					//User userInsertCot = us.findById(c.getUsuario_insert());
+					//Email.sendMail(userInsertCot.getEmail(), emailMsj, asunto);
+					SendEmail(emailMsj,us.findById(c.getUsuario_insert()).getEmail(), asunto);
 				}
 				/////
 				
@@ -1595,9 +1851,10 @@ public class CotizadorController {
 				}
 				
 				////ENVÍO DE EMAIL
-				SendMailGmail Email = new SendMailGmail();
-				User userInsertCot = us.findById(c.getUsuario_insert());
-				Email.sendMail(userInsertCot.getEmail(), emailMsj, "Arrastre info");
+				//SendMailGmail Email = new SendMailGmail();
+				//User userInsertCot = us.findById(c.getUsuario_insert());
+				//Email.sendMail(userInsertCot.getEmail(), emailMsj, "Arrastre info");
+				SendEmail(emailMsj,us.findById(c.getUsuario_insert()).getEmail(), "Arrastre info");
 				/////
 			}
 			c.setObservaciones_arrastre(coment);
@@ -1671,9 +1928,10 @@ public class CotizadorController {
 				}
 				
 				////ENVÍO DE EMAIL
-				SendMailGmail Email = new SendMailGmail();
-				User userInsertCot = us.findById(c.getUsuario_insert());
-				Email.sendMail(userInsertCot.getEmail(), emailMsj, "Arrastre info");
+				//SendMailGmail Email = new SendMailGmail();
+				//User userInsertCot = us.findById(c.getUsuario_insert());
+				//Email.sendMail(userInsertCot.getEmail(), emailMsj, "Arrastre info");
+				SendEmail(emailMsj,us.findById(c.getUsuario_insert()).getEmail(), "Arrastre info");
 				/////
 			}
 			c.setObservaciones_arrastre(coment);
@@ -1975,5 +2233,214 @@ public class CotizadorController {
 		}
 	} 
 	
-}
+	@RequestMapping(value = {"/ingenieria/bocetosabc" }, method = RequestMethod.GET)
+	public String bocetosabc(ModelMap model, @RequestParam(value = "id", defaultValue = "0", required = true) Integer id,
+											 @RequestParam(value = "idb", defaultValue = "0", required = false) Integer idb) {
+		model.addAttribute("loggedinuser", AppController.getPrincipal());
+		logger.info(AppController.getPrincipal() + " - bocetosabc.");
+		List<ParamsGeneral> Params = new ArrayList<ParamsGeneral>();
+		Params.add(new ParamsGeneral(1,"fecha_envia_ing","NE"));
+		Params.add(new ParamsGeneral(1,"usuario_envia_ing","NE"));				
+		Params.add(new ParamsGeneral(1,"usuario_cancel","EQ"));
+		Params.add(new ParamsGeneral(1,"fecha_cancel","EQ"));
+		Params.add(new ParamsGeneral(1,"usuario_diseniador","NE"));
+		Params.add(new ParamsGeneral(1,"fecha_asign_diseniador","NE"));
+		Params.add(new ParamsGeneral(1,"usuario_rech_diseniador","EQ"));
+		Params.add(new ParamsGeneral(1,"fecha_rech_diseniador","EQ"));
+		Params.add(new ParamsGeneral(1,"idtiporequerimiento",0,"EQ"));
+		Params.add(new ParamsGeneral(1,"id",id,"EQ"));
+		List<Cotizador> cot = cs.ListasCotAut(Params);
+		if(cot.size() == 0)
+		{
+			model.addAttribute("errores", "Este requerimiento NO ha sido autorizado.");
+		}
+		else
+		{
+			Bocetos_cotizador Boceto = new Bocetos_cotizador();
+			Boceto = bs.BuscarXId(idb);
+			model.addAttribute("Boceto", ( idb == 0 || (Boceto.getFecha_envio() != null && Boceto.getUsuario_envio() != null) ? new Bocetos_cotizador() : Boceto));
+			
+			List<Bocetos_cotizador> Lista =new ArrayList<Bocetos_cotizador>();
+			Lista = bs.BuscarxIdCot(id);
+			model.addAttribute("ListaBocetos", Lista);
+			model.addAttribute("ExisteBocAut", (int)(Lista.stream().filter(a -> a.getFecha_acepta() != null && a.getUsuario_acepta() != null).count()));
+			model.addAttribute("idcot", id);
+		}	
+		return "/tarjetas/cotizador/bocetosabc";
+	}
+	
+	@RequestMapping(value = {"/ingenieria/bocetosabc" }, method = RequestMethod.POST)
+	public String bocetosabc(@Valid @ModelAttribute("Boceto") Bocetos_cotizador Boceto, 
+							BindingResult result, ModelMap model,
+							@RequestParam CommonsMultipartFile file,HttpServletRequest request) {
+		
+		//ServletContext context = session.getServletContext();  
+	    //String path = context.getRealPath(UPLOAD_DIRECTORY);
+		model.addAttribute("idcot", Boceto.getIdcotizacion());
+		if(file.isEmpty())
+			model.addAttribute("errores", "No ha enviado archivos");
+		else
+		{
+			User user = us.findBySSO(AppController.getPrincipal());			
+			java.util.Date date = new java.util.Date();		
+			
+			if (result.hasErrors() )
+				return "/tarjetas/cotizador/bocetosabc";
+			
+			try
+			{  
+	            String folderPath = request.getServletContext().getRealPath("/")+"static\\bocetos\\";
+	            String fileName = "";
+	            String filePath = "";
+		        if(Boceto.getId() == null)
+		        {
+		        	Integer idbn =bs.Maximo("id");
+		        	idbn = (idbn == null ? 1 : ++idbn);
+		        	Boceto.setId(idbn);
+		        	fileName = Boceto.getIdcotizacion().toString() + "-" + idbn.toString();
+				    filePath = folderPath + fileName + ".pdf";
+				    Boceto.setNombre_archivo(fileName);
+					Boceto.setRuta_archivo(folderPath);
+					Boceto.setFecha_insert(date);
+					Boceto.setUsuario_insert(user.getId());			
+		        	bs.Guardar(Boceto);
+		        }
+		        else
+		        {
+		        	fileName = Boceto.getIdcotizacion().toString() + "-" + Boceto.getId().toString();
+		        	filePath = folderPath + fileName + ".pdf";
+				    Boceto.setNombre_archivo(fileName);
+					Boceto.setRuta_archivo(folderPath);
+					Boceto.setFecha_insert(date);
+					Boceto.setUsuario_insert(user.getId());		
+		        	bs.Actualizar(Boceto);
+		        }
+		        List<Bocetos_cotizador> Lista =new ArrayList<Bocetos_cotizador>();
+				Lista = bs.BuscarxIdCot(Boceto.getIdcotizacion());
+				model.addAttribute("ListaBocetos", Lista);
+				model.addAttribute("ExisteBocAut", (int)(Lista.stream().filter(a -> a.getFecha_acepta() != null && a.getUsuario_acepta() != null).count()));
+		        byte barr[]=file.getBytes(); 
+		        Path path = Paths.get(filePath);
+	            Files.write(path, barr);
+		        
+		     }catch(Exception e){System.out.println(e);}  
+			
+		}
 
+		return "/tarjetas/cotizador/bocetosabc";
+	}
+	
+	@RequestMapping(value = {"/ingenieria/enviarboceto" }, method = RequestMethod.POST)
+	public @ResponseBody String enviarboceto(ModelMap model, @RequestParam("id") Integer id, @RequestParam("idb") Integer idb)
+							
+	{
+		Bocetos_cotizador Boceto = new Bocetos_cotizador();
+		Boceto = bs.BuscarXId(idb);
+		
+		if(Boceto.getUsuario_envio() == null && Boceto.getFecha_envio() == null)
+		{
+			User user = us.findBySSO(AppController.getPrincipal());
+			java.util.Date date = new java.util.Date();
+			Boceto.setFecha_envio(date);
+			Boceto.setUsuario_envio(user.getId());
+			bs.Actualizar(Boceto);
+			Cotizador c = cs.BuscarxId(Boceto.getIdcotizacion());
+			SendEmail("El diseñador "+user.getFirstName() + " " +user.getLastName() + " le ha enviado un boceto para la cotización "+Boceto.getIdcotizacion()+ ". Favor de revisarlo a la brevedad y dar respuesta.",
+					us.findById(c.getUsuario_insert()).getEmail(), 
+					"Boceto para cotización: "+Boceto.getIdcotizacion());
+			return "1";
+		}
+		else
+		{
+			return "0";
+		}		
+		
+	}
+	
+	@RequestMapping(value = {"/vendedor/bocetodecicionvendedor" }, method = RequestMethod.POST)
+	public @ResponseBody String bocetodecicionvendedor(ModelMap model, @RequestParam("idcot") Integer idcot, 
+																	   @RequestParam("idb") Integer idb,
+																	   @RequestParam("ban") Integer ban,
+																	   @RequestParam("obs") String obs)
+							
+	{
+		String msj = "";
+		String asunto = "";
+		Bocetos_cotizador Boceto = new Bocetos_cotizador();
+		Boceto = bs.BuscarXId(idb);
+		
+		User user = us.findBySSO(AppController.getPrincipal());
+		java.util.Date date = new java.util.Date();
+		Boceto.setObservaciones_vendedor(obs);
+		if(ban == 1)
+		{
+			Boceto.setUsuario_acepta(user.getId());
+			Boceto.setFecha_acepta(date);
+			Cotizador c = new Cotizador();
+			c = cs.BuscarxId(idcot);
+			c.setIdboceto(idb);			
+			cs.Actualizar(c);
+			Enviaragerenteventasprog(idcot,user.getId(),date);
+			msj = "Se ha aceptado el boceto: "+Boceto.getNombre_archivo()+ " por parte del vendedor,  favor de validar.";
+			asunto = "Boceto aceptado "+ Boceto.getNombre_archivo();
+		}
+		else
+		{
+			Boceto.setUsuario_rechazo(user.getId());
+			Boceto.setFecha_rechazo(date);
+			msj = "Se ha rechazado el boceto: "+Boceto.getNombre_archivo()+ " por parte del vendedor,  favor de validar.";
+			asunto = "Boceto rechazado "+ Boceto.getNombre_archivo();
+		}
+		
+		bs.Actualizar(Boceto);
+		
+		Cotizador c = cs.BuscarxId(Boceto.getIdcotizacion());
+		SendEmail(msj,
+				us.findById(c.getUsuario_diseniador()).getEmail(), 
+				asunto);
+		
+		return "OK";
+		
+	}
+	
+	private void Enviaragerenteventasprog(Integer idcot, Integer iduser, java.util.Date date)
+	{
+		Cotizador c = cs.BuscarxId(idcot, iduser);
+		Cotizador_detalles cd = cds.BuscarxId(Integer.valueOf(idcot), 1, iduser);
+		
+		c.setUsuario_envia_ventas(iduser);
+		c.setFecha_envia_ventas(date);
+		
+		if(cd.getComision_directo() <= cd.getDescuento_vendedor() )
+		{
+			c.setUsuario_aut_ventas(16);
+			c.setFecha_aut_ventas(date);
+			c.setObservaciones_ventas("Autorización automática por sistema.");
+		}	
+		c.setUsuario_rech_ventas(null);
+		c.setFecha_rech_ventas(null);
+	
+
+		c.setUsuario_envia_a_prog(iduser);
+		c.setFecha_envia_a_prog(date);
+		c.setUsuario_rech_prog(null);
+		c.setFecha_rech_prog(null);
+	
+		
+		c.setUsuario_rech_diseniador(null);
+		c.setFecha_rech_diseniador(null);
+		
+		c.setUsuario_rech_calidad(null);
+		c.setFecha_rech_calidad(null);
+		c.setUsuario_envia_calidad(iduser);
+		c.setFecha_envia_calidad(date);
+		
+		cs.Actualizar(c);
+	}
+	
+	private void SendEmail(String emailMsj, String mail, String asunto)
+	{
+		SendMailGmail Email = new SendMailGmail();
+		Email.sendMail(mail, emailMsj, asunto);
+	}
+}

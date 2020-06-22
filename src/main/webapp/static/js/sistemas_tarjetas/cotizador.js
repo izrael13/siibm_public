@@ -180,6 +180,7 @@ function FDelFila()
 function FDisableElemens()
 {
 	$("#SClientes option:not(:selected)").prop("disabled", true);
+	$("#SClientesFactura option:not(:selected)").prop("disabled", true);
 	$("#direcciones option:not(:selected)").prop("disabled", true);
 	$("#SCajas option:not(:selected)").prop("disabled", true);
 	$("#SResisBarca option:not(:selected)").prop("disabled", true);

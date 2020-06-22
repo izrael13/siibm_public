@@ -184,7 +184,8 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 			    		<li><a class="dropdown-item" href = "<c:url value='/cotizador/programacion/autorizacion_cotizacion_prog'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de requerimientos Programación</a></li>
 			    	</sec:authorize>
 			    	<sec:authorize access="hasRole('ADMIN') or hasRole('INGENIERIA')">
-			    		<li><a class="dropdown-item" href = "<c:url value='/cotizador/ingenieria/requerimientoabc'/>"><i class="fa fa-check-circle-o" aria-hidden="true"></i> Imprimir/Asignar diseñador requerimientos</a></li>
+			    		<li><a class="dropdown-item" href = "<c:url value='/cotizador/ingenieria/asignardiseniador'/>"><i class="fa fa-check-circle-o" aria-hidden="true"></i> Asignar diseñador</a></li>
+			    		<li><a class="dropdown-item" href = "<c:url value='/cotizador/ingenieria/requerimientoabc'/>"><i class="fa fa-check-circle-o" aria-hidden="true"></i> Bocetos/Requerimientos</a></li>
 			    	</sec:authorize>
 			    	<sec:authorize access="hasRole('ADMIN') or hasRole('ARRASTRE') or hasRole('INGENIERIA_GERENCIA')">
 				    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/arrastres/asignar_arrastres'/>"><i class="fa fa-check-circle-o" aria-hidden="true"></i> Asignar arrastres</a></li>
@@ -193,6 +194,9 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 			    	<sec:authorize access="hasRole('ADMIN') or hasRole('MUESTRISTA') or hasRole('INGENIERIA_GERENCIA')">
 				    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/muestras/asignar_muestras'/>"><i class="fa fa-check-circle-o" aria-hidden="true"></i> Asignar muestras</a></li>
 				    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/muestras/liberar_muestras'/>"><i class="fa fa-lightbulb-o" aria-hidden="true"></i> Liberar muestras</a></li>
+			    	</sec:authorize>
+			    	<sec:authorize access="hasRole('ADMIN') or hasRole('CALIDAD')">
+				    	<li><a class="dropdown-item" href = "<c:url value='/cotizador/calidad/autorizacion_cotizacion_calidad'/>"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Autorización de cotizaciones Calidad</a></li>
 			    	</sec:authorize>
 			    </ul>
 			 </li>

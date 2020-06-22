@@ -375,7 +375,6 @@ public class Tarjetas_FabricacionController {
 			String fileName = img.getOriginalFilename();
 		    String folderPath = request.getServletContext().getRealPath("/")+"static\\img_tarjetas\\";
 		    String filePath = folderPath + fileName;
-		    System.out.println(filePath);
 		    User user = us.findBySSO(AppController.getPrincipal());
 		    byte[] bytes = img.getBytes();
 		    Path path = Paths.get(filePath);
