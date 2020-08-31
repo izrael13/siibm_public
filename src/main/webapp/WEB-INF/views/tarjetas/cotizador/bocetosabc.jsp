@@ -97,7 +97,7 @@ function FEnviar(id,idb)
 				</div>
 				<div class="col col-lg-1">Versión</div>
 				<div class="col col-lg-3">
-				<form:input size="10" type="text" path="version" onkeypress="return filterFloat1(event,this);" class="border border-primary"/>
+				<form:input size="10" maxlength="10" type="text" path="version" onkeypress="return SinCaracteresEspeciales(event)" class="border border-primary"/>
 				<div class="has-error">
 					<form:errors path="version" class="badge badge-danger small"/>
 				</div>

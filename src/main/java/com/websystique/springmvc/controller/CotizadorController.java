@@ -73,6 +73,8 @@ import com.websystique.springmvc.service.tarjetas.Catalogo_coloresService;
 import com.websystique.springmvc.service.tarjetas.Catalogo_direcciones_sap_vwService;
 import com.websystique.springmvc.service.tarjetas.Catalogo_especialidades_sap_vwService;
 import com.websystique.springmvc.service.tarjetas.Catalogo_herramentalesService;
+import com.websystique.springmvc.service.tarjetas.Catalogo_identificadores_sap_vwService;
+import com.websystique.springmvc.service.tarjetas.Catalogo_protecciones_sap_vwService;
 import com.websystique.springmvc.service.tarjetas.Catalogo_resistencias_sap_vwService;
 import com.websystique.springmvc.service.tarjetas.Catalogo_sellosService;
 import com.websystique.springmvc.service.tarjetas.Catalogo_vendedores_sap_vwService;
@@ -80,6 +82,7 @@ import com.websystique.springmvc.service.tarjetas.Codigo_barras_cotizadorService
 import com.websystique.springmvc.service.tarjetas.Comision_comisionista_sap_vwService;
 import com.websystique.springmvc.service.tarjetas.Comision_directo_sap_vwService;
 import com.websystique.springmvc.service.tarjetas.Especialidades_cotizacionService;
+import com.websystique.springmvc.service.tarjetas.Lista_aprobacion_areasService;
 import com.websystique.springmvc.service.tarjetas.Vendedores_especiales_comision_sap_vwService;
 import com.websystique.springmvc.service.tarjetas.commons.CotizadorTarjetasService;
 import com.websystique.springmvc.service.tarjetas.cotizador.Bocetos_cotizadorService;
@@ -127,6 +130,9 @@ public class CotizadorController {
 	@Autowired Tarjetas_fabricacion_imagenesService tfis;
 	@Autowired CotizadorTarjetasService ctsc;
 	@Autowired Bocetos_cotizadorService bs;
+	@Autowired Catalogo_identificadores_sap_vwService ciss;
+	@Autowired Catalogo_protecciones_sap_vwService cpss;
+	@Autowired Lista_aprobacion_areasService lapas;
 	
 	Integer idN = 0,idND = 0;
 	
@@ -136,13 +142,20 @@ public class CotizadorController {
 		try {				
 				List<Catalogo_especialidades_sap_vw> ListaEsp = ces.ListaEsp(1);
 				List<Catalogo_resistencias_sap_vw> ListaResis = new ArrayList<Catalogo_resistencias_sap_vw>();
+				List<Catalogo_cajas_sap_vw> ListaCajas = new ArrayList<Catalogo_cajas_sap_vw>();
+				GsonBuilder builder = new GsonBuilder();
+				Gson gson = builder.serializeNulls().setDateFormat("yyyy-MM-dd HH:mm").create();
+				ListaCajas = ccss.ListaCajas();
 				User user = us.findBySSO(AppController.getPrincipal());
 				model.addAttribute("bolsas", cbs.ListaBolsas());
 				model.addAttribute("clientes", ccavs.ListaCtes(user.getCvevendedor_sap()));
-				model.addAttribute("listacajas", ccss.ListaCajas());
+				model.addAttribute("listacajas", ListaCajas);
+				model.addAttribute("listacajasjson", gson.toJson(ListaCajas));
 				model.addAttribute("listaresiscte", css.ListaSellos());
 				model.addAttribute("especialidades", ListaEsp);
 				model.addAttribute("colores", ccos.ListaColores());
+				model.addAttribute("listaprotecciones", cpss.ListaProtecciones());
+				model.addAttribute("listaidentificadores", ciss.ListaIdentificadores());
 				model.addAttribute("loggedinuser", AppController.getPrincipal());
 				
 				if(Integer.valueOf(id)  == 0)
@@ -187,7 +200,7 @@ public class CotizadorController {
 		catch(Exception e)
 		{
 			model.addAttribute("error",e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage());
-			logger.error(AppController.getPrincipal() + " - cotizadorabc. - " + e);
+			logger.error(AppController.getPrincipal() + " - cotizadorabc. - ", e);
 		}
 		return "/tarjetas/cotizador/cotizador";
 	}
@@ -199,16 +212,24 @@ public class CotizadorController {
 			String msj = "";
 			logger.info(AppController.getPrincipal() + " - cotizadotpost.");
 			User user = us.findBySSO(AppController.getPrincipal());
+			List<Catalogo_cajas_sap_vw> ListaCajas = new ArrayList<Catalogo_cajas_sap_vw>();
+			GsonBuilder builder = new GsonBuilder();
+			Gson gson = builder.serializeNulls().setDateFormat("yyyy-MM-dd HH:mm").create();
+			ListaCajas = ccss.ListaCajas();
+			
 			model.addAttribute("clientes", ccavs.ListaCtes(user.getCvevendedor_sap()));
 			model.addAttribute("loggedinuser", AppController.getPrincipal());			
 			model.addAttribute("direcciones", cdsv.ListaDirCardCode(cotizadorDataBean.getCotizador().getCardcode()));
 			model.addAttribute("direccionSelect", cdsv.ListaDirCardCodeNumLine(cotizadorDataBean.getCotizador().getCardcode(),cotizadorDataBean.getCotizador().getLinenum_dir_entrega()));
 			model.addAttribute("bolsas", cbs.ListaBolsas());
-			model.addAttribute("listacajas", ccss.ListaCajas());
+			model.addAttribute("listacajas", ListaCajas);
+			model.addAttribute("listacajasjson", gson.toJson(ListaCajas));
 			model.addAttribute("listaresisbarca", ListaResis(cotizadorDataBean.getCotizador_detalles().getIdcaja_sap()));
 			model.addAttribute("listaresiscte", css.ListaSellos());
 			model.addAttribute("especialidades", ces.ListaEsp(1));
 			model.addAttribute("colores", ccos.ListaColores());
+			model.addAttribute("listaprotecciones", cpss.ListaProtecciones());
+			model.addAttribute("listaidentificadores", ciss.ListaIdentificadores());
 			model.addAttribute("bocetos", BuscarBocetosCotizador(cotizadorDataBean.getCotizador().getId(),cotizadorDataBean.getCotizador().getIdboceto(),cotizadorDataBean.getCotizador().getFecha_envia_ing(),cotizadorDataBean.getCotizador().getUsuario_envia_ing()));
 			
 			java.util.Date date = new java.util.Date();
@@ -292,6 +313,7 @@ public class CotizadorController {
 						obj.setIdespecialidad(ListaEsp.get(i).getIdespecialidad());
 						obj.setCm(ListaEsp.get(i).getCm());
 						obj.setPropiedadoitm(ListaEsp.get(i).getPropiedadoitm());
+						obj.setMedidas(ListaEsp.get(i).getMedidas());
 						ecs.Guardar(obj);
 					}
 				}
@@ -324,6 +346,7 @@ public class CotizadorController {
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
 			model.addAttribute("error",e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage());
 			logger.error(AppController.getPrincipal() + " - cotizadorabc. - " + e);
 		}
@@ -449,6 +472,13 @@ public class CotizadorController {
 			JsonObject jsonObjectParams = jsonTree.getAsJsonObject();
 			JsonObject object = new JsonObject();//Objeto JSon
 			Catalogo_cajas_sap_vw objCaja = ccss.BuscarxId(jsonObjectParams.get("idcaja").getAsInt());//Datos de la caja seleccionada.
+			//System.out.println(1);
+			/*System.out.println(jsonObjectParams.get("lcajas"));
+			GsonBuilder builder = new GsonBuilder();
+			Gson gson = builder.serializeNulls().setDateFormat("yyyy-MM-dd HH:mm").create();
+			Catalogo_cajas_sap_vw objCaja = (jsonObjectParams.get("lcajas") == null ? null : gson.fromJson(jsonObjectParams.get("lcajas").getAsJsonObject(), Catalogo_cajas_sap_vw.class));
+			*/
+			//System.out.println(2);
 			if(objCaja != null)
 			{
 				String[] AnchoStr = String.valueOf(jsonObjectParams.get("ancho").getAsDouble()).split("\\.");//Split del Ancho para obtener los decimales.
@@ -459,12 +489,10 @@ public class CotizadorController {
 				Double AnchoVar = 0.0;
 				Double LargoVar = 0.0;
 				
-				if(objCaja != null) {
-					AnchoVar = ((objCaja.getMaa() * jsonObjectParams.get("ancho").getAsDouble()) + (objCaja.getMaf() * jsonObjectParams.get("fondo").getAsDouble()) + (objCaja.getTr() * ((jsonObjectParams.get("espsup").getAsDouble() + jsonObjectParams.get("espinf").getAsDouble()) / 2)) + (vals.contains(Integer.valueOf(AnchoStr[1])) ? objCaja.getDesami() : objCaja.getDesam()));
-					object.addProperty("AnchoVar", decimal2.format(AnchoVar));
-					LargoVar = (objCaja.getMll() * jsonObjectParams.get("largo").getAsDouble()) + (objCaja.getMla() * jsonObjectParams.get("ancho").getAsDouble() + objCaja.getMlf() * jsonObjectParams.get("fondo").getAsDouble()) + (jsonObjectParams.get("score").getAsInt() == 1 ? objCaja.getDeslm() : objCaja.getDeslmi());
-					object.addProperty("LargoVar", decimal2.format(LargoVar));
-				}
+				AnchoVar = ((objCaja.getMaa() * jsonObjectParams.get("ancho").getAsDouble()) + (objCaja.getMaf() * jsonObjectParams.get("fondo").getAsDouble()) + (objCaja.getTr() * ((jsonObjectParams.get("espsup").getAsDouble() + jsonObjectParams.get("espinf").getAsDouble()) / 2)) + (vals.contains(Integer.valueOf(AnchoStr[1])) ? objCaja.getDesami() : objCaja.getDesam()));
+				object.addProperty("AnchoVar", decimal2.format(AnchoVar));
+				LargoVar = (objCaja.getMll() * jsonObjectParams.get("largo").getAsDouble()) + (objCaja.getMla() * jsonObjectParams.get("ancho").getAsDouble() + objCaja.getMlf() * jsonObjectParams.get("fondo").getAsDouble()) + (jsonObjectParams.get("score").getAsInt() == 1 ? objCaja.getDeslm() : objCaja.getDeslmi());
+				object.addProperty("LargoVar", decimal2.format(LargoVar));				
 		
 				Double AreaUni = (LargoVar * AnchoVar) / 10000;
 				object.addProperty("AreaUni", decimal4.format(AreaUni));
@@ -591,10 +619,51 @@ public class CotizadorController {
 				object.addProperty("PK_Teorico",decimal4.format( (jsonObjectParams.get("cantpedmes").getAsDouble() / 1000) * (jsonObjectParams.get("precioobj").getAsDouble() / KG)));
 				
 			}//Fin Si hay Caja seleccionada
+			else
+			{
+				JSONArray arr = new JSONArray();
+				String ids = jsonObjectParams.get("idsesp").getAsString();
+				if(ids.length() > 1)
+				{
+					String[] idsarr = ids.split("\\|");
+					for(int i = 0; i < idsarr.length; i++)
+					{
+						JsonObject objEsp = new JsonObject();
+						objEsp.addProperty("id", idsarr[i]);
+						objEsp.addProperty("costo", 0.0);
+						arr.add(objEsp);
+					}
+				}
+				
+				object.addProperty("AnchoVar", 0.0);
+				object.addProperty("LargoVar", 0.0);
+				object.addProperty("AreaUni", 0.0);
+				object.addProperty("PesoTeorico", 0.0);
+				object.addProperty("PrecioNeto", 0.0);
+				object.addProperty("M2", 0.0);
+				object.addProperty("PesoPza", 0.0);
+				object.addProperty("KG", 0.0);
+				object.addProperty("MedLamina", 0.0);
+				object.addProperty("CostoPapel", 0.0);
+				object.addProperty("CostoFlete", 0.0);
+				object.addProperty("Esp", arr.toString());
+				object.addProperty("TotCostoEsp", 0.0); 
+				object.addProperty("ComisionDirecto", 0.0);
+				object.addProperty("CPSC", 0.0);		
+				object.addProperty("PorcComision", 0.0);
+				object.addProperty("ComXmillar", 0.0);
+				object.addProperty("CPCC", 0.0);
+				object.addProperty("PrecioSugerido", 0.0);
+				object.addProperty("PorcFlete", 0.0);
+				object.addProperty("AreaTotal",0.0);
+				object.addProperty("PesoTotal",0.0);
+				object.addProperty("PK_Teorico",0.0);
+			}
 			return object.toString();
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
 			return e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
 		}
 		
@@ -738,22 +807,46 @@ public class CotizadorController {
 			
 			java.util.Date date = new java.util.Date();
 			
-			if(c.getIdtiporequerimiento() == 0)//diseño
+			if(c.getSin_boceto())
 			{
-				c.setFecha_envia_ing(date);
-				c.setUsuario_envia_ing(user.getId());
-				c.setFecha_rech_diseniador(null);
+				c.setUsuario_envia_ventas(user.getId());
+				c.setFecha_envia_ventas(date);
+				c.setUsuario_rech_ventas(null);
+				c.setFecha_rech_ventas(null);
+				
+				c.setFecha_asign_diseniador(null);
+				c.setUsuario_diseniador(null);
 				c.setUsuario_rech_diseniador(null);
+				c.setFecha_rech_diseniador(null);
+				
+				c.setFecha_aut_ventas_sb(null);
+				c.setUsuario_aut_ventas_sb(null);
+				
+				c.setFecha_envia_ing(null);
+				c.setUsuario_envia_ing(null);
+
+				bs.BuscarxIdCot(c.getId()).forEach(a -> {
+					bs.Eliminar(a);
+				});
 			}
-			else//muestras
+			else
 			{
-				c.setFecha_envia_arrmues(date);
-				c.setUsuario_envia_arrmues(user.getId());
-				c.setFecha_rech_arrastre(null);
-				c.setUsuario_rech_arrastre(null);
-				c.setObservaciones_arrastre(null);
+				if(c.getIdtiporequerimiento() == 0)//diseño
+				{
+					c.setFecha_envia_ing(date);
+					c.setUsuario_envia_ing(user.getId());
+					c.setFecha_rech_diseniador(null);
+					c.setUsuario_rech_diseniador(null);
+				}
+				else//muestras
+				{
+					c.setFecha_envia_arrmues(date);
+					c.setUsuario_envia_arrmues(user.getId());
+					c.setFecha_rech_arrastre(null);
+					c.setUsuario_rech_arrastre(null);
+					c.setObservaciones_arrastre(null);
+				}
 			}
-			
 			cs.Actualizar(c);
 			logger.info(AppController.getPrincipal() + " - enviaraingenieriaboceto.");
 			return "OK";
@@ -803,7 +896,23 @@ public class CotizadorController {
 	public String autventas(ModelMap model) {
 		
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
-		model.addAttribute("listaDet",ListaCotAut(3));
+		model.addAttribute("listaDet",ListaCotAut(3));//Cotizaciones con boceto
+		model.addAttribute("listaDetSB",ListaCotAut(13));//Cotizaciones sin boceto
+		
+		Map<String,String> mOrd =  new HashMap<String, String>();
+		
+		List<ParamsGeneral> ParamsVa = new ArrayList<ParamsGeneral>();
+		ParamsVa.add(new ParamsGeneral(1,"modulo","Cotizacion","EQ"));
+		ParamsVa.add(new ParamsGeneral(1,"area","Ventas","EQ"));
+		ParamsVa.add(new ParamsGeneral(1,"actividad","Valida","EQ"));		
+		model.addAttribute("listaAproValida", lapas.ListaAproba(ParamsVa, mOrd));
+		
+		List<ParamsGeneral> ParamsVe = new ArrayList<ParamsGeneral>();
+		ParamsVe.add(new ParamsGeneral(1,"modulo","Cotizacion","EQ"));
+		ParamsVe.add(new ParamsGeneral(1,"area","Ventas","EQ"));
+		ParamsVe.add(new ParamsGeneral(1,"actividad","Verifica","EQ"));		
+		model.addAttribute("listaAproVerifica", lapas.ListaAproba(ParamsVe, mOrd));
+		
 		logger.info(AppController.getPrincipal() + " - autorizacion_cotizacion_vtas.");
 		
 		return "/tarjetas/cotizador/autorizacion_cotizacion_vtas";
@@ -813,6 +922,21 @@ public class CotizadorController {
 	public String autorizacion_cotizacion_prog(ModelMap model) {		
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
 		model.addAttribute("listaDet",ListaCotAut(1));
+		
+		Map<String,String> mOrd =  new HashMap<String, String>();
+		
+		List<ParamsGeneral> ParamsVa = new ArrayList<ParamsGeneral>();
+		ParamsVa.add(new ParamsGeneral(1,"modulo","Cotizacion","EQ"));
+		ParamsVa.add(new ParamsGeneral(1,"area","Programacion","EQ"));
+		ParamsVa.add(new ParamsGeneral(1,"actividad","Valida","EQ"));		
+		model.addAttribute("listaAproValida", lapas.ListaAproba(ParamsVa, mOrd));
+		
+		List<ParamsGeneral> ParamsVe = new ArrayList<ParamsGeneral>();
+		ParamsVe.add(new ParamsGeneral(1,"modulo","Cotizacion","EQ"));
+		ParamsVe.add(new ParamsGeneral(1,"area","Programacion","EQ"));
+		ParamsVe.add(new ParamsGeneral(1,"actividad","Verifica","EQ"));		
+		model.addAttribute("listaAproVerifica", lapas.ListaAproba(ParamsVe, mOrd));
+		
 		logger.info(AppController.getPrincipal() + " - autorizacion_cotizacion_prog.");
 		
 		return "/tarjetas/cotizador/autorizacion_cotizacion_prog";
@@ -823,10 +947,35 @@ public class CotizadorController {
 		
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
 		model.addAttribute("listaDet",ListaCotAut(11));
+		
+		Map<String,String> mOrd =  new HashMap<String, String>();
+		
+		List<ParamsGeneral> ParamsVa = new ArrayList<ParamsGeneral>();
+		ParamsVa.add(new ParamsGeneral(1,"modulo","Cotizacion","EQ"));
+		ParamsVa.add(new ParamsGeneral(1,"area","Calidad","EQ"));
+		ParamsVa.add(new ParamsGeneral(1,"actividad","Valida","EQ"));		
+		model.addAttribute("listaAproValida", lapas.ListaAproba(ParamsVa, mOrd));
+		
+		List<ParamsGeneral> ParamsVe = new ArrayList<ParamsGeneral>();
+		ParamsVe.add(new ParamsGeneral(1,"modulo","Cotizacion","EQ"));
+		ParamsVe.add(new ParamsGeneral(1,"area","Calidad","EQ"));
+		ParamsVe.add(new ParamsGeneral(1,"actividad","Verifica","EQ"));		
+		model.addAttribute("listaAproVerifica", lapas.ListaAproba(ParamsVe, mOrd));
+		
 		logger.info(AppController.getPrincipal() + " - autorizacion_cotizacion_calidad.");
 		
 		return "/tarjetas/cotizador/autorizacion_cotizacion_calidad";
 	}
+	
+	/*@RequestMapping(value = {"/produccion/autorizacion_cotizacion_produccion" }, method = RequestMethod.GET)
+	public String autproduccion(ModelMap model) {
+		
+		model.addAttribute("loggedinuser", AppController.getPrincipal());
+		model.addAttribute("listaDet",ListaCotAut(12));
+		logger.info(AppController.getPrincipal() + " - autorizacion_cotizacion_produccion.");
+		
+		return "/tarjetas/cotizador/autorizacion_cotizacion_produccion";
+	}*/
 	
 	private Object[] ListaCotAut(Integer ban)
 	{
@@ -866,7 +1015,7 @@ public class CotizadorController {
 			}
 			else
 			{
-				if(ban == 3)//aut ventas
+				if(ban == 3)//aut ventas Lista con bocetos
 				{
 					Params.add(new ParamsGeneral(1,"fecha_envia_ventas","NE"));
 					Params.add(new ParamsGeneral(1,"usuario_envia_ventas","NE"));
@@ -877,6 +1026,7 @@ public class CotizadorController {
 					Params.add(new ParamsGeneral(1,"usuario_cancel","EQ"));
 					Params.add(new ParamsGeneral(1,"fecha_cancel","EQ"));
 					Params.add(new ParamsGeneral(1,"idtiporequerimiento",0,"EQ"));
+					Params.add(new ParamsGeneral(1,"sin_boceto",false,"EQ"));
 				}
 				else
 				{
@@ -1002,6 +1152,42 @@ public class CotizadorController {
 													Params.add(new ParamsGeneral(1,"fecha_cancel","EQ"));
 													Params.add(new ParamsGeneral(1,"idtiporequerimiento",0,"EQ"));
 												}
+												else
+												{
+													if(ban == 13)//aut ventas Lista sin bocetos
+													{
+														Params.add(new ParamsGeneral(1,"fecha_envia_ventas","NE"));
+														Params.add(new ParamsGeneral(1,"usuario_envia_ventas","NE"));
+														Params.add(new ParamsGeneral(1,"fecha_aut_ventas_sb","EQ"));
+														Params.add(new ParamsGeneral(1,"usuario_aut_ventas_sb","EQ"));
+														Params.add(new ParamsGeneral(1,"fecha_rech_ventas","EQ"));
+														Params.add(new ParamsGeneral(1,"usuario_rech_ventas","EQ"));
+														Params.add(new ParamsGeneral(1,"usuario_cancel","EQ"));
+														Params.add(new ParamsGeneral(1,"fecha_cancel","EQ"));
+														Params.add(new ParamsGeneral(1,"idtiporequerimiento",0,"EQ"));
+														Params.add(new ParamsGeneral(1,"sin_boceto",true,"EQ"));													
+													}
+												}
+												/*else
+												{
+													if(ban == 12) {//producción
+														Params.add(new ParamsGeneral(1,"fecha_aut_produccion","EQ"));
+														Params.add(new ParamsGeneral(1,"usuario_aut_produccion","EQ"));
+														Params.add(new ParamsGeneral(1,"usuario_rech_produccion","EQ"));
+														Params.add(new ParamsGeneral(1,"fecha_rech_produccion","EQ"));
+														
+														Params.add(new ParamsGeneral(1,"fecha_aut_calidad","NE"));
+														Params.add(new ParamsGeneral(1,"usuario_aut_calidad","NE"));
+														Params.add(new ParamsGeneral(1,"fecha_aut_ventas","NE"));
+														Params.add(new ParamsGeneral(1,"usuario_aut_ventas","NE"));
+														Params.add(new ParamsGeneral(1,"fecha_aut_prog","NE"));
+														Params.add(new ParamsGeneral(1,"usuario_aut_prog","NE"));
+														
+														Params.add(new ParamsGeneral(1,"usuario_cancel","EQ"));
+														Params.add(new ParamsGeneral(1,"fecha_cancel","EQ"));
+														Params.add(new ParamsGeneral(1,"idtiporequerimiento",0,"EQ"));
+													}
+												} */
 											}
 										}
 									}
@@ -1032,44 +1218,67 @@ public class CotizadorController {
 			java.util.Date date = new java.util.Date();
 			String emailMsj = "";
 			String asunto = "";
-			if(Integer.valueOf(ban) == 1)
+			if(c.getSin_boceto())
 			{
-				c.setUsuario_aut_ventas(user.getId());
-				c.setFecha_aut_ventas(date);
-				c.setObservaciones_ventas(coment);
-				emailMsj="Cotización: ("+c.getId()+") autorizada (PRECIO) por el usuario: "+user.getFirstName()+ " " +user.getLastName()+ " (" + user.getSsoId() + ") \r\n\n Contacto: "+user.getEmail()+" \r\n\n Motivo: "+coment ;
-				asunto = "Cotización autorizada";
+				if(Integer.valueOf(ban) == 1)
+				{
+					c.setFecha_aut_ventas_sb(date);
+					c.setUsuario_aut_ventas_sb(user.getId());
+					c.setUsuario_envia_ventas(null);
+					c.setFecha_envia_ventas(null);
+					emailMsj="Cotización: ("+c.getId()+") autorizada (PRECIO) por el usuario: "+user.getFirstName()+ " " +user.getLastName()+ " (" + user.getSsoId() + ") \r\n\n Contacto: "+user.getEmail()+" \r\n\n Motivo: "+coment ;
+					asunto = "Cotización sin boceto autorizada";
+				}
+				else
+				{
+					c.setUsuario_envia_ventas(null);
+					c.setFecha_envia_ventas(null);
+					c.setUsuario_rech_ventas(user.getId());
+					c.setFecha_rech_ventas(date);
+					emailMsj="Cotización: ("+c.getId()+") rechazada (PRECIO) por el usuario: "+user.getFirstName()+ " " +user.getLastName()+ " (" + user.getSsoId() + ") \r\n\n Contacto: "+user.getEmail()+" \r\n\n Motivo: "+coment ;
+					asunto = "Cotización rechazada";
+				} 
 			}
 			else
-			{			
-				
-				c.setUsuario_envia_a_prog(null);
-				c.setFecha_envia_a_prog(null);
-				c.setObservaciones_prog(null);
-				c.setFecha_aut_prog(null);
-				c.setUsuario_aut_prog(null);
-				
-				c.setFecha_aut_calidad(null);
-				c.setUsuario_aut_calidad(null);
-				c.setFecha_envia_calidad(null);
-				c.setUsuario_envia_calidad(null);
-				c.setObsevaciones_calidad(null);
-				
-				c.setUsuario_envia_ing(null);
-				c.setFecha_envia_ing(null);
-				
-				//Se regresan los bocetos al vendedor para que autorice/rechace de nuevo.
-				c.setIdboceto(null);
-				RegresarBocetosxrechazo(Integer.valueOf(idcot));
-				
-				c.setUsuario_envia_ventas(null);
-				c.setFecha_envia_ventas(null);
-				c.setUsuario_rech_ventas(user.getId());
-				c.setFecha_rech_ventas(date);
-				c.setObservaciones_ventas(coment);
-				emailMsj="Cotización: ("+c.getId()+") rechazada (PRECIO) por el usuario: "+user.getFirstName()+ " " +user.getLastName()+ " (" + user.getSsoId() + ") \r\n\n Contacto: "+user.getEmail()+" \r\n\n Motivo: "+coment ;
-				asunto = "Cotización rechazada";
+			{
+				if(Integer.valueOf(ban) == 1)
+				{
+					c.setUsuario_aut_ventas(user.getId());
+					c.setFecha_aut_ventas(date);
+					emailMsj="Cotización: ("+c.getId()+") autorizada (PRECIO) por el usuario: "+user.getFirstName()+ " " +user.getLastName()+ " (" + user.getSsoId() + ") \r\n\n Contacto: "+user.getEmail()+" \r\n\n Motivo: "+coment ;
+					asunto = "Cotización autorizada";
+				}
+				else
+				{			
+					
+					c.setUsuario_envia_a_prog(null);
+					c.setFecha_envia_a_prog(null);
+					c.setObservaciones_prog(null);
+					c.setFecha_aut_prog(null);
+					c.setUsuario_aut_prog(null);
+					
+					c.setFecha_aut_calidad(null);
+					c.setUsuario_aut_calidad(null);
+					c.setFecha_envia_calidad(null);
+					c.setUsuario_envia_calidad(null);
+					c.setObsevaciones_calidad(null);
+					
+					c.setUsuario_envia_ing(null);
+					c.setFecha_envia_ing(null);
+					
+					//Se regresan los bocetos al vendedor para que autorice/rechace de nuevo.
+					c.setIdboceto(null);
+					RegresarBocetosxrechazo(Integer.valueOf(idcot));
+					
+					c.setUsuario_envia_ventas(null);
+					c.setFecha_envia_ventas(null);
+					c.setUsuario_rech_ventas(user.getId());
+					c.setFecha_rech_ventas(date);
+					emailMsj="Cotización: ("+c.getId()+") rechazada (PRECIO) por el usuario: "+user.getFirstName()+ " " +user.getLastName()+ " (" + user.getSsoId() + ") \r\n\n Contacto: "+user.getEmail()+" \r\n\n Motivo: "+coment ;
+					asunto = "Cotización rechazada";
+				}
 			}
+			c.setObservaciones_ventas(coment);
 			cs.Actualizar(c);
 			////ENVÍO DE EMAIL
 			//SendMailGmail Email = new SendMailGmail();
@@ -1228,7 +1437,81 @@ public class CotizadorController {
 		}
 		
 	}
-
+	
+	/*@RequestMapping(value = {"/produccion/autorizacion_cotizacion_produccion_desicion" }, method = RequestMethod.POST)
+	public @ResponseBody String autorizacion_cotizacion_produccion_desicion(ModelMap model, @RequestParam("idcot") String idcot, @RequestParam("coment") String coment, @RequestParam("ban") String ban) {
+		String msj = "";
+		try
+		{
+			User user = us.findBySSO(AppController.getPrincipal());
+			Cotizador c = cs.BuscarxId(Integer.valueOf(idcot)); 
+			java.util.Date date = new java.util.Date();
+			String emailMsj = "";
+			String asunto = "";
+			if(Integer.valueOf(ban) == 1)
+			{
+				c.setUsuario_aut_produccion(user.getId());
+				c.setFecha_aut_produccion(date);
+				c.setObservaciones_produccion(coment);
+				emailMsj="Cotización: ("+c.getId()+") autorizada (PRODUCCIÓN) por el usuario: "+user.getFirstName()+ " " +user.getLastName()+ " (" + user.getSsoId() + ") \r\n\n Contacto: "+user.getEmail()+" \r\n\n Motivo: "+coment ;
+				asunto = "Cotización autorizada departamento Producción";
+			}
+			else
+			{
+				
+				c.setUsuario_aut_ventas(null);
+				c.setFecha_aut_ventas(null);
+				c.setUsuario_envia_ventas(null);
+				c.setFecha_envia_ventas(null);
+				c.setObservaciones_ventas(null);
+				
+				c.setUsuario_envia_a_prog(null);
+				c.setFecha_envia_a_prog(null);
+				c.setObservaciones_prog(null);
+				c.setFecha_aut_prog(null);
+				c.setUsuario_aut_prog(null);
+				
+				c.setUsuario_envia_calidad(null);
+				c.setFecha_envia_calidad(null);
+				c.setObsevaciones_calidad(null);
+				c.setFecha_aut_calidad(null);
+				c.setUsuario_aut_calidad(null);
+				
+				c.setUsuario_envia_ing(null);
+				c.setFecha_envia_ing(null);
+				
+				c.setUsuario_rech_produccion(user.getId());
+				c.setFecha_rech_produccion(date);
+				c.setObservaciones_produccion(coment);
+				
+				//Se regresan los bocetos al vendedor para que autorice/rechace de nuevo.
+				c.setIdboceto(null);
+				RegresarBocetosxrechazo(Integer.valueOf(idcot));
+				
+				emailMsj="Cotización: ("+c.getId()+") rechazada (PRODUCCIÓN) por el usuario: "+user.getFirstName()+ " " +user.getLastName()+ " (" + user.getSsoId() + ") \r\n\n Contacto: "+user.getEmail()+" \r\n\n Motivo: "+coment ;
+				asunto = "Cotización rechazada";
+			}
+			cs.Actualizar(c);
+			
+			////ENVÍO DE EMAIL
+			//SendMailGmail Email = new SendMailGmail();
+			//User userInsertCot = us.findById(c.getUsuario_insert());
+			//Email.sendMail(userInsertCot.getEmail(), emailMsj, asunto);
+			SendEmail(emailMsj,us.findById(c.getUsuario_insert()).getEmail(), asunto);
+			/////
+			
+			logger.info(AppController.getPrincipal() + " - autorizacion_cotizacion_produccion_desicion :"+ msj);
+			return "OK";
+		}
+		catch(Exception e)
+		{
+			msj = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
+			logger.info(AppController.getPrincipal() + " - autorizacion_cotizacion_produccion_desicion :"+ msj);
+			return msj;
+		}
+		
+	}*/
+	
 	private void RegresarBocetosxrechazo(Integer idcot)
 	{
 		bs.BuscarxIdCot(idcot).forEach(a ->{
@@ -1286,6 +1569,21 @@ public class CotizadorController {
 		{
 			model.addAttribute("loggedinuser", AppController.getPrincipal());
 			model.addAttribute("listaDet",ListaCotAut(2));
+			
+			Map<String,String> mOrd =  new HashMap<String, String>();
+			
+			List<ParamsGeneral> ParamsVa = new ArrayList<ParamsGeneral>();
+			ParamsVa.add(new ParamsGeneral(1,"modulo","Cotizacion","EQ"));
+			ParamsVa.add(new ParamsGeneral(1,"area","Ingenieria","EQ"));
+			ParamsVa.add(new ParamsGeneral(1,"actividad","Valida","EQ"));		
+			model.addAttribute("listaAproValida", lapas.ListaAproba(ParamsVa, mOrd));
+			
+			List<ParamsGeneral> ParamsVe = new ArrayList<ParamsGeneral>();
+			ParamsVe.add(new ParamsGeneral(1,"modulo","Cotizacion","EQ"));
+			ParamsVe.add(new ParamsGeneral(1,"area","Ingenieria","EQ"));
+			ParamsVe.add(new ParamsGeneral(1,"actividad","Verifica","EQ"));		
+			model.addAttribute("listaAproVerifica", lapas.ListaAproba(ParamsVe, mOrd));
+			
 			logger.info(AppController.getPrincipal() + " - requerimientoabcget.");
 		}
 		catch(Exception e)
@@ -1523,6 +1821,12 @@ public class CotizadorController {
 							c.setObsevaciones_calidad(null);
 							c.setUsuario_rech_calidad(null);
 							c.setFecha_rech_calidad(null);
+							
+							/*c.setFecha_aut_produccion(null);
+							c.setUsuario_aut_produccion(null);
+							c.setFecha_rech_produccion(null);
+							c.setUsuario_rech_produccion(null);
+							c.setObservaciones_produccion(null);*/
 							
 							c.setUsuario_envia_ing(null);
 							c.setFecha_envia_ing(null);
@@ -2053,8 +2357,16 @@ public class CotizadorController {
 		model.addAttribute("loggedinuser", AppController.getPrincipal());
 		User user = us.findBySSO(AppController.getPrincipal());		
 		
-		if(user.getUserProfiles().stream()
-				.filter(b -> b.getType().equals("VENTAS")).count() == 0)
+		Integer esVentas = (int) user.getUserProfiles().stream().filter(b -> 
+					b.getType().equals("VENTAS") ||
+					b.getType().equals("CALIDAD") ||
+					b.getType().equals("ADMIN") ||
+					b.getType().equals("PRODUCCION") ||
+					b.getType().equals("INGENIERIA_GERENCIA") ||
+					b.getType().equals("PROGRAMACION") ||
+					b.getType().equals("INGENIERIA") 			
+				).count();
+		if(esVentas == 0)
 		{
 			
 			model.addAttribute("ListaCte", ccavs.ListaCtes(user.getCvevendedor_sap()));
@@ -2119,19 +2431,38 @@ public class CotizadorController {
 		
 		//if(params.size() > 0)
 		//{
+			Integer CveVen = 0;
 			params.add(new ParamsGeneral(1,"idtiporequerimiento",0,"EQ"));//Solo cotizaciones
 			if(ven.equals(""))
 			{
-				if(params.size() > 1)
+				if(esVentas > 0)
 				{
-					cs.ListasCotAut(params).forEach(a -> {
+					if(params.size() > 1)
+					{
+						cs.ListasCotAut(params).forEach(a -> {
 							Lista.add(ctsc.DataSourceJasperCot(a,1));
-					});
+						});
+					}
 				}
+				else
+				{
+					CveVen = user.getCvevendedor_sap();
+					if(params.size() > 1)
+					{
+						us.findCveVenUsers(CveVen).forEach(usr -> {
+							params.add(new ParamsGeneral(10,"usuario_insert", usr.getId(),"EQ"));
+							cs.ListasCotAut(params).forEach(a -> {
+								Lista.add(ctsc.DataSourceJasperCot(a,1));
+							});
+							params.remove(params.size() -1);
+						});
+					}
+				}
+				
 			}
 			else
 			{
-				Integer CveVen = user.getCvevendedor_sap();
+				CveVen = Integer.valueOf(ven);
 				us.findCveVenUsers(CveVen).forEach(usr -> {
 					params.add(new ParamsGeneral(10,"usuario_insert", usr.getId(),"EQ"));
 					cs.ListasCotAut(params).forEach(a -> {
@@ -2141,7 +2472,7 @@ public class CotizadorController {
 				});
 			}
 		//}
-		
+			
 		GsonBuilder builder = new GsonBuilder();
 		Gson gson = builder.serializeNulls().create();
 		
@@ -2167,7 +2498,15 @@ public class CotizadorController {
 				GsonBuilder builder = new GsonBuilder();
 				Gson gson = builder.serializeNulls().create();
 				
-				if(user.getUserProfiles().stream().filter(b -> b.getType().equals("VENTAS") || b.getType().equals("INGENIERIA") || b.getType().equals("PROGRAMACION")).count() == 0)
+				if(user.getUserProfiles().stream().filter(b -> 
+						b.getType().equals("VENTAS") ||
+						b.getType().equals("CALIDAD") ||
+						b.getType().equals("ADMIN") ||
+						b.getType().equals("PRODUCCION") ||
+						b.getType().equals("INGENIERIA_GERENCIA") ||
+						b.getType().equals("PROGRAMACION") ||
+						b.getType().equals("INGENIERIA")							
+					).count() == 0)
 				{					
 					for(User usr : us.findCveVenUsers(user.getCvevendedor_sap()))
 					{
@@ -2323,7 +2662,7 @@ public class CotizadorController {
 		        Path path = Paths.get(filePath);
 	            Files.write(path, barr);
 		        
-		     }catch(Exception e){System.out.println(e);}  
+		     }catch(Exception e){e.printStackTrace();}  
 			
 		}
 
@@ -2434,6 +2773,9 @@ public class CotizadorController {
 		c.setFecha_rech_calidad(null);
 		c.setUsuario_envia_calidad(iduser);
 		c.setFecha_envia_calidad(date);
+		
+		/*c.setUsuario_rech_produccion(null);
+		c.setFecha_rech_produccion(null);*/
 		
 		cs.Actualizar(c);
 	}

@@ -25,7 +25,8 @@ $(document).ready(function() {
 				('${cotizadordatabean.cotizador.usuario_rech_ventas}' == ''  && '${cotizadordatabean.cotizador.fecha_rech_ventas}' == '') ||
 			    ('${cotizadordatabean.cotizador.usuario_rech_diseniador}' == '' && '${cotizadordatabean.cotizador.fecha_rech_diseniador}' == '') ||
 			    ('${cotizadordatabean.cotizador.usuario_cancel}' > 0  && '${cotizadordatabean.cotizador.fecha_cancel}' != '') ||
-			    ('${cotizadordatabean.cotizador.usuario_rech_arrastre}' > 0  && '${cotizadordatabean.cotizador.fecha_rech_arrastre}' != '')
+			    ('${cotizadordatabean.cotizador.usuario_rech_arrastre}' > 0  && '${cotizadordatabean.cotizador.fecha_rech_arrastre}' != '') ||
+				('${cotizadordatabean.cotizador.usuario_rech_calidad}' == ''  && '${cotizadordatabean.cotizador.fecha_rech_calidad}' == '')
 			  )
 			{
 				FDisableElemens();
@@ -36,8 +37,12 @@ $(document).ready(function() {
 		else
 			FEmbarques(0);
 		
-		if('${cotizadordatabean.cotizador.usuario_diseniador}' != ''  && '${cotizadordatabean.cotizador.fecha_asign_diseniador}' != '')
+		if('${cotizadordatabean.cotizador.usuario_envia_ventas}' > 0 && '${cotizadordatabean.cotizador.fecha_envia_ventas}' != '') //|| 
+			//'${cotizadordatabean.cotizador.fecha_envia_ing}' != ''  && '${cotizadordatabean.cotizador.usuario_envia_ing}' != '')
+		{
 			$("#BCancel").prop('disabled',true);
+			$("#BIngBoc").prop('disabled',true);
+		}
 	} 
 });
 function FValidaLogIn(data)
@@ -199,7 +204,19 @@ function FBuscarResisId()
 		  }
 	 });
 }
-
+function BuscarCaja()
+{
+	var ocaja = null;
+	var jlist = jQuery.parseJSON('${listacajasjson}');	
+	for(var i = 0; i < jlist.length; i++) {
+		if(jlist[i].idtipocaja == $("#SCajas").val())
+		{
+			ocaja = jlist[i];
+			break;
+		}
+	}
+	return ocaja;
+}
 function CalcularDatos()
 {
 	SumarEsp($("#SCajas").val());
@@ -227,6 +244,7 @@ function CalcularDatos()
 	Parameters.ajustes = ajustes;
 	Parameters.esquemas = esquemas;
 	Parameters.cm = cm;
+	//Parameters.lcajas = BuscarCaja();
 	
 	var mystring = JSON.stringify(Parameters);
 	
@@ -259,8 +277,9 @@ function CalcularDatos()
         	FValidaLogIn(data)
         	try
         	{
+        		
 	  			var obj = JSON.parse(data);
-	        	if(obj != null)
+	        	if(!jQuery.isEmptyObject(obj))
 	        	{
 	        		$("#TAreaUni").val(obj.AreaUni);
 	        		$("#TPesoT").val(obj.PesoTeorico);
@@ -495,6 +514,11 @@ function FAutRechBoc(idcot,iddet,idb,ban)
 		http.send(encodeURI(params));
 	}
 }
+function FVueltasEmp()
+{
+	var em = $("#CEmplayado").prop('checked');
+	$("#TVueltasEmp").val((em == false ? "" : "2"));
+}
 </script>
 <title>Registro cotizaciones/Requerimientos/Muestras</title>
 </head>
@@ -575,8 +599,7 @@ function FAutRechBoc(idcot,iddet,idb,ban)
 							</div>							
 							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
 								<div class="row border border-right">
-									<div class="col col-lg-2">Cliente factura</div>
-									<div class="col col-lg-9">
+									<div class="col col-lg-9">Cliente factura: 
 										<form:select id="SClientesFactura" path="cotizador.cardcode_factura" multiple="false" class="border border-primary">
 											<form:option value="0">Seleccione un cliente factura</form:option>
 											<c:forEach var="cte" items="${clientes}">
@@ -587,6 +610,7 @@ function FAutRechBoc(idcot,iddet,idb,ban)
 											<form:errors path="cotizador.cardcode_factura" class="badge badge-danger small"/>
 										</div>
 									</div>
+									<div class="col col-lg-2">Sin boceto: <form:checkbox id="CSinBoceto" path="cotizador.sin_boceto"/></div>
 									<div class="col col-lg-1"><button type="button" data-toggle="modal" data-target="#BocetosModal" class="float-right btn btn-outline-primary btn-sm"><i class="fa fa-bold" aria-hidden="true">ocetos</i></button></div>
 								</div>
 							</div>							
@@ -683,6 +707,29 @@ function FAutRechBoc(idcot,iddet,idb,ban)
 													data-toggle="tooltip" data-placement="top" title="Doble click para actualizar."/>
 										<div class="has-error">
 											<form:errors path="cotizador_detalles.preciom2resistencia" class="badge badge-danger small"/>
+										</div>
+									</div>
+								</div>
+								<div class="row border border-right">
+									<div class="col col-lg-1">Largo Interno</div>
+									<div class="col col-lg-1">
+										<form:input id="TLargoInt" size="10" type="text" path="cotizador_detalles.mil" onkeypress="return filterFloat1(event,this);" class="border border-primary"/>
+										<div class="has-error">
+											<form:errors path="cotizador_detalles.mil" class="badge badge-danger small"/>
+										</div>
+									</div>
+									<div class="col col-lg-1">Ancho Interno</div>
+									<div class="col col-lg-1">
+										<form:input id="TAnchoInt" size="10" type="text" path="cotizador_detalles.mia" onkeypress="return filterFloat1(event,this);" class="border border-primary"/>
+										<div class="has-error">
+											<form:errors path="cotizador_detalles.mia" class="badge badge-danger small"/>
+										</div>
+									</div>
+									<div class="col col-lg-1">Fondo Interno</div>
+									<div class="col col-lg-1">
+										<form:input id="TFondoInt" size="10" type="text" path="cotizador_detalles.mif" onkeypress="return filterFloat1(event,this);" class="border border-primary"/>
+										<div class="has-error">
+											<form:errors path="cotizador_detalles.mif" class="badge badge-danger small"/>
 										</div>
 									</div>
 								</div>
@@ -1057,29 +1104,72 @@ function FAutRechBoc(idcot,iddet,idb,ban)
 					</div>
 				</div>
 			</div>
-			<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
-				 <div class="row ">
-					 <div class="badge badge-secondary col-12">
-					 	Embarques/Inocuidad
-					 </div>
-				 </div>
+			<div class="col-12 badge badge-secondary col-12"><!-- mx-auto  para centrar en pantalla -->
+					Embarques/Inocuidad
 			 </div>
 			 <div class="col-12"><!-- mx-auto  para centrar en pantalla -->
-				 <div class="row ">
-					 <div class="col-12">
-						<div class="row small">
-							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
-								<div class="row border border-right">
-									<div class="col col-lg-2">Emplayado: <form:checkbox id="CEmplayado" path="cotizador.emplayado"/></div> 
-									<div class="col col-lg-2">Vueltas: <form:input id="TVueltasEmp" size="5" maxlength="8" type="text" path="cotizador.vueltas_emplaye" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
-									<div class="col col-lg-1">Factura: <form:checkbox id="CFactura" path="cotizador.factura"/></div>
-									<div class="col col-lg-2">Certif calidad: <form:checkbox id="CCertCal" path="cotizador.certif_calidad"/></div>
-									<div class="col col-lg-1">Imp OC: <form:checkbox id="CImpOC" path="cotizador.imprimir_oc"/></div>
-									<div class="col col-lg-2">Protecciones: <form:checkbox id="CProtecciones" path="cotizador.protecciones"/></div>
-									<div class="col col-lg-2">Imp fechador: <form:checkbox id="CImpFech" path="cotizador.imprimir_fechador"/></div>
-								</div>
-							</div>
+				<div class="row small border border-right">
+					<div class="col col-lg-2">Emplayado: <form:checkbox id="CEmplayado" path="cotizador.emplayado" onchange="FVueltasEmp()"/></div> 
+					<div class="col col-lg-2">
+						Vueltas: 
+						<form:input id="TVueltasEmp" size="5" maxlength="8" type="text" path="cotizador.vueltas_emplaye" onkeypress="return filterFloat(event,this);" class="border border-primary"/>
+						<div class="has-error">
+							<form:errors path="cotizador.vueltas_emplaye" class="badge badge-danger small"/>
 						</div>
+					</div>										
+					<div class="col col-lg-1">Factura: <form:checkbox id="CFactura" path="cotizador.factura"/></div>
+					<div class="col col-lg-3">Certificado de calidad: <form:checkbox id="CCertCal" path="cotizador.certif_calidad"/></div>
+					<div class="col col-lg-3">Imprimir Orden de Compra: <form:checkbox id="CImpOC" path="cotizador.imprimir_oc"/></div>
+					<div class="col col-lg-1">A granel: <form:checkbox id="CAGranel"  path="cotizador_detalles.agranel" onchange="FEmbarques(1)"/></div>
+				</div>
+			</div>
+			<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
+				<div class="row small border border-right">
+					<div class="col col-lg-3">
+						Protecciones: 
+						<form:select id="CProtecciones" path="cotizador.protecciones" multiple="false" class="border border-primary">
+							<form:option value="0"></form:option>
+							<c:forEach var="pro" items="${listaprotecciones}">
+								<form:option value="${pro.code}"><c:out value="${pro.u_observaciones}"/></form:option>
+							</c:forEach>
+						</form:select>
+					</div>
+					<div class="col col-lg-2">Imprimir fechador: <form:checkbox id="CImpFech" path="cotizador.imprimir_fechador"/></div>
+					<div class="col col-lg-1">Caja seca: <form:checkbox id="CCajaSeca" path="cotizador.caja_seca"/></div>					
+					<div class="col col-lg-2">Imprimir pedido: <form:checkbox id="CImpPed" path="cotizador.imprimir_pedido"/></div>
+					<div class="col col-lg-2">Tarima  por unitizado: <form:checkbox id="CTarxUni" path="cotizador.tarimaxunitizado"/></div>
+					<div class="col col-lg-2">EPP transportista: <form:checkbox id="CEPP" path="cotizador.epp_transportista"/></div>
+				</div>
+			</div>
+			<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
+				<div class="row small border border-right">
+					<div class="col col-lg-2">Certificado de fumigación: <form:checkbox id="CCertFum" path="cotizador.certif_fumig"/></div>
+					<div class="col col-lg-1">Altura pallet</div>
+					<div class="col col-lg-1">
+						<form:input id="TAltPallet" size="10" maxlength="8" type="text" 
+						path="cotizador_detalles.altura_pallet" onkeypress="return filterFloat(event,this);" class="border border-primary"/>
+					</div>
+					<div class="col col-lg-1">Pzas x tarima</div>
+					<div class="col col-lg-1">
+						<form:input id="TPzasxTar" onKeyUp="CalcularDatos()" size="10" maxlength="8" type="text" 
+							path="cotizador_detalles.piezasxtarima" onkeypress="return Enteros(event);" class="border border-primary"/>
+						<div class="has-error">
+							<form:errors path="cotizador_detalles.piezasxtarima" class="badge badge-danger small"/>
+						</div>
+					</div>
+					<div class="col col-lg-3">
+						Identificador: 
+						<form:select id="CIdentificador" path="cotizador.identificador" multiple="false" class="border border-primary">
+							<form:option value="0"></form:option>
+							<c:forEach var="ide" items="${listaidentificadores}">
+								<form:option value="${ide.code}"><c:out value="${ide.u_observacion}"/></form:option>
+							</c:forEach>
+						</form:select>
+					</div>
+					<div class="col col-lg-1">COBB:</div>
+					<div class="col col-lg-1">
+						<form:input id="TCOBB" size="10" maxlength="20" type="text" 
+						path="cotizador.cobb" onkeypress="return filterFloat(event,this);" class="border border-primary"/>
 					</div>
 				</div>
 			</div>
@@ -1089,37 +1179,6 @@ function FAutRechBoc(idcot,iddet,idb,ban)
 						<div class="row small">
 							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
 								<div class="row border border-right">
-									<div class="col col-lg-1">Caja seca: <form:checkbox id="CCajaSeca" path="cotizador.caja_seca"/></div>					
-									<div class="col col-lg-2">Imprimir pedido: <form:checkbox id="CImpPed" path="cotizador.imprimir_pedido"/></div>
-									<div class="col col-lg-2">TarimaXunitizado: <form:checkbox id="CTarxUni" path="cotizador.tarimaxunitizado"/></div>
-									<div class="col col-lg-2">Certif fumigación: <form:checkbox id="CCertFum" path="cotizador.certif_fumig"/></div>
-									<div class="col col-lg-2">EPP transportista: <form:checkbox id="CEPP" path="cotizador.epp_transportista"/></div>
-									<div class="col col-lg-1">A granel: <form:checkbox id="CAGranel"  path="cotizador_detalles.agranel" onchange="FEmbarques(1)"/></div>
-									<div class="col col-lg-1">Altura pallet</div>
-									<div class="col col-lg-1">
-										<form:input id="TAltPallet" size="10" maxlength="8" type="text" 
-										path="cotizador_detalles.altura_pallet" onkeypress="return filterFloat(event,this);" class="border border-primary"/>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
-				 <div class="row ">
-					 <div class="col-12">
-						<div class="row small">
-							<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
-								<div class="row border border-right">
-									<div class="col col-lg-1">Pzas tarima</div>
-									<div class="col col-lg-1">
-										<form:input id="TPzasxTar" onKeyUp="CalcularDatos()" size="10" maxlength="8" type="text" 
-											path="cotizador_detalles.piezasxtarima" onkeypress="return Enteros(event);" class="border border-primary"/>
-										<div class="has-error">
-											<form:errors path="cotizador_detalles.piezasxtarima" class="badge badge-danger small"/>
-										</div>
-									</div>
 									<div class="col col-lg-1">Flejes atado</div>
 									<div class="col col-lg-1"><form:input id="TFlejesAtado" size="10" maxlength="8" type="text" path="cotizador_detalles.flejes_atado" onkeypress="return filterFloat(event,this);" class="border border-primary"/></div>
 									<div class="col col-lg-1">Pzas atado</div>
@@ -1193,6 +1252,12 @@ function FAutRechBoc(idcot,iddet,idb,ban)
 									     		onkeypress="return filterFloat(event,this);" class="border border-primary"/>
 								  			</c:otherwise>
 								     	</c:choose>
+							     		
+							     		<form:input type="${item.u_esquema != '5' ? 'hidden' : !empty cotizadordatabean.cotizador_detalles.especialidades_cotizacion[status.index].costo ? 'text' : 'hidden' }" 
+								     	id="TMedidas${item.code}" onkeypress="return SinCaracteresEspeciales(event)" maxlength="20" size="10" placeholder="medidas"
+								     	path="cotizador_detalles.especialidades_cotizacion[${status.index}].medidas" 
+								     	value="${cotizadordatabean.cotizador_detalles.especialidades_cotizacion[status.index].medidas}"  
+								     	class="border border-primary"/>						     		
 								     	
 		                              	</div>
 		                           	</c:forEach>
@@ -1216,6 +1281,8 @@ function FAutRechBoc(idcot,iddet,idb,ban)
 		 
 		 <form:input type="hidden" path="cotizador.usuario_envia_ventas"/>
 		 <form:input type="hidden" path="cotizador.usuario_aut_ventas"/>
+		 <form:input type="hidden" path="cotizador.usuario_aut_ventas_sb"/>
+		 <form:input type="hidden" path="cotizador.fecha_aut_ventas_sb"/>
 		 
 		 <form:input type="hidden" path="cotizador.usuario_envia_a_prog"/>
 		 <form:input type="hidden" path="cotizador.usuario_aut_prog"/>	 
@@ -1223,6 +1290,12 @@ function FAutRechBoc(idcot,iddet,idb,ban)
 		 <form:input type="hidden" path="cotizador.fecha_aut_prog"/>		 
 		 <form:input type="hidden" path="cotizador.fecha_envia_a_prog"/> 
 		 <form:input type="hidden" path="cotizador.fecha_envia_ventas"/>
+		 
+		 <form:input type="hidden" path="cotizador.fecha_envia_ing"/> 
+		 <form:input type="hidden" path="cotizador.usuario_envia_ing"/>
+		 <form:input type="hidden" path="cotizador.fecha_asign_diseniador"/> 
+		 <form:input type="hidden" path="cotizador.usuario_diseniador"/>
+		 <form:input type="hidden" path="cotizador.observaciones_diseniador"/>
 		 
 		 <!--<f o rm:input ty pe="hidden" pat h="cotizad or.usuario_ rech_ventas"/> 
 		 <f o  rm:in put ty pe="hidden" pa t h="cotiza dor.fecha _rech_ventas"/>

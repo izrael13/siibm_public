@@ -138,6 +138,10 @@ function FSeguimiento(id, iddet)
 	</div>
 	<br>
 	<div id = "mensajes" class = "${!empty mensajes ? 'alert alert-success' : ''}">${mensajes}</div>
+	<div class="row ">	
+	 	<button data-toggle="modal" data-target="#ValidaModal" type="button" class="badge badge-info col-6">Valida</button>
+	 	<button data-toggle="modal" data-target="#VerificaModal" type="button" class="badge badge-info col-6">Verifica</button>
+	 </div>
 	<div align="center" class="container-fluid small">
 	<table class="container-fluid table-hover text-center table-bordered">
 		<thead>
@@ -203,6 +207,70 @@ function FSeguimiento(id, iddet)
 		</tbody>
 	</table>
 	</div>
+	
+			<!-- REGION DE MODALS -->
+		<div class="modal fade bd-example-modal-lg" id="ValidaModal" tabindex="-1" role="dialog" aria-labelledby="ValidaModalLabel" aria-hidden="true">
+		  <div class="modal-dialog modal-lg" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header alert alert-info">
+		        <h5 class="modal-title">Lista de validación</h5>
+		      </div>
+		      <div class="modal-body">
+		        <table class="table table-sm table-bordered table-hover">
+		        	<thead>
+		        		<tr>
+		        			<th>Actividad</th>
+		        		</tr>
+		        	</thead>
+		        	<tbody id="TBodyCodBarras">
+		        	<c:forEach var="item" items="${listaAproValida}" varStatus="status">
+		        		<tr>
+		        			<td>
+		        				${item.descripcion}
+		        			</td>
+		        		</tr>
+		        	</c:forEach>
+		        	</tbody>
+		        </table>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		
+		<div class="modal fade bd-example-modal-lg" id="VerificaModal" tabindex="-1" role="dialog" aria-labelledby="VerificaModalLabel" aria-hidden="true">
+		  <div class="modal-dialog modal-lg" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header alert alert-info">
+		        <h5 class="modal-title">Lista de verificación</h5>
+		      </div>
+		      <div class="modal-body">
+		        <table class="table table-sm table-bordered table-hover">
+		        	<thead>
+		        		<tr>
+		        			<th>Actividad</th>
+		        		</tr>
+		        	</thead>
+		        	<tbody id="TBodyCodBarras">
+		        	<c:forEach var="item" items="${listaAproVerifica}" varStatus="status">
+		        		<tr>
+		        			<td>
+		        				${item.descripcion}
+		        			</td>
+		        		</tr>
+		        	</c:forEach>
+		        	</tbody>
+		        </table>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+	
 	<%@include file="../../appconfig/authfootter.jsp"%>
 </body>
 </html>

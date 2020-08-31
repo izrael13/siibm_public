@@ -32,6 +32,11 @@ $(document).ready(function() {
 		$("#TRayado4").attr("readonly","readonly");
 		$("#TRayado5").attr("readonly","readonly");
 		$("#TRayado6").attr("readonly","readonly");
+		
+		$("#TMIL").attr("readonly","readonly");
+		$("#TMIA").attr("readonly","readonly");
+		$("#TMIF").attr("readonly","readonly");
+		
 		$("#TCom").attr("readonly","readonly");
 		$("#TComTF").attr("readonly","readonly");
 		$("#TComDis").attr("readonly","readonly");
@@ -366,6 +371,11 @@ function FCalcular()
 	
 }
 
+function FImprimirTF(id,iddet)
+{
+	var redirectWindow = window.open('<c:url value="/tarjeta/ingenieria/imprimirtf"/>?id='+id+'&iddet='+iddet);
+	redirectWindow.replace;
+}
 </script>
 </head>
 <body>
@@ -437,11 +447,7 @@ function FCalcular()
 					<form:input id="TMedPliego" class="border border-secondary" size="9" maxlength="8" readonly="true" type="text" path="tarjeta_fabricacion.medida_pliego"/>
 					<div class="has-error"><form:errors path="tarjeta_fabricacion.medida_pliego" class="badge badge-danger small"/></div>
 				</div>
-				<div class="col-sm-2">Medidas internas:
-					<form:input id="TMedInt" class="border border-primary" size="9" maxlength="20" onkeypress="return SinCaracteresEspeciales(event)" type="text" path="tarjeta_fabricacion.medidas_internas"/>
-					<div class="has-error"><form:errors path="tarjeta_fabricacion.medidas_internas" class="badge badge-danger small"/></div>
-				</div>
-				<div class="col-sm-2">Grabado:
+				<div class="col-sm-4">Grabado:
 					<form:select id="SGrabado" path="tarjeta_fabricacion.grabado" multiple="false" class="border border-primary">
 						<form:option value="0"> - </form:option>
 						<c:forEach var="gr" items="${grabados}">
@@ -450,7 +456,7 @@ function FCalcular()
 					</form:select>
 					<div class="has-error"><form:errors path="tarjeta_fabricacion.grabado" class="badge badge-danger small"/></div>
 				</div>
-				<div class="col-sm-2">Suaje:
+				<div class="col-sm-4">Suaje:
 					<form:select id="SSuaje" path="tarjeta_fabricacion.suaje" multiple="false" class="border border-primary">
 						<form:option value="0"> - </form:option>
 						<c:forEach var="sj" items="${suajes}">
@@ -462,6 +468,23 @@ function FCalcular()
 				<div class="col-sm-2">Pegado/Grapado:
 					<form:input class="border border-secondary" size="9" maxlength="8" readonly="true" type="text" path="tarjeta_fabricacion.pegado_grapado"/>
 				</div>						
+			</div>
+		</div>
+		<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
+			<div class="row small border border-right">
+				<div class="col-sm-2">Medidas internas</div>
+				<div class="col-sm-2">Largo:
+					<form:input id="TMIL" class="border border-primary" onkeypress="return filterFloat1(event,this);" size="9" maxlength="8" type="text" path="cotizador_detalles.mil"/>
+					<div class="has-error"><form:errors path="cotizador_detalles.mil" class="badge badge-danger small"/></div>
+				</div>
+				<div class="col-sm-2">Ancho:
+					<form:input id="TMIA" class="border border-primary" onkeypress="return filterFloat1(event,this);" size="9" maxlength="8" type="text" path="cotizador_detalles.mia"/>
+					<div class="has-error"><form:errors path="cotizador_detalles.mia" class="badge badge-danger small"/></div>
+				</div>
+				<div class="col-sm-2">Fondo:
+					<form:input id="TMIF" class="border border-primary" onkeypress="return filterFloat1(event,this);" size="9" maxlength="8" type="text" path="cotizador_detalles.mif"/>
+					<div class="has-error"><form:errors path="cotizador_detalles.mif" class="badge badge-danger small"/></div>
+				</div>
 			</div>
 		</div>
 		<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
@@ -551,7 +574,7 @@ function FCalcular()
 		<div class="col-12"><!-- mx-auto  para centrar en pantalla -->
 			<div class="row small border border-right">
 				<div class="col col-lg-1">A granel: <form:checkbox disabled="true" path="cotizador_detalles.agranel"/></div>
-				<div class="col col-lg-2">Protecciones: <form:checkbox disabled="true" path="cotizador.protecciones"/></div>
+				<div class="col col-lg-2">Protecciones: <form:input size="10" disabled="true" path="cotizador.protecciones"/></div>
 				<div class="col col-lg-1">Caja seca: <form:checkbox disabled="true" path="cotizador.caja_seca"/></div>
 				<div class="col col-lg-2">Certif fumigación: <form:checkbox disabled="true" path="cotizador.certif_fumig"/></div>
 				<div class="col col-lg-2">EPP transportista: <form:checkbox disabled="true" path="cotizador.epp_transportista"/></div>
@@ -594,6 +617,7 @@ function FCalcular()
 				<div class="col col-lg-1"><a href="javascript:FBuscar()" class="btn btn-outline-primary btn-sm"><i class="fa fa-search" aria-hidden="true"> Buscar</i></a></div>
 				<div class="col col-lg-1"><a href="javascript:FLimpiar()" class="btn btn-outline-primary btn-sm"><i class="fa fa-refresh" aria-hidden="true"> Limpiar</i></a></div>
 				<div class="col col-lg-2"><button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target=".bd-example-modal-xl"><i class="fa fa-picture-o" aria-hidden="true"> Imágenes</i></button></div>
+				<div class="col col-lg-1"><a href="javascript:FImprimirTF(${tdb.tarjeta_fabricacion.idcotizacion},${tdb.tarjeta_fabricacion.iddetalle})" class="btn btn-outline-primary btn-sm"><i class="fa fa-print" aria-hidden="true">Imprimir</i></a></div>
 				<div class="col col-lg-3"><button id="BEnvAut" type="button" data-toggle="modal" data-target="#EnvModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-paper-plane-o" aria-hidden="true"> Enviar para autorizaciones</i></button></div>
 				<div class="col col-lg-2"><button id="BCancelar" type="button" data-toggle="modal" data-target="#CancelModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-times-circle-o" aria-hidden="true"> Cancelar tarjeta</i></button></div>
 			</div>
@@ -707,7 +731,6 @@ function FCalcular()
 			    </div>
 			    <div class="col-sm">
 			      Fecha rech producción: ${tdb.tarjeta_fabricacion.fecha_rech_produccion}			    
-			    </div>
 			  </div>
 			  <div class="row small">
 			    <div class="col-sm">

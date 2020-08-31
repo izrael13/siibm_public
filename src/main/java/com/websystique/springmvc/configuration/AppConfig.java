@@ -92,7 +92,7 @@ public class AppConfig implements WebMvcConfigurer{
     @Bean
     public MultipartResolver multipartResolver() throws IOException {
         CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
-        multipartResolver.setMaxUploadSize((1024 * 1024) * 10);
+        multipartResolver.setMaxUploadSize((1024 * 1024) * 20);
         return multipartResolver;
     }
     

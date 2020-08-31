@@ -51,7 +51,6 @@ function FBuscarTF(id,iddet)
 						<option value="2">Canceladas</option>
 						<option value="3">Diseño</option>
 						<option value="4">Calidad</option>
-						<option value="5">Producción</option>
 						<option value="6">Ingeniería</option>
 						<option value="7">Cliente</option>
 						<option value="8">Autorizadas x cliente</option>

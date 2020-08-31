@@ -154,5 +154,9 @@ public class Cotizador_detalles implements Serializable{
 	private Integer idtiporequerimiento;
 	
 	private Boolean agranel;
+	
+	private Double mil;
+	private Double mia;
+	private Double mif;
 
 }

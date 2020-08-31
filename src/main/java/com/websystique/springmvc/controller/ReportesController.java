@@ -30,6 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.Gson;
 import com.websystique.springmvc.excel.ConsKilosExcel;
 import com.websystique.springmvc.excel.ExcelAmortHerra;
+import com.websystique.springmvc.excel.ExcelDesempenio_anual_vendedor;
 import com.websystique.springmvc.excel.ExcelDesempenio_mensual_vendedor;
 import com.websystique.springmvc.excel.ExcelDesempenio_mensual_xcliente;
 import com.websystique.springmvc.excel.ExcelGolpesPend2;
@@ -43,6 +44,7 @@ import com.websystique.springmvc.model.User;
 import com.websystique.springmvc.model.UserProfile;
 import com.websystique.springmvc.model.reportes.Amortiza_herramentales;
 import com.websystique.springmvc.model.reportes.ConsumoKilos;
+import com.websystique.springmvc.model.reportes.Desempenio_anual_vendedor;
 import com.websystique.springmvc.model.reportes.Desempenio_mensual_vendedor;
 import com.websystique.springmvc.model.reportes.Desempenio_mensual_xcliente;
 import com.websystique.springmvc.model.reportes.Golpes_maquina_mes;
@@ -59,6 +61,7 @@ import com.websystique.springmvc.service.reportes.Amortiza_herramentalesService;
 import com.websystique.springmvc.service.reportes.Cobranza_acumService;
 import com.websystique.springmvc.service.reportes.Cobranza_detalleService;
 import com.websystique.springmvc.service.reportes.ConsumoKilosService;
+import com.websystique.springmvc.service.reportes.Desempenio_anual_vendedorService;
 import com.websystique.springmvc.service.reportes.Desempenio_mensual_vendedorService;
 import com.websystique.springmvc.service.reportes.Desempenio_mensual_xclienteService;
 import com.websystique.springmvc.service.reportes.Desempenio_mensual_xproductoService;
@@ -157,7 +160,9 @@ public class ReportesController {
 	@Autowired
 	Embarque_diario_detalleService emds;
 	@Autowired
-	ListaEmbarquesService lem;	
+	ListaEmbarquesService lem;
+	@Autowired
+	Desempenio_anual_vendedorService das;
 	
 	
 	@RequestMapping(value = {"/papel/consumo_papel_mes" }, method = RequestMethod.GET)
@@ -1227,4 +1232,60 @@ public class ReportesController {
 		}
 		return "/reportes/listadeembarque";
 	}
+	
+	@RequestMapping(value = {"/vendedores/desempenioanualvend" }, method = RequestMethod.GET)
+	public String desempenioaniovend(ModelMap model,@RequestParam(value = "anio", defaultValue = "0", required = false) Integer anio) {
+		try 
+		{
+			anio = (anio == 0 ? Calendar.getInstance().get(Calendar.YEAR) : anio);
+			User user = us.findBySSO(AppController.getPrincipal());
+			model.addAttribute("loggedinuser", AppController.getPrincipal());
+			model.addAttribute("selectedValue", anio);
+			
+			int b = 0;
+			for(UserProfile s : user.getUserProfiles())
+			{
+				if(s.getType().equals("ADMIN") || s.getType().equals("VENTAS"))
+					b++;
+			}
+			if(b == 0)
+				model.addAttribute("lista", das.BuscarxAnio(anio,user.getCvevendedor_sap()));
+			else
+				model.addAttribute("lista", das.BuscarxAnio(anio,0));
+			
+			logger.info(AppController.getPrincipal() + " - ventas/desempenioanualvend.");
+		}
+		catch(Exception e) {
+			logger.error(AppController.getPrincipal() + " - ventas/desempenioanualvend. - " + e.getMessage());
+		}
+		return "/reportes/desempenio_anual_vend";
+	}
+	
+	@RequestMapping(value = { "/vendedores/desempenioanualvendexcel" },method=RequestMethod.GET)
+	public ModelAndView desempenioanualvendexcel(HttpServletRequest req, HttpServletResponse res) {
+
+		List<Desempenio_anual_vendedor> listaexcel = null;
+		try {
+			
+			int anio = Integer.parseInt(req.getParameter("anio"));
+			User user = us.findBySSO(AppController.getPrincipal());
+			int b = 0;
+			for(UserProfile s : user.getUserProfiles())
+			{
+				if(s.getType().equals("ADMIN") || s.getType().equals("VENTAS"))
+					b++;
+			}
+			
+			if(b == 0)
+				listaexcel = das.BuscarxAnio(anio, user.getCvevendedor_sap());
+			else
+				listaexcel = das.BuscarxAnio(anio,0);
+			logger.info(AppController.getPrincipal() + " - desempenioanualvendexcel.");
+			
+		}
+		catch(Exception e) {
+			logger.error(AppController.getPrincipal() + " - desempenioanualvendexcel. - " + e.getMessage());
+		}
+		return new ModelAndView(new ExcelDesempenio_anual_vendedor(), "listaexcel", listaexcel);
+	} 
 }

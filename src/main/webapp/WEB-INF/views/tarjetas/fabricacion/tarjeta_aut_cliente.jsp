@@ -14,6 +14,8 @@ function FAut(folio)
 	var r = confirm("Enviar autorización!");
 	if(r == true)
 	{
+		$("#mensajes" ).text("Procesando petición, por favor espere...").removeClass().addClass("alert alert-info");
+		
 		if(folio != "")
 		{
 			var http = new XMLHttpRequest();
@@ -51,11 +53,7 @@ function FAut(folio)
 			    		alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
 			    		window.location.replace('<c:url value="/tarjeta/cliente/tarjeta_aut_cliente"/>');
 			    	}
-			    	else
-			    	{
-				    	$("#mensajes" ).text("Procesando petición, por favor espere...");
-						$("#mensajes").removeClass().addClass("alert alert-info");
-			    	}
+
 			    }
 			    
 			}
@@ -140,6 +138,10 @@ function FImprimirTF(id,iddet)
 	<br>
 	<div id = "mensajes" class = "${!empty mensajes ? 'alert alert-success' : ''}">${mensajes}</div>
 	<div align="center" class="container-fluid">
+	<div class="row ">	
+	 	<button data-toggle="modal" data-target="#ValidaModal" type="button" class="badge badge-info col-6">Valida</button>
+	 	<button data-toggle="modal" data-target="#VerificaModal" type="button" class="badge badge-info col-6">Verifica</button>
+	 </div>
 	<table class="container-fluid table-hover text-center table-bordered small">
 	<thead>
 		<tr>
@@ -171,5 +173,71 @@ function FImprimirTF(id,iddet)
 	</tbody>
 	</table>
 	</div>
+	
+			<!-- REGION DE MODALS -->
+		<div class="modal fade bd-example-modal-lg" id="ValidaModal" tabindex="-1" role="dialog" aria-labelledby="ValidaModalLabel" aria-hidden="true">
+		  <div class="modal-dialog modal-lg" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header alert alert-info">
+		        <h5 class="modal-title">Lista de validación</h5>
+		      </div>
+		      <div class="modal-body">
+		        <table class="table table-sm table-bordered table-hover">
+		        	<thead>
+		        		<tr>
+		        			<th>Actividad</th>
+		        		</tr>
+		        	</thead>
+		        	<tbody id="TBodyCodBarras">
+		        	<c:forEach var="item" items="${listaAproValida}" varStatus="status">
+		        		<tr>
+		        			<td>
+		        				${item.descripcion}
+		        			</td>
+		        		</tr>
+		        	</c:forEach>
+		        	</tbody>
+		        </table>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		
+		<div class="modal fade bd-example-modal-lg" id="VerificaModal" tabindex="-1" role="dialog" aria-labelledby="VerificaModalLabel" aria-hidden="true">
+		  <div class="modal-dialog modal-lg" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header alert alert-info">
+		        <h5 class="modal-title">Lista de verificación</h5>
+		      </div>
+		      <div class="modal-body">
+		        <table class="table table-sm table-bordered table-hover">
+		        	<thead>
+		        		<tr>
+		        			<th>Actividad</th>
+		        		</tr>
+		        	</thead>
+		        	<tbody id="TBodyCodBarras">
+		        	<c:forEach var="item" items="${listaAproVerifica}" varStatus="status">
+		        		<tr>
+		        			<td>
+		        				${item.descripcion}
+		        			</td>
+		        		</tr>
+		        	</c:forEach>
+		        	</tbody>
+		        </table>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+	
+	<%@include file="../../appconfig/authfootter.jsp"%>
+	
 </body>
 </html>

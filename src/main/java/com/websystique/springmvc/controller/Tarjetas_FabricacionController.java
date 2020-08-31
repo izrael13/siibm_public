@@ -25,7 +25,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.lang.StringUtils;
+//import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -75,6 +75,7 @@ import com.websystique.springmvc.service.tarjetas.Catalogo_resistencias_sap_vwSe
 import com.websystique.springmvc.service.tarjetas.Catalogo_sellosService;
 import com.websystique.springmvc.service.tarjetas.Codigo_barras_cotizadorService;
 import com.websystique.springmvc.service.tarjetas.Especialidades_cotizacionService;
+import com.websystique.springmvc.service.tarjetas.Lista_aprobacion_areasService;
 import com.websystique.springmvc.service.tarjetas.commons.CotizadorTarjetasService;
 import com.websystique.springmvc.service.tarjetas.cotizador.CotizadorService;
 import com.websystique.springmvc.service.tarjetas.cotizador.Cotizador_detallesService;
@@ -136,6 +137,7 @@ public class Tarjetas_FabricacionController {
 	CotizadorTarjetasService ctsc;
 	@Autowired
     Environment environment;
+	@Autowired Lista_aprobacion_areasService lapas;
 	
 	@RequestMapping(value = {"/ingenieria/tarjeta_fabricacion" }, method = RequestMethod.GET)
 	public String tarjeta_fabricacion(ModelMap model, @RequestParam(value = "folio", defaultValue = "", required = false) String folio) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
@@ -293,6 +295,9 @@ public class Tarjetas_FabricacionController {
 			cotdet.setFlejes_atado(tdb.getCotizador_detalles().getFlejes_atado());
 			cotdet.setPzas_atado(tdb.getCotizador_detalles().getPzas_atado());
 			cotdet.setAtados_cama(tdb.getCotizador_detalles().getAtados_cama());
+			cotdet.setMil(tdb.getCotizador_detalles().getMil());
+			cotdet.setMia(tdb.getCotizador_detalles().getMia());
+			cotdet.setMif(tdb.getCotizador_detalles().getMif());
 			cotdet.setIdtiporequerimiento(0);
 			
 			if((tdb.getCotizador_detalles().getPiezasxtarima() != null) && (tdb.getCotizador_detalles().getPiezasxtarima() < cotdet.getPiezasxtarima())) {
@@ -510,8 +515,6 @@ public class Tarjetas_FabricacionController {
 			
 			tf.setUsuario_rech_calidad(null);
 			tf.setFecha_rech_calidad(null);
-			tf.setUsuario_rech_produccion(null);
-			tf.setFecha_rech_produccion(null);
 			tf.setUsuario_recha_ing(null);
 			tf.setFecha_rech_ing(null);
 			tf.setUsuario_rech_cliente(null);
@@ -597,6 +600,21 @@ public class Tarjetas_FabricacionController {
 		Params.add(new ParamsGeneral(5,"usuario_cancela","EQ"));
 		Params.add(new ParamsGeneral(6,"fecha_cancela","EQ"));
 		model.addAttribute("tarjetas",tfs.BuscarXAut(Params));
+		
+		Map<String,String> mOrd =  new HashMap<String, String>();
+		
+		List<ParamsGeneral> ParamsVa = new ArrayList<ParamsGeneral>();
+		ParamsVa.add(new ParamsGeneral(1,"modulo","Tarjetas","EQ"));
+		ParamsVa.add(new ParamsGeneral(1,"area","Calidad","EQ"));
+		ParamsVa.add(new ParamsGeneral(1,"actividad","Valida","EQ"));		
+		model.addAttribute("listaAproValida", lapas.ListaAproba(ParamsVa, mOrd));
+		
+		List<ParamsGeneral> ParamsVe = new ArrayList<ParamsGeneral>();
+		ParamsVe.add(new ParamsGeneral(1,"modulo","Tarjetas","EQ"));
+		ParamsVe.add(new ParamsGeneral(1,"area","Calidad","EQ"));
+		ParamsVe.add(new ParamsGeneral(1,"actividad","Verifica","EQ"));		
+		model.addAttribute("listaAproVerifica", lapas.ListaAproba(ParamsVe, mOrd));
+		
 		logger.info(AppController.getPrincipal() + " - tarjeta_aut_calidad.");
 				
 		return "/tarjetas/fabricacion/tarjeta_aut_calidad";
@@ -652,11 +670,26 @@ public class Tarjetas_FabricacionController {
 		Params.add(new ParamsGeneral(5,"usuario_cancela","EQ"));
 		Params.add(new ParamsGeneral(6,"fecha_cancela","EQ"));
 		model.addAttribute("tarjetas",tfs.BuscarXAut(Params));
+		
+		Map<String,String> mOrd =  new HashMap<String, String>();
+		
+		List<ParamsGeneral> ParamsVa = new ArrayList<ParamsGeneral>();
+		ParamsVa.add(new ParamsGeneral(1,"modulo","Tarjetas","EQ"));
+		ParamsVa.add(new ParamsGeneral(1,"area","Produccion","EQ"));
+		ParamsVa.add(new ParamsGeneral(1,"actividad","Valida","EQ"));		
+		model.addAttribute("listaAproValida", lapas.ListaAproba(ParamsVa, mOrd));
+		
+		List<ParamsGeneral> ParamsVe = new ArrayList<ParamsGeneral>();
+		ParamsVe.add(new ParamsGeneral(1,"modulo","Tarjetas","EQ"));
+		ParamsVe.add(new ParamsGeneral(1,"area","Produccion","EQ"));
+		ParamsVe.add(new ParamsGeneral(1,"actividad","Verifica","EQ"));		
+		model.addAttribute("listaAproVerifica", lapas.ListaAproba(ParamsVe, mOrd));
+		
 		logger.info(AppController.getPrincipal() + " - tarjeta_aut_produccion.");
 				
 		return "/tarjetas/fabricacion/tarjeta_aut_produccion";
 	}
-		
+	
 	@RequestMapping(value = {"/produccion/tarjeta_aut_produccion_desicion" }, method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> tarjeta_aut_produccion(ModelMap model,
@@ -705,10 +738,29 @@ public class Tarjetas_FabricacionController {
 		Params.add(new ParamsGeneral(1,"usuario_aut_produccion","NE"));
 		Params.add(new ParamsGeneral(2,"fecha_aut_produccion","NE"));
 		Params.add(new ParamsGeneral(3,"usuario_aut_ing","EQ"));
-		Params.add(new ParamsGeneral(4,"fecha_aut_ing","EQ"));
+		Params.add(new ParamsGeneral(4,"fecha_aut_ing","EQ"));		
+		Params.add(new ParamsGeneral(1,"usuario_aut_diseniador","NE"));
+		Params.add(new ParamsGeneral(2,"fecha_aut_diseniador","NE"));
+		Params.add(new ParamsGeneral(3,"usuario_aut_calidad","NE"));
+		Params.add(new ParamsGeneral(4,"fecha_aut_calidad","NE"));		
 		Params.add(new ParamsGeneral(5,"usuario_cancela","EQ"));
 		Params.add(new ParamsGeneral(6,"fecha_cancela","EQ"));
 		model.addAttribute("tarjetas",tfs.BuscarXAut(Params));
+		
+		Map<String,String> mOrd =  new HashMap<String, String>();
+		
+		List<ParamsGeneral> ParamsVa = new ArrayList<ParamsGeneral>();
+		ParamsVa.add(new ParamsGeneral(1,"modulo","Tarjetas","EQ"));
+		ParamsVa.add(new ParamsGeneral(1,"area","Ingenieria","EQ"));
+		ParamsVa.add(new ParamsGeneral(1,"actividad","Valida","EQ"));		
+		model.addAttribute("listaAproValida", lapas.ListaAproba(ParamsVa, mOrd));
+		
+		List<ParamsGeneral> ParamsVe = new ArrayList<ParamsGeneral>();
+		ParamsVe.add(new ParamsGeneral(1,"modulo","Tarjetas","EQ"));
+		ParamsVe.add(new ParamsGeneral(1,"area","Ingenieria","EQ"));
+		ParamsVe.add(new ParamsGeneral(1,"actividad","Verifica","EQ"));		
+		model.addAttribute("listaAproVerifica", lapas.ListaAproba(ParamsVe, mOrd));
+		
 		logger.info(AppController.getPrincipal() + " - tarjeta_aut_ingenieria.");
 				
 		return "/tarjetas/fabricacion/tarjeta_aut_ingenieria";
@@ -743,14 +795,14 @@ public class Tarjetas_FabricacionController {
 				
 			tf.setObservaciones_ing(coment);
 			tfs.Actualizar(tf);
-			logger.info(AppController.getPrincipal() + " - tarjeta_aut_produccion_desicion. " + mensaje);
+			logger.info(AppController.getPrincipal() + " - tarjeta_aut_ingenieria_desicion. " + mensaje);
 			return new ResponseEntity<Object>("OK", HttpStatus.OK);
 		}
 		catch(Exception e)
 		{
 			mensaje = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
 			model.addAttribute("mensajes", mensaje);
-			logger.info(AppController.getPrincipal() + " - tarjeta_aut_produccion_desicion. " + mensaje);
+			logger.info(AppController.getPrincipal() + " - tarjeta_aut_ingenieria_desicion. " + mensaje);
 			return new ResponseEntity<Object>(mensaje, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	
@@ -775,6 +827,21 @@ public class Tarjetas_FabricacionController {
 				Lista.remove(tar);
 		});
 		model.addAttribute("tarjetas",Lista);
+		
+		Map<String,String> mOrd =  new HashMap<String, String>();
+		
+		List<ParamsGeneral> ParamsVa = new ArrayList<ParamsGeneral>();
+		ParamsVa.add(new ParamsGeneral(1,"modulo","Tarjetas","EQ"));
+		ParamsVa.add(new ParamsGeneral(1,"area","Cliente","EQ"));
+		ParamsVa.add(new ParamsGeneral(1,"actividad","Valida","EQ"));		
+		model.addAttribute("listaAproValida", lapas.ListaAproba(ParamsVa, mOrd));
+		
+		List<ParamsGeneral> ParamsVe = new ArrayList<ParamsGeneral>();
+		ParamsVe.add(new ParamsGeneral(1,"modulo","Tarjetas","EQ"));
+		ParamsVe.add(new ParamsGeneral(1,"area","Cliente","EQ"));
+		ParamsVe.add(new ParamsGeneral(1,"actividad","Verifica","EQ"));		
+		model.addAttribute("listaAproVerifica", lapas.ListaAproba(ParamsVe, mOrd));
+		
 		logger.info(AppController.getPrincipal() + " - tarjeta_aut_cliente.");
 				
 		return "/tarjetas/fabricacion/tarjeta_aut_cliente";
@@ -1207,11 +1274,14 @@ public class Tarjetas_FabricacionController {
 			arrEsp = TFInfo.getJSONArray("ListaEsp");
 			String espXMLpart = "";
 			String maqXMLpart = "";
+			String cbXMLpart = "";
+			
 			for(int i=0; i<arrEsp.length();i++)
 			{
 				JSONObject obj = arrEsp.getJSONObject(i);
 				espXMLpart = espXMLpart + "<Properties"+obj.optInt("propiedadoitm",0)+">tYES</Properties"+obj.optInt("propiedadoitm",0)+"> ";
 			}
+			
 			JSONArray arrMaq = new JSONArray();
 			arrMaq = TFInfo.getJSONArray("catalogo_maquinas_sap_vw");
 			for(int j=0; j<arrMaq.length(); j++)
@@ -1219,6 +1289,19 @@ public class Tarjetas_FabricacionController {
 				JSONObject obj = arrMaq.getJSONObject(j);
 				maqXMLpart = maqXMLpart + "<Properties"+obj.optInt("u_propiedad",0)+">tYES</Properties"+obj.optInt("u_propiedad",0)+"> ";
 			}
+			
+			JSONArray arrCodBarras = new JSONArray();
+			arrCodBarras = TFInfo.getJSONArray("codigo_barra_cotizador");
+			StringBuilder csvBuilder = new StringBuilder();
+			for(int j=0; j<arrCodBarras.length(); j++)
+			{
+				JSONObject obj = arrCodBarras.getJSONObject(j);
+				csvBuilder.append( obj.optString("idcodigo"));
+				csvBuilder.append(",");
+			}
+			cbXMLpart = csvBuilder.toString();
+			cbXMLpart = (cbXMLpart.endsWith(",") ? cbXMLpart.substring(0, cbXMLpart.length() - 1) : cbXMLpart);
+			
 			idsession = DISERVER.login(environment.getRequiredProperty("diserver.dbserver"), environment.getRequiredProperty("diserver.dbname"), 
 					   environment.getRequiredProperty("diserver.dbtype"), environment.getRequiredProperty("diserver.dbusername"), 
 					   environment.getRequiredProperty("diserver.dbpassword"), environment.getRequiredProperty("diserver.compusername"), 
@@ -1266,7 +1349,7 @@ public class Tarjetas_FabricacionController {
 
 				    if(Integer.valueOf(nextSim) > 0)//Obtener el siguiente SI
 					{
-						String newSimbolo = "SI-" + StringUtils.leftPad(nextSim, 6,"0");
+						String newSimbolo = "SI-" + String.format("%4d", Integer.parseInt(nextSim)); //StringUtils.leftPad(nextSim, 6,"0");
 						
 						String xml ="<BOM><BO> " + 
 										"<AdmInfo> " + 
@@ -1306,7 +1389,10 @@ public class Tarjetas_FabricacionController {
 												"<U_LPLIEGO>"+TFInfo.optDouble("largo_pliego",0.0)+"</U_LPLIEGO> " +
 												"<U_APLIEGO>"+TFInfo.optDouble("ancho_pliego",0.0)+"</U_APLIEGO> " +
 												"<U_PJUEGO>"+TFInfo.optInt("piezasxjuego",0)+"</U_PJUEGO> " +
-												"<U_CLIENTE>"+TFInfo.optString("cardcode","")+"</U_CLIENTE> " +
+												
+												"<U_CLIENTE>"+TFInfo.optString("cardcode_factura","")+"</U_CLIENTE> " +
+												"<CardCode>"+TFInfo.optString("cardcode",null)+"</CardCode> " +
+												
 												"<U_CLRIMPR>"+ //colores
 													(TFInfo.optString("color1n","") + TFInfo.optString("color2n","") == "" ? "" : ", " +
 													TFInfo.optString("color2n","") + TFInfo.optString("color3n","") == "" ? "" : ", " +
@@ -1328,6 +1414,14 @@ public class Tarjetas_FabricacionController {
 												"<U_RAYADO3>"+((int)(TFInfo.optDouble("rayado3",0.0)*10))+"</U_RAYADO3> " +
 												"<U_RAYADO4>"+((int)(TFInfo.optDouble("rayado4",0.0)*10))+"</U_RAYADO4> " +
 												"<U_RAYADO5>"+((int)(TFInfo.optDouble("rayado5",0.0)*10))+"</U_RAYADO5> " +
+												
+												"<U_LE>"+TFInfo.optDouble("mil",0.0)+"</U_LE> " +
+												"<U_AE>"+TFInfo.optDouble("mia",0.0)+"</U_AE> " + 
+												"<U_FE>"+TFInfo.optDouble("mif",0.0)+"</U_FE> " +
+												"<U_Sello>"+TFInfo.optString("resis_cte")+"</U_Sello> " +
+												"<U_Codbarras>"+TFInfo.optString("cbXMLpart")+"</U_Codbarras> " +
+												"<U_Cobb>"+TFInfo.optString("cobb")+"</U_Cobb> " +
+												
 												"<U_PrecioVta>"+TFInfo.optDouble("precio_objetivo")+"</U_PrecioVta> " +
 												"<U_CPCC>"+TFInfo.optDouble("cpcc",0.0)+"</U_CPCC> " +
 												"<U_CPSC>"+TFInfo.optDouble("ref_para_comision",0.0)+"</U_CPSC> " +
@@ -1461,6 +1555,11 @@ public class Tarjetas_FabricacionController {
 														"<U_RAYADO3>"+((int)(TFInfo.optDouble("rayado3",0.0)*10))+"</U_RAYADO3> " +
 														"<U_RAYADO4>"+((int)(TFInfo.optDouble("rayado4",0.0)*10))+"</U_RAYADO4> " +
 														"<U_RAYADO5>"+((int)(TFInfo.optDouble("rayado5",0.0)*10))+"</U_RAYADO5> " +
+														
+														"<U_LE>"+TFInfo.optDouble("mil",0.0)+"</U_LE> " +
+														"<U_AE>"+TFInfo.optDouble("mia",0.0)+"</U_AE> " + 
+														"<U_FE>"+TFInfo.optDouble("mif",0.0)+"</U_FE> " +
+														
 														"<User_Text>"+TFInfo.optString("observaciones","")+"</User_Text> " +
 														"<U_GRABADO>"+TFInfo.optString("grabado","")+"</U_GRABADO> " +
 														"<U_SUAJE>"+TFInfo.optString("suaje","")+"</U_SUAJE> " +

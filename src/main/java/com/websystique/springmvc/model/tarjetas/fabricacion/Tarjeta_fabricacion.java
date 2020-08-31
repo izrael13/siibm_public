@@ -44,7 +44,7 @@ public class Tarjeta_fabricacion implements Serializable{/**
 	private Integer pzasxancho;
 	//private String medida_lamina;
 	private String medida_pliego;
-	private String medidas_internas;
+	//private String medidas_internas;
 	private Integer grabado;
 	private Integer suaje;
 	private Double rayado1;
@@ -110,5 +110,4 @@ public class Tarjeta_fabricacion implements Serializable{/**
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date fecha_cancelxcte;
 	private Integer usuario_cancelxcte;
-
 }

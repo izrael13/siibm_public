@@ -82,7 +82,7 @@ public class Cotizador implements Serializable{/**
 	private Boolean factura;
 	private Boolean certif_calidad;
 	private Boolean imprimir_oc;
-	private Boolean protecciones;
+	private Integer protecciones;
 	private Boolean caja_seca;
 	private Boolean certif_fumig;
 	private Boolean epp_transportista;
@@ -129,4 +129,10 @@ public class Cotizador implements Serializable{/**
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date fecha_conv_tf;
 	private Integer usuario_conv_tf;
+	private Integer identificador;
+	private Double cobb;
+	private Boolean sin_boceto;
+	private Integer usuario_aut_ventas_sb;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date fecha_aut_ventas_sb;
 }

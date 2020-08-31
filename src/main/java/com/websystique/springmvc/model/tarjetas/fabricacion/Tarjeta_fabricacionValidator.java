@@ -47,9 +47,6 @@ public class Tarjeta_fabricacionValidator implements Validator{
 			if(tarjeta.getPzasxancho() == null || tarjeta.getPzasxancho() == 0)
 				errors.rejectValue("tarjeta_fabricacion.pzasxancho", "NotEmpty");
 			
-			if(tarjeta.getMedidas_internas() == null || tarjeta.getMedidas_internas() == "")
-				errors.rejectValue("tarjeta_fabricacion.medidas_internas", "NotEmpty");
-			
 			if(tarjeta.getSuaje() == null || tarjeta.getSuaje() == 0)
 				errors.rejectValue("tarjeta_fabricacion.suaje", "NotEmpty");
 			

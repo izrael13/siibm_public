@@ -172,6 +172,8 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 			    	<sec:authorize access="hasRole('ADMIN') or hasRole('VENDEDOR')">
 			    		<li><a class="dropdown-item" href = "<c:url value='/cotizador/vendedor/cotizadorabc'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro Cotizaciones/Requerimientos/Muestras</a></li>
 			    		<li><a class="dropdown-item" href = "<c:url value='/cotizador/vendedor/arrastresabc'/>"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Registro Arrastres</a></li>
+			    	</sec:authorize>
+			    	<sec:authorize access="hasRole('ADMIN') or hasRole('VENDEDOR') or hasRole('CALIDAD') or hasRole('INGENIERIA') or hasRole('PRODUCCION') or hasRole('VENTAS') or hasRole('INGENIERIA_GERENCIA') or hasRole('PROGRAMACION')">
 			    		<li><a class="dropdown-item" href = "<c:url value='/cotizador/vendedor/seguimiento_cot'/>"><i class="fa fa-angle-right" aria-hidden="true"></i> Seguimiento de cotizaciones</a></li>
 			    	</sec:authorize>
 			    	<sec:authorize access="hasRole('ADMIN') or hasRole('VENDEDOR') or hasRole('ARRASTRE') or hasRole('MUESTRISTA') or hasRole('VENTAS ') or hasRole('INGENIERIA_GERENCIA')">
@@ -240,6 +242,15 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 			    </ul>
 			 </li>
 			 </sec:authorize>
+			 <sec:authorize access="hasRole('CALIDAD') or hasRole('ADMIN')">
+			 <li class="dropdown-submenu dropdown-menu-right"><a class="nav-link dropdown-toggle"><i class="fa fa-file-powerpoint-o" aria-hidden="true"></i> Certificados</a>
+			    <ul class="dropdown-menu">
+		    		<li><a class="dropdown-item" href = "<c:url value='/certificados/calidad/certificadosabc' />"><i class="fa fa-file-archive-o" aria-hidden="true"></i> Certificados de calidad</a></li>
+		    		<li><a class="dropdown-item" href = "<c:url value='/certificados/ingenieria/liberacioncm' />"><i class="fa fa-file-archive-o" aria-hidden="true"></i> Liberación CM</a></li>
+		    		<li><a class="dropdown-item" href = "<c:url value='/certificados/calidad/seguimiento_certificados' />"><i class="fa fa-file-archive-o" aria-hidden="true"></i> Seguimiento de certificados</a></li>
+			    </ul>
+			 </li>
+			 </sec:authorize>
 		</ul>		
 	</li>
 	</sec:authorize>
@@ -287,6 +298,7 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 		 		<li><a class="dropdown-item" href = "<c:url value='/reportes/vendedores/desempeniomesvend' />"><i class="fa fa-file-o" aria-hidden="true"></i> Desempeño mensual por vendedor</a></li>
 	    		<li><a class="dropdown-item" href = "<c:url value='/reportes/vendedores/desempeniomesxcte' />"><i class="fa fa-file-o" aria-hidden="true"></i> Desempeño mensual por cliente</a></li>
 	    		<li><a class="dropdown-item" href = "<c:url value='/qlikview/ventas/comparativo' />"><i class="fa fa-area-chart" aria-hidden="true"></i> Comparativo</a></li>
+	    		<li><a class="dropdown-item" href = "<c:url value='/reportes/vendedores/desempenioanualvend' />"><i class="fa fa-file-o" aria-hidden="true"></i> Desempeño anual por vendedor</a></li>
 			 </ul>
 		 </li>
 	</ul>

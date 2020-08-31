@@ -21,7 +21,7 @@
 	   	  <div class="modal-header alert alert-info">
 	        <h5 class="modal-title" id="ReqModal">Información adicional</h5>
 	      </div>
-	      <div class="container">
+	      <div class="container small">
 		  <div class="row">
 		    <div class="col-sm">
 		      Fecha creación:
@@ -48,6 +48,12 @@
 		    </div>
 		    <div class="col-sm">
 		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_aut_ventas}" pattern="yyyy-MM-dd hh:mm"/>
+		    </div>
+		    <div class="col-sm">
+		      Fecha aut calidad:
+		    </div>
+		    <div class="col-sm">
+		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_aut_calidad}" pattern="yyyy-MM-dd hh:mm"/>
 		    </div>
 		  </div>
 		   <div class="row">
@@ -76,6 +82,12 @@
 		    </div>
 		    <div class="col-sm">
 		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_rech_prog}" pattern="yyyy-MM-dd hh:mm"/>
+		    </div>
+		    <div class="col-sm">
+		      Fecha rechaza calidad:
+		    </div>
+		    <div class="col-sm">
+		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_rech_calidad}" pattern="yyyy-MM-dd hh:mm"/>
 		    </div>
 		  </div>
 		  <div class="row">
@@ -126,6 +138,14 @@
 		    </div>
 		    <div class="col-sm">
 		     	${cotizadordatabean.cotizador.fecha_asign_diseniador}
+		    </div>
+		  </div>
+		  <div class="row">
+		    <div class="col-sm">
+		      Observaciones calidad:
+		    </div>
+		    <div class="col-sm">
+		     	${cotizadordatabean.cotizador.obsevaciones_calidad}
 		    </div>
 		  </div>		  
 		  <div class="modal-footer">

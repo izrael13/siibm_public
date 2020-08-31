@@ -26,6 +26,13 @@ $("input[id='ChEsp']").each(function (){
 			$("#TAjuste"+idEsp).attr("type","text");
 		}
 		
+		if(idEsp == 9 || idEsp == 19 || idEsp == 24)
+		{		
+			
+			$("#TMedidas"+idEsp).attr("type","text");
+			$("#TMedidas"+idEsp).val("1.20 x 1");
+		}
+		
 		if((idEsp == 4 || idEsp == 5 || idEsp == 6 || idEsp == 7 || idEsp == 20 || idEsp == 8) && (idcaja == 56 || idcaja == 8) )
 		{		
 			$("#TCM"+idEsp).attr("required","required");
@@ -63,6 +70,12 @@ $("input[id='ChEsp']").each(function (){
 			$("#TAjuste"+idEsp).attr("type","hidden");
 			$("#TAjuste"+idEsp).attr("required",false);
 			$("#TAjuste"+idEsp).val("");
+		}
+		
+		if(idEsp == 9 || idEsp == 19 || idEsp == 24)
+		{		
+			$("#TMedidas"+idEsp).attr("type","hidden");
+			$("#TMedidas"+idEsp).val("");
 		}
 		
 		if((idEsp == 4 || idEsp == 5 || idEsp == 6 || idEsp == 7 || idEsp == 20 || idEsp == 8) && (idcaja != 56 || idcaja != 8) )
@@ -187,12 +200,14 @@ function FDisableElemens()
 	
 	//$("#BCancel").prop('disabled',true);
 	$("#BGrabar").prop('disabled',true);
-	$("#BEnvVtas").prop('disabled',true);
 	
 	$("#TSimbolo").attr("readonly","readonly");				
 	$("#TLargo").attr("readonly","readonly");
 	$("#TAncho").attr("readonly","readonly");
 	$("#TFondo").attr("readonly","readonly");
+	$("#TLargoInt").attr("readonly","readonly");
+	$("#TAnchoInt").attr("readonly","readonly");
+	$("#TFondoInt").attr("readonly","readonly");
 	$("#SResisCte option:not(:selected)").prop("disabled", true);
 	$("#SCierre option:not(:selected)").prop("disabled", true);
 	$("#SCierreDet option:not(:selected)").prop("disabled", true);
@@ -206,7 +221,7 @@ function FDisableElemens()
 
 	$("#TPreciObj").attr("readonly","readonly");
 	$("#TPzasxTar").attr("readonly","readonly");
-	
+	$("#TCOBB").attr("readonly","readonly");
 	////////////****ESPECIALIDADES****///////////////////
 	var nodes = document.getElementById("DEsp").getElementsByTagName('*');
 	for(var i = 0; i < nodes.length; i++)
@@ -254,9 +269,13 @@ function FDisableElemens()
 	$("#SColor5 option:not(:selected)").prop("disabled", true);
 	$("#SColor6 option:not(:selected)").prop("disabled", true);
 	$("#SColor7 option:not(:selected)").prop("disabled", true);
+	$("#CProtecciones option:not(:selected)").prop("disabled", true);//Se hizo lista después
+	$("#CIdentificador option:not(:selected)").prop("disabled", true);//Se hizo lista después
+	
 	$("#TNumRanuras").attr("readonly","readonly");
 	$("#TFechaOC").attr("readonly","readonly");
 	$("#CCejaDesp").bind("click", preventDef, false);
+	$("#CSinBoceto").bind("click", preventDef, false);
 	$("#STolerancia option:not(:selected)").prop("disabled", true);
 	$("#SDisenio option:not(:selected)").prop("disabled", true);
 	$("#CCancSust").bind("click", preventDef, false);
@@ -267,7 +286,6 @@ function FDisableElemens()
 	$("#CFactura").bind("click", preventDef, false);
 	$("#CCertCal").bind("click", preventDef, false);
 	$("#CImpOC").bind("click", preventDef, false);
-	$("#CProtecciones").bind("click", preventDef, false);
 	$("#CCajaSeca").bind("click", preventDef, false);
 	$("#CCertFum").bind("click", preventDef, false);
 	$("#CEPP").bind("click", preventDef, false);

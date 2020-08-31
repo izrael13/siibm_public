@@ -29,7 +29,7 @@ public class Bocetos_cotizador implements Serializable{/**
 	@NotBlank
 	private String num_proyecto;
 	@NotNull
-	private Double version;
+	private String version;
 	private String observaciones_vendedor;
 	private String observaciones_diseniador;
 	private String ruta_archivo;

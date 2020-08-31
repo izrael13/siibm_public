@@ -161,7 +161,6 @@ public class Tarjeta_fabricacionDAOImpl extends AbstractDao<Integer,Tarjeta_fabr
 		if(Status == 1)//rechazadas
 		{
 			query = query + " and (a.FECHA_RECH_CALIDAD is not null or \r\n" + 
-								"a.FECHA_RECH_PRODUCCION is not null or\r\n" + 
 								"a.FECHA_RECH_ING is not null or\r\n" + 
 								"a.FECHA_RECH_CLIENTE is not null ) and a.FECHA_CANCELA is null";
 		}
@@ -181,14 +180,9 @@ public class Tarjeta_fabricacionDAOImpl extends AbstractDao<Integer,Tarjeta_fabr
 			query = query + " and a.FECHA_AUT_DISENIADOR is not null and a.FECHA_AUT_CALIDAD is null  and a.FECHA_CANCELA is null ";
 		}
 		
-		if(Status == 5)//Produccion
-		{
-			query = query + " and a.FECHA_AUT_CALIDAD is not null and a.FECHA_AUT_PRODUCCION is null  and a.FECHA_CANCELA is null ";
-		}
-		
 		if(Status == 6)//Ingenieria
 		{
-			query = query + " and a.FECHA_AUT_PRODUCCION is not null and a.FECHA_AUT_ING is null  and a.FECHA_CANCELA is null ";
+			query = query + " and a.FECHA_AUT_CALIDAD is not null and a.FECHA_AUT_ING is null  and a.FECHA_CANCELA is null ";
 		}
 		
 		if(Status == 7)//Cliente
@@ -259,8 +253,7 @@ public class Tarjeta_fabricacionDAOImpl extends AbstractDao<Integer,Tarjeta_fabr
 		
 		if(Status == 1)//rechazadas
 		{
-			query = query + " and (a.FECHA_RECH_CALIDAD is not null or \r\n" + 
-								"a.FECHA_RECH_PRODUCCION is not null or\r\n" + 
+			query = query + " and (a.FECHA_RECH_CALIDAD is not null or \r\n" +  
 								"a.FECHA_RECH_ING is not null or\r\n" + 
 								"a.FECHA_RECH_CLIENTE is not null ) and a.FECHA_CANCELA is null";
 		}
@@ -280,14 +273,9 @@ public class Tarjeta_fabricacionDAOImpl extends AbstractDao<Integer,Tarjeta_fabr
 			query = query + " and a.FECHA_AUT_DISENIADOR is not null and a.FECHA_AUT_CALIDAD is null  and a.FECHA_CANCELA is null ";
 		}
 		
-		if(Status == 5)//Produccion
-		{
-			query = query + " and a.FECHA_AUT_CALIDAD is not null and a.FECHA_AUT_PRODUCCION is null  and a.FECHA_CANCELA is null ";
-		}
-		
 		if(Status == 6)//Ingenieria
 		{
-			query = query + " and a.FECHA_AUT_PRODUCCION is not null and a.FECHA_AUT_ING is null  and a.FECHA_CANCELA is null ";
+			query = query + " and a.FECHA_AUT_CALIDAD is not null and a.FECHA_AUT_ING is null  and a.FECHA_CANCELA is null ";
 		}
 		
 		if(Status == 7)//Cliente

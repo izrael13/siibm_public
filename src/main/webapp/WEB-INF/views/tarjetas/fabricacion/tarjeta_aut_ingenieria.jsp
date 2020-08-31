@@ -139,14 +139,18 @@ function FImprimirTF(id,iddet)
 	<br>
 	<div id = "mensajes" class = "${!empty mensajes ? 'alert alert-success' : ''}">${mensajes}</div>
 	<div align="center" class="container-fluid">
+	<div class="row ">	
+	 	<button data-toggle="modal" data-target="#ValidaModal" type="button" class="badge badge-info col-6">Valida</button>
+	 	<button data-toggle="modal" data-target="#VerificaModal" type="button" class="badge badge-info col-6">Verifica</button>
+	 </div>
 	<table class="container-fluid table-hover text-center table-bordered small">
 	<thead>
 		<tr>
 			<th>Folio</th>
 			<th>Cotización</th>
 			<th>Desc factura</th>
-			<th>Obs Producción</th>
-			<th>Fecha aut Producción</th>
+			<th>Obs calidad</th>
+			<th>Fecha aut Calidad</th>
 			<th>Comentario</th>
 			<th>Ver</th>
 			<th>Autorizar</th>
@@ -159,8 +163,8 @@ function FImprimirTF(id,iddet)
 			<td><a href="javascript:FSeguimiento(${item.idcotizacion},${item.iddetalle})">${item.folio_tarjeta}</a></td>
 			<td>${item.idcotizacion}</td>
 			<td>${item.descripcion_factura}</td>
-			<td>${item.observaciones_produccion}</td>
-			<td>${item.fecha_aut_produccion}</td>
+			<td>${item.observaciones_calidad}</td>
+			<td>${item.fecha_aut_calidad}</td>
 			<td><input id="TComent${item.folio_tarjeta}" type="text" size="50" onkeypress="return SinCaracteresEspeciales(event)" maxlength="100" class="border border-primary"/></td>
 			<td><a href="javascript:FImprimirTF(${item.idcotizacion},${item.iddetalle})"><i class="fa fa-print" aria-hidden="true"></i></a></td>
 			<td><a href="javascript:FAut(${item.folio_tarjeta})"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></a></td>
@@ -170,5 +174,71 @@ function FImprimirTF(id,iddet)
 	</tbody>
 	</table>
 	</div>
+	
+			<!-- REGION DE MODALS -->
+		<div class="modal fade bd-example-modal-lg" id="ValidaModal" tabindex="-1" role="dialog" aria-labelledby="ValidaModalLabel" aria-hidden="true">
+		  <div class="modal-dialog modal-lg" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header alert alert-info">
+		        <h5 class="modal-title">Lista de validación</h5>
+		      </div>
+		      <div class="modal-body">
+		        <table class="table table-sm table-bordered table-hover">
+		        	<thead>
+		        		<tr>
+		        			<th>Actividad</th>
+		        		</tr>
+		        	</thead>
+		        	<tbody id="TBodyCodBarras">
+		        	<c:forEach var="item" items="${listaAproValida}" varStatus="status">
+		        		<tr>
+		        			<td>
+		        				${item.descripcion}
+		        			</td>
+		        		</tr>
+		        	</c:forEach>
+		        	</tbody>
+		        </table>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		
+		<div class="modal fade bd-example-modal-lg" id="VerificaModal" tabindex="-1" role="dialog" aria-labelledby="VerificaModalLabel" aria-hidden="true">
+		  <div class="modal-dialog modal-lg" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header alert alert-info">
+		        <h5 class="modal-title">Lista de verificación</h5>
+		      </div>
+		      <div class="modal-body">
+		        <table class="table table-sm table-bordered table-hover">
+		        	<thead>
+		        		<tr>
+		        			<th>Actividad</th>
+		        		</tr>
+		        	</thead>
+		        	<tbody id="TBodyCodBarras">
+		        	<c:forEach var="item" items="${listaAproVerifica}" varStatus="status">
+		        		<tr>
+		        			<td>
+		        				${item.descripcion}
+		        			</td>
+		        		</tr>
+		        	</c:forEach>
+		        	</tbody>
+		        </table>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+	
+	<%@include file="../../appconfig/authfootter.jsp"%>
+	
 </body>
 </html>

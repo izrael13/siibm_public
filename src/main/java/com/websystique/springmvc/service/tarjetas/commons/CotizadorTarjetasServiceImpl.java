@@ -18,6 +18,8 @@ import com.websystique.springmvc.model.tarjetas.Catalogo_colores;
 import com.websystique.springmvc.model.tarjetas.Catalogo_direcciones_sap_vw;
 import com.websystique.springmvc.model.tarjetas.Catalogo_especialidades_sap_vw;
 import com.websystique.springmvc.model.tarjetas.Catalogo_herramentales;
+import com.websystique.springmvc.model.tarjetas.Catalogo_identificadores_sap_vw;
+import com.websystique.springmvc.model.tarjetas.Catalogo_protecciones_sap_vw;
 import com.websystique.springmvc.model.tarjetas.Catalogo_resistencias_sap_vw;
 import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador;
 import com.websystique.springmvc.model.tarjetas.cotizador.Cotizador_detalles;
@@ -32,6 +34,8 @@ import com.websystique.springmvc.service.tarjetas.Catalogo_coloresService;
 import com.websystique.springmvc.service.tarjetas.Catalogo_direcciones_sap_vwService;
 import com.websystique.springmvc.service.tarjetas.Catalogo_especialidades_sap_vwService;
 import com.websystique.springmvc.service.tarjetas.Catalogo_herramentalesService;
+import com.websystique.springmvc.service.tarjetas.Catalogo_identificadores_sap_vwService;
+import com.websystique.springmvc.service.tarjetas.Catalogo_protecciones_sap_vwService;
 import com.websystique.springmvc.service.tarjetas.Catalogo_resistencias_sap_vwService;
 import com.websystique.springmvc.service.tarjetas.Catalogo_sellosService;
 import com.websystique.springmvc.service.tarjetas.Codigo_barras_cotizadorService;
@@ -62,6 +66,8 @@ public class CotizadorTarjetasServiceImpl implements CotizadorTarjetasService{
 	@Autowired Tarjetas_fabricacion_imagenesService tfis;
 	@Autowired Catalogo_pedidos_sapService cps;
 	@Autowired Programas_reg_barcaService prbs;
+	@Autowired Catalogo_protecciones_sap_vwService cpss;
+	@Autowired Catalogo_identificadores_sap_vwService ciss;
 	
 	@Override
 	public JSONObject DataSourceJasperCot(Integer id, Integer addDetalles) {
@@ -99,6 +105,11 @@ public class CotizadorTarjetasServiceImpl implements CotizadorTarjetasService{
 		user = null;
 		user = us.findById(cot.getUsuario_cancel() == null ? 0 : cot.getUsuario_cancel());
 		JsonCot.put("usuario_cancel", user == null ? "" : user.getFirstName() + " " + user.getLastName());
+		
+		Catalogo_protecciones_sap_vw Prot = cpss.BuscaxId(cot.getProtecciones());
+		JsonCot.put("protecciones_nom", Prot ==  null ? "" : Prot.getU_observaciones());
+		Catalogo_identificadores_sap_vw Ident = ciss.BuscaxId(cot.getIdentificador());
+		JsonCot.put("identificador_nom",Ident == null ? "" : Ident.getU_observacion());
 		if(addDetalles == 1)
 		{
 			List<JSONObject> ListaJsonDet = new ArrayList<JSONObject>();
@@ -207,10 +218,6 @@ public class CotizadorTarjetasServiceImpl implements CotizadorTarjetasService{
 			JsonTF.put("aut_cliente", tf.getUsuario_aut_cliente() == null ? "" : user.getFirstName() + " " +user.getLastName());
 			user = us.findById(tf.getUsuario_aut_ing() == null ? 0 : tf.getUsuario_aut_ing());
 			JsonTF.put("aut_ingenieria", tf.getUsuario_aut_ing() == null ? "" : user.getFirstName() + " " +user.getLastName());
-			user = us.findById(tf.getUsuario_aut_produccion() == null ? 0 :tf.getUsuario_aut_produccion());
-			JsonTF.put("aut_produccion", tf.getUsuario_aut_produccion() == null ? "" : user.getFirstName() + " " +user.getLastName());
-			user = us.findById(tf.getUsuario_rech_produccion() == null ? 0 :tf.getUsuario_rech_produccion());
-			JsonTF.put("rech_produccion", tf.getUsuario_rech_produccion() == null ? "" : user.getFirstName() + " " +user.getLastName());
 			user = us.findById(tf.getUsuario_recha_ing() == null ? 0 : tf.getUsuario_recha_ing());
 			JsonTF.put("rech_ingenieria", tf.getUsuario_recha_ing() == null ? "" : user.getFirstName() + " " +user.getLastName());
 			user = us.findById(tf.getUsuario_rech_cliente() == null ? 0 : tf.getUsuario_rech_cliente());
@@ -427,10 +434,6 @@ public class CotizadorTarjetasServiceImpl implements CotizadorTarjetasService{
 			JsonTF.put("aut_cliente", tf.getUsuario_aut_cliente() == null ? "" : user.getFirstName() + " " +user.getLastName());
 			user = us.findById(tf.getUsuario_aut_ing() == null ? 0 : tf.getUsuario_aut_ing());
 			JsonTF.put("aut_ingenieria", tf.getUsuario_aut_ing() == null ? "" : user.getFirstName() + " " +user.getLastName());
-			user = us.findById(tf.getUsuario_aut_produccion() == null ? 0 :tf.getUsuario_aut_produccion());
-			JsonTF.put("aut_produccion", tf.getUsuario_aut_produccion() == null ? "" : user.getFirstName() + " " +user.getLastName());
-			user = us.findById(tf.getUsuario_rech_produccion() == null ? 0 :tf.getUsuario_rech_produccion());
-			JsonTF.put("rech_produccion", tf.getUsuario_rech_produccion() == null ? "" : user.getFirstName() + " " +user.getLastName());
 			user = us.findById(tf.getUsuario_recha_ing() == null ? 0 : tf.getUsuario_recha_ing());
 			JsonTF.put("rech_ingenieria", tf.getUsuario_recha_ing() == null ? "" : user.getFirstName() + " " +user.getLastName());
 			user = us.findById(tf.getUsuario_rech_cliente() == null ? 0 : tf.getUsuario_rech_cliente());

@@ -53,6 +53,7 @@ function FImprimirTFCTE(id,iddet)
 	</div>
 	<div class="row small">
 		<fmt:parseNumber var = "i" integerOnly = "true" pattern="##############" type = "number" value = "${cot['id']}" />
+		<fmt:parseNumber var = "idboceto" integerOnly = "true" pattern="##############" type = "number" value = "${cot['idboceto']}" />
 		<fmt:parseNumber var = "idet" integerOnly = "true" pattern="##############" type = "number" value = "${cotdet['iddetalle']}" />
 		<div class="col-1">Folio: ${i}</div>
 		<div class="col-5">Cliente: ${cot['cliente']}</div>
@@ -85,6 +86,11 @@ function FImprimirTFCTE(id,iddet)
 		<div class="col-3">Rech diseñador: ${cot['diseniador_rech']}</div>
 	</div>
 	<div class="row small">
+		<div class="col-3">Fecha aut calidad: ${cot['fecha_aut_calidad']}</div>
+		<div class="col-3">Fecha rech calidad: ${cot['fecha_rech_calidad']}</div>
+		<div class="col-6">Obs calidad: ${cot['obsevaciones_calidad']}</div>
+	</div>
+	<div class="row small">
 		<div class="col-3">Fecha cancel: ${cot['fecha_cancel']}</div>
 		<div class="col-3">Usuario cancel: ${cot['usuario_cancel']}</div>
 		<div class="col-5">Símbolo: ${cotdet['simbolo']}</div>
@@ -98,9 +104,13 @@ function FImprimirTFCTE(id,iddet)
 		<div class="col-1">Factura: ${cot['factura'] == true ? 'Sí' : ''}</div>
 		<div class="col-2">Certif calidad: ${cot['certif_calidad'] == true ? 'Sí' : ''}</div>
 		<div class="col-2">Imprimir OC: ${cot['imprimir_oc'] == true ? 'Sí' : ''}</div>
-		<div class="col-1">Proteccion: ${cot['protecciones'] == true ? 'Sí' : ''}</div>
 		<div class="col-1">Caja seca: ${cot['caja_seca'] == true ? 'Sí' : ''}</div>
 		<div class="col-2">Certif fumig: ${cot['certif_fumig'] == true ? 'Sí' : ''}</div>
+	</div>
+	<div class="row small">
+		<div class="col-3">Proteccion: ${cot['protecciones_nom']}</div>
+		<div class="col-3">Identificador: ${cot['identificador_nom']}</div>
+		<div class="col-3">COBB: ${cot['cobb']}</div>
 	</div>
 	<div class="row small">
 		<div class="col-1">EPP: ${cot['epp_transportista'] == true ? 'Sí' : ''}</div>
@@ -200,6 +210,7 @@ function FImprimirTFCTE(id,iddet)
 		<div class="col-2" style="background:${cotdet['color7c']}">Color7: ${cotdet['color7n']}</div>
 		<sec:authorize access="hasRole('ADMIN') or hasRole('VENTAS') or hasRole('VENDEDOR') or hasRole('PROGRAMACION') or hasRole('INGENIERIA')">
 			<div class="col-2"><a href="javascript:FImprimirReq(${i})"><i class="fa fa-print" aria-hidden="true">Imprimir requerimiento</i></a></div>
+			<div class="col-2"><a href="<c:url value="/static/bocetos/${i}-${idboceto}.pdf"/>" target="_blank"><i class="fa fa-print" aria-hidden="true">Boceto</i></a></div>
 		</sec:authorize>
 		<sec:authorize access="hasRole('ADMIN') or hasRole('VENTAS') or hasRole('INGENIERIA')">
 			<div class="col-2"><a href="javascript:FImprimirCot(${i})"><i class="fa fa-print" aria-hidden="true">Imprimir cotización</i></a></div>
@@ -240,7 +251,7 @@ function FImprimirTFCTE(id,iddet)
 		<div class="badge badge-primary col-12">Tarjeta</div>
 	</div>
 	<div class="row small">
-		<div class="col-1">Folio: ${tar['folio_tarjeta']}</div>
+		<div class="col-1">TF: ${tar['folio_tarjeta']}</div>
 		<div class="col-5">Descripción factura: ${tar.descripcion_factura}</div>
 		<div class="col-2">Num partes: ${tar.num_partes}</div>
 		<div class="col-2">Piezas x largo: ${tar.pzasxlargo}</div>
@@ -248,8 +259,7 @@ function FImprimirTFCTE(id,iddet)
 	</div>
 	<div class="row small">
 		<div class="col-2">Medida pliego: ${tar.medida_pliego}</div>
-		<div class="col-2">Medidas internas: ${tar.medidas_internas}</div>
-		<div class="col-2">Medidas internas: ${tar.medidas_internas}</div>
+		<div class="col-4">Medidas internas-> Largo:${cotdet.mil} Ancho:${cotdet.mia} Fondo:${cotdet.mif} </div>
 		<div class="col-2">Grabado: ${gra.nombre}</div>
 		<div class="col-2">Suaje: ${sua.nombre}</div>
 		<div class="col-2">Rayado1: ${tar.rayado1}</div>
@@ -275,11 +285,13 @@ function FImprimirTFCTE(id,iddet)
 	<div class="row small">
 		<div class="col-6">Obs calidad: ${tar.observaciones_calidad}</div>
 		<div class="col-3">Fecha rech calidad: ${tar.fecha_rech_calidad}</div>
-		<div class="col-3">Fecha aut producción: ${tar.fecha_aut_produccion}</div>
+	</div>
+		<div class="row small">
+		<div class="col-3">Fecha aut producción: ${tar['fecha_aut_produccion']}</div>
+		<div class="col-3">Fecha rech producción: ${tar['fecha_rech_produccion']}</div>
+		<div class="col-3">Obs producción: ${tar['observaciones_produccion']}</div>
 	</div>
 	<div class="row small">
-		<div class="col-6">Obs producción: ${tar.observaciones_produccion}</div>
-		<div class="col-3">Fecha rech producción: ${tar.fecha_rech_produccion}</div>
 		<div class="col-3">Fecha aut ingeniería: ${tar.fecha_aut_ing}</div>
 	</div>
 	<div class="row small">
@@ -303,7 +315,7 @@ function FImprimirTFCTE(id,iddet)
 	</c:forEach>
 	<div class="badge badge-info col-12">Imágenes</div>
 	<br><br>
-	<div class = "row mx-auto">
+<div class = "row mx-auto">
 		<div id="carouselExampleIndicators" class="carousel slide" data-interval="false" data-ride="carousel">
 		  <div id="DImg" class="carousel-inner">
 		  		<div class="carousel-item active">

@@ -33,6 +33,9 @@ public class CotizadorValidator implements Validator{
 			if((cot.getCardcode_factura() == null ? "" : cot.getCardcode_factura()).length() < 2)
 				errors.rejectValue("cotizador.cardcode_factura", "Size");
 			
+			if(cot.getEmplayado() && cot.getVueltas_emplaye() < 2)
+				errors.rejectValue("cotizador.vueltas_emplaye", "Range");
+			
 		}
 					
 	}
