@@ -67,7 +67,7 @@ public class Cotizador_detallesValidator implements Validator{
 					errors.rejectValue("cotizador_detalles.esp_inf", "Required");
 			}
 			
-			if(cotizador_detalles.getIdcaja_sap() == 7 && (cotizador_detalles.getNum_raturas() == null || cotizador_detalles.getNum_raturas() <= 0)) //Si es  SEPARADOR debe llevar número de ranuras.
+			if(cotizador_detalles.getIdcaja_sap() == 4 && (cotizador_detalles.getNum_raturas() == null || cotizador_detalles.getNum_raturas() <= 0)) //Si es  DIVISOR debe llevar número de ranuras.
 			{
 				errors.rejectValue("cotizador_detalles.num_raturas", "Required");
 			}

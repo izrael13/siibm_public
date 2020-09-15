@@ -284,6 +284,7 @@ public class CotizadorTarjetasServiceImpl implements CotizadorTarjetasService{
 			JsonEsp.put("iddespecialidad", b.getIdespecialidad());
 			JsonEsp.put("ruta", EspSap.getRuta());
 			JsonEsp.put("propiedadoitm", EspSap.getU_propiedad());
+			JsonEsp.put("medidas", b.getMedidas());
 			ListaJsonEsp.add(JsonEsp);
 		});
 		
@@ -330,6 +331,12 @@ public class CotizadorTarjetasServiceImpl implements CotizadorTarjetasService{
 		user = null;
 		user = us.findById(cot.getUsuario_cancel() == null ? 0 : cot.getUsuario_cancel());
 		JsonCot.put("usuario_cancel", user == null ? "" : user.getFirstName() + " " + user.getLastName());
+		
+		Catalogo_protecciones_sap_vw Prot = cpss.BuscaxId(cot.getProtecciones());
+		JsonCot.put("protecciones_nom", Prot ==  null ? "" : Prot.getU_observaciones());
+		Catalogo_identificadores_sap_vw Ident = ciss.BuscaxId(cot.getIdentificador());
+		JsonCot.put("identificador_nom",Ident == null ? "" : Ident.getU_observacion());
+		
 		if(addDetalles == 1)
 		{
 			List<JSONObject> ListaJsonDet = new ArrayList<JSONObject>();
@@ -340,7 +347,7 @@ public class CotizadorTarjetasServiceImpl implements CotizadorTarjetasService{
 			JsonCot.put("ListaDetalles", ListaJsonDet);
 		}
 		JsonCot.put("SUBREPORT_DIR", "/jasperreports/cotizador/");
-		
+		//System.out.println(JsonCot.toString());
 		return JsonCot;
 	}
 

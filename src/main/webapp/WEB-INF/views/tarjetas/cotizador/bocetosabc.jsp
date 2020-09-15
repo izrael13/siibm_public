@@ -174,9 +174,9 @@ function FEnviar(id,idb)
 				<td>${item.observaciones_diseniador}</td>
 				<td>${item.observaciones_vendedor}</td>
 				<td><a href="<c:url value="/static/bocetos/${item.nombre_archivo}.pdf"/>" target="_blank">${item.nombre_archivo}</a></td>
-				<td>${item.fecha_insert}</td>
-				<td>${item.fecha_acepta}</td>
-				<td>${item.fecha_rechazo}</td>
+				<td><fmt:formatDate value="${item.fecha_insert}" pattern="yyyy-MM-dd HH:mm"/></td>
+				<td><fmt:formatDate value="${item.fecha_acepta}" pattern="yyyy-MM-dd HH:mm"/></td>
+				<td><fmt:formatDate value="${item.fecha_rechazo}" pattern="yyyy-MM-dd HH:mm"/></td>
 				<td>
 					<c:if test="${empty item.fecha_envio && empty item.usuario_envio}">
 					<a href="javascript:FEnviar(${idcot},${item.id})"><i class="fa fa-paper-plane" aria-hidden="true"></i></a>
