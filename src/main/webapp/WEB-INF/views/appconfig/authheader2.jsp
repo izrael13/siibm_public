@@ -299,6 +299,7 @@ a:hover{background-color: lightblue;}/*Color de fondo azul para los links*/
 	    		<li><a class="dropdown-item" href = "<c:url value='/reportes/vendedores/desempeniomesxcte' />"><i class="fa fa-file-o" aria-hidden="true"></i> Desempeño mensual por cliente</a></li>
 	    		<li><a class="dropdown-item" href = "<c:url value='/qlikview/ventas/comparativo' />"><i class="fa fa-area-chart" aria-hidden="true"></i> Comparativo</a></li>
 	    		<li><a class="dropdown-item" href = "<c:url value='/reportes/vendedores/desempenioanualvend' />"><i class="fa fa-file-o" aria-hidden="true"></i> Desempeño anual por vendedor</a></li>
+	    		<li><a class="dropdown-item" href = "<c:url value='/reportes/produccion/conversion_diaria' />"><i class="fa fa-file-o" aria-hidden="true"></i> Conversión Diaria</a></li>
 			 </ul>
 		 </li>
 	</ul>

@@ -29,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 import com.websystique.springmvc.excel.ConsKilosExcel;
+import com.websystique.springmvc.excel.ConversionDiariaExcel;
 import com.websystique.springmvc.excel.ExcelAmortHerra;
 import com.websystique.springmvc.excel.ExcelDesempenio_anual_vendedor;
 import com.websystique.springmvc.excel.ExcelDesempenio_mensual_vendedor;
@@ -44,6 +45,7 @@ import com.websystique.springmvc.model.User;
 import com.websystique.springmvc.model.UserProfile;
 import com.websystique.springmvc.model.reportes.Amortiza_herramentales;
 import com.websystique.springmvc.model.reportes.ConsumoKilos;
+import com.websystique.springmvc.model.reportes.ConversionDiaria;
 import com.websystique.springmvc.model.reportes.Desempenio_anual_vendedor;
 import com.websystique.springmvc.model.reportes.Desempenio_mensual_vendedor;
 import com.websystique.springmvc.model.reportes.Desempenio_mensual_xcliente;
@@ -61,6 +63,7 @@ import com.websystique.springmvc.service.reportes.Amortiza_herramentalesService;
 import com.websystique.springmvc.service.reportes.Cobranza_acumService;
 import com.websystique.springmvc.service.reportes.Cobranza_detalleService;
 import com.websystique.springmvc.service.reportes.ConsumoKilosService;
+import com.websystique.springmvc.service.reportes.ConversionDiariaService;
 import com.websystique.springmvc.service.reportes.Desempenio_anual_vendedorService;
 import com.websystique.springmvc.service.reportes.Desempenio_mensual_vendedorService;
 import com.websystique.springmvc.service.reportes.Desempenio_mensual_xclienteService;
@@ -141,6 +144,8 @@ public class ReportesController {
 	Cobranza_acumService cai;
 	@Autowired
 	ConsumoKilosService cks;
+	@Autowired
+	ConversionDiariaService conversionDiariaService;
 	@Autowired
 	Media_pedidos_cteService mpc;
 	@Autowired
@@ -798,6 +803,49 @@ public class ReportesController {
 		}
 		return "/reportes/detalle_cobranza";
 	}
+	
+	@RequestMapping(value = {"/produccion/conversion_diaria" }, method = RequestMethod.GET)
+	public String conversion_diaria(ModelMap model) {
+		try {
+		model.addAttribute("loggedinuser", AppController.getPrincipal());
+		logger.info(AppController.getPrincipal() + " - conversion_diaria.");
+		}
+		catch(Exception e) {
+			logger.error(AppController.getPrincipal() + " - conversion_diaria. - " + e.getMessage());
+		}
+		return "/reportes/conversion_diaria";
+	}
+	
+	@RequestMapping(value = {"/produccion/buscarconversiondiaria" }, method = RequestMethod.GET)
+	public String buscarconversiondiaria(ModelMap model,@RequestParam("fecha_ini") String fi) {
+		try {
+			model.addAttribute("loggedinuser", AppController.getPrincipal());
+			logger.info(AppController.getPrincipal() + " - buscarconversiondiaria.");
+			model.addAttribute("fecha_ini",fi);
+			model.addAttribute("reporte",conversionDiariaService.findByAll(fi));
+		}
+		catch(Exception e) {
+			logger.error(AppController.getPrincipal() + " - buscarconversiondiaria. - " + e.getMessage());
+		}
+		return "/reportes/conversion_diaria";
+	}
+	
+	@RequestMapping(value = { "/produccion/conversiondiaria_excel" },method=RequestMethod.GET)
+    public ModelAndView conversiondiaria_excel(HttpServletRequest req, HttpServletResponse res) {
+        String fecha_ini = "";
+        List<ConversionDiaria> listaexcel = null;
+        try {
+            fecha_ini = req.getParameter("fecha_ini");
+           
+            listaexcel = conversionDiariaService.findByAll(fecha_ini);
+            logger.info(AppController.getPrincipal() + " - conversiondiaria_excel.");
+        }
+        catch(Exception e) {
+            logger.error(AppController.getPrincipal() + " - conversiondiaria_excel. - " + e.getMessage());
+        }
+        return new ModelAndView(new ConversionDiariaExcel(), "listaexcel", listaexcel);
+    }
+	
 	
 	@RequestMapping(value = {"/papel/consumo_kilos" }, method = RequestMethod.GET)
 	public String consumo_kilos(ModelMap model) {
