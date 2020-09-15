@@ -18,136 +18,157 @@
 	<div class="modal fade bd-example-modal-xl" id="AutModal" tabindex="-1" role="dialog" aria-labelledby="AutModalLabel" aria-hidden="true">
 	  <div class="modal-dialog modal-xl">
 	    <div class="modal-content">
-	   	  <div class="modal-header alert alert-info">
-	        <h5 class="modal-title" id="ReqModal">Información adicional</h5>
-	      </div>
 	      <div class="container small">
 		  <div class="row">
 		    <div class="col-sm">
 		      Fecha creación:
 		    </div>
 		    <div class="col-sm">
-		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_insert}" pattern="yyyy-MM-dd hh:mm"/>
+		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_insert}" pattern="yyyy-MM-dd HH:mm"/>
 		    </div>
 		    <div class="col-sm">
 		      Fecha actualización:
 		    </div>
 		    <div class="col-sm">
-		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_update}" pattern="yyyy-MM-dd hh:mm"/>
+		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_update}" pattern="yyyy-MM-dd HH:mm"/>
 		    </div>
-		  </div>
-		  <div class="row">
-		    <div class="col-sm">
-		      Fecha envío ventas:
-		    </div>
-		    <div class="col-sm">
-		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_envia_ventas}" pattern="yyyy-MM-dd hh:mm"/>
-		    </div>
-		    <div class="col-sm">
-		      Fecha aut ventas:
-		    </div>
-		    <div class="col-sm">
-		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_aut_ventas}" pattern="yyyy-MM-dd hh:mm"/>
-		    </div>
-		    <div class="col-sm">
-		      Fecha aut calidad:
-		    </div>
-		    <div class="col-sm">
-		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_aut_calidad}" pattern="yyyy-MM-dd hh:mm"/>
-		    </div>
-		  </div>
-		   <div class="row">
-		    <div class="col-sm">
-		      Fecha envío prog:
-		    </div>
-		    <div class="col-sm">
-		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_envia_a_prog}" pattern="yyyy-MM-dd hh:mm"/>
-		    </div>
-		    <div class="col-sm">
-		      Fecha aut prog:
-		    </div>
-		    <div class="col-sm">
-		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_aut_prog}" pattern="yyyy-MM-dd hh:mm"/>
-		    </div>
-		  </div>
-		  <div class="row">
-		    <div class="col-sm">
-		      Fecha rechaza vtas:
-		    </div>
-		    <div class="col-sm">
-		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_rech_ventas}" pattern="yyyy-MM-dd hh:mm"/>
-		    </div>
-		    <div class="col-sm">
-		      Fecha rechaza prog:
-		    </div>
-		    <div class="col-sm">
-		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_rech_prog}" pattern="yyyy-MM-dd hh:mm"/>
-		    </div>
-		    <div class="col-sm">
-		      Fecha rechaza calidad:
-		    </div>
-		    <div class="col-sm">
-		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_rech_calidad}" pattern="yyyy-MM-dd hh:mm"/>
-		    </div>
-		  </div>
-		  <div class="row">
 		    <div class="col-sm">
 		      Fecha cancelación:
 		    </div>
 		    <div class="col-sm">
-		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_cancel}" pattern="yyyy-MM-dd hh:mm"/>
-		    </div>
-		    <div class="col-sm">
-		      Comentario ventas:
-		    </div>
-		    <div class="col-sm">
-		      ${cotizadordatabean.cotizador.observaciones_ventas}
+		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_cancel}" pattern="yyyy-MM-dd HH:mm"/>
 		    </div>
 		  </div>
-		  <div class="row">
+		  <div class="badge badge-info col-12">
+	       	INGENIERÍA
+	      </div>
+	      <div class="row">
 		    <div class="col-sm">
-		      Comentario prog:
+		      Fecha envío:
 		    </div>
 		    <div class="col-sm">
-		     	${cotizadordatabean.cotizador.observaciones_prog}
-		    </div>
-		    <div class="col-sm">
-		      Fecha rechaza diseñador:
-		    </div>
-		    <div class="col-sm">
-		     	${cotizadordatabean.cotizador.fecha_rech_diseniador}
-		    </div>
-		  </div>
-		  <div class="row">
-		    <div class="col-sm">
-		      Fecha envío ing:
-		    </div>
-		    <div class="col-sm">
-		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_envia_ing}" pattern="yyyy-MM-dd hh:mm"/>
-		    </div>
-		  </div>
-		  <div class="row">
-		    <div class="col-sm">
-		      Observaciones diseñador:
-		    </div>
-		    <div class="col-sm">
-		     	${cotizadordatabean.cotizador.observaciones_diseniador}
+		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_envia_ing}" pattern="yyyy-MM-dd HH:mm"/>
 		    </div>
 		    <div class="col-sm">
 		      Fecha asig diseñador
 		    </div>
 		    <div class="col-sm">
-		     	${cotizadordatabean.cotizador.fecha_asign_diseniador}
+		     	<fmt:formatDate value="${cotizadordatabean.cotizador.fecha_asign_diseniador}" pattern="yyyy-MM-dd HH:mm"/>
+		    </div>
+		    <div class="col-sm">
+		      Fecha rechazo diseñador:
+		    </div>
+		    <div class="col-sm">
+		     	<fmt:formatDate value="${cotizadordatabean.cotizador.fecha_rech_diseniador}" pattern="yyyy-MM-dd HH:mm"/>
+		    </div>
+		  </div>
+		  <div class="row">
+		  	<div class="col-sm">
+		      Observaciones diseñador:
+		    </div>
+		    <div class="col-sm">
+		     	${cotizadordatabean.cotizador.observaciones_diseniador}
+		    </div>	
+		  </div>
+		  <div class="badge badge-info col-12">
+	       	VENTAS
+	      </div>
+		  <div class="row">
+		    <div class="col-sm">
+		      Fecha envío:
+		    </div>
+		    <div class="col-sm">
+		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_envia_ventas}" pattern="yyyy-MM-dd HH:mm"/>
+		    </div>
+		    <div class="col-sm">
+		      Fecha autorización:
+		    </div>
+		    <div class="col-sm">
+		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_aut_ventas}" pattern="yyyy-MM-dd HH:mm"/>
+		    </div>
+		    <div class="col-sm">
+		      Fecha rechazo:
+		    </div>
+		    <div class="col-sm">
+		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_rech_ventas}" pattern="yyyy-MM-dd HH:mm"/>
 		    </div>
 		  </div>
 		  <div class="row">
 		    <div class="col-sm">
-		      Observaciones calidad:
+		      Observaciones:
+		    </div>
+		    <div class="col-sm">
+		      ${cotizadordatabean.cotizador.observaciones_ventas}
+		    </div>
+		  </div>
+		  <div class="badge badge-info col-12">
+	       	CALIDAD
+	      </div>
+		   <div class="row">
+			   <div class="col-sm">
+			      Fecha envío:
+			    </div>
+			    <div class="col-sm">
+			      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_envia_calidad}" pattern="yyyy-MM-dd HH:mm"/>
+		    </div>
+			   <div class="col-sm">
+			      Fecha autorización:
+			   </div>
+			    <div class="col-sm">
+			      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_aut_calidad}" pattern="yyyy-MM-dd HH:mm"/>
+			    </div>
+			    <div class="col-sm">
+			      Fecha rechazo:
+			    </div>
+			    <div class="col-sm">
+			      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_rech_calidad}" pattern="yyyy-MM-dd HH:mm"/>
+			    </div>		    
+		  </div>
+		   <div class="row">
+		    <div class="col-sm">
+		      Observaciones:
 		    </div>
 		    <div class="col-sm">
 		     	${cotizadordatabean.cotizador.obsevaciones_calidad}
 		    </div>
-		  </div>		  
+		  </div>
+		  <div class="badge badge-info col-12">
+	       	PROGRAMACIÓN
+	      </div>
+		  <div class="row">	
+		  <div class="col-sm">
+		      Fecha envío:
+		    </div>
+		    <div class="col-sm">
+		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_envia_a_prog}" pattern="yyyy-MM-dd HH:mm"/>
+		    </div>
+		    <div class="col-sm">
+		      Fecha autorización:
+		    </div>
+		    <div class="col-sm">
+		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_aut_prog}" pattern="yyyy-MM-dd HH:mm"/>
+		    </div>	    
+		    <div class="col-sm">
+		      Fecha rechazo:
+		    </div>
+		    <div class="col-sm">
+		      <fmt:formatDate value="${cotizadordatabean.cotizador.fecha_rech_prog}" pattern="yyyy-MM-dd HH:mm"/>
+		    </div>		    
+		  </div>
+		  <div class="row">
+		    <div class="col-sm">
+		      Observaciones:
+		    </div>
+		    <div class="col-sm">
+		     	${cotizadordatabean.cotizador.observaciones_prog}
+		    </div>
+		    
+		  </div>
+		  
+		  <div class="row">
+		    
+		  </div>
+		 		  
 		  <div class="modal-footer">
 	        	<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
 	      </div>

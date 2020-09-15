@@ -1234,7 +1234,7 @@ function FVueltasEmp()
      	path="cotizador_detalles.especialidades_cotizacion[${status.index}].cm" value="${cotizadordatabean.cotizador_detalles.especialidades_cotizacion[status.index].cm}"  class="border border-primary"/>
      	
 								     	<c:choose>
-								     		<c:when test="${item.name == 'Bolsa'}">
+								     		<c:when test="${item.code == 22}">
 									     		<form:select id="TCosto${item.code}" 
 									     		style="${!empty cotizadordatabean.cotizador_detalles.especialidades_cotizacion[status.index].costo ? (cotizadordatabean.cotizador_detalles.especialidades_cotizacion[status.index].costo > 0 ? 'visibility:visible' : 'visibility:hidden') : 'visibility:hidden'}"
 									     		path="cotizador_detalles.especialidades_cotizacion[${status.index}].costo"

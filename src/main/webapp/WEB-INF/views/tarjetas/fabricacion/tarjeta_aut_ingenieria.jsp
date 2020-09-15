@@ -16,6 +16,8 @@ function FAut(folio)
 	{
 		if(folio != "")
 		{
+			$("#mensajes" ).text("Procesando petición, por favor espere...").removeClass().addClass("alert alert-info");
+			
 			var http = new XMLHttpRequest();
 			var url = '<c:url value="/tarjeta/ingenieria_gerencia/tarjeta_aut_ingenieria_desicion"/>';
 			var params = 'folio='+folio+'&coment='+$("#TComent"+folio).val()+'&ban='+1;
@@ -51,11 +53,6 @@ function FAut(folio)
 			    		alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
 			    		window.location.replace('<c:url value="/tarjeta/ingenieria_gerencia/tarjeta_aut_ingenieria"/>');
 			    	}
-			    	else
-			    	{
-				    	$("#mensajes" ).text("Procesando petición, por favor espere...");
-						$("#mensajes").removeClass().addClass("alert alert-info");
-			    	}
 			    }
 			    
 			}
@@ -72,6 +69,8 @@ function FReach(folio)
 	{
 		if(folio != "")
 		{
+			$("#mensajes" ).text("Procesando petición, por favor espere...").removeClass().addClass("alert alert-info");
+			
 			var http = new XMLHttpRequest();
 			var url = '<c:url value="/tarjeta/ingenieria_gerencia/tarjeta_aut_ingenieria_desicion"/>';
 			var params = 'folio='+folio+'&coment='+$("#TComent"+folio).val()+'&ban='+0;
@@ -106,11 +105,6 @@ function FReach(folio)
 			    	if(http.readyState == 4 && http.status != 200){
 			    		alert("Algo salió mal, por favor vuelva a intentarlo: "+http.responseText);
 			    		window.location.replace('<c:url value="/tarjeta/ingenieria_gerencia/tarjeta_aut_ingenieria"/>');
-			    	}
-			    	else
-			    	{
-				    	$("#mensajes" ).text("Procesando petición, por favor espere...");
-						$("#mensajes").removeClass().addClass("alert alert-info");
 			    	}
 			    }
 			    
@@ -150,7 +144,7 @@ function FImprimirTF(id,iddet)
 			<th>Cotización</th>
 			<th>Desc factura</th>
 			<th>Obs calidad</th>
-			<th>Fecha aut Calidad</th>
+			<th>Fecha aut Producción</th>
 			<th>Comentario</th>
 			<th>Ver</th>
 			<th>Autorizar</th>
@@ -164,11 +158,11 @@ function FImprimirTF(id,iddet)
 			<td>${item.idcotizacion}</td>
 			<td>${item.descripcion_factura}</td>
 			<td>${item.observaciones_calidad}</td>
-			<td>${item.fecha_aut_calidad}</td>
+			<td><fmt:formatDate value="${item.fecha_aut_produccion}" pattern="yyyy-MM-dd HH:mm"/></td>
 			<td><input id="TComent${item.folio_tarjeta}" type="text" size="50" onkeypress="return SinCaracteresEspeciales(event)" maxlength="100" class="border border-primary"/></td>
 			<td><a href="javascript:FImprimirTF(${item.idcotizacion},${item.iddetalle})"><i class="fa fa-print" aria-hidden="true"></i></a></td>
-			<td><a href="javascript:FAut(${item.folio_tarjeta})"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></a></td>
-			<td><a href="javascript:FReach(${item.folio_tarjeta})"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i></a></td>
+			<td><a href="javascript:FAut('${item.folio_tarjeta}')"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></a></td>
+			<td><a href="javascript:FReach('${item.folio_tarjeta}')"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i></a></td>
 		</tr>
 		</c:forEach>
 	</tbody>

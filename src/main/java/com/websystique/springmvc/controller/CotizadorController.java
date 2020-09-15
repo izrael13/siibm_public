@@ -1602,7 +1602,7 @@ public class CotizadorController {
 		String msj = "";
 		try
 		{
-			InputStream jasperStream = this.getClass().getResourceAsStream("/jasperreports/cotizador/Requerimiento.jasper");
+			InputStream jasperStream = this.getClass().getResourceAsStream("/jasperreports/cotizador/requerimientos.jasper");
 			Map<String,Object> params = new HashMap<>();
 			
 			JasperReport jasperReport = (JasperReport) JRLoader.loadObject(jasperStream);
@@ -1624,6 +1624,7 @@ public class CotizadorController {
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
 			msj = e.getMessage()+ " " + e.getStackTrace() + " "+ e.getCause() + " " + e.getLocalizedMessage();
 			logger.info(AppController.getPrincipal() + " - imprimircotizador :"+ msj);
 		}

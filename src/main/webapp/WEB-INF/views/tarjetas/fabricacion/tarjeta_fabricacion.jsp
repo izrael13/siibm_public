@@ -704,191 +704,216 @@ function FImprimirTF(id,iddet)
 		</div>
 		
 		<div class="modal fade bd-example-modal-xl" id="AutModal" tabindex="-1" role="dialog" aria-labelledby="AutModalLabel" aria-hidden="true">
-		  <div class="modal-dialog modal-xl">
-		    <div class="modal-content">
-		    <div class="container">
-		   	  <div class="badge badge-info col-12">
-		        Información adicional
-		      </div>
-		      
-			  <div class="row small">
-			    <div class="col-sm">
-			      Fecha aut calidad: ${tdb.tarjeta_fabricacion.fecha_aut_calidad}			    
-			    </div>
-			    <div class="col-sm">
-			      Observaciones calidad: ${tdb.tarjeta_fabricacion.observaciones_calidad}			    
-			    </div>
-			    <div class="col-sm">
-			      Fecha rech calidad: ${tdb.tarjeta_fabricacion.fecha_rech_calidad}			    
-			    </div>
-			  </div>
-			  <div class="row small">
-			    <div class="col-sm">
-			      Fecha aut producción: ${tdb.tarjeta_fabricacion.fecha_aut_produccion}			    
-			    </div>
-			    <div class="col-sm">
-			      Observaciones producción: ${tdb.tarjeta_fabricacion.observaciones_produccion}			    
-			    </div>
-			    <div class="col-sm">
-			      Fecha rech producción: ${tdb.tarjeta_fabricacion.fecha_rech_produccion}			    
-			  </div>
-			  <div class="row small">
-			    <div class="col-sm">
-			      Fecha aut ingeniería: ${tdb.tarjeta_fabricacion.fecha_aut_ing}			    
-			    </div>
-			    <div class="col-sm">
-			      Observaciones ingeniería: ${tdb.tarjeta_fabricacion.observaciones_ing}			    
-			    </div>
-			    <div class="col-sm">
-			      Fecha rech ingeniería: ${tdb.tarjeta_fabricacion.fecha_rech_ing}			    
-			    </div>
-			  </div>
-			  <div class="row small">
-			    <div class="col-sm">
-			      Fecha aut cliente: ${tdb.tarjeta_fabricacion.fecha_aut_cliente}			    
-			    </div>
-			    <div class="col-sm">
-			      Observaciones cliente: ${tdb.tarjeta_fabricacion.observaciones_cliente}			    
-			    </div>
-			    <div class="col-sm">
-			      Fecha rech cliente: ${tdb.tarjeta_fabricacion.fecha_rech_cliente}			    
-			    </div>
-			  </div>
-			  <div class="row small">
-			    <div class="col-sm">
-			      Fecha enviada a autorizaciónes: ${tdb.tarjeta_fabricacion.fecha_aut_diseniador}			    
-			    </div>
-			    <div class="col-sm">
-			      Fecha cancelación: ${tdb.tarjeta_fabricacion.fecha_cancela}			    
-			    </div>
-			    <div class="col-sm">
-			      Fecha últ autorización: ${tdb.cotizador.fecha_aut_prog le tdb.cotizador.fecha_aut_ventas ? tdb.cotizador.fecha_aut_ventas : tdb.cotizador.fecha_aut_prog}			    
-			    </div>
-			  </div>			  
-			  <div class="badge badge-info col-12">Especialidades</div>
-				<div class="row small">
-					<div class="col font-weight-bold">Especialidad</div>
-					<div class="col font-weight-bold">Costo</div>
-					<div class="col font-weight-bold">Ajuste</div>
-					<div class="col font-weight-bold">CM</div>
-				</div>
-				<c:forEach var="item" items="${esp}">
-					<div class="row small">
-						<div class="col">${item.especialidad}</div>
-						<div class="col">${item.costo}</div>
-						<div class="col">${item.ajuste}</div>
-						<div class="col">${item.cm}</div>
-					</div>
-				</c:forEach>			    
-			    <div class="badge badge-info col-12">Código de barras</div>
-				<div class="row small">
-					<div class="col font-weight-bold">Código</div>
-					<div class="col font-weight-bold">Observaciones</div>
-				</div>
-				<c:forEach var="item" items="${tdb.cotizador_detalles.codigo_barra_cotizador}">
-					<div class="row small">
-						<div class="col">${item.idcodigo}</div>
-						<div class="col">${item.observaciones}</div>
-					</div>
-				</c:forEach>
-				
-				<div class="badge badge-info col-12">Tintas</div>
-				<div class="row small">
-					<div class="col font-weight-bold">Color 1</div>
-					<div class="col font-weight-bold">Color 2</div>
-					<div class="col font-weight-bold">Color 3</div>
-					<div class="col font-weight-bold">Color 4</div>
-					<div class="col font-weight-bold">Color 5</div>
-					<div class="col font-weight-bold">Color 6</div>
-					<div class="col font-weight-bold">Color 7</div>
-				</div>
-				<div class="row small">
-					<div class="col">
-						<c:forEach var="item" items="${colores}">
-						  <c:if test="${item.id eq tdb.cotizador_detalles.color1}">
-						    <span style="background:#${item.color_est}">${item.color}</span>
-						  </c:if>
+			<div class="modal-dialog modal-xl">
+				<div class="modal-content">
+		    		<div class="container">
+		    			<div class="badge badge-info col-12">INFORMACIÓN TARJETA DE FABRICACIÓN</div>
+		    			<div class="row small">
+						    <div class="col-sm">
+						      Fecha enviada a autorizaciónes:
+						      <fmt:formatDate value="${tdb.tarjeta_fabricacion.fecha_aut_diseniador}" pattern="yyyy-MM-dd HH:mm"/>			    
+						    </div>
+						    <div class="col-sm">
+						      Fecha cancelación: 
+							 <fmt:formatDate value="${tdb.tarjeta_fabricacion.fecha_cancela}" pattern="yyyy-MM-dd HH:mm"/>
+						    </div>
+						    <div class="col-sm">
+						      Fecha últ autorización:
+						      <fmt:formatDate value="${tdb.cotizador.fecha_aut_prog le tdb.cotizador.fecha_aut_ventas ? tdb.cotizador.fecha_aut_ventas : tdb.cotizador.fecha_aut_prog}" pattern="yyyy-MM-dd HH:mm"/>			    
+						    </div>
+					  	</div>
+					  	<div class="badge badge-info col-12">AUTORIZACIONES</div>
+					  	<div class="row small">
+						    <div class="col-sm">
+						      Fecha aut calidad: 
+						      <fmt:formatDate value="${tdb.tarjeta_fabricacion.fecha_aut_calidad}" pattern="yyyy-MM-dd HH:mm"/>			    
+						    </div>
+						    <div class="col-sm">
+						      Fecha rech calidad: 
+						      <fmt:formatDate value="${tdb.tarjeta_fabricacion.fecha_rech_calidad}" pattern="yyyy-MM-dd HH:mm"/>			    
+						    </div>
+						</div>
+						<div class="row small">
+							<div class="col-sm">
+						      Observaciones calidad: ${tdb.tarjeta_fabricacion.observaciones_calidad}			    
+						    </div>
+						</div>
+						
+						<div class="row small">
+						    <div class="col-sm">
+						      Fecha aut producción: 
+						      <fmt:formatDate value="${tdb.tarjeta_fabricacion.fecha_aut_produccion}" pattern="yyyy-MM-dd HH:mm"/>			    
+						    </div>
+						    <div class="col-sm">
+						      Fecha rech producción: 
+						      <fmt:formatDate value="${tdb.tarjeta_fabricacion.fecha_rech_produccion}" pattern="yyyy-MM-dd HH:mm"/>			    
+						    </div>
+						</div>
+						<div class="row small">
+							<div class="col-sm">
+						      Observaciones producción: ${tdb.tarjeta_fabricacion.observaciones_produccion}			    
+						    </div>
+						</div>
+						
+						<div class="row small">
+						    <div class="col-sm">
+						      Fecha aut ingeniería: 
+						      <fmt:formatDate value="${tdb.tarjeta_fabricacion.fecha_aut_ing}" pattern="yyyy-MM-dd HH:mm"/>			    
+						    </div>
+						    <div class="col-sm">
+						      Fecha rech ingeniería: 
+						      <fmt:formatDate value="${tdb.tarjeta_fabricacion.fecha_rech_ing}" pattern="yyyy-MM-dd HH:mm"/>			    
+						    </div>
+						</div>
+						<div class="row small">
+							<div class="col-sm">
+						      Observaciones ingeniería: ${tdb.tarjeta_fabricacion.observaciones_ing}			    
+						    </div>
+						</div>
+						
+						<div class="row small">
+						    <div class="col-sm">
+						      Fecha aut cliente: 
+						      <fmt:formatDate value="${tdb.tarjeta_fabricacion.fecha_aut_cliente}" pattern="yyyy-MM-dd HH:mm"/>			    
+						    </div>
+						    <div class="col-sm">
+						      Fecha rech cliente: 
+						      <fmt:formatDate value="${tdb.tarjeta_fabricacion.fecha_rech_cliente}" pattern="yyyy-MM-dd HH:mm"/>			    
+						    </div>
+						</div>
+						<div class="row small">
+							<div class="col-sm">
+						      Observaciones cliente: ${tdb.tarjeta_fabricacion.observaciones_cliente}			    
+						    </div>
+						</div>
+						
+						<div class="badge badge-info col-12">ESPECIALIDADES</div>
+						<div class="row small">
+							<div class="col font-weight-bold">Especialidad</div>
+							<div class="col font-weight-bold">Costo</div>
+							<div class="col font-weight-bold">Ajuste</div>
+							<div class="col font-weight-bold">CM</div>
+							<div class="col font-weight-bold">Medidas</div>
+						</div>
+						<c:forEach var="item" items="${esp}">
+							<div class="row small">
+								<div class="col">${item.especialidad}</div>
+								<div class="col">${item.costo}</div>
+								<div class="col">${item.ajuste}</div>
+								<div class="col">${item.cm}</div>
+								<div class="col">${item.medidas}</div>
+							</div>
 						</c:forEach>
-					</div>
-					<div class="col">
-						<c:forEach var="item" items="${colores}">
-						  <c:if test="${item.id eq tdb.cotizador_detalles.color2}">
-						    <span style="background:#${item.color_est}">${item.color}</span>
-						  </c:if>
+						
+						<div class="badge badge-info col-12">CÓDIGOS DE BARRAS</div>	
+						<div class="row small">
+							<div class="col font-weight-bold">Código</div>
+							<div class="col font-weight-bold">Observaciones</div>
+						</div>
+						<c:forEach var="item" items="${tdb.cotizador_detalles.codigo_barra_cotizador}">
+							<div class="row small">
+								<div class="col">${item.idcodigo}</div>
+								<div class="col">${item.observaciones}</div>
+							</div>
 						</c:forEach>
-					</div>
-					<div class="col">
-						<c:forEach var="item" items="${colores}">
-						  <c:if test="${item.id eq tdb.cotizador_detalles.color3}">
-						    <span style="background:#${item.color_est}">${item.color}</span>
-						  </c:if>
-						</c:forEach>
-					</div>
-					<div class="col">
-						<c:forEach var="item" items="${colores}">
-						  <c:if test="${item.id eq tdb.cotizador_detalles.color4}">
-						    <span style="background:#${item.color_est}">${item.color}</span>
-						  </c:if>
-						</c:forEach>
-					</div>
-					<div class="col">
-						<c:forEach var="item" items="${colores}">
-						  <c:if test="${item.id eq tdb.cotizador_detalles.color5}">
-						    <span style="background:#${item.color_est}">${item.color}</span>
-						  </c:if>
-						</c:forEach>
-					</div>
-					<div class="col">
-						<c:forEach var="item" items="${colores}">
-						  <c:if test="${item.id eq tdb.cotizador_detalles.color6}">
-						    <span style="background:#${item.color_est}">${item.color}</span>
-						  </c:if>
-						</c:forEach>
-					</div>
-					<div class="col">
-						<c:forEach var="item" items="${colores}">
-						  <c:if test="${item.id eq tdb.cotizador_detalles.color7}">
-						    <span style="background:#${item.color_est}">${item.color}</span>
-						  </c:if>
-						</c:forEach>
-					</div>
-				</div>
-				<div class="badge badge-info col-12">Detalles de caja</div>
-				<div class="row small">
-				    <div class="col-6">Caja: ${caja.nombrelargo}</div>
-				    <div class="col">Largo: ${tdb.cotizador_detalles.largo}</div>
-				    <div class="col">Ancho: ${tdb.cotizador_detalles.ancho}</div>
-				</div>
-			    <div class="row small">
-			    	<div class="col-2">Fondo: ${tdb.cotizador_detalles.fondo}</div>
-				    <div class="col-5">Resistencia Barca: ${resis.resistencia} Flauta: ${resis.corrugado} Color: ${resis.color} $M2: ${resis.preciom2}</div>
-				    <div class="col">Sello: ${sello.sellos}</div>
-				    <div class="col">Cierre: ${tdb.cotizador_detalles.cierre}</div>
-				    <div class="col">Cierre detalle: ${tdb.cotizador_detalles.cierre_detalle}</div>
-			    </div>
-			    <div class="row small">
-			    	<div class="col">Ceja despl: ${tdb.cotizador_detalles.ceja_desplegada == true ? 'Sí' : 'No'}</div>
-				    <div class="col">Precio obj: ${tdb.cotizador_detalles.precio_objetivo}</div>
-				    <div class="col">Imp rebasada: ${tdb.cotizador_detalles.score}</div>
-				    <div class="col">Esp Inf: ${tdb.cotizador_detalles.esp_inf}</div>
-				    <div class="col">Esp Sup: ${tdb.cotizador_detalles.esp_sup}</div>
-				    <div class="col">Medida lámina: ${tdb.cotizador_detalles.medida_lamina}</div>
-				</div>
-				<div class="row small">
-					<div class="col">Área unitaria: ${tdb.cotizador_detalles.area_unitaria}</div>
-					<div class="col">Peso teórico: ${tdb.cotizador_detalles.peso_teorico}</div>
-					<div class="col">Num ranuras: ${tdb.cotizador_detalles.num_raturas}</div>
-					<div class="col">Tolerancia: ${tdb.cotizador.tolerancia_pedido}</div>
-					<div class="col">Pzas x juego: ${tdb.cotizador_detalles.piezasxjuego}</div>
-					<div class="col">Entrega OC: ${fn:substring(tdb.cotizador.fecha_entrega_oc,0,10)}</div>
-				</div>
-				<div class="row small">
-					<div class="col">Piezas por tarima: ${tdb.cotizador_detalles.piezasxtarima}</div>
-				</div>
-			 </div>
+						
+						<div class="badge badge-info col-12">TINTAS</div>
+						<div class="row small">
+							<div class="col font-weight-bold">Color 1:
+								<c:forEach var="item" items="${colores}">
+								  <c:if test="${item.id eq tdb.cotizador_detalles.color1}">
+								    <span style="background:#${item.color_est}">${item.color}</span>
+								  </c:if>
+								</c:forEach>
+							</div>
+							<div class="col font-weight-bold">Color 2:
+								<c:forEach var="item" items="${colores}">
+								  <c:if test="${item.id eq tdb.cotizador_detalles.color2}">
+								    <span style="background:#${item.color_est}">${item.color}</span>
+								  </c:if>
+								</c:forEach>
+							</div>
+							<div class="col font-weight-bold">Color 3:
+								<c:forEach var="item" items="${colores}">
+								  <c:if test="${item.id eq tdb.cotizador_detalles.color3}">
+								    <span style="background:#${item.color_est}">${item.color}</span>
+								  </c:if>
+								</c:forEach>
+							</div>
+							<div class="col font-weight-bold">Color 4:
+								<c:forEach var="item" items="${colores}">
+								  <c:if test="${item.id eq tdb.cotizador_detalles.color4}">
+								    <span style="background:#${item.color_est}">${item.color}</span>
+								  </c:if>
+								</c:forEach>
+							</div>
+						</div>
+						<div class="row small">
+							<div class="col font-weight-bold">Color 5:
+								<c:forEach var="item" items="${colores}">
+								  <c:if test="${item.id eq tdb.cotizador_detalles.color5}">
+								    <span style="background:#${item.color_est}">${item.color}</span>
+								  </c:if>
+								</c:forEach>
+							</div>
+							<div class="col font-weight-bold">Color 6:
+								<c:forEach var="item" items="${colores}">
+								  <c:if test="${item.id eq tdb.cotizador_detalles.color6}">
+								    <span style="background:#${item.color_est}">${item.color}</span>
+								  </c:if>
+								</c:forEach>
+							</div>
+							<div class="col font-weight-bold">Color 7:
+								<c:forEach var="item" items="${colores}">
+								  <c:if test="${item.id eq tdb.cotizador_detalles.color7}">
+								    <span style="background:#${item.color_est}">${item.color}</span>
+								  </c:if>
+								</c:forEach>
+							</div>
+							<div class="col font-weight-bold"></div>
+						</div>
+						
+						<div class="badge badge-info col-12">DETALLES DE CAJA</div>	
+						<div class="row small">
+						    <div class="col-6">Caja: ${caja.nombrelargo}</div>
+						    <div class="col-2">Largo: ${tdb.cotizador_detalles.largo}</div>
+						    <div class="col-2">Ancho: ${tdb.cotizador_detalles.ancho}</div>
+						    <div class="col-2">Fondo: ${tdb.cotizador_detalles.fondo}</div>
+						</div>
+					    <div class="row small">
+						    <div class="col-6">Resistencia Barca: ${resis.resistencia} Flauta: ${resis.corrugado} Color: ${resis.color} $M2: ${resis.preciom2}</div>
+						    <div class="col-2">Sello: ${sello.sellos}</div>
+						    <div class="col-2">Cierre: ${tdb.cotizador_detalles.cierre}</div>
+						    <div class="col-2">Cierre detalle: ${tdb.cotizador_detalles.cierre_detalle}</div>
+					    </div>
+					    <div class="row small">
+					    	<div class="col">Ceja despl: ${tdb.cotizador_detalles.ceja_desplegada == true ? 'Sí' : 'No'}</div>
+						    <div class="col">Precio obj: ${tdb.cotizador_detalles.precio_objetivo}</div>
+						    <div class="col">Imp rebasada: ${tdb.cotizador_detalles.score}</div>
+						    <div class="col">Esp Inf: ${tdb.cotizador_detalles.esp_inf}</div>
+						    <div class="col">Esp Sup: ${tdb.cotizador_detalles.esp_sup}</div>
+						    <div class="col">Medida lámina: ${tdb.cotizador_detalles.medida_lamina}</div>
+						</div>
+						<div class="row small">
+							<div class="col">Área unitaria: ${tdb.cotizador_detalles.area_unitaria}</div>
+							<div class="col">Peso teórico: ${tdb.cotizador_detalles.peso_teorico}</div>
+							<div class="col">Num ranuras: ${tdb.cotizador_detalles.num_raturas}</div>
+							<div class="col">Tolerancia: ${tdb.cotizador.tolerancia_pedido}</div>
+							<div class="col">Pzas x juego: ${tdb.cotizador_detalles.piezasxjuego}</div>
+							<div class="col">Entrega OC: ${fn:substring(tdb.cotizador.fecha_entrega_oc,0,10)}</div>
+						</div>
+						<div class="row small">
+							<div class="col">Piezas por tarima: ${tdb.cotizador_detalles.piezasxtarima}</div>
+						</div>
+						
+		    		</div>
+		    		<div class="modal-footer">
+				        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+		      		</div>
+		    	</div>
 			</div>
-		</div>		
-	</div>
+		</div>
+		
  </form:form>
 </div>
 <%@include file="../../appconfig/authfootter.jsp"%>
