@@ -44,12 +44,12 @@ function FEnviar(id,idb)
 		    		else{
 		    			if (http.responseText.search("1") != -1)
 		    			{
-		    				alert("Boceto enviado correctamente!!!");
+		    				alert("¡Boceto enviado correctamente!");
 		    				window.location.replace('<c:url value="/cotizador/ingenieria/bocetosabc" />?id='+id);
 		    			}
 		    			else
 		    			{
-		    				alert("Este boceto está en revisión por el vendedor!!");
+		    				alert("¡Este boceto está en revisión por el vendedor!");
 				    		window.location.replace('<c:url value="/cotizador/ingenieria/bocetosabc" />?id='+id);
 		    			}
 		    		}

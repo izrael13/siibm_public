@@ -122,7 +122,7 @@ button:hover {
   </div>
 
   <div class="container" style="background-color:#f1f1f1">
-    <span class="psw">Olvidó <a href="javascript:SolCamPass()">contraseña?</a></span>
+    <span class="psw">¿Olvidó <a href="javascript:SolCamPass()">contraseña?</a></span>
   </div>
   <input type="hidden" name="${_csrf.parameterName}"  value="${_csrf.token}" />
 </form>

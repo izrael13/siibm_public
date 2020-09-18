@@ -22,8 +22,10 @@ public class ConversionDiaria implements Serializable{
 	private String     pedido;
 	private Integer    programadas;
 	private Integer    corrugadas;
+	private Integer    piezasConversion;
 	private String     inicioSetup;
 	private String     terminoSetup;
+	@Id
 	private String     inicioConversion;
 	private String     finConversion;
 	private Integer    piezasContadas;

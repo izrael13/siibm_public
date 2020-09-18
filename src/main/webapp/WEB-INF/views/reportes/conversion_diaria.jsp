@@ -102,6 +102,7 @@
 					<th>Pedido</th>
 					<th>Programadas</th>
 					<th>Corrugadas</th>
+					<th>Piezas para Conversion</th>
 					<th>Inicio Setup</th>
 					<th>Termino Setup</th>
 					<th>Inicio Conversion</th>
@@ -114,6 +115,7 @@
 					<th>Laminas Por Procesar</th>
 					<th>Work Center ID</th>
 					<th>Number Out</th>
+					<th>Piezas Entregadas Almacen</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -122,18 +124,20 @@
 						<td>${item.pedido}</td>
 						<td>${item.programadas}</td>
 						<td>${item.corrugadas}</td>
+						<td>${item.piezasConversion}</td>
 						<td>${item.inicioSetup}</td>
 						<td>${item.terminoSetup}</td>
 						<td>${item.inicioConversion}</td>
 						<td>${item.finConversion}</td>
 						<td>${item.piezasContadas}</td>
 						<td>${item.piezasBuenas}</td>
-						<td>${item.laminasMalas}</td>
+						<td>${item.laminasMalas} </td>
 						<td>${item.malasSetup}</td>
 						<td>${item.malasProceso}</td>
 						<td>${item.laminasPorProcesar}</td>
 						<td>${item.workCenterID}</td>
 						<td>${item.numberOut}</td>
+						<td>${item.piezasEntregadas}</td>
 					</tr>
 				</c:forEach>
 			</tbody>

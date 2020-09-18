@@ -22,7 +22,7 @@ import com.websystique.springmvc.utilities.DateUtils;
 public class ConversionDiariaDAOImpl extends AbstractDao<Integer,ConversionDiaria>implements ConversionDiariaDAO{
 
 	@Override
-	public List<ConversionDiaria> findByAll(String fechaIni, String fechaFin) {
+	public List<ConversionDiaria> findByDateRange(String fechaIni, String fechaFin) {
 		List<ConversionDiaria> result = null;
         	
 
@@ -39,4 +39,21 @@ public class ConversionDiariaDAOImpl extends AbstractDao<Integer,ConversionDiari
 		
 		return result;
 	}
+
+    @Override
+    public List<ConversionDiaria> findByPedidos(String listaPedidos) {
+        List<ConversionDiaria> result = null;
+        ProcedureCall criteria = createStoredProcedureCriteria("spReporteConversionDiaria3");
+        criteria.registerParameter("pListaPedidos", String.class, ParameterMode.IN);
+        criteria.getParameterRegistration("pListaPedidos").bindValue(listaPedidos);
+        
+        Output output = criteria.getOutputs().getCurrent();
+        if (output.isResultSet()) {
+            result = ((ResultSetOutput)output).getResultList();
+        }
+        
+        return result;
+    }
+	
+	
 }

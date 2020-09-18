@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
+import com.websystique.springmvc.businesslogic.ConversionDiariaBL;
 import com.websystique.springmvc.excel.ConsKilosExcel;
 import com.websystique.springmvc.excel.ConversionDiariaExcel;
 import com.websystique.springmvc.excel.ExcelAmortHerra;
@@ -49,6 +50,7 @@ import com.websystique.springmvc.model.reportes.ConversionDiaria;
 import com.websystique.springmvc.model.reportes.Desempenio_anual_vendedor;
 import com.websystique.springmvc.model.reportes.Desempenio_mensual_vendedor;
 import com.websystique.springmvc.model.reportes.Desempenio_mensual_xcliente;
+import com.websystique.springmvc.model.reportes.EntradaAlmacen;
 import com.websystique.springmvc.model.reportes.Golpes_maquina_mes;
 import com.websystique.springmvc.model.reportes.Golpes_pendientes_fab;
 import com.websystique.springmvc.model.reportes.Golpeskilosmaquinas;
@@ -168,7 +170,8 @@ public class ReportesController {
 	ListaEmbarquesService lem;
 	@Autowired
 	Desempenio_anual_vendedorService das;
-	
+
+	private ConversionDiariaBL conversionDiariaBL = new ConversionDiariaBL();
 	
 	@RequestMapping(value = {"/papel/consumo_papel_mes" }, method = RequestMethod.GET)
 	public String consumo_papel_mes(ModelMap model) {
@@ -822,10 +825,15 @@ public class ReportesController {
 			model.addAttribute("loggedinuser", AppController.getPrincipal());
 			logger.info(AppController.getPrincipal() + " - buscarconversiondiaria.");
 			model.addAttribute("fecha_ini",fi);
-			model.addAttribute("reporte",conversionDiariaService.findByAll(fi));
+			List<ConversionDiaria> conversionDiaria = conversionDiariaService.getAllByDate(fi);
+			String listaDePedidos = conversionDiariaBL.getListaDePedidos(conversionDiaria);
+			List<EntradaAlmacen> entradaAlmacenList = conversionDiariaService.getAllEntradaAlmacen(listaDePedidos);
+			conversionDiaria = conversionDiariaBL.addDataToReport(conversionDiaria, entradaAlmacenList);
+			model.addAttribute("reporte",conversionDiaria);
 		}
 		catch(Exception e) {
 			logger.error(AppController.getPrincipal() + " - buscarconversiondiaria. - " + e.getMessage());
+			e.printStackTrace();
 		}
 		return "/reportes/conversion_diaria";
 	}
@@ -836,8 +844,13 @@ public class ReportesController {
         List<ConversionDiaria> listaexcel = null;
         try {
             fecha_ini = req.getParameter("fecha_ini");
+            
+            List<ConversionDiaria> conversionDiaria = conversionDiariaService.getAllByDate(fecha_ini);
+            String listaDePedidos = conversionDiariaBL.getListaDePedidos(conversionDiaria);
+            List<EntradaAlmacen> entradaAlmacenList = conversionDiariaService.getAllEntradaAlmacen(listaDePedidos);
+            listaexcel = conversionDiariaBL.addDataToReport(conversionDiaria, entradaAlmacenList);
            
-            listaexcel = conversionDiariaService.findByAll(fecha_ini);
+            //listaexcel = conversionDiariaService.getAllByDate(fecha_ini);
             logger.info(AppController.getPrincipal() + " - conversiondiaria_excel.");
         }
         catch(Exception e) {
