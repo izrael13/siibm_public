@@ -176,4 +176,13 @@ public class DateUtils {
             return 1;
         }
     }
+    
+    public static boolean isSameDay(Date date1, Date date2) {
+        long julianDayNumber1 = date1.getTime() / org.apache.commons.lang3.time.DateUtils.MILLIS_PER_DAY;
+        long julianDayNumber2 = date2.getTime() / org.apache.commons.lang3.time.DateUtils.MILLIS_PER_DAY;
+        return julianDayNumber1 == julianDayNumber2;
+    }
+    
+
+        
 }

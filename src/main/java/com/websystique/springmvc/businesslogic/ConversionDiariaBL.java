@@ -48,6 +48,11 @@ public class ConversionDiariaBL {
                    conversionDiariaList.get(i).setPiezasEntregadas(getEntradaAlmacen(conversionDiariaList.get(i).getPedido(), conversionDiariaList.get(i).getFinConversion()));
                }
             } else {
+                laminasPorProcesar = conversionDiariaList.get(i).getCorrugadas();
+                laminasPorProcesar = laminasPorProcesar - (((conversionDiariaList.get(i).getPiezasContadas() == null)? 0:conversionDiariaList.get(i).getPiezasContadas()) +
+                        ((conversionDiariaList.get(i).getLaminasMalas() == null)? 0:conversionDiariaList.get(i).getLaminasMalas()));
+                conversionDiariaList.get(i).setLaminasPorProcesar(laminasPorProcesar);
+                conversionDiariaList.get(i).setPiezasEntregadas(getEntradaAlmacen(conversionDiariaList.get(i).getPedido(), conversionDiariaList.get(i).getFinConversion()));
                 conversionDiariaList.get(i).setPiezasConversion(conversionDiariaList.get(i).getCorrugadas());
             }
         }  
@@ -60,7 +65,7 @@ public class ConversionDiariaBL {
           
            if (pedido.equalsIgnoreCase(entradaAlmacen.getNumeroPedido())){
                Date dateAlmacen = getDateAlmacen(entradaAlmacen.getFechaEntAlm(), entradaAlmacen.getHoraEntrega());
-               if (pedidoDate.before(dateAlmacen) || pedidoDate.equals(dateAlmacen)) {
+               if ((DateUtils.isSameDay(pedidoDate,dateAlmacen) && pedidoDate.before(dateAlmacen)) || pedidoDate.equals(dateAlmacen)) {
                 piezasEntregadas = entradaAlmacen.getPiezasEntregadas();
                }
            }
