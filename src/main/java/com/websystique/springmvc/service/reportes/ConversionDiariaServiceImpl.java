@@ -1,5 +1,6 @@
 package com.websystique.springmvc.service.reportes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,6 @@ import com.websystique.springmvc.dao.reportes.ConversionDiariaDAO;
 import com.websystique.springmvc.dao.reportes.EntradaAlmacenDAO;
 import com.websystique.springmvc.model.reportes.ConversionDiaria;
 import com.websystique.springmvc.model.reportes.EntradaAlmacen;
-import com.websystique.springmvc.utilities.DateUtils;
 
 @Service("conversionDiariaService")
 @Transactional
@@ -23,9 +23,8 @@ public class ConversionDiariaServiceImpl implements ConversionDiariaService{
 
 	
 	@Override
-	public List<ConversionDiaria> getAllByDate(String fecha_ini) {
-	    String fechaIni = (fecha_ini + " 07:00:00").replace("-","/");
-        String fechaFin = (DateUtils.addDayToDate(fecha_ini,"yyyy-MM-dd",1)  + " 07:00:00").replace("-", "/");
+	public List<ConversionDiaria> getAllByDate(String fechaIni, String fechaFin) {
+	   
         return conversionDiariaDAO.findByDateRange(fechaIni, fechaFin);
 	}
 	

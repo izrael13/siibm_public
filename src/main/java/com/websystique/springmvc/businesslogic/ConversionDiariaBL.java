@@ -13,12 +13,17 @@ public class ConversionDiariaBL {
     
     private List<ConversionDiaria> conversionDiariaList = new ArrayList<ConversionDiaria>();
     private List<EntradaAlmacen> listEntradaAlmacen = new ArrayList<EntradaAlmacen>();
+    private Date fechaIni;
+    private Date fechaFin;
 
 
 
-    public List<ConversionDiaria> addDataToReport(List<ConversionDiaria> conversionDiariaList, List<EntradaAlmacen> listEntradaAlmacen){
+    public List<ConversionDiaria> addDataToReport(List<ConversionDiaria> conversionDiariaList, List<EntradaAlmacen> listEntradaAlmacen, String fechaIni, String fechaFin){
         this.conversionDiariaList = conversionDiariaList;
         this.listEntradaAlmacen = listEntradaAlmacen;
+        String format = "yyyy/MM/dd HH:mm:ss";
+        this.fechaIni = DateUtils.convertStringToDate(fechaIni,format);
+        this.fechaFin = DateUtils.convertStringToDate(fechaFin, format);
         processConversionDiaria();
         return conversionDiariaList;
     }
@@ -45,28 +50,28 @@ public class ConversionDiariaBL {
                    laminasPorProcesar = laminasPorProcesar - (((conversionDiariaList.get(i).getPiezasContadas() == null)? 0:conversionDiariaList.get(i).getPiezasContadas()) +
                            ((conversionDiariaList.get(i).getLaminasMalas() == null)? 0:conversionDiariaList.get(i).getLaminasMalas()));
                    conversionDiariaList.get(i).setLaminasPorProcesar(laminasPorProcesar);
-                   conversionDiariaList.get(i).setPiezasEntregadas(getEntradaAlmacen(conversionDiariaList.get(i).getPedido(), conversionDiariaList.get(i).getFinConversion()));
+                   conversionDiariaList.get(i).setPiezasEntregadas(getEntradaAlmacen(conversionDiariaList.get(i).getPedido()));
                }
             } else {
                 laminasPorProcesar = conversionDiariaList.get(i).getCorrugadas();
                 laminasPorProcesar = laminasPorProcesar - (((conversionDiariaList.get(i).getPiezasContadas() == null)? 0:conversionDiariaList.get(i).getPiezasContadas()) +
                         ((conversionDiariaList.get(i).getLaminasMalas() == null)? 0:conversionDiariaList.get(i).getLaminasMalas()));
                 conversionDiariaList.get(i).setLaminasPorProcesar(laminasPorProcesar);
-                conversionDiariaList.get(i).setPiezasEntregadas(getEntradaAlmacen(conversionDiariaList.get(i).getPedido(), conversionDiariaList.get(i).getFinConversion()));
+                conversionDiariaList.get(i).setPiezasEntregadas(getEntradaAlmacen(conversionDiariaList.get(i).getPedido()));
                 conversionDiariaList.get(i).setPiezasConversion(conversionDiariaList.get(i).getCorrugadas());
             }
         }  
     }
     
-    private int getEntradaAlmacen(String pedido, String fecha) {
-        Date pedidoDate = DateUtils.getDateCalendar(fecha);
+    private int getEntradaAlmacen(String pedido) {
         int piezasEntregadas = 0;
         for (EntradaAlmacen entradaAlmacen : listEntradaAlmacen) {
           
            if (pedido.equalsIgnoreCase(entradaAlmacen.getNumeroPedido())){
                Date dateAlmacen = getDateAlmacen(entradaAlmacen.getFechaEntAlm(), entradaAlmacen.getHoraEntrega());
-               if ((DateUtils.isSameDay(pedidoDate,dateAlmacen) && pedidoDate.before(dateAlmacen)) || pedidoDate.equals(dateAlmacen)) {
-                piezasEntregadas = entradaAlmacen.getPiezasEntregadas();
+               if ((dateAlmacen.after(fechaIni) || dateAlmacen.equals(fechaIni)) && (dateAlmacen.before(fechaFin) || dateAlmacen.equals(fechaFin))) {
+               //if ((DateUtils.isSameDay(fechaIni,dateAlmacen) && fechaIni.before(dateAlmacen)) || fechaIni.equals(dateAlmacen)) {
+                piezasEntregadas = piezasEntregadas + entradaAlmacen.getPiezasEntregadas();
                }
            }
            if (entradaAlmacen.getNumeroPedido().compareTo(pedido) > 0) {

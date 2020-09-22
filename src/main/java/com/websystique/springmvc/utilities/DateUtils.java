@@ -183,6 +183,16 @@ public class DateUtils {
         return julianDayNumber1 == julianDayNumber2;
     }
     
-
+    
+    public static Date convertStringToDate(String fecha, String format) {
+        SimpleDateFormat formatter = new SimpleDateFormat(format);
+        Date date = null;
+        try {
+            date = formatter.parse(fecha);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
         
 }

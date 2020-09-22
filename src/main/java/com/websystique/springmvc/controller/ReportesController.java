@@ -91,6 +91,7 @@ import com.websystique.springmvc.service.reportes.Todos_pedidosService;
 import com.websystique.springmvc.service.reportes.Viajes_mes_ciudadService;
 import com.websystique.springmvc.service.tarjetas.Catalogo_clientes_sap_vwService;
 import com.websystique.springmvc.service.tarjetas.Catalogo_vendedores_sap_vwService;
+import com.websystique.springmvc.utilities.DateUtils;
 
 //import net.sf.jasperreports.engine.JRDataSource;
 //import net.sf.jasperreports.engine.JREmptyDataSource;
@@ -825,10 +826,12 @@ public class ReportesController {
 			model.addAttribute("loggedinuser", AppController.getPrincipal());
 			logger.info(AppController.getPrincipal() + " - buscarconversiondiaria.");
 			model.addAttribute("fecha_ini",fi);
-			List<ConversionDiaria> conversionDiaria = conversionDiariaService.getAllByDate(fi);
+			String fechaIni = (fi + " 07:00:00").replace("-","/");
+		    String fechaFin = (DateUtils.addDayToDate(fi,"yyyy-MM-dd",1)  + " 07:00:00").replace("-", "/");
+			List<ConversionDiaria> conversionDiaria = conversionDiariaService.getAllByDate(fechaIni,fechaFin);
 			String listaDePedidos = conversionDiariaBL.getListaDePedidos(conversionDiaria);
 			List<EntradaAlmacen> entradaAlmacenList = conversionDiariaService.getAllEntradaAlmacen(listaDePedidos);
-			conversionDiaria = conversionDiariaBL.addDataToReport(conversionDiaria, entradaAlmacenList);
+			conversionDiaria = conversionDiariaBL.addDataToReport(conversionDiaria, entradaAlmacenList, fechaIni, fechaFin);
 			model.addAttribute("reporte",conversionDiaria);
 		}
 		catch(Exception e) {
@@ -844,11 +847,12 @@ public class ReportesController {
         List<ConversionDiaria> listaexcel = null;
         try {
             fecha_ini = req.getParameter("fecha_ini");
-            
-            List<ConversionDiaria> conversionDiaria = conversionDiariaService.getAllByDate(fecha_ini);
+            String fechaIni = (fecha_ini + " 07:00:00").replace("-","/");
+            String fechaFin = (DateUtils.addDayToDate(fecha_ini,"yyyy-MM-dd",1)  + " 07:00:00").replace("-", "/");
+            List<ConversionDiaria> conversionDiaria = conversionDiariaService.getAllByDate(fecha_ini, fecha_ini);
             String listaDePedidos = conversionDiariaBL.getListaDePedidos(conversionDiaria);
             List<EntradaAlmacen> entradaAlmacenList = conversionDiariaService.getAllEntradaAlmacen(listaDePedidos);
-            listaexcel = conversionDiariaBL.addDataToReport(conversionDiaria, entradaAlmacenList);
+            listaexcel = conversionDiariaBL.addDataToReport(conversionDiaria, entradaAlmacenList, fecha_ini, fechaFin);
            
             //listaexcel = conversionDiariaService.getAllByDate(fecha_ini);
             logger.info(AppController.getPrincipal() + " - conversiondiaria_excel.");
